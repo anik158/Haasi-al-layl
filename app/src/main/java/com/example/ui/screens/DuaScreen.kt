@@ -1,0 +1,323 @@
+package com.example.ui.screens
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.BookmarkBorder
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.data.dua.DuaCategory
+import com.example.data.dua.DuaItem
+import com.example.data.dua.IslamicContentProvider
+import com.example.ui.theme.WarmGoldAccent
+
+@Composable
+fun DuaScreen(
+  bookmarkedDuaIds: Set<String>,
+  onToggleBookmark: (String) -> Unit
+) {
+  var searchQuery by remember { mutableStateOf("") }
+  var selectedCategory by remember { mutableStateOf<DuaCategory?>(null) }
+  var showBookmarksOnly by remember { mutableStateOf(false) }
+
+  val filteredDuas = remember(searchQuery, selectedCategory, showBookmarksOnly, bookmarkedDuaIds) {
+    IslamicContentProvider.DUAS.filter { dua ->
+      val matchesSearch = searchQuery.isBlank() ||
+        dua.title.contains(searchQuery, ignoreCase = true) ||
+        dua.translation.contains(searchQuery, ignoreCase = true) ||
+        dua.transliteration.contains(searchQuery, ignoreCase = true)
+
+      val matchesCategory = selectedCategory == null || dua.category == selectedCategory
+      val matchesBookmarks = !showBookmarksOnly || bookmarkedDuaIds.contains(dua.id)
+
+      matchesSearch && matchesCategory && matchesBookmarks
+    }
+  }
+
+  Column(
+    modifier = Modifier
+      .fillMaxSize()
+      .background(MaterialTheme.colorScheme.background)
+      .padding(horizontal = 16.dp)
+  ) {
+    // Top Bar
+    Row(
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(vertical = 12.dp),
+      horizontalArrangement = Arrangement.SpaceBetween,
+      verticalAlignment = Alignment.CenterVertically
+    ) {
+      Column {
+        Text(
+          text = "Daily Duas & Adhkar",
+          style = MaterialTheme.typography.headlineSmall,
+          fontWeight = FontWeight.ExtraBold,
+          color = MaterialTheme.colorScheme.onBackground
+        )
+        Text(
+          text = "Hisn al-Muslim (Fortress of the Muslim)",
+          style = MaterialTheme.typography.bodySmall,
+          color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+      }
+    }
+
+    // Search bar
+    OutlinedTextField(
+      value = searchQuery,
+      onValueChange = { searchQuery = it },
+      placeholder = { Text("Search duas, translations...") },
+      leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
+      singleLine = true,
+      shape = RoundedCornerShape(14.dp),
+      modifier = Modifier
+        .fillMaxWidth()
+        .testTag("dua_search_input")
+    )
+
+    Spacer(modifier = Modifier.height(10.dp))
+
+    // Category Filter Chips
+    LazyRow(
+      horizontalArrangement = Arrangement.spacedBy(8.dp),
+      modifier = Modifier.fillMaxWidth()
+    ) {
+      // Bookmarks chip
+      item {
+        FilterChip(
+          selected = showBookmarksOnly,
+          onClick = {
+            showBookmarksOnly = !showBookmarksOnly
+            if (showBookmarksOnly) selectedCategory = null
+          },
+          label = { Text("★ Bookmarks (${bookmarkedDuaIds.size})") },
+          colors = FilterChipDefaults.filterChipColors(
+            selectedContainerColor = WarmGoldAccent.copy(alpha = 0.25f),
+            selectedLabelColor = MaterialTheme.colorScheme.primary
+          )
+        )
+      }
+
+      // "All" chip
+      item {
+        val isAll = selectedCategory == null && !showBookmarksOnly
+        FilterChip(
+          selected = isAll,
+          onClick = {
+            selectedCategory = null
+            showBookmarksOnly = false
+          },
+          label = { Text("All") },
+          colors = FilterChipDefaults.filterChipColors(
+            selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+            selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer
+          )
+        )
+      }
+
+      items(DuaCategory.entries.filter { it != DuaCategory.ALL }) { cat ->
+        val isSelected = selectedCategory == cat && !showBookmarksOnly
+        FilterChip(
+          selected = isSelected,
+          onClick = {
+            selectedCategory = cat
+            showBookmarksOnly = false
+          },
+          label = { Text(cat.displayName) },
+          colors = FilterChipDefaults.filterChipColors(
+            selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+            selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer
+          )
+        )
+      }
+    }
+
+    Spacer(modifier = Modifier.height(10.dp))
+
+    // Dua Cards List
+    if (filteredDuas.isEmpty()) {
+      Box(
+        modifier = Modifier
+          .fillMaxSize()
+          .testTag("no_duas_found"),
+        contentAlignment = Alignment.Center
+      ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+          Text("📖", fontSize = 40.sp)
+          Spacer(modifier = Modifier.height(10.dp))
+          Text(
+            text = if (showBookmarksOnly) "No saved bookmarks yet" else "No duas found",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold
+          )
+          Text(
+            text = if (showBookmarksOnly) "Tap the bookmark icon on any Du'a to save it here" else "Try clearing your search filters",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+          )
+        }
+      }
+    } else {
+      LazyColumn(
+        modifier = Modifier
+          .fillMaxSize()
+          .testTag("duas_list"),
+        verticalArrangement = Arrangement.spacedBy(14.dp)
+      ) {
+        items(filteredDuas, key = { it.id }) { dua ->
+          val isBookmarked = bookmarkedDuaIds.contains(dua.id)
+          DuaCardItem(
+            dua = dua,
+            isBookmarked = isBookmarked,
+            onToggleBookmark = { onToggleBookmark(dua.id) }
+          )
+        }
+        item {
+          Spacer(modifier = Modifier.height(24.dp))
+        }
+      }
+    }
+  }
+}
+
+@Composable
+private fun DuaCardItem(
+  dua: DuaItem,
+  isBookmarked: Boolean,
+  onToggleBookmark: () -> Unit
+) {
+  Card(
+    shape = RoundedCornerShape(18.dp),
+    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+    modifier = Modifier
+      .fillMaxWidth()
+      .testTag("dua_card_${dua.id}")
+  ) {
+    Column(modifier = Modifier.padding(16.dp)) {
+      Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+      ) {
+        Column(modifier = Modifier.weight(1f)) {
+          Text(
+            text = dua.title,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurface
+          )
+          Surface(
+            shape = RoundedCornerShape(6.dp),
+            color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f),
+            modifier = Modifier.padding(top = 4.dp)
+          ) {
+            Text(
+              text = "${dua.category.displayName} • ${dua.repetition}",
+              style = MaterialTheme.typography.labelSmall,
+              color = MaterialTheme.colorScheme.primary,
+              modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+              fontWeight = FontWeight.SemiBold
+            )
+          }
+        }
+
+        IconButton(
+          onClick = onToggleBookmark,
+          modifier = Modifier.testTag("bookmark_${dua.id}")
+        ) {
+          Icon(
+            imageVector = if (isBookmarked) Icons.Default.Bookmark else Icons.Outlined.BookmarkBorder,
+            contentDescription = if (isBookmarked) "Remove bookmark" else "Bookmark dua",
+            tint = if (isBookmarked) WarmGoldAccent else MaterialTheme.colorScheme.outline
+          )
+        }
+      }
+
+      Spacer(modifier = Modifier.height(14.dp))
+
+      // Arabic Text (Right-aligned, large legible font)
+      Text(
+        text = dua.arabic,
+        style = MaterialTheme.typography.titleLarge,
+        fontWeight = FontWeight.Bold,
+        textAlign = TextAlign.End,
+        lineHeight = 34.sp,
+        color = MaterialTheme.colorScheme.primary,
+        modifier = Modifier.fillMaxWidth()
+      )
+
+      Spacer(modifier = Modifier.height(10.dp))
+
+      // Transliteration
+      Text(
+        text = dua.transliteration,
+        style = MaterialTheme.typography.bodyMedium,
+        fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
+        color = MaterialTheme.colorScheme.onSurfaceVariant
+      )
+
+      Spacer(modifier = Modifier.height(8.dp))
+
+      // Translation
+      Text(
+        text = "“${dua.translation}”",
+        style = MaterialTheme.typography.bodyMedium,
+        lineHeight = 22.sp,
+        color = MaterialTheme.colorScheme.onSurface
+      )
+
+      Spacer(modifier = Modifier.height(10.dp))
+      HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f))
+      Spacer(modifier = Modifier.height(6.dp))
+
+      // Reference
+      Text(
+        text = "Source: ${dua.reference}",
+        style = MaterialTheme.typography.labelSmall,
+        color = MaterialTheme.colorScheme.outline
+      )
+    }
+  }
+}

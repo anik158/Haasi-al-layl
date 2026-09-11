@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Golden crescent moon centered within 66dp safe zone (21dp to 87dp) -->
+    <!-- Crescent Moon -->
+    <path
+        android:pathData="M60.5,30 C50,31.5 42,40.5 42,52 C42,65 52.5,75.5 65.5,75.5 C71.5,75.5 77,73 81,69 C71,72 61,65 60,55 C59,44 64,36 71.5,33 C68,31 64.5,30 60.5,30 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:endX="78"
+                android:endY="75"
+                android:startX="42"
+                android:startY="30"
+                android:type="linear">
+                <item android:color="#FFFFE885" android:offset="0.0" />
+                <item android:color="#FFF5B82E" android:offset="0.6" />
+                <item android:color="#FFD48E15" android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Five-pointed golden star nestled in the crescent -->
+    <path
+        android:fillColor="#FFFFDF79"
+        android:pathData="M71,43 L72.5,47.5 L77.5,47.5 L73.5,50.5 L75,55 L71,52 L67,55 L68.5,50.5 L64.5,47.5 L69.5,47.5 Z" />
+
+    <!-- Mosque dome silhouette at bottom center of the badge -->
+    <path
+        android:fillColor="#E6FFFFFF"
+        android:pathData="M39,78 C39,78 45,71 54,71 C63,71 69,78 69,78 L69,82 L39,82 Z" />
+    <path
+        android:fillColor="#E6FFFFFF"
+        android:pathData="M53.2,67.5 L54.8,67.5 L54.8,71 L53.2,71 Z" />
+    <path
+        android:fillColor="#FFEDB437"
+        android:pathData="M54,66 C54.8,66 55.5,66.7 55.5,67.5 C55.5,68.3 54.8,69 54,69 C53.2,69 52.5,68.3 52.5,67.5 C52.5,66.7 53.2,66 54,66 Z" />
+</vector>

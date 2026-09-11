@@ -1,0 +1,6 @@
+{
+  "name": "Sakeenah",
+  "description": "A tranquil Islamic companion with exact prayer times, serene weather forecasts, Qibla compass, tactile tasbih, and peaceful daily duas.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
