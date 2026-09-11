@@ -242,7 +242,7 @@ object PrayerCalculator {
     val imsak = fajr - (10.0 / 60.0)
 
     // Asr
-    val asrAngle = -Math.toDegrees(
+    val asrAngle = Math.toDegrees(
       atan(1.0 / (madhab.shadowFactor + tan(Math.toRadians(abs(lat - declination)))))
     )
     val asrDiff = sunAngleTime(90.0 - asrAngle, lat, declination)
