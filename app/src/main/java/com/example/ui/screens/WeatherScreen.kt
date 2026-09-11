@@ -1,6 +1,7 @@
 package com.example.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -121,16 +122,30 @@ fun WeatherScreen(
 
       Row(verticalAlignment = Alignment.CenterVertically) {
         // Temperature unit toggle chip
-        FilterChip(
-          selected = isFahrenheit,
-          onClick = onToggleUnit,
-          label = { Text(if (isFahrenheit) "°F" else "°C", fontWeight = FontWeight.Bold) },
-          colors = FilterChipDefaults.filterChipColors(
-            selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-            selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer
-          ),
-          modifier = Modifier.testTag("temp_unit_chip")
-        )
+        Surface(
+          shape = RoundedCornerShape(16.dp),
+          color = MaterialTheme.colorScheme.surfaceVariant,
+          modifier = Modifier.height(32.dp)
+        ) {
+          Row(verticalAlignment = Alignment.CenterVertically) {
+            Box(
+              modifier = Modifier
+                .background(if (!isFahrenheit) MaterialTheme.colorScheme.primary else Color.Transparent)
+                .clickable { if (isFahrenheit) onToggleUnit() }
+                .padding(horizontal = 12.dp, vertical = 6.dp)
+            ) {
+              Text("°C", fontWeight = FontWeight.Bold, color = if (!isFahrenheit) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+            Box(
+              modifier = Modifier
+                .background(if (isFahrenheit) MaterialTheme.colorScheme.primary else Color.Transparent)
+                .clickable { if (!isFahrenheit) onToggleUnit() }
+                .padding(horizontal = 12.dp, vertical = 6.dp)
+            ) {
+              Text("°F", fontWeight = FontWeight.Bold, color = if (isFahrenheit) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+          }
+        }
         Spacer(modifier = Modifier.width(4.dp))
         IconButton(
           onClick = onRefresh,
@@ -201,7 +216,8 @@ fun WeatherScreen(
           data = weatherState.data,
           formatTemperature = formatTemperature,
           language = language,
-          onLocationClick = onLocationClick
+          onLocationClick = onLocationClick,
+          isFahrenheit = isFahrenheit
         )
       }
     }
@@ -213,7 +229,8 @@ private fun WeatherSuccessContent(
   data: FullWeatherData,
   formatTemperature: (Double) -> String,
   language: AppLanguage,
-  onLocationClick: () -> Unit
+  onLocationClick: () -> Unit,
+  isFahrenheit: Boolean
 ) {
   val cur = data.current
 
@@ -372,7 +389,7 @@ private fun WeatherSuccessContent(
         modifier = Modifier.fillMaxWidth()
       ) {
         items(data.hourly) { hour ->
-          HourlyWeatherItem(hour = hour, formatTemperature = formatTemperature)
+          HourlyWeatherItem(hour = hour, formatTemperature = formatTemperature, language = language, isFahrenheit = isFahrenheit)
         }
       }
     }
@@ -395,15 +412,17 @@ private fun WeatherSuccessContent(
           title = LocalizationManager.getHumidityLabel(language),
           value = "${cur.humidityPercent}%",
           icon = Icons.Default.WaterDrop,
-          iconTint = MaterialTheme.colorScheme.tertiary
-        )
+          iconTint = MaterialTheme.colorScheme.tertiary,
+isFahrenheit = isFahrenheit
+)
         MetricItem(
           modifier = Modifier.weight(1f),
           title = LocalizationManager.getWindSpeedLabel(language),
           value = "%.1f km/h".format(cur.windSpeedKmh),
           icon = Icons.Default.Air,
-          iconTint = MaterialTheme.colorScheme.primary
-        )
+          iconTint = MaterialTheme.colorScheme.primary,
+isFahrenheit = isFahrenheit
+)
       }
       Spacer(modifier = Modifier.height(12.dp))
       Row(
@@ -415,15 +434,17 @@ private fun WeatherSuccessContent(
           title = LocalizationManager.getUvIndexLabel(language),
           value = "%.1f".format(cur.uvIndex),
           icon = Icons.Outlined.WbSunny,
-          iconTint = WarmGoldAccent
-        )
+          iconTint = WarmGoldAccent,
+isFahrenheit = isFahrenheit
+)
         MetricItem(
           modifier = Modifier.weight(1f),
           title = LocalizationManager.getFeelsLikeLabel(language),
           value = formatTemperature(cur.feelsLikeC),
           icon = Icons.Outlined.Thermostat,
-          iconTint = MaterialTheme.colorScheme.secondary
-        )
+          iconTint = MaterialTheme.colorScheme.secondary,
+isFahrenheit = isFahrenheit
+)
       }
     }
 
@@ -443,7 +464,7 @@ private fun WeatherSuccessContent(
       ) {
         Column(modifier = Modifier.padding(16.dp)) {
           data.daily.forEachIndexed { index, day ->
-            DailyForecastRow(day = day, formatTemperature = formatTemperature)
+            DailyForecastRow(day = day, formatTemperature = formatTemperature, isFahrenheit = isFahrenheit)
             if (index < data.daily.size - 1) {
               androidx.compose.material3.HorizontalDivider(
                 modifier = Modifier.padding(vertical = 10.dp),
@@ -464,7 +485,9 @@ private fun WeatherSuccessContent(
 @Composable
 private fun HourlyWeatherItem(
   hour: HourlyForecast,
-  formatTemperature: (Double) -> String
+  formatTemperature: (Double) -> String,
+  language: AppLanguage,
+  isFahrenheit: Boolean
 ) {
   Card(
     shape = RoundedCornerShape(16.dp),
@@ -479,7 +502,7 @@ private fun HourlyWeatherItem(
       horizontalAlignment = Alignment.CenterHorizontally
     ) {
       Text(
-        text = hour.timeFormatted,
+        text = if (language == com.example.data.localization.AppLanguage.BENGALI) hour.timeFormatted.replace("AM", "পূর্বাহ্ণ").replace("PM", "অপরাহ্ণ").replace("0", "০").replace("1", "১").replace("2", "২").replace("3", "৩").replace("4", "৪").replace("5", "৫").replace("6", "৬").replace("7", "৭").replace("8", "৮").replace("9", "৯") else if (language == com.example.data.localization.AppLanguage.ARABIC) hour.timeFormatted.replace("AM", "ص").replace("PM", "م").replace("0", "٠").replace("1", "١").replace("2", "٢").replace("3", "٣").replace("4", "٤").replace("5", "٥").replace("6", "٦").replace("7", "٧").replace("8", "٨").replace("9", "٩") else hour.timeFormatted,
         style = MaterialTheme.typography.labelSmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant
       )
@@ -515,7 +538,8 @@ private fun MetricItem(
   title: String,
   value: String,
   icon: ImageVector,
-  iconTint: Color
+  iconTint: Color,
+  isFahrenheit: Boolean
 ) {
   Card(
     modifier = modifier,
@@ -557,7 +581,8 @@ private fun MetricItem(
 @Composable
 private fun DailyForecastRow(
   day: DailyForecast,
-  formatTemperature: (Double) -> String
+  formatTemperature: (Double) -> String,
+  isFahrenheit: Boolean
 ) {
   Row(
     modifier = Modifier.fillMaxWidth(),

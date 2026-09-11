@@ -248,7 +248,7 @@ private fun PrayerRowItem(
 
     // Time
     Text(
-      text = item.formattedTime,
+      text = LocalizationManager.formatTime(item.time, language),
       style = MaterialTheme.typography.bodyLarge,
       fontWeight = if (item.isCurrent || item.isNext) FontWeight.Bold else FontWeight.SemiBold,
       color = DarkForestInk

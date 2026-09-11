@@ -493,7 +493,7 @@ object LocalizationManager {
 
   fun getCompassCalibrationHint(language: AppLanguage): String = when (language) {
     AppLanguage.ARABIC -> "لزيادة الدقة، حرك الهاتف على شكل الرقم 8"
-    AppLanguage.BENGALI -> "কম্পাসের নির্ভুলতার জন্য ফোনটিকে ৮ এর মতো করে ঘোরান"
+    AppLanguage.BENGALI -> "কম্পাসের নির্ভুলতার জন্য ফোনটিকে ইংরেজি \'8\' (আট) আকৃতিতে ঘোরান"
     AppLanguage.SPANISH -> "Para calibrar, mueva el teléfono en forma de 8"
     AppLanguage.PORTUGUESE -> "Para calibrar, mova o telefone em forma de 8"
     AppLanguage.ENGLISH -> "Calibrate sensor by moving phone in figure-8"
@@ -1067,5 +1067,19 @@ object LocalizationManager {
       AppLanguage.PORTUGUESE -> "Clima confortável e sereno — excelente oportunidade para caminhar até a Mesquita."
       AppLanguage.ENGLISH -> "Comfortable and serene weather — an excellent opportunity to walk to the Masjid for congregational prayer."
     }
+  }
+
+  fun formatTime(time: java.time.LocalTime, language: AppLanguage): String {
+    val formatter = java.time.format.DateTimeFormatter.ofPattern("hh:mm a")
+    var formatted = time.format(formatter)
+    
+    if (language == AppLanguage.BENGALI) {
+      formatted = formatted.replace("AM", "পূর্বাহ্ণ").replace("PM", "অপরাহ্ণ")
+      formatted = formatted.replace("0", "০").replace("1", "১").replace("2", "২").replace("3", "৩").replace("4", "৪").replace("5", "৫").replace("6", "৬").replace("7", "৭").replace("8", "৮").replace("9", "৯")
+    } else if (language == AppLanguage.ARABIC) {
+      formatted = formatted.replace("AM", "ص").replace("PM", "م")
+      formatted = formatted.replace("0", "٠").replace("1", "١").replace("2", "٢").replace("3", "٣").replace("4", "٤").replace("5", "٥").replace("6", "٦").replace("7", "٧").replace("8", "٨").replace("9", "٩")
+    }
+    return formatted
   }
 }
