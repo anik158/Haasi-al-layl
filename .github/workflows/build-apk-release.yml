@@ -48,7 +48,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: release-apk
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: app/build/outputs/apk/debug/haasi-al-layl-debug.apk
           retention-days: 30
 
       - name: Create Release
@@ -62,4 +62,4 @@ jobs:
             Download the APK from the assets below.
           draft: false
           prerelease: false
-          files: app/build/outputs/apk/debug/app-debug.apk
+          files: app/build/outputs/apk/debug/haasi-al-layl-debug.apk

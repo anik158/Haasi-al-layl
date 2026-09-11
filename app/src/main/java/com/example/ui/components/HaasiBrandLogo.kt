@@ -75,9 +75,9 @@ fun HaasiBrandLogo(
       .background(
         brush = Brush.radialGradient(
           colors = listOf(
-            Color(0xFF0F3E2F),
-            Color(0xFF09251C),
-            Color(0xFF04150F)
+            Color(0xFF16204A),
+            Color(0xFF090F28),
+            Color(0xFF02040E)
           )
         )
       )
@@ -101,7 +101,7 @@ fun HaasiBrandLogo(
       contentDescription = "Ḥaasi al-Layl Logo",
       tint = Color.Unspecified,
       modifier = Modifier
-        .size(size * 0.78f)
+        .size(size * 0.86f)
     )
   }
 }
