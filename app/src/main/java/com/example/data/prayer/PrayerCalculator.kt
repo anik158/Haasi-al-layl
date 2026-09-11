@@ -164,11 +164,25 @@ object PrayerCalculator {
       timeUntilFormatted = "--:--"
       progress = 0f
     }
-
     val sunriseTime = timesMap[PrayerName.SUNRISE] ?: LocalTime.of(6, 0)
     val dhuhrTime = timesMap[PrayerName.DHUHR] ?: LocalTime.of(12, 10)
     val maghribTime = timesMap[PrayerName.MAGHRIB] ?: LocalTime.of(18, 15)
+    val fajrTime = timesMap[PrayerName.FAJR] ?: LocalTime.of(4, 30)
     val forbiddenWindows = ForbiddenPrayerTimesHelper.calculateWindows(sunriseTime, dhuhrTime, maghribTime)
+
+    val maghribMinutes = maghribTime.hour * 60 + maghribTime.minute
+    val fajrMinutes = fajrTime.hour * 60 + fajrTime.minute
+    val nightLengthMinutes = (24 * 60 - maghribMinutes) + fajrMinutes
+    val lastThirdDuration = nightLengthMinutes / 3
+    
+    val tahajjudStartMinutes = fajrMinutes - lastThirdDuration
+    val currentMinutes = now.hour * 60 + now.minute
+    
+    val isTahajjudTime = if (tahajjudStartMinutes < 0) {
+        currentMinutes >= (24*60 + tahajjudStartMinutes) || currentMinutes < fajrMinutes
+    } else {
+        currentMinutes >= tahajjudStartMinutes && currentMinutes < fajrMinutes
+    }
 
     return DailyPrayerSchedule(
       date = date,
@@ -181,7 +195,8 @@ object PrayerCalculator {
       timeUntilNextFormatted = timeUntilFormatted,
       progressToNext = progress,
       currentTime = now.toLocalTime(),
-      forbiddenTimes = forbiddenWindows
+      forbiddenTimes = forbiddenWindows,
+      isTahajjudTime = isTahajjudTime
     )
   }
 
@@ -242,7 +257,7 @@ object PrayerCalculator {
     val imsak = fajr - (10.0 / 60.0)
 
     // Asr
-    val asrAngle = -Math.toDegrees(
+    val asrAngle = Math.toDegrees(
       atan(1.0 / (madhab.shadowFactor + tan(Math.toRadians(abs(lat - declination)))))
     )
     val asrDiff = sunAngleTime(90.0 - asrAngle, lat, declination)

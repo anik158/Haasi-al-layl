@@ -25,6 +25,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Brightness5
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.WbTwilight
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material.icons.filled.Close
@@ -80,6 +81,7 @@ import kotlin.math.sin
  * Artistically styled with Ahsanul Houqe's warm beige (#F5EEDD) & cool mint (#D8EAE3) palette
  * and delicate botanical reeds.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CelestialHorizonCard(
   schedule: DailyPrayerSchedule?,
@@ -137,6 +139,7 @@ fun CelestialHorizonCard(
   )
 
   Card(
+    onClick = { showDetailsDialog = true },
     modifier = modifier
       .fillMaxWidth(0.94f)
       .testTag("celestial_horizon_card"),
@@ -188,7 +191,6 @@ fun CelestialHorizonCard(
 
         // Live status pill with crisp white/dark border (clickable for celestial details)
         Surface(
-          onClick = { showDetailsDialog = true },
           shape = RoundedCornerShape(20.dp),
           color = Color.White,
           border = androidx.compose.foundation.BorderStroke(1.dp, OutlineDarkBorder),
@@ -473,9 +475,9 @@ fun CelestialHorizonCard(
             Spacer(modifier = Modifier.width(8.dp))
             Column {
               val solarTitle = if (isDaytime) {
-                "${LocalizationManager.getNextSunsetLabel(language)} ${sunset.format(DateTimeFormatter.ofPattern("hh:mm a"))}"
+                "${LocalizationManager.getNextSunsetLabel(language)} ${LocalizationManager.formatTime(sunset, language)}"
               } else {
-                "${LocalizationManager.getNextSunriseLabel(language)} ${sunrise.format(DateTimeFormatter.ofPattern("hh:mm a"))}"
+                "${LocalizationManager.getNextSunriseLabel(language)} ${LocalizationManager.formatTime(sunrise, language)}"
               }
               val solarSub = if (isDaytime) {
                 LocalizationManager.getSunsetMaghribSub(language)
@@ -546,7 +548,7 @@ fun CelestialHorizonCard(
           verticalAlignment = Alignment.CenterVertically
         ) {
           Text(
-            text = "Celestial Horizon Details",
+            text = LocalizationManager.getCelestialHorizonTitle(language) + " " + LocalizationManager.getLunarDetailsLabel(language).replace(":", ""),
             fontWeight = FontWeight.Bold,
             color = DarkForestInk
           )
@@ -583,7 +585,7 @@ fun CelestialHorizonCard(
                   color = DarkForestInk
                 )
                 Text(
-                  text = "Time: ${currentTime.format(java.time.format.DateTimeFormatter.ofPattern("hh:mm a"))}",
+                  text = "${LocalizationManager.getTimeLabel(language)} ${LocalizationManager.formatTime(currentTime, language)}",
                   fontSize = 12.sp,
                   color = DarkForestInk.copy(alpha = 0.7f)
                 )
@@ -598,10 +600,10 @@ fun CelestialHorizonCard(
             modifier = Modifier.fillMaxWidth()
           ) {
             Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-              Text("☀️ Solar Markers:", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = DarkForestInk)
-              Text("• Sunrise: ${sunrise.format(java.time.format.DateTimeFormatter.ofPattern("hh:mm a"))}", fontSize = 11.sp, color = DarkForestInk.copy(alpha = 0.8f))
-              Text("• Solar Noon (Dhuhr): ${noon.format(java.time.format.DateTimeFormatter.ofPattern("hh:mm a"))}", fontSize = 11.sp, color = DarkForestInk.copy(alpha = 0.8f))
-              Text("• Sunset (Maghrib): ${sunset.format(java.time.format.DateTimeFormatter.ofPattern("hh:mm a"))}", fontSize = 11.sp, color = DarkForestInk.copy(alpha = 0.8f))
+              Text("☀️ ${LocalizationManager.getSolarMarkersLabel(language)}", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = DarkForestInk)
+              Text("• ${LocalizationManager.getPrayerDisplayName(com.example.data.model.PrayerName.SUNRISE, language)}: ${LocalizationManager.formatTime(sunrise, language)}", fontSize = 11.sp, color = DarkForestInk.copy(alpha = 0.8f))
+              Text("• ${LocalizationManager.getPrayerDisplayName(com.example.data.model.PrayerName.DHUHR, language)}: ${LocalizationManager.formatTime(noon, language)}", fontSize = 11.sp, color = DarkForestInk.copy(alpha = 0.8f))
+              Text("• ${LocalizationManager.getPrayerDisplayName(com.example.data.model.PrayerName.MAGHRIB, language)}: ${LocalizationManager.formatTime(sunset, language)}", fontSize = 11.sp, color = DarkForestInk.copy(alpha = 0.8f))
             }
           }
 
@@ -612,16 +614,16 @@ fun CelestialHorizonCard(
             modifier = Modifier.fillMaxWidth()
           ) {
             Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-              Text("🌙 Lunar Details:", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = DarkForestInk)
-              Text("• Hijri Day: $hijriDay (${moonInfo.phaseNameEn})", fontSize = 11.sp, color = DarkForestInk.copy(alpha = 0.8f))
-              Text("• Lunar Illumination: ${moonInfo.illuminationPercent}%", fontSize = 11.sp, color = DarkForestInk.copy(alpha = 0.8f))
+              Text("🌙 ${LocalizationManager.getLunarDetailsLabel(language)}", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = DarkForestInk)
+              Text("• ${LocalizationManager.getHijriDayLabel(language)} $hijriDay (${LocalizationManager.getMoonPhaseName(moonInfo.phaseKey, language)})", fontSize = 11.sp, color = DarkForestInk.copy(alpha = 0.8f))
+              Text("• ${LocalizationManager.getIlluminationLabel(moonInfo.illuminationPercent, language)}", fontSize = 11.sp, color = DarkForestInk.copy(alpha = 0.8f))
             }
           }
         }
       },
       confirmButton = {
         TextButton(onClick = { showDetailsDialog = false }) {
-          Text("Got it", color = DarkForestInk, fontWeight = FontWeight.Bold)
+          Text(LocalizationManager.getGotItLabel(language), color = DarkForestInk, fontWeight = FontWeight.Bold)
         }
       }
     )

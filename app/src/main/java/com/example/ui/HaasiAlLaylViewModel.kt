@@ -200,7 +200,24 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
 
   private var tickerJob: Job? = null
 
+  // State to prevent spamming the Tahajjud notification
+  private var lastTahajjudNotifiedDate: java.time.LocalDate? = null
+
   init {
+    viewModelScope.launch {
+      prayerSchedule.collect { schedule ->
+        if (schedule.isTahajjudTime) {
+          val today = schedule.date
+          if (lastTahajjudNotifiedDate != today) {
+            lastTahajjudNotifiedDate = today
+            com.example.data.notification.PrayerNotificationManager.showTahajjudNotification(getApplication<android.app.Application>(), currentLanguage.value)
+            // Show emotional message via notification (since we are reusing the Prayer Notification, 
+            // maybe we can send a custom one instead, but let's build a custom notification method for Tahajjud)
+          }
+        }
+      }
+    }
+
     startSecondTicker()
     seedTasbihIfNeeded()
     refreshWeather()
@@ -274,14 +291,15 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
     viewModelScope.launch {
       try {
         val jsonString = withContext(Dispatchers.IO) {
-          val url = URL("http://ip-api.com/json")
-          val connection = url.openConnection() as HttpURLConnection
+          val url = URL("https://ipinfo.io/json")
+          val connection = url.openConnection() as java.net.HttpURLConnection
           connection.requestMethod = "GET"
+          connection.setRequestProperty("User-Agent", "Mozilla/5.0")
           connection.connectTimeout = 5000
           connection.readTimeout = 5000
           
           if (connection.responseCode == 200) {
-            val reader = BufferedReader(InputStreamReader(connection.inputStream))
+            val reader = java.io.BufferedReader(java.io.InputStreamReader(connection.inputStream))
             val response = StringBuilder()
             var line: String?
             while (reader.readLine().also { line = it } != null) {
@@ -295,12 +313,13 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
         }
         
         if (jsonString != null) {
-          val json = JSONObject(jsonString)
-          val city = json.getString("city")
-          val country = json.getString("country")
-          val lat = json.getDouble("lat")
-          val lon = json.getDouble("lon")
-          val timezone = json.getString("timezone")
+          val json = org.json.JSONObject(jsonString)
+          val city = json.optString("city", "Unknown")
+          val country = json.optString("country", "Unknown")
+          val loc = json.optString("loc", "0.0,0.0").split(",")
+          val lat = loc.getOrNull(0)?.toDoubleOrNull() ?: 0.0
+          val lon = loc.getOrNull(1)?.toDoubleOrNull() ?: 0.0
+          val timezone = json.optString("timezone", "UTC")
           
           val detectedLocation = CityLocation(city, country, lat, lon, timezone)
           _selectedCity.value = detectedLocation

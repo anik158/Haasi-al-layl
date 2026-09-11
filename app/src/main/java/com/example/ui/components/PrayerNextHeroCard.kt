@@ -288,7 +288,7 @@ fun PrayerNextHeroCard(
 
           Column(horizontalAlignment = Alignment.End) {
             Text(
-              text = next?.formattedTime ?: "--:--",
+              text = if (next != null) LocalizationManager.formatTime(next.time, language) else "--:--",
               style = MaterialTheme.typography.headlineMedium,
               fontWeight = FontWeight.Bold,
               color = DarkForestInk
