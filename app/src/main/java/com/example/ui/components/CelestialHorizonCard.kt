@@ -577,7 +577,7 @@ fun CelestialHorizonCard(
               Spacer(modifier = Modifier.width(10.dp))
               Column {
                 Text(
-                  text = if (isDaytime) "Daytime Solar Tracking Active" else "Night Sky & Lunar Tracking Active",
+                  text = if (isDaytime) LocalizationManager.getDaytimeActiveLabel(language) else LocalizationManager.getNightSkyActiveLabel(language),
                   fontWeight = FontWeight.Bold,
                   fontSize = 13.sp,
                   color = DarkForestInk

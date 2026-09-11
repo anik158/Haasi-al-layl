@@ -41,6 +41,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.data.localization.LocalizationManager
 import com.example.ui.HaasiAlLaylViewModel
 import com.example.ui.components.CitySelectionSheet
+import com.example.ui.components.WelcomeDialog
 import com.example.ui.screens.DuaScreen
 import com.example.ui.screens.HomeScreen
 import com.example.ui.screens.QiblaScreen
@@ -86,6 +87,7 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
   val selectedMadhab by viewModel.selectedMadhab.collectAsStateWithLifecycle()
 
   var showCitySheet by remember { mutableStateOf(false) }
+      var showWelcome by remember { mutableStateOf(true) }
 
   val destinations = listOf(
     NavDestination(LocalizationManager.getNavToday(currentLanguage), Icons.Filled.Home, Icons.Outlined.Home, "nav_today"),
@@ -189,8 +191,20 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
       }
     }
 
-    if (showCitySheet) {
+    
+      if (showWelcome) {
+        WelcomeDialog(
+          language = currentLanguage,
+          onLanguageSelect = { viewModel.setLanguage(it) },
+          onOpenCitySelection = { showCitySheet = true },
+          onDismiss = { showWelcome = false }
+        )
+      }
+      
+      if (showCitySheet) {
       CitySelectionSheet(
+        onAutoDetect = { viewModel.autoDetectLocation(); showCitySheet = false },
+        language = currentLanguage,
         currentCity = currentCity,
         onCitySelected = { city -> viewModel.selectCity(city) },
         onDismiss = { showCitySheet = false }

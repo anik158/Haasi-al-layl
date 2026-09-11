@@ -890,4 +890,182 @@ object LocalizationManager {
     AppLanguage.PORTUGUESE -> "Velocidade do Vento"
     AppLanguage.ENGLISH -> "Wind Speed"
   }
+
+  fun getNightSkyActiveLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "تتبع السماء ليلاً نشط"
+    AppLanguage.BENGALI -> "রাতের আকাশ ও চাঁদ ট্র্যাকিং সক্রিয়"
+    AppLanguage.SPANISH -> "Seguimiento Nocturno Activo"
+    AppLanguage.PORTUGUESE -> "Rastreamento Noturno Ativo"
+    AppLanguage.ENGLISH -> "Night Sky & Lunar Tracking Active"
+  }
+
+  fun getDaytimeActiveLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "تتبع الشمس نهاراً نشط"
+    AppLanguage.BENGALI -> "দিনের সূর্য ট্র্যাকিং সক্রিয়"
+    AppLanguage.SPANISH -> "Seguimiento Solar Activo"
+    AppLanguage.PORTUGUESE -> "Rastreamento Solar Ativo"
+    AppLanguage.ENGLISH -> "Daytime Solar Tracking Active"
+  }
+
+  fun getTimeLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "الوقت:"
+    AppLanguage.BENGALI -> "সময়:"
+    AppLanguage.SPANISH -> "Hora:"
+    AppLanguage.PORTUGUESE -> "Tempo:"
+    AppLanguage.ENGLISH -> "Time:"
+  }
+
+  fun getSolarMarkersLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "علامات الشمس:"
+    AppLanguage.BENGALI -> "সূর্যের অবস্থান:"
+    AppLanguage.SPANISH -> "Marcadores Solares:"
+    AppLanguage.PORTUGUESE -> "Marcadores Solares:"
+    AppLanguage.ENGLISH -> "Solar Markers:"
+  }
+
+  fun getLunarDetailsLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "تفاصيل القمر:"
+    AppLanguage.BENGALI -> "চাঁদের বিবরণ:"
+    AppLanguage.SPANISH -> "Detalles Lunares:"
+    AppLanguage.PORTUGUESE -> "Detalhes Lunares:"
+    AppLanguage.ENGLISH -> "Lunar Details:"
+  }
+
+  fun getHijriDayLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "اليوم الهجري:"
+    AppLanguage.BENGALI -> "হিজরি দিন:"
+    AppLanguage.SPANISH -> "Día Hijri:"
+    AppLanguage.PORTUGUESE -> "Dia Hijri:"
+    AppLanguage.ENGLISH -> "Hijri Day:"
+  }
+
+  fun getGotItLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "حسناً"
+    AppLanguage.BENGALI -> "ঠিক আছে"
+    AppLanguage.SPANISH -> "Entendido"
+    AppLanguage.PORTUGUESE -> "Entendi"
+    AppLanguage.ENGLISH -> "Got it"
+  }
+
+  fun getAutoDetectLocationLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "تحديد الموقع تلقائيًا (يتطلب إنترنت)"
+    AppLanguage.BENGALI -> "স্বয়ংক্রিয়ভাবে অবস্থান নির্ণয় করুন (ইন্টারনেট প্রয়োজন)"
+    AppLanguage.SPANISH -> "Detección Automática (Requiere Internet)"
+    AppLanguage.PORTUGUESE -> "Detecção Automática (Requer Internet)"
+    AppLanguage.ENGLISH -> "Auto-Detect Location (Requires Internet)"
+  }
+
+  fun getChooseLanguageLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "اختر اللغة"
+    AppLanguage.BENGALI -> "ভাষা নির্বাচন করুন"
+    AppLanguage.SPANISH -> "Elegir Idioma"
+    AppLanguage.PORTUGUESE -> "Escolher Idioma"
+    AppLanguage.ENGLISH -> "Choose Language"
+  }
+
+  fun getWelcomeSetupTitle(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "مرحباً بك في حصي الليل"
+    AppLanguage.BENGALI -> "হাসী আল-লাইল এ স্বাগতম"
+    AppLanguage.SPANISH -> "Bienvenido a Haasi al-layl"
+    AppLanguage.PORTUGUESE -> "Bem-vindo ao Haasi al-layl"
+    AppLanguage.ENGLISH -> "Welcome to Haasi al-layl"
+  }
+
+  fun getWelcomeSetupSubtitle(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "يرجى تحديد موقعك ولغتك للبدء"
+    AppLanguage.BENGALI -> "শুরু করতে আপনার অবস্থান ও ভাষা নির্বাচন করুন"
+    AppLanguage.SPANISH -> "Seleccione su ubicación e idioma para comenzar"
+    AppLanguage.PORTUGUESE -> "Selecione sua localização e idioma para começar"
+    AppLanguage.ENGLISH -> "Please select your location and language to begin"
+  }
+
+  fun getWeatherConditionTitle(code: Int, language: AppLanguage): String = when (code) {
+    0 -> when(language) {
+      AppLanguage.ARABIC -> "سماء صافية"
+      AppLanguage.BENGALI -> "পরিষ্কার আকাশ"
+      AppLanguage.SPANISH -> "Cielo Despejado"
+      AppLanguage.PORTUGUESE -> "Céu Limpo"
+      AppLanguage.ENGLISH -> "Clear Sky"
+    }
+    1, 2, 3 -> when(language) {
+      AppLanguage.ARABIC -> "غائم"
+      AppLanguage.BENGALI -> "মেঘলা"
+      AppLanguage.SPANISH -> "Nublado"
+      AppLanguage.PORTUGUESE -> "Nublado"
+      AppLanguage.ENGLISH -> "Cloudy"
+    }
+    45, 48 -> when(language) {
+      AppLanguage.ARABIC -> "ضبابي"
+      AppLanguage.BENGALI -> "কুয়াশাচ্ছন্ন"
+      AppLanguage.SPANISH -> "Niebla"
+      AppLanguage.PORTUGUESE -> "Névoa"
+      AppLanguage.ENGLISH -> "Foggy"
+    }
+    51, 53, 55, 61, 63, 65, 80, 81, 82 -> when(language) {
+      AppLanguage.ARABIC -> "ممطر"
+      AppLanguage.BENGALI -> "বৃষ্টি"
+      AppLanguage.SPANISH -> "Lluvia"
+      AppLanguage.PORTUGUESE -> "Chuva"
+      AppLanguage.ENGLISH -> "Rain"
+    }
+    71, 73, 75, 77, 85, 86 -> when(language) {
+      AppLanguage.ARABIC -> "مثلج"
+      AppLanguage.BENGALI -> "তুষারপাত"
+      AppLanguage.SPANISH -> "Nieve"
+      AppLanguage.PORTUGUESE -> "Neve"
+      AppLanguage.ENGLISH -> "Snow"
+    }
+    95, 96, 99 -> when(language) {
+      AppLanguage.ARABIC -> "عاصفة رعدية"
+      AppLanguage.BENGALI -> "বজ্রঝড়"
+      AppLanguage.SPANISH -> "Tormenta Eléctrica"
+      AppLanguage.PORTUGUESE -> "Trovoada"
+      AppLanguage.ENGLISH -> "Thunderstorm"
+    }
+    else -> when(language) {
+      AppLanguage.ARABIC -> "معتدل"
+      AppLanguage.BENGALI -> "স্বাভাবিক"
+      AppLanguage.SPANISH -> "Justo"
+      AppLanguage.PORTUGUESE -> "Justo"
+      AppLanguage.ENGLISH -> "Fair"
+    }
+  }
+
+  fun getIslamicWeatherAdvice(code: Int, tempC: Double, language: AppLanguage): String = when {
+    code in listOf(95, 96, 99) -> when (language) {
+      AppLanguage.ARABIC -> "عاصفة رعدية في المنطقة. احتمي بالداخل واقرأ دعاء الرعد."
+      AppLanguage.BENGALI -> "এলাকায় বজ্রঝড়। নিরাপদ স্থানে থাকুন এবং বজ্রপাতের দোয়া পড়ুন।"
+      AppLanguage.SPANISH -> "Tormenta en la zona. Refúgiate y recita la Du'a para truenos."
+      AppLanguage.PORTUGUESE -> "Tempestade na área. Abrigue-se e recite a Du'a para trovões."
+      AppLanguage.ENGLISH -> "Thunderstorm in the area. Take shelter indoors and recite the Du'a for lightning and thunder."
+    }
+    code in listOf(51, 53, 55, 61, 63, 65, 80, 81, 82) -> when (language) {
+      AppLanguage.ARABIC -> "المطر يتساقط — أشار النبي (ﷺ) إلى أن هذا وقت مبارك لإجابة الدعاء!"
+      AppLanguage.BENGALI -> "বৃষ্টি পড়ছে — নবী (সাঃ) বলেছেন এটি দোয়া কবুলের বরকতময় সময়!"
+      AppLanguage.SPANISH -> "Cae lluvia — ¡El Profeta (ﷺ) notó que es un tiempo bendito para orar!"
+      AppLanguage.PORTUGUESE -> "A chuva cai — O Profeta (ﷺ) notou ser um tempo abençoado para orar!"
+      AppLanguage.ENGLISH -> "Rain is descending — the Prophet (ﷺ) noted this is a blessed time for prayers to be answered!"
+    }
+    tempC > 36 -> when (language) {
+      AppLanguage.ARABIC -> "درجات حرارة عالية اليوم. حافظ على رطوبة جسمك واسلك طرقًا مظللة إلى المسجد."
+      AppLanguage.BENGALI -> "আজ তাপমাত্রা বেশি। পর্যাপ্ত পানি পান করুন এবং মসজিদে যাওয়ার সময় ছায়াযুক্ত পথ ব্যবহার করুন।"
+      AppLanguage.SPANISH -> "Altas temperaturas. Mantente hidratado y busca sombra al ir a la mezquita."
+      AppLanguage.PORTUGUESE -> "Altas temperaturas. Mantenha-se hidratado e busque sombra ao ir à mesquita."
+      AppLanguage.ENGLISH -> "High temperatures today. Keep well-hydrated and seek shaded routes to the mosque."
+    }
+    tempC < 5 -> when (language) {
+      AppLanguage.ARABIC -> "ظروف باردة اليوم. توضأ جيدًا بالماء الدافئ وارتدِ ملابس دافئة لصلاة الفجر والعشاء."
+      AppLanguage.BENGALI -> "আজ ঠান্ডা আবহাওয়া। গরম পানি দিয়ে ভালোভাবে ওযু করুন এবং ফজর/এশার জন্য গরম কাপড় পরুন।"
+      AppLanguage.SPANISH -> "Condiciones frías. Haz el wudhu completo y abrígate para Fajr/Isha."
+      AppLanguage.PORTUGUESE -> "Condições frias. Faça o wudhu completo e agasalhe-se para Fajr/Isha."
+      AppLanguage.ENGLISH -> "Cold conditions today. Perform wudhu thoroughly with warmth and dress warmly for Fajr/Isha."
+    }
+    else -> when (language) {
+      AppLanguage.ARABIC -> "طقس مريح وهادئ — فرصة ممتازة للمشي إلى المسجد لأداء صلاة الجماعة."
+      AppLanguage.BENGALI -> "আরামদায়ক এবং শান্ত আবহাওয়া — জামাতে নামাজ পড়ার জন্য মসজিদে হেঁটে যাওয়ার চমৎকার সুযোগ।"
+      AppLanguage.SPANISH -> "Clima cómodo y sereno — excelente oportunidad para caminar a la Mezquita."
+      AppLanguage.PORTUGUESE -> "Clima confortável e sereno — excelente oportunidade para caminhar até a Mesquita."
+      AppLanguage.ENGLISH -> "Comfortable and serene weather — an excellent opportunity to walk to the Masjid for congregational prayer."
+    }
+  }
 }

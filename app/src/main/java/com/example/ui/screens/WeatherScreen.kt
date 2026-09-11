@@ -274,7 +274,7 @@ private fun WeatherSuccessContent(
             )
 
             Text(
-              text = cur.conditionTitle,
+              text = LocalizationManager.getWeatherConditionTitle(cur.weatherCode, language),
               style = MaterialTheme.typography.titleMedium,
               fontWeight = FontWeight.Bold,
               color = Color.White
@@ -327,7 +327,7 @@ private fun WeatherSuccessContent(
           }
           Spacer(modifier = Modifier.height(8.dp))
           Text(
-            text = cur.islamicWeatherAdvice,
+            text = LocalizationManager.getIslamicWeatherAdvice(cur.weatherCode, cur.temperatureC, language),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface
           )

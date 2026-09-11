@@ -33,6 +33,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -65,6 +70,7 @@ fun DuaScreen(
   var searchQuery by remember { mutableStateOf("") }
   var selectedCategory by remember { mutableStateOf<DuaCategory?>(null) }
   var showBookmarksOnly by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(false) }
 
   val filteredDuas = remember(searchQuery, selectedCategory, showBookmarksOnly, bookmarkedDuaIds, allDuas) {
     allDuas.filter { dua ->
@@ -132,61 +138,55 @@ fun DuaScreen(
 
     Spacer(modifier = Modifier.height(10.dp))
 
-    // Category Filter Chips
-    LazyRow(
-      horizontalArrangement = Arrangement.spacedBy(8.dp),
-      modifier = Modifier.fillMaxWidth()
+    // Category Filter Chips and Dropdown
+    Row(
+      modifier = Modifier.fillMaxWidth(),
+      horizontalArrangement = Arrangement.SpaceBetween,
+      verticalAlignment = Alignment.CenterVertically
     ) {
       // Bookmarks chip
-      item {
-        FilterChip(
-          selected = showBookmarksOnly,
-          onClick = {
-            showBookmarksOnly = !showBookmarksOnly
-            if (showBookmarksOnly) selectedCategory = null
-          },
-          label = { Text("★ ${LocalizationManager.getBookmarksOnlyLabel(language)} (${bookmarkedDuaIds.size})") },
-          colors = FilterChipDefaults.filterChipColors(
-            selectedContainerColor = WarmGoldAccent.copy(alpha = 0.25f),
-            selectedLabelColor = MaterialTheme.colorScheme.primary
-          )
+      FilterChip(
+        selected = showBookmarksOnly,
+        onClick = {
+          showBookmarksOnly = !showBookmarksOnly
+          if (showBookmarksOnly) selectedCategory = null
+        },
+        label = { Text("★ ${LocalizationManager.getBookmarksOnlyLabel(language)} (${bookmarkedDuaIds.size})") },
+        colors = FilterChipDefaults.filterChipColors(
+          selectedContainerColor = WarmGoldAccent.copy(alpha = 0.25f),
+          selectedLabelColor = MaterialTheme.colorScheme.primary
         )
-      }
+      )
 
-      // "All" chip
-      item {
-        val isAll = selectedCategory == null && !showBookmarksOnly
-        FilterChip(
-          selected = isAll,
-          onClick = {
-            selectedCategory = null
-            showBookmarksOnly = false
-          },
-          label = { Text(DuaCategory.ALL.getLocalizedName(language)) },
-          colors = FilterChipDefaults.filterChipColors(
-            selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-            selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer
+      Box {
+        IconButton(onClick = { expanded = true }) {
+          Icon(Icons.Default.FilterList, contentDescription = "Filter")
+        }
+        DropdownMenu(
+          expanded = expanded,
+          onDismissRequest = { expanded = false }
+        ) {
+          DropdownMenuItem(
+            text = { Text(DuaCategory.ALL.getLocalizedName(language), fontWeight = if (selectedCategory == null && !showBookmarksOnly) FontWeight.Bold else FontWeight.Normal) },
+            onClick = {
+              selectedCategory = null
+              showBookmarksOnly = false
+              expanded = false
+            }
           )
-        )
-      }
-
-      items(DuaCategory.entries.filter { it != DuaCategory.ALL }) { cat ->
-        val isSelected = selectedCategory == cat && !showBookmarksOnly
-        FilterChip(
-          selected = isSelected,
-          onClick = {
-            selectedCategory = cat
-            showBookmarksOnly = false
-          },
-          label = { Text(cat.getLocalizedName(language)) },
-          colors = FilterChipDefaults.filterChipColors(
-            selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-            selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer
-          )
-        )
+          DuaCategory.entries.filter { it != DuaCategory.ALL }.forEach { category ->
+            DropdownMenuItem(
+              text = { Text(category.getLocalizedName(language), fontWeight = if (selectedCategory == category) FontWeight.Bold else FontWeight.Normal) },
+              onClick = {
+                selectedCategory = category
+                showBookmarksOnly = false
+                expanded = false
+              }
+            )
+          }
+        }
       }
     }
-
     Spacer(modifier = Modifier.height(10.dp))
 
     // Dua Cards List

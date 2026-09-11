@@ -147,7 +147,7 @@ fun WeatherHomeScreenCard(
                 color = DarkForestInk
               )
               Text(
-                text = weather.conditionTitle,
+                text = LocalizationManager.getWeatherConditionTitle(weather.weatherCode, language),
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.SemiBold,
                 color = DarkForestInk
@@ -221,7 +221,7 @@ fun WeatherHomeScreenCard(
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-              text = weather.islamicWeatherAdvice,
+              text = LocalizationManager.getIslamicWeatherAdvice(weather.weatherCode, weather.temperatureC, language),
               style = MaterialTheme.typography.bodySmall,
               lineHeight = 18.sp,
               color = DarkForestInk.copy(alpha = 0.85f)

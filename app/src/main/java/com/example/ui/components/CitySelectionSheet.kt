@@ -14,6 +14,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import com.example.ui.theme.DarkForestInk
+import com.example.data.localization.LocalizationManager
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -39,6 +43,8 @@ import com.example.data.prayer.PrayerCalculator
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CitySelectionSheet(
+  onAutoDetect: () -> Unit,
+  language: com.example.data.localization.AppLanguage,
   currentCity: CityLocation,
   onCitySelected: (CityLocation) -> Unit,
   onDismiss: () -> Unit
@@ -93,6 +99,17 @@ fun CitySelectionSheet(
 
       Spacer(modifier = Modifier.height(12.dp))
 
+      
+      Button(
+        onClick = { onAutoDetect() },
+        modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = DarkForestInk)
+      ) {
+        Icon(Icons.Default.LocationOn, contentDescription = null)
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(LocalizationManager.getAutoDetectLocationLabel(language))
+      }
+      
       LazyColumn(
         modifier = Modifier
           .fillMaxWidth()
