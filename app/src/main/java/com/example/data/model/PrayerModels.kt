@@ -35,7 +35,18 @@ data class DailyPrayerSchedule(
   val nextPrayer: PrayerTimeItem?,
   val timeUntilNextFormatted: String,
   val progressToNext: Float // 0.0f to 1.0f
-)
+) {
+  val sunrise: LocalTime?
+    get() = items.find { it.prayer == PrayerName.SUNRISE }?.time
+  val maghrib: LocalTime?
+    get() = items.find { it.prayer == PrayerName.MAGHRIB }?.time
+  val dhuhr: LocalTime?
+    get() = items.find { it.prayer == PrayerName.DHUHR }?.time
+  val fajr: LocalTime?
+    get() = items.find { it.prayer == PrayerName.FAJR }?.time
+  val isha: LocalTime?
+    get() = items.find { it.prayer == PrayerName.ISHA }?.time
+}
 
 data class CityLocation(
   val name: String,

@@ -1,6 +1,6 @@
 {
-  "name": "Sakeenah",
-  "description": "A tranquil Islamic companion with exact prayer times, serene weather forecasts, Qibla compass, tactile tasbih, and peaceful daily duas.",
+  "name": "Haasi al-layl",
+  "description": "Spiritual daily companion with sun and moon horizon tracking, prayer times, Bangla & Hijri calendars, and serene weather.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

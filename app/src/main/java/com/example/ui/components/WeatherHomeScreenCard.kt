@@ -1,6 +1,7 @@
 package com.example.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,7 +41,13 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.data.localization.AppLanguage
+import com.example.data.localization.LocalizationManager
 import com.example.data.weather.CurrentWeather
+import com.example.ui.theme.CoolMintGradientBase
+import com.example.ui.theme.DarkForestInk
+import com.example.ui.theme.LinenBorderLight
+import com.example.ui.theme.OutlineDarkBorder
 import com.example.ui.theme.WarmGoldAccent
 
 @Composable
@@ -49,6 +56,7 @@ fun WeatherHomeScreenCard(
   temperatureFormatted: String,
   highFormatted: String,
   lowFormatted: String,
+  language: AppLanguage = AppLanguage.ENGLISH,
   onViewForecastClick: () -> Unit
 ) {
   Card(
@@ -57,9 +65,10 @@ fun WeatherHomeScreenCard(
       .testTag("weather_home_card"),
     shape = RoundedCornerShape(20.dp),
     colors = CardDefaults.cardColors(
-      containerColor = MaterialTheme.colorScheme.surface
+      containerColor = Color.White
     ),
-    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+    border = androidx.compose.foundation.BorderStroke(1.dp, LinenBorderLight)
   ) {
     Column(
       modifier = Modifier
@@ -76,35 +85,37 @@ fun WeatherHomeScreenCard(
             modifier = Modifier
               .size(32.dp)
               .clip(CircleShape)
-              .background(MaterialTheme.colorScheme.tertiaryContainer),
+              .background(CoolMintGradientBase)
+              .border(1.dp, OutlineDarkBorder, CircleShape),
             contentAlignment = Alignment.Center
           ) {
             Icon(
               Icons.Outlined.LightMode,
               contentDescription = null,
               modifier = Modifier.size(18.dp),
-              tint = MaterialTheme.colorScheme.onTertiaryContainer
+              tint = DarkForestInk
             )
           }
           Spacer(modifier = Modifier.width(10.dp))
           Text(
-            text = "Weather & Daily Guidance",
+            text = LocalizationManager.getWeatherCardTitle(language),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurface
+            color = DarkForestInk
           )
         }
 
         Surface(
-          shape = RoundedCornerShape(8.dp),
-          color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f)
+          shape = RoundedCornerShape(20.dp),
+          color = Color.White,
+          border = androidx.compose.foundation.BorderStroke(1.dp, OutlineDarkBorder)
         ) {
           Text(
             text = "LIVE",
             style = MaterialTheme.typography.labelSmall,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSecondaryContainer,
-            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+            color = DarkForestInk,
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
           )
         }
       }
@@ -117,14 +128,8 @@ fun WeatherHomeScreenCard(
           modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .background(
-              Brush.horizontalGradient(
-                colors = listOf(
-                  MaterialTheme.colorScheme.tertiary.copy(alpha = 0.12f),
-                  MaterialTheme.colorScheme.primary.copy(alpha = 0.08f)
-                )
-              )
-            )
+            .background(CoolMintGradientBase.copy(alpha = 0.4f))
+            .border(1.dp, LinenBorderLight, RoundedCornerShape(16.dp))
             .padding(16.dp)
         ) {
           Row(
@@ -137,18 +142,18 @@ fun WeatherHomeScreenCard(
                 text = temperatureFormatted,
                 style = MaterialTheme.typography.displaySmall,
                 fontWeight = FontWeight.ExtraBold,
-                color = MaterialTheme.colorScheme.primary
+                color = DarkForestInk
               )
               Text(
                 text = weather.conditionTitle,
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSurface
+                color = DarkForestInk
               )
               Text(
                 text = "H: $highFormatted  •  L: $lowFormatted",
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = DarkForestInk.copy(alpha = 0.7f)
               )
             }
 
@@ -170,26 +175,26 @@ fun WeatherHomeScreenCard(
                   Icons.Default.WaterDrop,
                   contentDescription = null,
                   modifier = Modifier.size(13.dp),
-                  tint = MaterialTheme.colorScheme.tertiary
+                  tint = DarkForestInk
                 )
                 Spacer(modifier = Modifier.width(3.dp))
                 Text(
                   text = "${weather.humidityPercent}%",
                   style = MaterialTheme.typography.labelSmall,
-                  color = MaterialTheme.colorScheme.onSurfaceVariant
+                  color = DarkForestInk.copy(alpha = 0.8f)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Icon(
                   Icons.Default.Air,
                   contentDescription = null,
                   modifier = Modifier.size(13.dp),
-                  tint = MaterialTheme.colorScheme.onSurfaceVariant
+                  tint = DarkForestInk
                 )
                 Spacer(modifier = Modifier.width(3.dp))
                 Text(
                   text = "%.0f km/h".format(weather.windSpeedKmh),
                   style = MaterialTheme.typography.labelSmall,
-                  color = MaterialTheme.colorScheme.onSurfaceVariant
+                  color = DarkForestInk.copy(alpha = 0.8f)
                 )
               }
             }
@@ -201,22 +206,23 @@ fun WeatherHomeScreenCard(
         // Islamic Weather Advisory Pill
         Surface(
           shape = RoundedCornerShape(12.dp),
-          color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.35f),
+          color = Color.White,
+          border = androidx.compose.foundation.BorderStroke(1.dp, LinenBorderLight),
           modifier = Modifier.fillMaxWidth()
         ) {
           Column(modifier = Modifier.padding(12.dp)) {
             Text(
-              text = "☀️ Daily Practice Advice",
+              text = "☀️ ${LocalizationManager.getDailyAdviceHeader(language)}",
               style = MaterialTheme.typography.labelMedium,
               fontWeight = FontWeight.Bold,
-              color = MaterialTheme.colorScheme.primary
+              color = DarkForestInk
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
               text = weather.islamicWeatherAdvice,
               style = MaterialTheme.typography.bodySmall,
               lineHeight = 18.sp,
-              color = MaterialTheme.colorScheme.onSurface
+              color = DarkForestInk.copy(alpha = 0.85f)
             )
           }
         }
@@ -230,23 +236,29 @@ fun WeatherHomeScreenCard(
             .fillMaxWidth()
             .testTag("btn_view_full_weather"),
           shape = RoundedCornerShape(12.dp),
+          border = androidx.compose.foundation.BorderStroke(1.dp, OutlineDarkBorder),
           colors = ButtonDefaults.outlinedButtonColors(
-            contentColor = MaterialTheme.colorScheme.primary
+            contentColor = DarkForestInk
           )
         ) {
-          Text("View 24h & 7-Day Forecast")
+          Text(
+            text = LocalizationManager.getViewForecastButton(language),
+            fontWeight = FontWeight.SemiBold,
+            color = DarkForestInk
+          )
           Spacer(modifier = Modifier.width(6.dp))
           Icon(
             Icons.AutoMirrored.Filled.ArrowForward,
             contentDescription = null,
-            modifier = Modifier.size(16.dp)
+            modifier = Modifier.size(16.dp),
+            tint = DarkForestInk
           )
         }
       } else {
         Text(
           text = "Loading weather information...",
           style = MaterialTheme.typography.bodyMedium,
-          color = MaterialTheme.colorScheme.onSurfaceVariant
+          color = DarkForestInk.copy(alpha = 0.7f)
         )
       }
     }

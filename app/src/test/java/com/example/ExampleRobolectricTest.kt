@@ -16,6 +16,14 @@ class ExampleRobolectricTest {
   fun `read string from context`() {
     val context = ApplicationProvider.getApplicationContext<Context>()
     val appName = context.getString(R.string.app_name)
-    assertEquals("Sakeenah", appName)
+    assertEquals("Haasi al-layl", appName)
+  }
+
+  @Test
+  fun `verify bangla date calculation`() {
+    val date = java.time.LocalDate.of(2026, 9, 11)
+    val banglaDate = com.example.data.calendar.BanglaDateHelper.getBanglaDate(date)
+    assertEquals(1433, banglaDate.year)
+    assertEquals("ভাদ্র", banglaDate.monthNameBn)
   }
 }

@@ -45,14 +45,14 @@ import com.example.ui.screens.HomeScreen
 import com.example.ui.screens.QiblaScreen
 import com.example.ui.screens.TasbihScreen
 import com.example.ui.screens.WeatherScreen
-import com.example.ui.theme.SakeenahTheme
+import com.example.ui.theme.HaasiTheme
 
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     enableEdgeToEdge()
     setContent {
-      SakeenahTheme {
+      HaasiTheme {
         MainAppContent()
       }
     }
@@ -80,6 +80,7 @@ fun MainAppContent(viewModel: MuslimDayViewModel = viewModel()) {
   val tasbihList by viewModel.tasbihList.collectAsStateWithLifecycle()
   val selectedTasbih by viewModel.selectedTasbih.collectAsStateWithLifecycle()
   val bookmarkedDuaIds by viewModel.bookmarkedDuaIds.collectAsStateWithLifecycle()
+  val currentLanguage by viewModel.currentLanguage.collectAsStateWithLifecycle()
 
   var showCitySheet by remember { mutableStateOf(false) }
 
@@ -136,8 +137,11 @@ fun MainAppContent(viewModel: MuslimDayViewModel = viewModel()) {
           weatherState = weatherState,
           currentCity = currentCity,
           formatTemperature = { viewModel.formatTemperature(it) },
+          language = currentLanguage,
           onLocationClick = { showCitySheet = true },
           onNavigateToWeather = { viewModel.setTab(1) },
+          onLanguageSelect = { lang -> viewModel.setLanguage(lang) },
+          onResetLanguageToLocation = { viewModel.resetLanguageToLocation() },
           onTogglePrayer = { prayerKey -> viewModel.togglePrayerCheck(prayerKey) }
         )
 

@@ -1,85 +1,64 @@
 package com.example.ui.theme
 
-import android.os.Build
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.Color
 
-private val DarkColorScheme =
-  darkColorScheme(
-    primary = ForestSlatePrimaryDark,
-    onPrimary = ForestSlateOnPrimaryDark,
-    primaryContainer = ForestSlateContainerDark,
-    onPrimaryContainer = ForestSlateOnContainerDark,
-    secondary = WarmSandSecondaryDark,
-    onSecondary = WarmSandOnSecondaryDark,
-    secondaryContainer = WarmSandContainerDark,
-    onSecondaryContainer = WarmSandOnContainerDark,
-    tertiary = SageTertiaryDark,
-    onTertiary = SageOnTertiaryDark,
-    tertiaryContainer = SageContainerDark,
-    onTertiaryContainer = SageOnContainerDark,
-    background = MidnightPineBackgroundDark,
-    onBackground = OnMidnightPineBackgroundDark,
-    surface = DarkForestSurfaceDark,
-    onSurface = OnDarkForestSurfaceDark,
-    surfaceVariant = DarkForestVariantDark,
-    onSurfaceVariant = OnDarkForestVariantDark,
-    outline = DarkForestBorderDark
-  )
-
-private val LightColorScheme =
+// Haasi al-layl signature brand color scheme
+// Main background: #F5EEDD (Warm light beige)
+// Gradient base: #D8EAE3 (Cool mint-green tint)
+// Text & Borders: #1C2A24 (Deep forest charcoal) & #FFFFFF
+private val HaasiBrandColorScheme =
   lightColorScheme(
-    primary = ForestSlatePrimaryLight,
-    onPrimary = ForestSlateOnPrimaryLight,
-    primaryContainer = ForestSlateContainerLight,
-    onPrimaryContainer = ForestSlateOnContainerLight,
+    primary = DarkForestInk,
+    onPrimary = Color.White,
+    primaryContainer = MintBadgeContainer,
+    onPrimaryContainer = DarkForestInk,
     secondary = WarmSandSecondaryLight,
-    onSecondary = WarmSandOnSecondaryLight,
+    onSecondary = Color.White,
     secondaryContainer = WarmSandContainerLight,
-    onSecondaryContainer = WarmSandOnContainerLight,
+    onSecondaryContainer = DarkForestInk,
     tertiary = SageTertiaryLight,
-    onTertiary = SageOnTertiaryLight,
-    tertiaryContainer = SageContainerLight,
-    onTertiaryContainer = SageOnContainerLight,
-    background = LinenBackgroundLight,
-    onBackground = OnLinenBackgroundLight,
-    surface = EggshellSurfaceLight,
-    onSurface = OnEggshellSurfaceLight,
-    surfaceVariant = ParchmentSurfaceVariantLight,
-    onSurfaceVariant = OnParchmentSurfaceVariantLight,
-    outline = LinenBorderLight
+    onTertiary = Color.White,
+    tertiaryContainer = MintBadgeContainer,
+    onTertiaryContainer = DarkForestInk,
+    background = WarmBeigeBackground,
+    onBackground = DarkForestInk,
+    surface = PureWhiteSurface,
+    onSurface = DarkForestInk,
+    surfaceVariant = SoftBeigeSurface,
+    onSurfaceVariant = DarkForestInk,
+    outline = OutlineDarkBorder
   )
 
 @Composable
-fun SakeenahTheme(
-  darkTheme: Boolean = isSystemInDarkTheme(),
-  dynamicColor: Boolean = false, // Preserve bespoke organic brand palette by default
-  content: @Composable () -> Unit,
-) {
-  val colorScheme =
-    when {
-      dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-        val context = LocalContext.current
-        if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-      }
-      darkTheme -> DarkColorScheme
-      else -> LightColorScheme
-    }
-
-  MaterialTheme(colorScheme = colorScheme, typography = Typography, content = content)
-}
-
-// Backward compatibility alias
-@Composable
-fun MuslimDayTheme(
-  darkTheme: Boolean = isSystemInDarkTheme(),
+fun HaasiTheme(
+  darkTheme: Boolean = false, // Strictly preserve signature warm beige brand palette
   dynamicColor: Boolean = false,
   content: @Composable () -> Unit,
-) = SakeenahTheme(darkTheme = darkTheme, dynamicColor = dynamicColor, content = content)
+) {
+  MaterialTheme(
+    colorScheme = HaasiBrandColorScheme,
+    typography = Typography,
+    content = content
+  )
+}
+
+// Aliases for compatibility
+@Composable
+fun SakeenahTheme(
+  darkTheme: Boolean = false,
+  dynamicColor: Boolean = false,
+  content: @Composable () -> Unit,
+) = HaasiTheme(darkTheme = darkTheme, dynamicColor = dynamicColor, content = content)
+
+@Composable
+fun MuslimDayTheme(
+  darkTheme: Boolean = false,
+  dynamicColor: Boolean = false,
+  content: @Composable () -> Unit,
+) = HaasiTheme(darkTheme = darkTheme, dynamicColor = dynamicColor, content = content)
+
+
 

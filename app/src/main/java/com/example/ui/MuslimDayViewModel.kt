@@ -54,6 +54,21 @@ class MuslimDayViewModel(application: Application) : AndroidViewModel(applicatio
   private val _selectedCity = MutableStateFlow(PrayerCalculator.PRESET_CITIES[0]) // Default to Makkah
   val selectedCity: StateFlow<CityLocation> = _selectedCity.asStateFlow()
 
+  // App Language (Auto location-based by default, can be overridden)
+  private val _manualLanguage = MutableStateFlow<com.example.data.localization.AppLanguage?>(null)
+  val manualLanguage: StateFlow<com.example.data.localization.AppLanguage?> = _manualLanguage.asStateFlow()
+
+  val currentLanguage: StateFlow<com.example.data.localization.AppLanguage> = combine(
+    _selectedCity,
+    _manualLanguage
+  ) { city, manual ->
+    manual ?: com.example.data.localization.LocalizationManager.detectLanguageForCountry(city.country)
+  }.stateIn(
+    viewModelScope,
+    SharingStarted.WhileSubscribed(5000),
+    com.example.data.localization.LocalizationManager.detectLanguageForCountry(PrayerCalculator.PRESET_CITIES[0].country)
+  )
+
   // Calculation Settings
   val calculationMethod = MutableStateFlow(CalculationMethod.MUSLIM_WORLD_LEAGUE)
   val juristicMethod = MutableStateFlow(JuristicMethod.STANDARD_SHAFI_MALIKI_HANBALI)
@@ -172,6 +187,14 @@ class MuslimDayViewModel(application: Application) : AndroidViewModel(applicatio
   fun selectCity(city: CityLocation) {
     _selectedCity.value = city
     refreshWeather()
+  }
+
+  fun setLanguage(language: com.example.data.localization.AppLanguage?) {
+    _manualLanguage.value = language
+  }
+
+  fun resetLanguageToLocation() {
+    _manualLanguage.value = null
   }
 
   fun toggleTemperatureUnit() {

@@ -40,6 +40,24 @@ object HijriDateHelper {
     }
   }
 
+  fun getHijriDayOfMonth(date: LocalDate = LocalDate.now()): Int {
+    return try {
+      val hijrahDate = HijrahDate.from(date)
+      hijrahDate.get(java.time.temporal.ChronoField.DAY_OF_MONTH)
+    } catch (_: Exception) {
+      val epochDay = date.toEpochDay()
+      val l = epochDay - 1948439 + 2400001
+      val n = ((l - 1) / 10631).toInt()
+      val l2 = l - 10631 * n + 354
+      val j = ((10985 - l2) / 5316).toInt() * ((50 * l2) / 17719).toInt() +
+        (l2 / 5670).toInt() * ((43 * l2) / 15238).toInt()
+      val l3 = l2 - ((30 - j) / 15).toInt() * ((17719 * j) / 50).toInt() -
+        (j / 16).toInt() * ((15238 * j) / 43).toInt() + 29
+      val m = ((24 * l3) / 709).toInt()
+      (l3 - ((709 * m) / 24)).toInt().coerceIn(1, 30)
+    }
+  }
+
   fun getGregorianFormatted(date: LocalDate = LocalDate.now()): String {
     return date.format(DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy", Locale.getDefault()))
   }

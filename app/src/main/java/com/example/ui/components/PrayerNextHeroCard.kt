@@ -2,6 +2,7 @@ package com.example.ui.components
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,6 +18,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material.icons.outlined.Cloud
@@ -39,9 +41,18 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.data.calendar.BanglaDateHelper
+import com.example.data.localization.AppLanguage
+import com.example.data.localization.LocalizationManager
 import com.example.data.model.DailyPrayerSchedule
 import com.example.data.prayer.HijriDateHelper
 import com.example.data.weather.CurrentWeather
+import com.example.ui.theme.CoolMintGradientBase
+import com.example.ui.theme.DarkForestInk
+import com.example.ui.theme.LinenBorderLight
+import com.example.ui.theme.MintBadgeContainer
+import com.example.ui.theme.OutlineDarkBorder
+import com.example.ui.theme.WarmBeigeBackground
 import com.example.ui.theme.WarmGoldAccent
 
 @Composable
@@ -49,6 +60,7 @@ fun PrayerNextHeroCard(
   schedule: DailyPrayerSchedule,
   currentWeather: CurrentWeather?,
   temperatureFormatted: String,
+  language: AppLanguage = AppLanguage.ENGLISH,
   onLocationClick: () -> Unit,
   onWeatherClick: () -> Unit
 ) {
@@ -58,12 +70,16 @@ fun PrayerNextHeroCard(
     label = "prayer_progress"
   )
 
+  val isBanglaRegion = language == AppLanguage.BENGALI || schedule.country.equals("Bangladesh", ignoreCase = true)
+  val banglaDate = if (isBanglaRegion) BanglaDateHelper.getBanglaDate(schedule.date) else null
+
   Card(
     modifier = Modifier
       .fillMaxWidth()
       .testTag("hero_prayer_card"),
-    shape = RoundedCornerShape(24.dp),
-    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+    shape = RoundedCornerShape(22.dp),
+    elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+    border = androidx.compose.foundation.BorderStroke(1.dp, LinenBorderLight)
   ) {
     Box(
       modifier = Modifier
@@ -71,17 +87,17 @@ fun PrayerNextHeroCard(
         .background(
           brush = Brush.verticalGradient(
             colors = listOf(
-              Color(0xFF22382C),
-              Color(0xFF1B2E24),
-              Color(0xFF13231A)
+              WarmBeigeBackground,
+              Color(0xFFEFE7D5),
+              CoolMintGradientBase
             )
           )
         )
-        .padding(20.dp)
+        .padding(18.dp)
     ) {
       Column(modifier = Modifier.fillMaxWidth()) {
 
-        // Top Row: Location chip & Weather pill
+        // Top Row: Location chip & Weather pill with crisp white/dark outlines
         Row(
           modifier = Modifier.fillMaxWidth(),
           horizontalArrangement = Arrangement.SpaceBetween,
@@ -90,28 +106,29 @@ fun PrayerNextHeroCard(
           // Location Selector Chip
           Surface(
             modifier = Modifier
-              .clip(RoundedCornerShape(12.dp))
+              .clip(RoundedCornerShape(20.dp))
               .clickable { onLocationClick() }
               .testTag("location_chip"),
-            color = Color(0x2EFFFFFF),
-            contentColor = Color.White
+            shape = RoundedCornerShape(20.dp),
+            color = Color.White,
+            border = androidx.compose.foundation.BorderStroke(1.dp, OutlineDarkBorder)
           ) {
             Row(
-              modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+              modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
               verticalAlignment = Alignment.CenterVertically
             ) {
               Icon(
                 Icons.Default.LocationOn,
                 contentDescription = null,
-                modifier = Modifier.size(16.dp),
-                tint = WarmGoldAccent
+                modifier = Modifier.size(15.dp),
+                tint = DarkForestInk
               )
-              Spacer(modifier = Modifier.width(4.dp))
+              Spacer(modifier = Modifier.width(6.dp))
               Text(
                 text = "${schedule.city}, ${schedule.country}",
                 style = MaterialTheme.typography.labelMedium,
                 fontWeight = FontWeight.SemiBold,
-                color = Color.White
+                color = DarkForestInk
               )
             }
           }
@@ -120,14 +137,15 @@ fun PrayerNextHeroCard(
           if (currentWeather != null) {
             Surface(
               modifier = Modifier
-                .clip(RoundedCornerShape(12.dp))
+                .clip(RoundedCornerShape(20.dp))
                 .clickable { onWeatherClick() }
                 .testTag("weather_pill"),
-              color = Color(0x2EFFFFFF),
-              contentColor = Color.White
+              shape = RoundedCornerShape(20.dp),
+              color = Color.White,
+              border = androidx.compose.foundation.BorderStroke(1.dp, OutlineDarkBorder)
             ) {
               Row(
-                modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                 verticalAlignment = Alignment.CenterVertically
               ) {
                 val weatherIcon = when {
@@ -138,7 +156,7 @@ fun PrayerNextHeroCard(
                 Icon(
                   weatherIcon,
                   contentDescription = null,
-                  modifier = Modifier.size(16.dp),
+                  modifier = Modifier.size(15.dp),
                   tint = WarmGoldAccent
                 )
                 Spacer(modifier = Modifier.width(6.dp))
@@ -146,27 +164,88 @@ fun PrayerNextHeroCard(
                   text = temperatureFormatted,
                   style = MaterialTheme.typography.labelMedium,
                   fontWeight = FontWeight.Bold,
-                  color = Color.White
+                  color = DarkForestInk
                 )
               }
             }
           }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(14.dp))
 
-        // Date Display: Hijri & Gregorian
-        Text(
-          text = HijriDateHelper.getTodayHijriFormatted(schedule.date),
-          style = MaterialTheme.typography.titleSmall,
-          color = WarmGoldAccent,
-          fontWeight = FontWeight.SemiBold
-        )
-        Text(
-          text = HijriDateHelper.getGregorianFormatted(schedule.date),
-          style = MaterialTheme.typography.bodySmall,
-          color = Color.White.copy(alpha = 0.8f)
-        )
+        // Calendar Section: Hijri, Gregorian, and conditional Bangla
+        Column(
+          modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(14.dp))
+            .background(Color.White.copy(alpha = 0.85f))
+            .border(1.dp, LinenBorderLight, RoundedCornerShape(14.dp))
+            .padding(horizontal = 12.dp, vertical = 10.dp)
+        ) {
+          Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+          ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+              Icon(
+                Icons.Default.CalendarMonth,
+                contentDescription = null,
+                modifier = Modifier.size(14.dp),
+                tint = DarkForestInk
+              )
+              Spacer(modifier = Modifier.width(6.dp))
+              Text(
+                text = HijriDateHelper.getTodayHijriFormatted(schedule.date),
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.Bold,
+                color = DarkForestInk
+              )
+            }
+
+            // Bangla Calendar Badge (Shown only in Bangladesh / Bangla language)
+            if (isBanglaRegion && banglaDate != null) {
+              Surface(
+                shape = RoundedCornerShape(6.dp),
+                color = MintBadgeContainer,
+                border = androidx.compose.foundation.BorderStroke(1.dp, OutlineDarkBorder.copy(alpha = 0.35f))
+              ) {
+                Text(
+                  text = "${BanglaDateHelper.toBanglaDigits(banglaDate.day)} ${banglaDate.monthNameBn}",
+                  style = MaterialTheme.typography.labelSmall,
+                  fontWeight = FontWeight.Bold,
+                  color = DarkForestInk,
+                  modifier = Modifier.padding(horizontal = 7.dp, vertical = 2.dp)
+                )
+              }
+            }
+          }
+
+          Spacer(modifier = Modifier.height(4.dp))
+
+          Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+          ) {
+            Text(
+              text = HijriDateHelper.getGregorianFormatted(schedule.date),
+              style = MaterialTheme.typography.bodySmall,
+              fontSize = 11.sp,
+              color = DarkForestInk.copy(alpha = 0.7f)
+            )
+
+            if (isBanglaRegion && banglaDate != null) {
+              Text(
+                text = "${BanglaDateHelper.toBanglaDigits(banglaDate.year)} বঙ্গাব্দ • ${banglaDate.seasonBn}",
+                style = MaterialTheme.typography.bodySmall,
+                fontSize = 11.sp,
+                color = DarkForestInk.copy(alpha = 0.85f),
+                fontWeight = FontWeight.Medium
+              )
+            }
+          }
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -178,26 +257,32 @@ fun PrayerNextHeroCard(
         ) {
           Column {
             Text(
-              text = "NEXT PRAYER",
+              text = LocalizationManager.getNextPrayerLabel(language),
               style = MaterialTheme.typography.labelSmall,
               letterSpacing = 1.5.sp,
-              color = Color.White.copy(alpha = 0.7f),
+              color = DarkForestInk.copy(alpha = 0.65f),
               fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.height(2.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
+              val prayerNameDisplay = next?.let {
+                LocalizationManager.getPrayerDisplayName(it.prayer, language)
+              } ?: "Prayer"
               Text(
-                text = next?.prayer?.displayName ?: "Prayer",
+                text = prayerNameDisplay,
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.ExtraBold,
-                color = Color.White
+                color = DarkForestInk
               )
-              Spacer(modifier = Modifier.width(8.dp))
-              Text(
-                text = next?.prayer?.arabicName ?: "",
-                style = MaterialTheme.typography.titleLarge,
-                color = WarmGoldAccent
-              )
+              if (language != AppLanguage.ARABIC) {
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                  text = next?.prayer?.arabicName ?: "",
+                  style = MaterialTheme.typography.titleLarge,
+                  color = WarmGoldAccent,
+                  fontWeight = FontWeight.Bold
+                )
+              }
             }
           }
 
@@ -206,7 +291,7 @@ fun PrayerNextHeroCard(
               text = next?.formattedTime ?: "--:--",
               style = MaterialTheme.typography.headlineMedium,
               fontWeight = FontWeight.Bold,
-              color = Color.White
+              color = DarkForestInk
             )
             Row(
               verticalAlignment = Alignment.CenterVertically,
@@ -216,32 +301,33 @@ fun PrayerNextHeroCard(
                 Icons.Default.AccessTime,
                 contentDescription = null,
                 modifier = Modifier.size(14.dp),
-                tint = WarmGoldAccent
+                tint = DarkForestInk
               )
               Spacer(modifier = Modifier.width(4.dp))
               Text(
                 text = "-${schedule.timeUntilNextFormatted}",
                 style = MaterialTheme.typography.labelMedium,
-                color = WarmGoldAccent,
-                fontWeight = FontWeight.SemiBold
+                color = DarkForestInk,
+                fontWeight = FontWeight.Bold
               )
             }
           }
         }
 
-        Spacer(modifier = Modifier.height(14.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         // Countdown progress bar
         LinearProgressIndicator(
           progress = { animatedProgress },
           modifier = Modifier
             .fillMaxWidth()
-            .height(6.dp)
+            .height(5.dp)
             .clip(CircleShape),
-          color = WarmGoldAccent,
-          trackColor = Color(0x33FFFFFF)
+          color = DarkForestInk,
+          trackColor = CoolMintGradientBase
         )
       }
     }
   }
 }
+

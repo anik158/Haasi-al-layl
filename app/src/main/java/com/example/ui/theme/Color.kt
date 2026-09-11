@@ -3,67 +3,86 @@ package com.example.ui.theme
 import androidx.compose.ui.graphics.Color
 
 // =============================================================================
-// Sakeenah Color Palette
-// Inspired by the warm organic aesthetic of ahsanulhouqe.com:
-// Linen/Oatmeal canvas, Deep Forest Pine, Warm Amber Glow, and Meadow Sage
+// Haasi al-layl Color Palette
+// Inspired by ahsanulhouqe.com:
+// - Main background: #F5EEDD (Warm light beige)
+// - Gradient base: #D8EAE3 (Cool mint-green tint)
+// - Accents & buttons: #FFFFFF / #1C2A24 with crisp outlines
 // =============================================================================
 
-// Light Palette (Warm Paper / Linen Canvas & Deep Forest Pine)
-val ForestSlatePrimaryLight = Color(0xFF22382C)
-val ForestSlateOnPrimaryLight = Color(0xFFF9F7F1)
-val ForestSlateContainerLight = Color(0xFFDEE9E1)
-val ForestSlateOnContainerLight = Color(0xFF0F2218)
+// Exact requested colors
+val WarmBeigeBackground = Color(0xFFF5EEDD) // Main background: Warm light beige
+val CoolMintGradientBase = Color(0xFFD8EAE3) // Gradient base: Cool mint-green tint
+val DarkForestInk = Color(0xFF1C2A24) // Deep forest charcoal text & contrast
+val SoftBeigeSurface = Color(0xFFFCF8F0) // Clean eggshell card surface
+val PureWhiteSurface = Color(0xFFFFFFFF)
+val OutlineDarkBorder = Color(0xFF22362C) // Crisp outline for pill buttons & cards
+val OutlineSubtleBorder = Color(0xFFD7CFBE) // Subtle hairline divider
+val MintBadgeContainer = Color(0xFFD8EAE3) // Soft mint container
+val MintBadgeOnContainer = Color(0xFF132A20)
+
+// Light Theme Palette
+val ForestSlatePrimaryLight = Color(0xFF1C2A24)
+val ForestSlateOnPrimaryLight = Color(0xFFFFFFFF)
+val ForestSlateContainerLight = Color(0xFFD8EAE3)
+val ForestSlateOnContainerLight = Color(0xFF132A20)
 
 val WarmSandSecondaryLight = Color(0xFF9E752D)
 val WarmSandOnSecondaryLight = Color(0xFFFFFFFF)
-val WarmSandContainerLight = Color(0xFFF7EBD2)
+val WarmSandContainerLight = Color(0xFFF3E7CA)
 val WarmSandOnContainerLight = Color(0xFF332300)
 
-val SageTertiaryLight = Color(0xFF466955)
+val SageTertiaryLight = Color(0xFF3B5D4B)
 val SageOnTertiaryLight = Color(0xFFFFFFFF)
-val SageContainerLight = Color(0xFFCEE0D4)
-val SageOnContainerLight = Color(0xFF092215)
+val SageContainerLight = Color(0xFFD8EAE3)
+val SageOnContainerLight = Color(0xFF0F261C)
 
-val LinenBackgroundLight = Color(0xFFFBF8F1)
-val OnLinenBackgroundLight = Color(0xFF1D2C24)
-val EggshellSurfaceLight = Color(0xFFFFFDF9)
-val OnEggshellSurfaceLight = Color(0xFF1D2C24)
-val ParchmentSurfaceVariantLight = Color(0xFFEFE7D7)
-val OnParchmentSurfaceVariantLight = Color(0xFF56665D)
-val LinenBorderLight = Color(0xFFDDD3C1)
+val LinenBackgroundLight = WarmBeigeBackground
+val OnLinenBackgroundLight = DarkForestInk
+val EggshellSurfaceLight = SoftBeigeSurface
+val OnEggshellSurfaceLight = DarkForestInk
+val ParchmentSurfaceVariantLight = Color(0xFFEFE6D2)
+val OnParchmentSurfaceVariantLight = Color(0xFF516157)
+val LinenBorderLight = Color(0xFFD8CFBF)
 
-// Dark Palette (Tranquil Midnight Forest & Starlit Sand)
-val ForestSlatePrimaryDark = Color(0xFF86B69C)
-val ForestSlateOnPrimaryDark = Color(0xFF052115)
-val ForestSlateContainerDark = Color(0xFF193728)
-val ForestSlateOnContainerDark = Color(0xFFA1D3B8)
+// Dark Theme Palette (Night Sky & Starlit Sand)
+val ForestSlatePrimaryDark = Color(0xFF9ED1BA)
+val ForestSlateOnPrimaryDark = Color(0xFF071F15)
+val ForestSlateContainerDark = Color(0xFF1C362A)
+val ForestSlateOnContainerDark = Color(0xFFBCE7D2)
 
-val WarmSandSecondaryDark = Color(0xFFE2BD70)
+val WarmSandSecondaryDark = Color(0xFFE4C37D)
 val WarmSandOnSecondaryDark = Color(0xFF3D2C00)
 val WarmSandContainerDark = Color(0xFF574106)
 val WarmSandOnContainerDark = Color(0xFFFFE09F)
 
-val SageTertiaryDark = Color(0xFF98C7AC)
-val SageOnTertiaryDark = Color(0xFF0D3520)
-val SageContainerDark = Color(0xFF274733)
-val SageOnContainerDark = Color(0xFFB4E3C8)
+val SageTertiaryDark = Color(0xFFA6D7BE)
+val SageOnTertiaryDark = Color(0xFF0A2B1A)
+val SageContainerDark = Color(0xFF264736)
+val SageOnContainerDark = Color(0xFFC0EDD6)
 
-val MidnightPineBackgroundDark = Color(0xFF101713)
-val OnMidnightPineBackgroundDark = Color(0xFFE3E8E4)
-val DarkForestSurfaceDark = Color(0xFF16201B)
-val OnDarkForestSurfaceDark = Color(0xFFE3E8E4)
-val DarkForestVariantDark = Color(0xFF222F27)
-val OnDarkForestVariantDark = Color(0xFFA6B5AC)
-val DarkForestBorderDark = Color(0xFF2F3E35)
+val MidnightPineBackgroundDark = Color(0xFF0E1713)
+val OnMidnightPineBackgroundDark = Color(0xFFE4ECE6)
+val DarkForestSurfaceDark = Color(0xFF15221C)
+val OnDarkForestSurfaceDark = Color(0xFFE4ECE6)
+val DarkForestVariantDark = Color(0xFF203028)
+val OnDarkForestVariantDark = Color(0xFFA7B9AE)
+val DarkForestBorderDark = Color(0xFF2C4035)
 
-// Decorative Accents
+// Celestial Horizon & Decorative Accents
+val SunGoldenGlow = Color(0xFFF2AF38)
+val SunRaysAura = Color(0xFFFFD97D)
+val MoonLuminescent = Color(0xFFE7EEF5)
+val MoonCrater = Color(0xFFBAC7D5)
+val TwilightIndigo = Color(0xFF2E3E4E)
 val WarmGoldAccent = Color(0xFFD4A853)
-val DeepPine = Color(0xFF1A2D23)
-val BotanicalSage = Color(0xFF5C836C)
-val SoftMorningSun = Color(0xFFF6ECCF)
+val DeepPine = Color(0xFF1C2A24)
+val BotanicalSage = Color(0xFF4A725D)
+val SoftMorningSun = Color(0xFFF8EED6)
 
-// Backwards compatibility aliases mapped to new aesthetic
+// Backwards compatibility aliases
 val GoldAccent = WarmGoldAccent
 val MosqueEmerald = DeepPine
 val SoftEmerald = BotanicalSage
+
 

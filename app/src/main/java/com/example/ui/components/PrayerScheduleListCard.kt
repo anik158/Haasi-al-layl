@@ -1,6 +1,7 @@
 package com.example.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -41,24 +42,33 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.data.localization.AppLanguage
+import com.example.data.localization.LocalizationManager
 import com.example.data.model.PrayerName
 import com.example.data.model.PrayerTimeItem
+import com.example.ui.theme.CoolMintGradientBase
+import com.example.ui.theme.DarkForestInk
 import com.example.ui.theme.GoldAccent
+import com.example.ui.theme.LinenBorderLight
+import com.example.ui.theme.OutlineDarkBorder
 
 @Composable
 fun PrayerScheduleListCard(
   items: List<PrayerTimeItem>,
+  modifier: Modifier = Modifier,
+  language: AppLanguage = AppLanguage.ENGLISH,
   onTogglePrayer: (String) -> Unit
 ) {
   Card(
-    modifier = Modifier
+    modifier = modifier
       .fillMaxWidth()
       .testTag("prayer_schedule_card"),
     shape = RoundedCornerShape(20.dp),
     colors = CardDefaults.cardColors(
-      containerColor = MaterialTheme.colorScheme.surface
+      containerColor = Color.White
     ),
-    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+    border = androidx.compose.foundation.BorderStroke(1.dp, LinenBorderLight)
   ) {
     Column(
       modifier = Modifier
@@ -72,15 +82,15 @@ fun PrayerScheduleListCard(
       ) {
         Column {
           Text(
-            text = "Today's Prayers",
+            text = LocalizationManager.getTodaysPrayersTitle(language),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurface
+            color = DarkForestInk
           )
           Text(
-            text = "Tap circle to mark as prayed",
+            text = LocalizationManager.getTapCircleHint(language),
             style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = DarkForestInk.copy(alpha = 0.7f)
           )
         }
       }
@@ -90,11 +100,12 @@ fun PrayerScheduleListCard(
       items.forEachIndexed { index, item ->
         PrayerRowItem(
           item = item,
+          language = language,
           onToggleCheck = { onTogglePrayer(item.prayer.name) }
         )
         if (index < items.size - 1) {
           HorizontalDivider(
-            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+            color = LinenBorderLight,
             thickness = 0.8.dp,
             modifier = Modifier.padding(horizontal = 4.dp)
           )
@@ -107,6 +118,7 @@ fun PrayerScheduleListCard(
 @Composable
 private fun PrayerRowItem(
   item: PrayerTimeItem,
+  language: AppLanguage,
   onToggleCheck: () -> Unit
 ) {
   val isMainPrayer = item.prayer in listOf(
@@ -118,8 +130,8 @@ private fun PrayerRowItem(
   )
 
   val backgroundColor = when {
-    item.isCurrent -> MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.35f)
-    item.isNext -> GoldAccent.copy(alpha = 0.12f)
+    item.isCurrent -> CoolMintGradientBase.copy(alpha = 0.5f)
+    item.isNext -> GoldAccent.copy(alpha = 0.15f)
     else -> Color.Transparent
   }
 
@@ -139,16 +151,17 @@ private fun PrayerRowItem(
         .size(36.dp)
         .clip(CircleShape)
         .background(
-          if (item.isCurrent || item.isNext) MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
-          else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-        ),
+          if (item.isCurrent || item.isNext) CoolMintGradientBase
+          else LinenBorderLight.copy(alpha = 0.6f)
+        )
+        .border(0.5.dp, OutlineDarkBorder, CircleShape),
       contentAlignment = Alignment.Center
     ) {
       Icon(
         imageVector = icon,
         contentDescription = null,
         modifier = Modifier.size(18.dp),
-        tint = if (item.isCurrent || item.isNext) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+        tint = DarkForestInk
       )
     }
 
@@ -158,22 +171,22 @@ private fun PrayerRowItem(
     Column(modifier = Modifier.weight(1f)) {
       Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
-          text = item.prayer.displayName,
+          text = LocalizationManager.getPrayerDisplayName(item.prayer, language),
           style = MaterialTheme.typography.bodyLarge,
           fontWeight = if (item.isNext || item.isCurrent) FontWeight.Bold else FontWeight.Medium,
-          color = MaterialTheme.colorScheme.onSurface
+          color = DarkForestInk
         )
         if (item.isCurrent) {
           Spacer(modifier = Modifier.width(6.dp))
           Surface(
             shape = RoundedCornerShape(6.dp),
-            color = MaterialTheme.colorScheme.primary,
+            color = DarkForestInk,
             modifier = Modifier.padding(2.dp)
           ) {
             Text(
               text = "NOW",
               style = MaterialTheme.typography.labelSmall,
-              color = MaterialTheme.colorScheme.onPrimary,
+              color = Color.White,
               modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
               fontWeight = FontWeight.Bold
             )
@@ -188,7 +201,7 @@ private fun PrayerRowItem(
             Text(
               text = "NEXT",
               style = MaterialTheme.typography.labelSmall,
-              color = Color.Black,
+              color = DarkForestInk,
               modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
               fontWeight = FontWeight.Bold
             )
@@ -198,7 +211,7 @@ private fun PrayerRowItem(
       Text(
         text = item.prayer.arabicName,
         style = MaterialTheme.typography.bodySmall,
-        color = MaterialTheme.colorScheme.onSurfaceVariant
+        color = DarkForestInk.copy(alpha = 0.65f)
       )
     }
 
@@ -207,7 +220,7 @@ private fun PrayerRowItem(
       text = item.formattedTime,
       style = MaterialTheme.typography.bodyLarge,
       fontWeight = if (item.isCurrent || item.isNext) FontWeight.Bold else FontWeight.SemiBold,
-      color = if (item.isCurrent) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+      color = DarkForestInk
     )
 
     Spacer(modifier = Modifier.width(12.dp))
@@ -223,7 +236,7 @@ private fun PrayerRowItem(
         Icon(
           imageVector = if (item.isCompleted) Icons.Filled.CheckCircle else Icons.Filled.RadioButtonUnchecked,
           contentDescription = "Mark ${item.prayer.displayName} as completed",
-          tint = if (item.isCompleted) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
+          tint = if (item.isCompleted) DarkForestInk else DarkForestInk.copy(alpha = 0.4f)
         )
       }
     } else {

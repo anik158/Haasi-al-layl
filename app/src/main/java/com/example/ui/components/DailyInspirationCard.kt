@@ -1,6 +1,7 @@
 package com.example.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,25 +26,37 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.data.dua.DailyInspiration
+import com.example.data.localization.AppLanguage
+import com.example.data.localization.LocalizationManager
+import com.example.ui.theme.CoolMintGradientBase
+import com.example.ui.theme.DarkForestInk
 import com.example.ui.theme.GoldAccent
+import com.example.ui.theme.LinenBorderLight
+import com.example.ui.theme.OutlineDarkBorder
 
 @Composable
-fun DailyInspirationCard(inspiration: DailyInspiration) {
+fun DailyInspirationCard(
+  inspiration: DailyInspiration,
+  modifier: Modifier = Modifier,
+  language: AppLanguage = AppLanguage.ENGLISH
+) {
   Card(
-    modifier = Modifier
+    modifier = modifier
       .fillMaxWidth()
       .testTag("inspiration_card"),
     shape = RoundedCornerShape(20.dp),
     colors = CardDefaults.cardColors(
-      containerColor = MaterialTheme.colorScheme.surface
+      containerColor = Color.White
     ),
-    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+    border = androidx.compose.foundation.BorderStroke(1.dp, LinenBorderLight)
   ) {
     Column(
       modifier = Modifier
@@ -56,22 +69,23 @@ fun DailyInspirationCard(inspiration: DailyInspiration) {
           modifier = Modifier
             .size(32.dp)
             .clip(CircleShape)
-            .background(GoldAccent.copy(alpha = 0.2f)),
+            .background(GoldAccent.copy(alpha = 0.25f))
+            .border(0.5.dp, OutlineDarkBorder, CircleShape),
           contentAlignment = Alignment.Center
         ) {
           Icon(
             Icons.Outlined.AutoStories,
             contentDescription = null,
             modifier = Modifier.size(18.dp),
-            tint = MaterialTheme.colorScheme.secondary
+            tint = DarkForestInk
           )
         }
         Spacer(modifier = Modifier.width(10.dp))
         Text(
-          text = "Ayah of the Day",
+          text = LocalizationManager.getAyahOfTheDayTitle(language),
           style = MaterialTheme.typography.titleMedium,
           fontWeight = FontWeight.Bold,
-          color = MaterialTheme.colorScheme.onSurface
+          color = DarkForestInk
         )
       }
 
@@ -83,7 +97,7 @@ fun DailyInspirationCard(inspiration: DailyInspiration) {
         fontWeight = FontWeight.SemiBold,
         textAlign = TextAlign.End,
         lineHeight = 32.sp,
-        color = MaterialTheme.colorScheme.primary,
+        color = DarkForestInk,
         modifier = Modifier.fillMaxWidth()
       )
 
@@ -93,19 +107,19 @@ fun DailyInspirationCard(inspiration: DailyInspiration) {
         text = "“${inspiration.ayahTranslation}”",
         style = MaterialTheme.typography.bodyMedium,
         lineHeight = 22.sp,
-        color = MaterialTheme.colorScheme.onSurface
+        color = DarkForestInk
       )
 
       Text(
         text = "— ${inspiration.ayahSurah}",
         style = MaterialTheme.typography.labelSmall,
         fontWeight = FontWeight.SemiBold,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        color = DarkForestInk.copy(alpha = 0.7f),
         modifier = Modifier.padding(top = 4.dp)
       )
 
       Spacer(modifier = Modifier.height(16.dp))
-      HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f))
+      HorizontalDivider(color = LinenBorderLight)
       Spacer(modifier = Modifier.height(14.dp))
 
       // Hadith Section
@@ -114,22 +128,23 @@ fun DailyInspirationCard(inspiration: DailyInspiration) {
           modifier = Modifier
             .size(32.dp)
             .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)),
+            .background(CoolMintGradientBase)
+            .border(0.5.dp, OutlineDarkBorder, CircleShape),
           contentAlignment = Alignment.Center
         ) {
           Icon(
             Icons.Outlined.FormatQuote,
             contentDescription = null,
             modifier = Modifier.size(18.dp),
-            tint = MaterialTheme.colorScheme.primary
+            tint = DarkForestInk
           )
         }
         Spacer(modifier = Modifier.width(10.dp))
         Text(
-          text = "Hadith of the Day",
+          text = LocalizationManager.getHadithOfTheDayTitle(language),
           style = MaterialTheme.typography.titleMedium,
           fontWeight = FontWeight.Bold,
-          color = MaterialTheme.colorScheme.onSurface
+          color = DarkForestInk
         )
       }
 
@@ -139,14 +154,14 @@ fun DailyInspirationCard(inspiration: DailyInspiration) {
         text = "“${inspiration.hadithTranslation}”",
         style = MaterialTheme.typography.bodyMedium,
         lineHeight = 22.sp,
-        color = MaterialTheme.colorScheme.onSurface
+        color = DarkForestInk
       )
 
       Text(
         text = "— Narrated by ${inspiration.hadithNarrator} (${inspiration.hadithSource})",
         style = MaterialTheme.typography.labelSmall,
         fontWeight = FontWeight.SemiBold,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        color = DarkForestInk.copy(alpha = 0.7f),
         modifier = Modifier.padding(top = 4.dp)
       )
     }
