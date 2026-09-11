@@ -122,7 +122,7 @@ object PrayerNotificationManager {
     }
 
     val builder = NotificationCompat.Builder(context, CHANNEL_PRAYER_ID)
-      .setSmallIcon(android.R.drawable.ic_popup_reminder)
+      .setSmallIcon(R.drawable.ic_notification)
       .setContentTitle(title)
       .setContentText(contentText)
       .setStyle(NotificationCompat.BigTextStyle().bigText("$contentText\nḤaasi al-Layl • The Night Sipper"))
@@ -197,7 +197,7 @@ object PrayerNotificationManager {
                   else NOTIF_ID_FORBIDDEN_END + (windowTitle.hashCode().let { kotlin.math.abs(it) % 100 })
 
     val builder = NotificationCompat.Builder(context, CHANNEL_FORBIDDEN_ID)
-      .setSmallIcon(android.R.drawable.ic_dialog_alert)
+      .setSmallIcon(R.drawable.ic_notification)
       .setContentTitle(title)
       .setContentText(contentText)
       .setStyle(NotificationCompat.BigTextStyle().bigText(contentText))

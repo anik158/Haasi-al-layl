@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Monochrome layer for Android 13+ themed icons. The system tints this to a single colour
+  and keeps only the silhouette, so it uses the simplified crescent-and-star mark rather
+  than the full artwork, inset to the 66dp adaptive-icon safe zone.
+-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:width="60dp"
+        android:height="60dp"
+        android:drawable="@drawable/ic_notification"
+        android:gravity="center" />
+</layer-list>
