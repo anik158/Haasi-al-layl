@@ -1,11 +1,10 @@
-with open("app/src/main/java/com/example/ui/screens/WeatherScreen.kt", "r") as f:
+with open("app/src/main/java/com/example/ui/components/CelestialHorizonCard.kt", "r") as f:
     text = f.read()
 
-text = text.replace(
-    "import androidx.compose.foundation.background",
-    "import androidx.compose.foundation.background\nimport androidx.compose.foundation.clickable"
-)
+# Only keep one import
+text = text.replace('import androidx.compose.material3.ExperimentalMaterial3Api\n\nimport androidx.compose.material3.ExperimentalMaterial3Api', 'import androidx.compose.material3.ExperimentalMaterial3Api')
+text = text.replace('import androidx.compose.material3.ExperimentalMaterial3Api\nimport androidx.compose.material3.ExperimentalMaterial3Api', 'import androidx.compose.material3.ExperimentalMaterial3Api')
 
-with open("app/src/main/java/com/example/ui/screens/WeatherScreen.kt", "w") as f:
+with open("app/src/main/java/com/example/ui/components/CelestialHorizonCard.kt", "w") as f:
     f.write(text)
 

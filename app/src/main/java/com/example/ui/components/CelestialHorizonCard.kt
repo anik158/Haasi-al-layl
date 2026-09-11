@@ -25,6 +25,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Brightness5
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.WbTwilight
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material.icons.filled.Close
@@ -80,6 +81,7 @@ import kotlin.math.sin
  * Artistically styled with Ahsanul Houqe's warm beige (#F5EEDD) & cool mint (#D8EAE3) palette
  * and delicate botanical reeds.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CelestialHorizonCard(
   schedule: DailyPrayerSchedule?,
@@ -137,6 +139,7 @@ fun CelestialHorizonCard(
   )
 
   Card(
+    onClick = { showDetailsDialog = true },
     modifier = modifier
       .fillMaxWidth(0.94f)
       .testTag("celestial_horizon_card"),
@@ -188,7 +191,6 @@ fun CelestialHorizonCard(
 
         // Live status pill with crisp white/dark border (clickable for celestial details)
         Surface(
-          onClick = { showDetailsDialog = true },
           shape = RoundedCornerShape(20.dp),
           color = Color.White,
           border = androidx.compose.foundation.BorderStroke(1.dp, OutlineDarkBorder),
