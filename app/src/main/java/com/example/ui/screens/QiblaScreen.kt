@@ -47,6 +47,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.data.localization.AppLanguage
+import com.example.data.localization.LocalizationManager
 import com.example.data.model.CityLocation
 import com.example.ui.theme.WarmGoldAccent
 import kotlin.math.cos
@@ -59,7 +61,8 @@ fun QiblaScreen(
   qiblaBearing: Float,
   distanceToKaabaKm: Int,
   isFacingQibla: Boolean,
-  onLocationClick: () -> Unit
+  onLocationClick: () -> Unit,
+  language: AppLanguage = AppLanguage.ENGLISH
 ) {
   // Smooth rotation animation
   val animatedHeading by animateFloatAsState(
@@ -95,7 +98,7 @@ fun QiblaScreen(
     ) {
       Column {
         Text(
-          text = "Qibla Direction",
+          text = LocalizationManager.getQiblaTitle(language),
           style = MaterialTheme.typography.headlineSmall,
           fontWeight = FontWeight.ExtraBold,
           color = MaterialTheme.colorScheme.onBackground
@@ -127,7 +130,7 @@ fun QiblaScreen(
         color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)
       ) {
         Text(
-          text = "%.0f° Qibla".format(qiblaBearing),
+          text = "%.0f° ${LocalizationManager.getTowardsKaabaLabel(language)}".format(qiblaBearing),
           style = MaterialTheme.typography.labelMedium,
           fontWeight = FontWeight.Bold,
           color = MaterialTheme.colorScheme.primary,
@@ -161,7 +164,7 @@ fun QiblaScreen(
           )
           Spacer(modifier = Modifier.width(8.dp))
           Text(
-            text = "You are facing the Holy Kaaba!",
+            text = LocalizationManager.getFacingQiblaText(language),
             style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.Bold,
             color = Color.White
@@ -338,7 +341,7 @@ fun QiblaScreen(
           horizontalAlignment = Alignment.CenterHorizontally
         ) {
           Text(
-            text = "Qibla Bearing",
+            text = if (language == AppLanguage.BENGALI) "কিবলার দিককোণ" else "Qibla Bearing",
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
           )
@@ -349,7 +352,7 @@ fun QiblaScreen(
             color = MaterialTheme.colorScheme.primary
           )
           Text(
-            text = "From True North",
+            text = if (language == AppLanguage.BENGALI) "প্রকৃত উত্তর দিক থেকে" else "From True North",
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.outline,
             fontSize = 10.sp
@@ -368,7 +371,7 @@ fun QiblaScreen(
           horizontalAlignment = Alignment.CenterHorizontally
         ) {
           Text(
-            text = "Distance to Makkah",
+            text = LocalizationManager.getDistanceToKaabaLabel(language),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
           )
@@ -379,7 +382,7 @@ fun QiblaScreen(
             color = MaterialTheme.colorScheme.secondary
           )
           Text(
-            text = "Great-circle distance",
+            text = if (language == AppLanguage.BENGALI) "ভৌগোলিক দূরত্ব" else "Great-circle distance",
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.outline,
             fontSize = 10.sp
@@ -410,7 +413,7 @@ fun QiblaScreen(
         )
         Spacer(modifier = Modifier.width(12.dp))
         Text(
-          text = "Hold your phone flat horizontally. If compass seems inaccurate, wave your device gently in a figure-8 motion away from metal objects.",
+          text = LocalizationManager.getCompassCalibrationHint(language),
           style = MaterialTheme.typography.bodySmall,
           color = MaterialTheme.colorScheme.onSurfaceVariant
         )

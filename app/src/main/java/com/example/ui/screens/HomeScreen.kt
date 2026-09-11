@@ -48,10 +48,12 @@ import com.example.data.localization.AppLanguage
 import com.example.data.localization.LocalizationManager
 import com.example.data.model.CityLocation
 import com.example.data.model.DailyPrayerSchedule
+import com.example.data.prayer.IslamicMadhab
 import com.example.data.weather.CurrentWeather
 import com.example.ui.WeatherUiState
 import com.example.ui.components.CelestialHorizonCard
 import com.example.ui.components.DailyInspirationCard
+import com.example.ui.components.MadhabSelectionDialog
 import com.example.ui.components.PrayerNextHeroCard
 import com.example.ui.components.PrayerScheduleListCard
 import com.example.ui.components.WeatherHomeScreenCard
@@ -68,13 +70,16 @@ fun HomeScreen(
   currentCity: CityLocation,
   formatTemperature: (Double) -> String,
   language: AppLanguage = AppLanguage.ENGLISH,
+  madhab: IslamicMadhab = IslamicMadhab.SHAFI,
   onLocationClick: () -> Unit,
   onNavigateToWeather: () -> Unit,
   onLanguageSelect: (AppLanguage) -> Unit = {},
   onResetLanguageToLocation: () -> Unit = {},
+  onMadhabSelect: (IslamicMadhab) -> Unit = {},
   onTogglePrayer: (String) -> Unit
 ) {
   var showLanguageDialog by remember { mutableStateOf(false) }
+  var showMadhabDialog by remember { mutableStateOf(false) }
 
   val currentWeather: CurrentWeather? = when (weatherState) {
     is WeatherUiState.Success -> weatherState.data.current
@@ -150,7 +155,7 @@ fun HomeScreen(
           modifier = Modifier.testTag("top_language_chip")
         ) {
           Row(
-            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+            modifier = Modifier.padding(horizontal = 9.dp, vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically
           ) {
             Icon(
@@ -169,6 +174,27 @@ fun HomeScreen(
           }
         }
 
+        // Quick Madhab Switcher Button (Default: Shafi'i)
+        Surface(
+          onClick = { showMadhabDialog = true },
+          shape = RoundedCornerShape(20.dp),
+          color = Color.White,
+          border = androidx.compose.foundation.BorderStroke(1.dp, OutlineDarkBorder),
+          modifier = Modifier.testTag("top_madhab_chip")
+        ) {
+          Row(
+            modifier = Modifier.padding(horizontal = 9.dp, vertical = 6.dp),
+            verticalAlignment = Alignment.CenterVertically
+          ) {
+            Text(
+              text = "⚖ ${madhab.getLocalizedName(language).split(" ").last()}",
+              fontWeight = FontWeight.SemiBold,
+              fontSize = 12.sp,
+              color = DarkForestInk
+            )
+          }
+        }
+
         // Quick Location Selector Button with crisp white/dark pill border
         Surface(
           onClick = onLocationClick,
@@ -178,7 +204,7 @@ fun HomeScreen(
           modifier = Modifier.testTag("top_city_chip")
         ) {
           Row(
-            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+            modifier = Modifier.padding(horizontal = 9.dp, vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically
           ) {
             Icon(
@@ -219,10 +245,15 @@ fun HomeScreen(
 
       // 2. Celestial Horizon: Live Sun & Moon tracking with day/night arc & botanical reeds
       item {
-        CelestialHorizonCard(
-          schedule = schedule,
-          language = language
-        )
+        Box(
+          modifier = Modifier.fillMaxWidth(),
+          contentAlignment = Alignment.Center
+        ) {
+          CelestialHorizonCard(
+            schedule = schedule,
+            language = language
+          )
+        }
       }
 
       // 3. Weather & Daily Guidance Card
@@ -242,6 +273,8 @@ fun HomeScreen(
         PrayerScheduleListCard(
           items = schedule.items,
           language = language,
+          madhab = madhab,
+          onMadhabClick = { showMadhabDialog = true },
           onTogglePrayer = onTogglePrayer
         )
       }
@@ -360,6 +393,18 @@ fun HomeScreen(
           Text("Close", color = DarkForestInk, fontWeight = FontWeight.Bold)
         }
       }
+    )
+  }
+
+  // Madhab Selection Dialog (4 Madhabs with Shafi'i default)
+  if (showMadhabDialog) {
+    MadhabSelectionDialog(
+      currentMadhab = madhab,
+      language = language,
+      onMadhabSelected = { selected ->
+        onMadhabSelect(selected)
+      },
+      onDismiss = { showMadhabDialog = false }
     )
   }
 }

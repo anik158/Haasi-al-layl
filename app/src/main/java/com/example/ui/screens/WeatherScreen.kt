@@ -51,6 +51,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.data.localization.AppLanguage
+import com.example.data.localization.LocalizationManager
 import com.example.data.model.CityLocation
 import com.example.data.weather.DailyForecast
 import com.example.data.weather.FullWeatherData
@@ -66,7 +68,8 @@ fun WeatherScreen(
   formatTemperature: (Double) -> String,
   onRefresh: () -> Unit,
   onLocationClick: () -> Unit,
-  onToggleUnit: () -> Unit
+  onToggleUnit: () -> Unit,
+  language: AppLanguage = AppLanguage.ENGLISH
 ) {
   Column(
     modifier = Modifier
@@ -84,7 +87,7 @@ fun WeatherScreen(
     ) {
       Column {
         Text(
-          text = "Weather Forecast",
+          text = LocalizationManager.getWeatherForecastTitle(language),
           style = MaterialTheme.typography.headlineSmall,
           fontWeight = FontWeight.ExtraBold,
           color = MaterialTheme.colorScheme.onBackground
@@ -154,7 +157,7 @@ fun WeatherScreen(
             CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
             Spacer(modifier = Modifier.height(12.dp))
             Text(
-              text = "Fetching live meteorological data...",
+              text = if (language == AppLanguage.BENGALI) "আবহাওয়ার তথ্য লোড হচ্ছে..." else "Fetching live meteorological data...",
               style = MaterialTheme.typography.bodyMedium,
               color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -171,7 +174,7 @@ fun WeatherScreen(
         ) {
           Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-              text = "Weather information currently unavailable",
+              text = if (language == AppLanguage.BENGALI) "আবহাওয়ার তথ্য পাওয়া যায়নি" else "Weather information currently unavailable",
               style = MaterialTheme.typography.titleMedium,
               fontWeight = FontWeight.Bold
             )
@@ -187,7 +190,7 @@ fun WeatherScreen(
               onClick = onRefresh,
               colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
-              Text("Retry")
+              Text(if (language == AppLanguage.BENGALI) "পুনরায় চেষ্টা করুন" else "Retry")
             }
           }
         }
@@ -197,6 +200,7 @@ fun WeatherScreen(
         WeatherSuccessContent(
           data = weatherState.data,
           formatTemperature = formatTemperature,
+          language = language,
           onLocationClick = onLocationClick
         )
       }
@@ -208,6 +212,7 @@ fun WeatherScreen(
 private fun WeatherSuccessContent(
   data: FullWeatherData,
   formatTemperature: (Double) -> String,
+  language: AppLanguage,
   onLocationClick: () -> Unit
 ) {
   val cur = data.current
@@ -275,8 +280,14 @@ private fun WeatherSuccessContent(
               color = Color.White
             )
 
+            val highLowLabel = if (language == AppLanguage.BENGALI) {
+              "${LocalizationManager.getFeelsLikeLabel(language)} ${formatTemperature(cur.feelsLikeC)}  •  সর্বোচ্চ: ${formatTemperature(cur.highC)}  •  সর্বনিম্ন: ${formatTemperature(cur.lowC)}"
+            } else {
+              "${LocalizationManager.getFeelsLikeLabel(language)} ${formatTemperature(cur.feelsLikeC)}  •  High: ${formatTemperature(cur.highC)}  •  Low: ${formatTemperature(cur.lowC)}"
+            }
+
             Text(
-              text = "Feels like ${formatTemperature(cur.feelsLikeC)}  •  High: ${formatTemperature(cur.highC)}  •  Low: ${formatTemperature(cur.lowC)}",
+              text = highLowLabel,
               style = MaterialTheme.typography.bodySmall,
               color = Color.White.copy(alpha = 0.8f),
               modifier = Modifier.padding(top = 4.dp)
@@ -308,7 +319,7 @@ private fun WeatherSuccessContent(
             }
             Spacer(modifier = Modifier.width(10.dp))
             Text(
-              text = "Islamic Weather Guidance",
+              text = if (language == AppLanguage.BENGALI) "ইসলামিক আবহাওয়া নির্দেশনা" else "Islamic Weather Guidance",
               style = MaterialTheme.typography.titleSmall,
               fontWeight = FontWeight.Bold,
               color = MaterialTheme.colorScheme.primary
@@ -329,7 +340,7 @@ private fun WeatherSuccessContent(
             ) {
               Column(modifier = Modifier.padding(12.dp)) {
                 Text(
-                  text = "Recommended Du'a:",
+                  text = if (language == AppLanguage.BENGALI) "প্রস্তাবিত দোয়া:" else "Recommended Du'a:",
                   style = MaterialTheme.typography.labelSmall,
                   fontWeight = FontWeight.Bold,
                   color = MaterialTheme.colorScheme.primary
@@ -350,7 +361,7 @@ private fun WeatherSuccessContent(
     // 3. 24-Hour Hourly Forecast Strip
     item {
       Text(
-        text = "Hourly Forecast (24 Hours)",
+        text = LocalizationManager.getHourlyForecastTitle(language),
         style = MaterialTheme.typography.titleMedium,
         fontWeight = FontWeight.Bold,
         color = MaterialTheme.colorScheme.onBackground
@@ -369,7 +380,7 @@ private fun WeatherSuccessContent(
     // 4. Metrics Grid (Humidity, Wind, UV, Precipitation)
     item {
       Text(
-        text = "Conditions & Details",
+        text = if (language == AppLanguage.BENGALI) "আবহাওয়া বিবরণ ও পরিমাপ" else "Conditions & Details",
         style = MaterialTheme.typography.titleMedium,
         fontWeight = FontWeight.Bold,
         color = MaterialTheme.colorScheme.onBackground
@@ -381,14 +392,14 @@ private fun WeatherSuccessContent(
       ) {
         MetricItem(
           modifier = Modifier.weight(1f),
-          title = "Humidity",
+          title = LocalizationManager.getHumidityLabel(language),
           value = "${cur.humidityPercent}%",
           icon = Icons.Default.WaterDrop,
           iconTint = MaterialTheme.colorScheme.tertiary
         )
         MetricItem(
           modifier = Modifier.weight(1f),
-          title = "Wind Speed",
+          title = LocalizationManager.getWindSpeedLabel(language),
           value = "%.1f km/h".format(cur.windSpeedKmh),
           icon = Icons.Default.Air,
           iconTint = MaterialTheme.colorScheme.primary
@@ -401,14 +412,14 @@ private fun WeatherSuccessContent(
       ) {
         MetricItem(
           modifier = Modifier.weight(1f),
-          title = "UV Index",
+          title = LocalizationManager.getUvIndexLabel(language),
           value = "%.1f".format(cur.uvIndex),
           icon = Icons.Outlined.WbSunny,
           iconTint = WarmGoldAccent
         )
         MetricItem(
           modifier = Modifier.weight(1f),
-          title = "Feels Like",
+          title = LocalizationManager.getFeelsLikeLabel(language),
           value = formatTemperature(cur.feelsLikeC),
           icon = Icons.Outlined.Thermostat,
           iconTint = MaterialTheme.colorScheme.secondary
@@ -419,7 +430,7 @@ private fun WeatherSuccessContent(
     // 5. 7-Day Forecast Section
     item {
       Text(
-        text = "7-Day Outlook",
+        text = LocalizationManager.getDailyForecastTitle(language),
         style = MaterialTheme.typography.titleMedium,
         fontWeight = FontWeight.Bold,
         color = MaterialTheme.colorScheme.onBackground

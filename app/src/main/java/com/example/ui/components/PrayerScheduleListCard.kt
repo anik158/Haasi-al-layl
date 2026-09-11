@@ -42,6 +42,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.data.localization.AppLanguage
 import com.example.data.localization.LocalizationManager
 import com.example.data.model.PrayerName
@@ -57,6 +58,8 @@ fun PrayerScheduleListCard(
   items: List<PrayerTimeItem>,
   modifier: Modifier = Modifier,
   language: AppLanguage = AppLanguage.ENGLISH,
+  madhab: com.example.data.prayer.IslamicMadhab? = null,
+  onMadhabClick: (() -> Unit)? = null,
   onTogglePrayer: (String) -> Unit
 ) {
   Card(
@@ -80,7 +83,7 @@ fun PrayerScheduleListCard(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
       ) {
-        Column {
+        Column(modifier = Modifier.weight(1f)) {
           Text(
             text = LocalizationManager.getTodaysPrayersTitle(language),
             style = MaterialTheme.typography.titleMedium,
@@ -92,6 +95,29 @@ fun PrayerScheduleListCard(
             style = MaterialTheme.typography.bodySmall,
             color = DarkForestInk.copy(alpha = 0.7f)
           )
+        }
+
+        if (madhab != null) {
+          Surface(
+            onClick = { onMadhabClick?.invoke() },
+            enabled = onMadhabClick != null,
+            shape = RoundedCornerShape(16.dp),
+            color = CoolMintGradientBase.copy(alpha = 0.6f),
+            border = androidx.compose.foundation.BorderStroke(0.8.dp, OutlineDarkBorder),
+            modifier = Modifier.testTag("madhab_badge_button")
+          ) {
+            Row(
+              modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+              verticalAlignment = Alignment.CenterVertically
+            ) {
+              Text(
+                text = "⚖ ${madhab.getLocalizedName(language)}",
+                fontSize = 11.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = DarkForestInk
+              )
+            }
+          }
         }
       }
 

@@ -49,12 +49,15 @@ import androidx.compose.ui.unit.sp
 import com.example.data.dua.DuaCategory
 import com.example.data.dua.DuaItem
 import com.example.data.dua.IslamicContentProvider
+import com.example.data.localization.AppLanguage
+import com.example.data.localization.LocalizationManager
 import com.example.ui.theme.WarmGoldAccent
 
 @Composable
 fun DuaScreen(
   bookmarkedDuaIds: Set<String>,
-  onToggleBookmark: (String) -> Unit
+  onToggleBookmark: (String) -> Unit,
+  language: AppLanguage = AppLanguage.ENGLISH
 ) {
   var searchQuery by remember { mutableStateOf("") }
   var selectedCategory by remember { mutableStateOf<DuaCategory?>(null) }
@@ -64,8 +67,16 @@ fun DuaScreen(
     IslamicContentProvider.DUAS.filter { dua ->
       val matchesSearch = searchQuery.isBlank() ||
         dua.title.contains(searchQuery, ignoreCase = true) ||
+        dua.titleBn.contains(searchQuery, ignoreCase = true) ||
+        dua.titleEs.contains(searchQuery, ignoreCase = true) ||
+        dua.titlePt.contains(searchQuery, ignoreCase = true) ||
+        dua.titleAr.contains(searchQuery) ||
         dua.translation.contains(searchQuery, ignoreCase = true) ||
-        dua.transliteration.contains(searchQuery, ignoreCase = true)
+        dua.translationBn.contains(searchQuery, ignoreCase = true) ||
+        dua.translationEs.contains(searchQuery, ignoreCase = true) ||
+        dua.translationPt.contains(searchQuery, ignoreCase = true) ||
+        dua.transliteration.contains(searchQuery, ignoreCase = true) ||
+        dua.arabic.contains(searchQuery)
 
       val matchesCategory = selectedCategory == null || dua.category == selectedCategory
       val matchesBookmarks = !showBookmarksOnly || bookmarkedDuaIds.contains(dua.id)
@@ -90,13 +101,13 @@ fun DuaScreen(
     ) {
       Column {
         Text(
-          text = "Daily Duas & Adhkar",
+          text = LocalizationManager.getDuaTitle(language),
           style = MaterialTheme.typography.headlineSmall,
           fontWeight = FontWeight.ExtraBold,
           color = MaterialTheme.colorScheme.onBackground
         )
         Text(
-          text = "Hisn al-Muslim (Fortress of the Muslim)",
+          text = LocalizationManager.getDuaSubtitle(language),
           style = MaterialTheme.typography.bodySmall,
           color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -107,7 +118,7 @@ fun DuaScreen(
     OutlinedTextField(
       value = searchQuery,
       onValueChange = { searchQuery = it },
-      placeholder = { Text("Search duas, translations...") },
+      placeholder = { Text(LocalizationManager.getSearchDuaPlaceholder(language)) },
       leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
       singleLine = true,
       shape = RoundedCornerShape(14.dp),
@@ -131,7 +142,7 @@ fun DuaScreen(
             showBookmarksOnly = !showBookmarksOnly
             if (showBookmarksOnly) selectedCategory = null
           },
-          label = { Text("★ Bookmarks (${bookmarkedDuaIds.size})") },
+          label = { Text("★ ${LocalizationManager.getBookmarksOnlyLabel(language)} (${bookmarkedDuaIds.size})") },
           colors = FilterChipDefaults.filterChipColors(
             selectedContainerColor = WarmGoldAccent.copy(alpha = 0.25f),
             selectedLabelColor = MaterialTheme.colorScheme.primary
@@ -148,7 +159,7 @@ fun DuaScreen(
             selectedCategory = null
             showBookmarksOnly = false
           },
-          label = { Text("All") },
+          label = { Text(DuaCategory.ALL.getLocalizedName(language)) },
           colors = FilterChipDefaults.filterChipColors(
             selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
             selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -164,7 +175,7 @@ fun DuaScreen(
             selectedCategory = cat
             showBookmarksOnly = false
           },
-          label = { Text(cat.displayName) },
+          label = { Text(cat.getLocalizedName(language)) },
           colors = FilterChipDefaults.filterChipColors(
             selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
             selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -187,12 +198,12 @@ fun DuaScreen(
           Text("📖", fontSize = 40.sp)
           Spacer(modifier = Modifier.height(10.dp))
           Text(
-            text = if (showBookmarksOnly) "No saved bookmarks yet" else "No duas found",
+            text = LocalizationManager.getNoDuasFoundTitle(language, showBookmarksOnly),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold
           )
           Text(
-            text = if (showBookmarksOnly) "Tap the bookmark icon on any Du'a to save it here" else "Try clearing your search filters",
+            text = LocalizationManager.getNoDuasFoundSubtitle(language, showBookmarksOnly),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
           )
@@ -210,6 +221,7 @@ fun DuaScreen(
           DuaCardItem(
             dua = dua,
             isBookmarked = isBookmarked,
+            language = language,
             onToggleBookmark = { onToggleBookmark(dua.id) }
           )
         }
@@ -225,6 +237,7 @@ fun DuaScreen(
 private fun DuaCardItem(
   dua: DuaItem,
   isBookmarked: Boolean,
+  language: AppLanguage,
   onToggleBookmark: () -> Unit
 ) {
   Card(
@@ -243,7 +256,7 @@ private fun DuaCardItem(
       ) {
         Column(modifier = Modifier.weight(1f)) {
           Text(
-            text = dua.title,
+            text = dua.getLocalizedTitle(language),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onSurface
@@ -254,7 +267,7 @@ private fun DuaCardItem(
             modifier = Modifier.padding(top = 4.dp)
           ) {
             Text(
-              text = "${dua.category.displayName} • ${dua.repetition}",
+              text = "${dua.category.getLocalizedName(language)} • ${dua.repetition}",
               style = MaterialTheme.typography.labelSmall,
               color = MaterialTheme.colorScheme.primary,
               modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
@@ -277,7 +290,7 @@ private fun DuaCardItem(
 
       Spacer(modifier = Modifier.height(14.dp))
 
-      // Arabic Text (Right-aligned, large legible font)
+      // Arabic Text (Right-aligned, large legible authentic font with Tashkeel)
       Text(
         text = dua.arabic,
         style = MaterialTheme.typography.titleLarge,
@@ -300,9 +313,9 @@ private fun DuaCardItem(
 
       Spacer(modifier = Modifier.height(8.dp))
 
-      // Translation
+      // Localized Translation (Bengali / English)
       Text(
-        text = "“${dua.translation}”",
+        text = "“${dua.getLocalizedTranslation(language)}”",
         style = MaterialTheme.typography.bodyMedium,
         lineHeight = 22.sp,
         color = MaterialTheme.colorScheme.onSurface
@@ -314,7 +327,7 @@ private fun DuaCardItem(
 
       // Reference
       Text(
-        text = "Source: ${dua.reference}",
+        text = "${LocalizationManager.getSourceLabel(language)}: ${dua.reference}",
         style = MaterialTheme.typography.labelSmall,
         color = MaterialTheme.colorScheme.outline
       )

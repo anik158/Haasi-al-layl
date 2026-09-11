@@ -33,8 +33,11 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.flatMapLatest
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import kotlin.math.abs
 
 sealed interface WeatherUiState {
@@ -71,7 +74,8 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
 
   // Calculation Settings
   val calculationMethod = MutableStateFlow(CalculationMethod.MUSLIM_WORLD_LEAGUE)
-  val juristicMethod = MutableStateFlow(JuristicMethod.STANDARD_SHAFI_MALIKI_HANBALI)
+  val juristicMethod = MutableStateFlow(com.example.data.prayer.IslamicMadhab.SHAFI)
+  val selectedMadhab: StateFlow<com.example.data.prayer.IslamicMadhab> = juristicMethod.asStateFlow()
 
   // Temperature unit ('C' or 'F')
   private val _isFahrenheit = MutableStateFlow(false)
@@ -92,12 +96,23 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
   val compassHeading: StateFlow<Float> = sensorManager.getCompassHeadingFlow()
     .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0f)
 
-  // Today's Prayer log from Room
-  val todayDate: LocalDate get() = LocalDate.now()
-  val todayPrayerLog: StateFlow<PrayerLogEntity?> = repository.getPrayerLogForDate(todayDate)
-    .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+  // Get current ZonedDateTime for a given city
+  fun getCityZonedDateTime(city: CityLocation): ZonedDateTime {
+    val zone = try {
+      ZoneId.of(city.timeZoneId)
+    } catch (e: Exception) {
+      ZoneId.systemDefault()
+    }
+    return ZonedDateTime.now(zone)
+  }
 
-  // Daily Prayer Schedule (Live calculated)
+  // Today's Prayer log from Room for selected city's local date
+  val todayPrayerLog: StateFlow<PrayerLogEntity?> = _selectedCity.flatMapLatest { city ->
+    val cityDate = getCityZonedDateTime(city).toLocalDate()
+    repository.getPrayerLogForDate(cityDate)
+  }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+
+  // Daily Prayer Schedule (Live calculated using city's local timezone)
   val prayerSchedule: StateFlow<DailyPrayerSchedule> = combine(
     _selectedCity,
     todayPrayerLog,
@@ -105,6 +120,10 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
     juristicMethod,
     _secondTicker
   ) { city, log, method, juristic, _ ->
+    val cityZoned = getCityZonedDateTime(city)
+    val cityDate = cityZoned.toLocalDate()
+    val cityDateTime = cityZoned.toLocalDateTime()
+
     val completedSet = mutableSetOf<String>()
     if (log != null) {
       if (log.fajrDone) completedSet.add("FAJR")
@@ -114,17 +133,22 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
       if (log.ishaDone) completedSet.add("ISHA")
     }
     PrayerCalculator.calculateSchedule(
-      date = todayDate,
+      date = cityDate,
       location = city,
-      now = LocalDateTime.now(),
+      now = cityDateTime,
       completedPrayerIds = completedSet,
       method = method,
-      juristic = juristic
+      madhab = juristic
     )
   }.stateIn(
     viewModelScope,
     SharingStarted.WhileSubscribed(5000),
-    PrayerCalculator.calculateSchedule(todayDate, _selectedCity.value)
+    PrayerCalculator.calculateSchedule(
+      date = getCityZonedDateTime(_selectedCity.value).toLocalDate(),
+      location = _selectedCity.value,
+      now = getCityZonedDateTime(_selectedCity.value).toLocalDateTime(),
+      madhab = com.example.data.prayer.IslamicMadhab.SHAFI
+    )
   )
 
   // Qibla bearing & distance
@@ -197,6 +221,10 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
     _manualLanguage.value = null
   }
 
+  fun setMadhab(madhab: com.example.data.prayer.IslamicMadhab) {
+    juristicMethod.value = madhab
+  }
+
   fun toggleTemperatureUnit() {
     _isFahrenheit.value = !_isFahrenheit.value
   }
@@ -215,7 +243,7 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
   // Prayer Completion Tracking in Room
   fun togglePrayerCheck(prayerKey: String) {
     viewModelScope.launch {
-      val currentDateStr = todayDate.toString()
+      val currentDateStr = getCityZonedDateTime(_selectedCity.value).toLocalDate().toString()
       val current = todayPrayerLog.value ?: PrayerLogEntity(date = currentDateStr)
       val updated = when (prayerKey.uppercase()) {
         "FAJR" -> current.copy(fajrDone = !current.fajrDone)

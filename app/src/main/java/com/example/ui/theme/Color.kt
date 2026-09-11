@@ -4,46 +4,52 @@ import androidx.compose.ui.graphics.Color
 
 // =============================================================================
 // Haasi al-layl Color Palette
-// Inspired by ahsanulhouqe.com:
-// - Main background: #F5EEDD (Warm light beige)
-// - Gradient base: #D8EAE3 (Cool mint-green tint)
-// - Accents & buttons: #FFFFFF / #1C2A24 with crisp outlines
+// Faithfully aligned with Ahsanul Houqe's design (from user screenshot):
+// - Background: Warm parchment canvas (#F9F6EE to #F8F5EC) with gentle amber-champagne glow (#FAF2DF)
+// - Water channel: Soft translucent watercolor celadon (#BAD6CC, #CFE2DA)
+// - Primary pill & active buttons: Rich dark forest green (#233F34) matching "Hire me" button
+// - Typography: Deep dark forest ink (#1B2E24) and soft readable moss-slate (#33493D)
+// - Surfaces: Refined warm cream & crisp card surfaces (#FFFFFF & #FDFBF7)
+// - Borders: Fine linen hairline borders (#E2DDD1)
 // =============================================================================
 
-// Exact requested colors
-val WarmBeigeBackground = Color(0xFFF5EEDD) // Main background: Warm light beige
-val CoolMintGradientBase = Color(0xFFD8EAE3) // Gradient base: Cool mint-green tint
-val DarkForestInk = Color(0xFF1C2A24) // Deep forest charcoal text & contrast
-val SoftBeigeSurface = Color(0xFFFCF8F0) // Clean eggshell card surface
-val PureWhiteSurface = Color(0xFFFFFFFF)
-val OutlineDarkBorder = Color(0xFF22362C) // Crisp outline for pill buttons & cards
-val OutlineSubtleBorder = Color(0xFFD7CFBE) // Subtle hairline divider
-val MintBadgeContainer = Color(0xFFD8EAE3) // Soft mint container
-val MintBadgeOnContainer = Color(0xFF132A20)
+// Warm parchment & color depth matching the screenshot
+val WarmBeigeBackground = Color(0xFFF9F6EE) // Organic warm parchment canvas (calibrated to screenshot)
+val WarmAmbientGlow = Color(0xFFFAF2DE) // Delicate warm golden-champagne top glow
+val CoolMintGradientBase = Color(0xFFBAD6CC) // Serene celadon water band from the screenshot
+val CeladonWaterWash = Color(0xFFD5E8DF) // Translucent water stream wash
+val DarkForestInk = Color(0xFF1B2E24) // Deep dark forest green typography
+val DarkForestPill = Color(0xFF233F34) // Exact "Hire me" pill button dark forest green
+val SoftBeigeSurface = Color(0xFFFDFBF7) // Warm cream card surface
+val PureWhiteSurface = Color(0xFFFFFFFF) // Crisp card interior
+val OutlineDarkBorder = Color(0xFF233F34) // Pill and card border
+val OutlineSubtleBorder = Color(0xFFE2DDD1) // Delicate warm hairline divider
+val MintBadgeContainer = Color(0xFFDCECE4) // Soft sage-mint badge container
+val MintBadgeOnContainer = Color(0xFF1B2E24)
+val LinenBorderLight = Color(0xFFE2DDD1) // Warm parchment border
 
 // Light Theme Palette
-val ForestSlatePrimaryLight = Color(0xFF1C2A24)
+val ForestSlatePrimaryLight = Color(0xFF233F34)
 val ForestSlateOnPrimaryLight = Color(0xFFFFFFFF)
-val ForestSlateContainerLight = Color(0xFFD8EAE3)
-val ForestSlateOnContainerLight = Color(0xFF132A20)
+val ForestSlateContainerLight = Color(0xFFDCECE4)
+val ForestSlateOnContainerLight = Color(0xFF1B2E24)
 
-val WarmSandSecondaryLight = Color(0xFF9E752D)
+val WarmSandSecondaryLight = Color(0xFF8B6B2B)
 val WarmSandOnSecondaryLight = Color(0xFFFFFFFF)
-val WarmSandContainerLight = Color(0xFFF3E7CA)
-val WarmSandOnContainerLight = Color(0xFF332300)
+val WarmSandContainerLight = Color(0xFFF4EDE0)
+val WarmSandOnContainerLight = Color(0xFF2E2200)
 
-val SageTertiaryLight = Color(0xFF3B5D4B)
+val SageTertiaryLight = Color(0xFF385A48)
 val SageOnTertiaryLight = Color(0xFFFFFFFF)
-val SageContainerLight = Color(0xFFD8EAE3)
-val SageOnContainerLight = Color(0xFF0F261C)
+val SageContainerLight = Color(0xFFDCECE4)
+val SageOnContainerLight = Color(0xFF152A20)
 
 val LinenBackgroundLight = WarmBeigeBackground
 val OnLinenBackgroundLight = DarkForestInk
 val EggshellSurfaceLight = SoftBeigeSurface
 val OnEggshellSurfaceLight = DarkForestInk
-val ParchmentSurfaceVariantLight = Color(0xFFEFE6D2)
-val OnParchmentSurfaceVariantLight = Color(0xFF516157)
-val LinenBorderLight = Color(0xFFD8CFBF)
+val ParchmentSurfaceVariantLight = Color(0xFFF3ECE0)
+val OnParchmentSurfaceVariantLight = Color(0xFF3B4F43)
 
 // Dark Theme Palette (Night Sky & Starlit Sand)
 val ForestSlatePrimaryDark = Color(0xFF9ED1BA)

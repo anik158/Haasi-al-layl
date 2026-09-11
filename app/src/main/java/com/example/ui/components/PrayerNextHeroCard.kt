@@ -87,9 +87,9 @@ fun PrayerNextHeroCard(
         .background(
           brush = Brush.verticalGradient(
             colors = listOf(
-              WarmBeigeBackground,
-              Color(0xFFEFE7D5),
-              CoolMintGradientBase
+              Color.White,
+              Color(0xFFF0F6F3),
+              CoolMintGradientBase.copy(alpha = 0.8f)
             )
           )
         )

@@ -78,8 +78,8 @@ fun CelestialHorizonCard(
   schedule: DailyPrayerSchedule?,
   modifier: Modifier = Modifier,
   language: AppLanguage = AppLanguage.ENGLISH,
-  currentDate: LocalDate = LocalDate.now(),
-  currentTime: LocalTime = LocalTime.now()
+  currentDate: LocalDate = schedule?.date ?: LocalDate.now(),
+  currentTime: LocalTime = schedule?.currentTime ?: LocalTime.now()
 ) {
   // Lunar calculations
   val hijriDay = HijriDateHelper.getHijriDayOfMonth(currentDate).coerceIn(1, 30)
@@ -105,12 +105,34 @@ fun CelestialHorizonCard(
     label = "sun_pulse"
   )
 
+  // Animated lunar glow and halo
+  val moonPulseAnim by infiniteTransition.animateFloat(
+    initialValue = 0.85f,
+    targetValue = 1.22f,
+    animationSpec = infiniteRepeatable(
+      animation = tween(3200, easing = FastOutSlowInEasing),
+      repeatMode = RepeatMode.Reverse
+    ),
+    label = "moon_pulse"
+  )
+
+  // Animated twinkling stars in the night sky
+  val starTwinkleAnim by infiniteTransition.animateFloat(
+    initialValue = 0.25f,
+    targetValue = 0.95f,
+    animationSpec = infiniteRepeatable(
+      animation = tween(2200, easing = FastOutSlowInEasing),
+      repeatMode = RepeatMode.Reverse
+    ),
+    label = "star_twinkle"
+  )
+
   Card(
     modifier = modifier
-      .fillMaxWidth()
+      .fillMaxWidth(0.94f)
       .testTag("celestial_horizon_card"),
     shape = RoundedCornerShape(22.dp),
-    colors = CardDefaults.cardColors(containerColor = WarmBeigeBackground),
+    colors = CardDefaults.cardColors(containerColor = Color.White),
     elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     border = androidx.compose.foundation.BorderStroke(1.dp, LinenBorderLight)
   ) {
@@ -191,11 +213,19 @@ fun CelestialHorizonCard(
           .clip(RoundedCornerShape(18.dp))
           .background(
             brush = Brush.verticalGradient(
-              colors = listOf(
-                WarmBeigeBackground,
-                Color(0xFFEFE8D6),
-                CoolMintGradientBase
-              )
+              colors = if (isDaytime) {
+                listOf(
+                  Color(0xFFF7FBF9),
+                  Color(0xFFEAF5F0),
+                  CoolMintGradientBase.copy(alpha = 0.75f)
+                )
+              } else {
+                listOf(
+                  Color(0xFF0C1920),
+                  Color(0xFF132732),
+                  Color(0xFF1B3743)
+                )
+              }
             )
           )
           .border(1.dp, LinenBorderLight, RoundedCornerShape(18.dp))
@@ -210,6 +240,43 @@ fun CelestialHorizonCard(
           val endX = width - 28.dp.toPx()
           val centerX = width / 2f
 
+          // Twinkling Stars in the Night Sky
+          if (!isDaytime) {
+            val starPositions = listOf(
+              Offset(width * 0.15f, height * 0.22f) to 2.2f,
+              Offset(width * 0.28f, height * 0.14f) to 1.8f,
+              Offset(width * 0.42f, height * 0.26f) to 2.5f,
+              Offset(width * 0.58f, height * 0.12f) to 1.7f,
+              Offset(width * 0.72f, height * 0.28f) to 2.3f,
+              Offset(width * 0.85f, height * 0.18f) to 1.9f,
+              Offset(width * 0.35f, height * 0.38f) to 1.5f,
+              Offset(width * 0.65f, height * 0.35f) to 2.0f
+            )
+            starPositions.forEachIndexed { idx, (starPos, starRadius) ->
+              val factor = if (idx % 2 == 0) starTwinkleAnim else (1.2f - starTwinkleAnim).coerceIn(0.2f, 1f)
+              drawCircle(
+                color = Color(0xFFF0FDF4).copy(alpha = factor * 0.85f),
+                radius = starRadius.dp.toPx(),
+                center = starPos
+              )
+              // Star cross shimmer
+              if (idx % 3 == 0) {
+                drawLine(
+                  color = Color.White.copy(alpha = factor * 0.5f),
+                  start = Offset(starPos.x - 3.dp.toPx(), starPos.y),
+                  end = Offset(starPos.x + 3.dp.toPx(), starPos.y),
+                  strokeWidth = 0.8.dp.toPx()
+                )
+                drawLine(
+                  color = Color.White.copy(alpha = factor * 0.5f),
+                  start = Offset(starPos.x, starPos.y - 3.dp.toPx()),
+                  end = Offset(starPos.x, starPos.y + 3.dp.toPx()),
+                  strokeWidth = 0.8.dp.toPx()
+                )
+              }
+            }
+          }
+
           // 1. Draw Celestial Sky Dome Arc (East to West)
           val arcPath = Path().apply {
             moveTo(startX, horizonY)
@@ -219,7 +286,7 @@ fun CelestialHorizonCard(
           // Dashed sky trajectory guide
           drawPath(
             path = arcPath,
-            color = DarkForestInk.copy(alpha = 0.22f),
+            color = if (isDaytime) DarkForestInk.copy(alpha = 0.22f) else Color(0xFFCBD5E1).copy(alpha = 0.35f),
             style = Stroke(
               width = 2.dp.toPx(),
               pathEffect = PathEffect.dashPathEffect(floatArrayOf(12f, 10f), 0f),
@@ -256,27 +323,50 @@ fun CelestialHorizonCard(
             )
           }
 
-          // 3. Moon Position & Lunar Rendering
+          // 3. Moon Position & Animated Lunar Rendering
           val moonT = if (!isDaytime) moonProgress.coerceIn(0f, 1f) else ((sunProgress + 0.5f) % 1f)
           val moonPos = getQuadraticBezierPoint(startX, horizonY, centerX, arcPeakY, endX, horizonY, moonT)
 
-          // Draw moon (prominent at night, subtle during day)
+          // Draw animated glowing moon (prominent at night, subtle during day)
           val moonAlpha = if (!isDaytime) 1f else 0.45f
+
+          // Outer animated lunar pulsating aura
           drawCircle(
-            color = Color(0xFFEDF2F7).copy(alpha = 0.3f * moonAlpha),
-            radius = 18.dp.toPx(),
+            color = if (!isDaytime) Color(0xFF81E6D9).copy(alpha = 0.22f * moonPulseAnim) else Color(0xFFE2E8F0).copy(alpha = 0.2f),
+            radius = 24.dp.toPx() * moonPulseAnim,
             center = moonPos
           )
           drawCircle(
-            color = Color(0xFFF7FAFC).copy(alpha = moonAlpha),
+            color = if (!isDaytime) Color(0xFFE2E8F0).copy(alpha = 0.35f * moonAlpha) else Color(0xFFEDF2F7).copy(alpha = 0.25f),
+            radius = 16.dp.toPx(),
+            center = moonPos
+          )
+
+          // Moon body (Ethereal soft pearl with lunar gradient)
+          drawCircle(
+            brush = Brush.radialGradient(
+              colors = listOf(
+                Color(0xFFFFFFFF),
+                Color(0xFFF1F5F9),
+                Color(0xFFCBD5E1)
+              ),
+              center = Offset(moonPos.x - 2.dp.toPx(), moonPos.y - 2.dp.toPx()),
+              radius = 10.dp.toPx()
+            ),
             radius = 9.dp.toPx(),
             center = moonPos
           )
-          // Moon crater / phase shadow
+
+          // Moon crater / lunar maria texture
           drawCircle(
-            color = DarkForestInk.copy(alpha = 0.15f * moonAlpha),
-            radius = 3.dp.toPx(),
-            center = Offset(moonPos.x - 2.dp.toPx(), moonPos.y - 1.dp.toPx())
+            color = Color(0xFF94A3B8).copy(alpha = 0.35f * moonAlpha),
+            radius = 2.4.dp.toPx(),
+            center = Offset(moonPos.x - 3.dp.toPx(), moonPos.y - 1.5.dp.toPx())
+          )
+          drawCircle(
+            color = Color(0xFF94A3B8).copy(alpha = 0.25f * moonAlpha),
+            radius = 1.6.dp.toPx(),
+            center = Offset(moonPos.x + 2.dp.toPx(), moonPos.y + 2.dp.toPx())
           )
 
           // 4. Ground Horizon Plane
@@ -290,10 +380,17 @@ fun CelestialHorizonCard(
           drawPath(
             path = groundPath,
             brush = Brush.verticalGradient(
-              colors = listOf(
-                CoolMintGradientBase.copy(alpha = 0.85f),
-                Color(0xFFC7DFD6)
-              ),
+              colors = if (isDaytime) {
+                listOf(
+                  CoolMintGradientBase.copy(alpha = 0.85f),
+                  Color(0xFFC7DFD6)
+                )
+              } else {
+                listOf(
+                  Color(0xFF152A34),
+                  Color(0xFF0F1E26)
+                )
+              },
               startY = horizonY,
               endY = height
             )
@@ -301,7 +398,7 @@ fun CelestialHorizonCard(
 
           // Horizon division stroke
           drawLine(
-            color = DarkForestInk.copy(alpha = 0.35f),
+            color = if (isDaytime) DarkForestInk.copy(alpha = 0.35f) else Color(0xFF64748B).copy(alpha = 0.5f),
             start = Offset(0f, horizonY),
             end = Offset(width, horizonY),
             strokeWidth = 1.5.dp.toPx()
@@ -316,7 +413,7 @@ fun CelestialHorizonCard(
           text = LocalizationManager.getEastLabel(language),
           style = MaterialTheme.typography.labelSmall,
           fontSize = 10.sp,
-          color = DarkForestInk.copy(alpha = 0.7f),
+          color = if (isDaytime) DarkForestInk.copy(alpha = 0.7f) else Color(0xFFE2E8F0),
           fontWeight = FontWeight.Bold,
           modifier = Modifier
             .align(Alignment.BottomStart)
@@ -327,7 +424,7 @@ fun CelestialHorizonCard(
           text = LocalizationManager.getWestLabel(language),
           style = MaterialTheme.typography.labelSmall,
           fontSize = 10.sp,
-          color = DarkForestInk.copy(alpha = 0.7f),
+          color = if (isDaytime) DarkForestInk.copy(alpha = 0.7f) else Color(0xFFE2E8F0),
           fontWeight = FontWeight.Bold,
           modifier = Modifier
             .align(Alignment.BottomEnd)

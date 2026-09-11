@@ -33,10 +33,7 @@ enum class CalculationMethod(
   DUBAI("Dubai Religious Affairs", 18.2, 18.2)
 }
 
-enum class JuristicMethod(val shadowFactor: Double) {
-  STANDARD_SHAFI_MALIKI_HANBALI(1.0),
-  HANAFI(2.0)
-}
+typealias JuristicMethod = IslamicMadhab
 
 object PrayerCalculator {
 
@@ -72,9 +69,9 @@ object PrayerCalculator {
     now: LocalDateTime = LocalDateTime.now(),
     completedPrayerIds: Set<String> = emptySet(),
     method: CalculationMethod = CalculationMethod.MUSLIM_WORLD_LEAGUE,
-    juristic: JuristicMethod = JuristicMethod.STANDARD_SHAFI_MALIKI_HANBALI
+    madhab: IslamicMadhab = IslamicMadhab.SHAFI
   ): DailyPrayerSchedule {
-    val timesMap = computePrayerTimes(date, location.latitude, location.longitude, location.timeZoneId, method, juristic)
+    val timesMap = computePrayerTimes(date, location.latitude, location.longitude, location.timeZoneId, method, madhab)
 
     val list = mutableListOf<PrayerTimeItem>()
     val prayerOrder = listOf(
@@ -173,10 +170,12 @@ object PrayerCalculator {
       city = location.name,
       country = location.country,
       calculationMethodName = method.title,
+      madhab = madhab,
       items = list,
       nextPrayer = nextItem,
       timeUntilNextFormatted = timeUntilFormatted,
-      progressToNext = progress
+      progressToNext = progress,
+      currentTime = now.toLocalTime()
     )
   }
 
@@ -186,7 +185,7 @@ object PrayerCalculator {
     lng: Double,
     tzId: String,
     method: CalculationMethod,
-    juristic: JuristicMethod
+    madhab: IslamicMadhab
   ): Map<PrayerName, LocalTime> {
     val zone = try {
       ZoneId.of(tzId)
@@ -238,7 +237,7 @@ object PrayerCalculator {
 
     // Asr
     val asrAngle = -Math.toDegrees(
-      atan(1.0 / (juristic.shadowFactor + tan(Math.toRadians(abs(lat - declination)))))
+      atan(1.0 / (madhab.shadowFactor + tan(Math.toRadians(abs(lat - declination)))))
     )
     val asrDiff = sunAngleTime(90.0 - asrAngle, lat, declination)
     val asr = noon + asrDiff

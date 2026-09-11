@@ -50,7 +50,33 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.data.local.TasbihEntity
+import com.example.data.localization.AppLanguage
+import com.example.data.localization.LocalizationManager
 import com.example.ui.theme.WarmGoldAccent
+
+private fun getLocalizedTasbihName(item: TasbihEntity, language: AppLanguage): String {
+  if (language != AppLanguage.BENGALI) return item.name
+  return when (item.id) {
+    "default", "subhanallah" -> "সুবহানাল্লাহ"
+    "alhamdulillah" -> "আলহামদুলিল্লাহ"
+    "allahu_akbar" -> "আল্লাহু আকবার"
+    "astaghfirullah" -> "আস্তাগফিরুল্লাহ"
+    "la_ilaha_illallah" -> "লা ইলাহা ইল্লাল্লাহ"
+    else -> item.name
+  }
+}
+
+private fun getLocalizedTasbihMeaning(item: TasbihEntity, language: AppLanguage): String {
+  if (language != AppLanguage.BENGALI) return item.transliteration
+  return when (item.id) {
+    "default", "subhanallah" -> "মহাপবিত্র আল্লাহ"
+    "alhamdulillah" -> "সকল প্রশংসা আল্লাহর জন্য"
+    "allahu_akbar" -> "আল্লাহ মহান ও সর্বশ্রেষ্ঠ"
+    "astaghfirullah" -> "আমি আল্লাহর ক্ষমা প্রার্থনা করছি"
+    "la_ilaha_illallah" -> "আল্লাহ ব্যতীত কোনো উপাস্য নেই"
+    else -> item.transliteration
+  }
+}
 
 @Composable
 fun TasbihScreen(
@@ -58,7 +84,8 @@ fun TasbihScreen(
   selectedTasbih: TasbihEntity?,
   onSelectTasbih: (String) -> Unit,
   onIncrement: () -> Unit,
-  onReset: () -> Unit
+  onReset: () -> Unit,
+  language: AppLanguage = AppLanguage.ENGLISH
 ) {
   val currentItem = selectedTasbih ?: tasbihList.firstOrNull() ?: TasbihEntity(
     id = "default",
@@ -98,13 +125,13 @@ fun TasbihScreen(
     ) {
       Column {
         Text(
-          text = "Digital Tasbih",
+          text = LocalizationManager.getTasbihTitle(language),
           style = MaterialTheme.typography.headlineSmall,
           fontWeight = FontWeight.ExtraBold,
           color = MaterialTheme.colorScheme.onBackground
         )
         Text(
-          text = "Dhikr & Remembrance of Allah",
+          text = LocalizationManager.getTasbihSubtitle(language),
           style = MaterialTheme.typography.bodySmall,
           color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -137,7 +164,7 @@ fun TasbihScreen(
           onClick = { onSelectTasbih(item.id) },
           label = {
             Text(
-              text = item.name,
+              text = getLocalizedTasbihName(item, language),
               fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
             )
           },
@@ -176,13 +203,13 @@ fun TasbihScreen(
         )
         Spacer(modifier = Modifier.height(6.dp))
         Text(
-          text = currentItem.name,
+          text = getLocalizedTasbihName(currentItem, language),
           style = MaterialTheme.typography.titleMedium,
           fontWeight = FontWeight.SemiBold,
           color = MaterialTheme.colorScheme.onSurface
         )
         Text(
-          text = currentItem.transliteration,
+          text = getLocalizedTasbihMeaning(currentItem, language),
           style = MaterialTheme.typography.bodySmall,
           color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -231,7 +258,7 @@ fun TasbihScreen(
           fontSize = 60.sp
         )
         Text(
-          text = "Target: $target",
+          text = "${LocalizationManager.getTargetLabel(language)}: $target",
           style = MaterialTheme.typography.titleSmall,
           color = MaterialTheme.colorScheme.onSurfaceVariant,
           fontWeight = FontWeight.Medium
@@ -246,7 +273,7 @@ fun TasbihScreen(
           )
           Spacer(modifier = Modifier.width(4.dp))
           Text(
-            text = "TAP HERE",
+            text = LocalizationManager.getTapToCountHint(language),
             style = MaterialTheme.typography.labelSmall,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary,
@@ -274,7 +301,7 @@ fun TasbihScreen(
           horizontalAlignment = Alignment.CenterHorizontally
         ) {
           Text(
-            text = "Rounds Completed",
+            text = LocalizationManager.getCompletedRoundsLabel(language),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
           )
@@ -298,7 +325,7 @@ fun TasbihScreen(
           horizontalAlignment = Alignment.CenterHorizontally
         ) {
           Text(
-            text = "Lifetime Total",
+            text = if (language == AppLanguage.BENGALI) "সর্বমোট গণনা" else "Lifetime Total",
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
           )
@@ -324,7 +351,7 @@ fun TasbihScreen(
     ) {
       Icon(Icons.Default.Refresh, contentDescription = null, modifier = Modifier.size(16.dp))
       Spacer(modifier = Modifier.width(6.dp))
-      Text("Reset Current Counter to 0")
+      Text(LocalizationManager.getResetLabel(language))
     }
 
     Spacer(modifier = Modifier.height(24.dp))

@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.data.localization.LocalizationManager
 import com.example.ui.HaasiAlLaylViewModel
 import com.example.ui.components.CitySelectionSheet
 import com.example.ui.screens.DuaScreen
@@ -81,15 +82,16 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
   val selectedTasbih by viewModel.selectedTasbih.collectAsStateWithLifecycle()
   val bookmarkedDuaIds by viewModel.bookmarkedDuaIds.collectAsStateWithLifecycle()
   val currentLanguage by viewModel.currentLanguage.collectAsStateWithLifecycle()
+  val selectedMadhab by viewModel.selectedMadhab.collectAsStateWithLifecycle()
 
   var showCitySheet by remember { mutableStateOf(false) }
 
   val destinations = listOf(
-    NavDestination("Today", Icons.Filled.Home, Icons.Outlined.Home, "nav_today"),
-    NavDestination("Weather", Icons.Filled.WbSunny, Icons.Outlined.WbSunny, "nav_weather"),
-    NavDestination("Qibla", Icons.Filled.Explore, Icons.Outlined.Explore, "nav_qibla"),
-    NavDestination("Tasbih", Icons.Filled.TouchApp, Icons.Outlined.TouchApp, "nav_tasbih"),
-    NavDestination("Duas", Icons.Filled.AutoStories, Icons.Outlined.AutoStories, "nav_duas")
+    NavDestination(LocalizationManager.getNavToday(currentLanguage), Icons.Filled.Home, Icons.Outlined.Home, "nav_today"),
+    NavDestination(LocalizationManager.getNavWeather(currentLanguage), Icons.Filled.WbSunny, Icons.Outlined.WbSunny, "nav_weather"),
+    NavDestination(LocalizationManager.getNavQibla(currentLanguage), Icons.Filled.Explore, Icons.Outlined.Explore, "nav_qibla"),
+    NavDestination(LocalizationManager.getNavTasbih(currentLanguage), Icons.Filled.TouchApp, Icons.Outlined.TouchApp, "nav_tasbih"),
+    NavDestination(LocalizationManager.getNavDuas(currentLanguage), Icons.Filled.AutoStories, Icons.Outlined.AutoStories, "nav_duas")
   )
 
   Scaffold(
@@ -138,10 +140,12 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
           currentCity = currentCity,
           formatTemperature = { viewModel.formatTemperature(it) },
           language = currentLanguage,
+          madhab = selectedMadhab,
           onLocationClick = { showCitySheet = true },
           onNavigateToWeather = { viewModel.setTab(1) },
           onLanguageSelect = { lang -> viewModel.setLanguage(lang) },
           onResetLanguageToLocation = { viewModel.resetLanguageToLocation() },
+          onMadhabSelect = { madhab -> viewModel.setMadhab(madhab) },
           onTogglePrayer = { prayerKey -> viewModel.togglePrayerCheck(prayerKey) }
         )
 
@@ -152,7 +156,8 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
           formatTemperature = { viewModel.formatTemperature(it) },
           onRefresh = { viewModel.refreshWeather() },
           onLocationClick = { showCitySheet = true },
-          onToggleUnit = { viewModel.toggleTemperatureUnit() }
+          onToggleUnit = { viewModel.toggleTemperatureUnit() },
+          language = currentLanguage
         )
 
         2 -> QiblaScreen(
@@ -161,7 +166,8 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
           qiblaBearing = qiblaBearing,
           distanceToKaabaKm = distanceToKaaba,
           isFacingQibla = isFacingQibla,
-          onLocationClick = { showCitySheet = true }
+          onLocationClick = { showCitySheet = true },
+          language = currentLanguage
         )
 
         3 -> TasbihScreen(
@@ -169,12 +175,14 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
           selectedTasbih = selectedTasbih,
           onSelectTasbih = { id -> viewModel.selectTasbih(id) },
           onIncrement = { viewModel.incrementTasbih() },
-          onReset = { viewModel.resetTasbih() }
+          onReset = { viewModel.resetTasbih() },
+          language = currentLanguage
         )
 
         4 -> DuaScreen(
           bookmarkedDuaIds = bookmarkedDuaIds,
-          onToggleBookmark = { id -> viewModel.toggleDuaBookmark(id) }
+          onToggleBookmark = { id -> viewModel.toggleDuaBookmark(id) },
+          language = currentLanguage
         )
       }
     }

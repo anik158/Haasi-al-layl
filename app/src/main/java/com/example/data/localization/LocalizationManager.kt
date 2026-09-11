@@ -61,47 +61,6 @@ object LocalizationManager {
     }
   }
 
-  // Navigation tab titles
-  fun getNavToday(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "اليوم"
-    AppLanguage.BENGALI -> "আজ"
-    AppLanguage.SPANISH -> "Hoy"
-    AppLanguage.PORTUGUESE -> "Hoje"
-    AppLanguage.ENGLISH -> "Today"
-  }
-
-  fun getNavWeather(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "الطقس"
-    AppLanguage.BENGALI -> "আবহাওয়া"
-    AppLanguage.SPANISH -> "Clima"
-    AppLanguage.PORTUGUESE -> "Clima"
-    AppLanguage.ENGLISH -> "Weather"
-  }
-
-  fun getNavQibla(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "القبلة"
-    AppLanguage.BENGALI -> "কিবলা"
-    AppLanguage.SPANISH -> "Alquibla"
-    AppLanguage.PORTUGUESE -> "Qibla"
-    AppLanguage.ENGLISH -> "Qibla"
-  }
-
-  fun getNavTasbih(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "التسبيح"
-    AppLanguage.BENGALI -> "তাসবিহ"
-    AppLanguage.SPANISH -> "Tasbih"
-    AppLanguage.PORTUGUESE -> "Tasbih"
-    AppLanguage.ENGLISH -> "Tasbih"
-  }
-
-  fun getNavDuas(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "الأدعية"
-    AppLanguage.BENGALI -> "দোয়া"
-    AppLanguage.SPANISH -> "Súplicas"
-    AppLanguage.PORTUGUESE -> "Súplicas"
-    AppLanguage.ENGLISH -> "Duas"
-  }
-
   // Prayer hero texts
   fun getNextPrayerLabel(language: AppLanguage): String = when (language) {
     AppLanguage.ARABIC -> "الصلاة القادمة"
@@ -385,4 +344,333 @@ object LocalizationManager {
     AppLanguage.PORTUGUESE -> "Hadith do Dia"
     AppLanguage.ENGLISH -> "Hadith of the Day"
   }
+
+  // =========================================================================
+  // Navigation Bar Labels
+  // =========================================================================
+  fun getNavToday(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "اليوم"
+    AppLanguage.BENGALI -> "আজ"
+    AppLanguage.SPANISH -> "Hoy"
+    AppLanguage.PORTUGUESE -> "Hoje"
+    AppLanguage.ENGLISH -> "Today"
+  }
+
+  fun getNavWeather(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "الطقس"
+    AppLanguage.BENGALI -> "আবহাওয়া"
+    AppLanguage.SPANISH -> "Clima"
+    AppLanguage.PORTUGUESE -> "Clima"
+    AppLanguage.ENGLISH -> "Weather"
+  }
+
+  fun getNavQibla(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "القبلة"
+    AppLanguage.BENGALI -> "কিবলা"
+    AppLanguage.SPANISH -> "Qibla"
+    AppLanguage.PORTUGUESE -> "Qibla"
+    AppLanguage.ENGLISH -> "Qibla"
+  }
+
+  fun getNavTasbih(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "التسبيح"
+    AppLanguage.BENGALI -> "তাসবিহ"
+    AppLanguage.SPANISH -> "Tasbih"
+    AppLanguage.PORTUGUESE -> "Tasbih"
+    AppLanguage.ENGLISH -> "Tasbih"
+  }
+
+  fun getNavDuas(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "الأدعية"
+    AppLanguage.BENGALI -> "দোয়া"
+    AppLanguage.SPANISH -> "Súplicas"
+    AppLanguage.PORTUGUESE -> "Súplicas"
+    AppLanguage.ENGLISH -> "Duas"
+  }
+
+  // =========================================================================
+  // Weather Screen Strings
+  // =========================================================================
+  fun getWeatherForecastTitle(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "توقعات الطقس"
+    AppLanguage.BENGALI -> "আবহাওয়া পূর্বাভাস"
+    AppLanguage.SPANISH -> "Pronóstico del Clima"
+    AppLanguage.PORTUGUESE -> "Previsão do Tempo"
+    AppLanguage.ENGLISH -> "Weather Forecast"
+  }
+
+  fun getHourlyForecastTitle(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "التوقعات بالساعات (٢٤ ساعة)"
+    AppLanguage.BENGALI -> "ঘণ্টায় ঘণ্টায় পূর্বাভাস (২৪ ঘণ্টা)"
+    AppLanguage.SPANISH -> "Pronóstico por Horas (24h)"
+    AppLanguage.PORTUGUESE -> "Previsão por Horas (24h)"
+    AppLanguage.ENGLISH -> "Hourly Forecast (24 Hours)"
+  }
+
+  fun getDailyForecastTitle(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "توقعات ٧ أيام"
+    AppLanguage.BENGALI -> "৭ দিনের আবহাওয়া পূর্বাভাস"
+    AppLanguage.SPANISH -> "Pronóstico de 7 Días"
+    AppLanguage.PORTUGUESE -> "Previsão de 7 Dias"
+    AppLanguage.ENGLISH -> "7-Day Forecast"
+  }
+
+  fun getFeelsLikeLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "الشعور الحقيقي"
+    AppLanguage.BENGALI -> "অনুভূত তাপমাত্রা"
+    AppLanguage.SPANISH -> "Sensación térmica"
+    AppLanguage.PORTUGUESE -> "Sensação térmica"
+    AppLanguage.ENGLISH -> "Feels Like"
+  }
+
+  fun getHumidityLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "الرطوبة"
+    AppLanguage.BENGALI -> "আর্দ্রতা"
+    AppLanguage.SPANISH -> "Humedad"
+    AppLanguage.PORTUGUESE -> "Umidade"
+    AppLanguage.ENGLISH -> "Humidity"
+  }
+
+  fun getWindSpeedLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "سرعة الرياح"
+    AppLanguage.BENGALI -> "বাতাসের গতি"
+    AppLanguage.SPANISH -> "Viento"
+    AppLanguage.PORTUGUESE -> "Vento"
+    AppLanguage.ENGLISH -> "Wind Speed"
+  }
+
+  fun getUvIndexLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "مؤشر الأشعة فوق البنفسجية"
+    AppLanguage.BENGALI -> "ইউভি সূচক"
+    AppLanguage.SPANISH -> "Índice UV"
+    AppLanguage.PORTUGUESE -> "Índice UV"
+    AppLanguage.ENGLISH -> "UV Index"
+  }
+
+  fun getPrecipitationLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "احتمال الهطول"
+    AppLanguage.BENGALI -> "বৃষ্টির সম্ভাবনা"
+    AppLanguage.SPANISH -> "Precipitación"
+    AppLanguage.PORTUGUESE -> "Precipitação"
+    AppLanguage.ENGLISH -> "Precipitation"
+  }
+
+  fun getPressureLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "الضغط الجوي"
+    AppLanguage.BENGALI -> "বায়ুমণ্ডলীয় চাপ"
+    AppLanguage.SPANISH -> "Presión"
+    AppLanguage.PORTUGUESE -> "Pressão"
+    AppLanguage.ENGLISH -> "Pressure"
+  }
+
+  // =========================================================================
+  // Qibla Screen Strings
+  // =========================================================================
+  fun getQiblaTitle(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "اتجاه القبلة"
+    AppLanguage.BENGALI -> "কিবলা নির্দেশক"
+    AppLanguage.SPANISH -> "Dirección de la Qibla"
+    AppLanguage.PORTUGUESE -> "Direção da Qibla"
+    AppLanguage.ENGLISH -> "Qibla Direction"
+  }
+
+  fun getQiblaSubtitle(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "تحديد اتجاه الكعبة المشرفة بمكة المكرمة"
+    AppLanguage.BENGALI -> "পবিত্র কাবা শরিফের সঠিক দিক নির্দেশক"
+    AppLanguage.SPANISH -> "Hacia la Sagrada Kaaba en La Meca"
+    AppLanguage.PORTUGUESE -> "Em direção à Sagrada Caaba em Meca"
+    AppLanguage.ENGLISH -> "Find direction towards the Holy Kaaba"
+  }
+
+  fun getFacingQiblaText(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "أنت تواجه القبلة الشريفة!"
+    AppLanguage.BENGALI -> "আপনি কিবলার সম্মুখমুখী আছেন!"
+    AppLanguage.SPANISH -> "¡Estás frente a la Qibla!"
+    AppLanguage.PORTUGUESE -> "Você está de frente para a Qibla!"
+    AppLanguage.ENGLISH -> "Facing Qibla!"
+  }
+
+  fun getAlignNeedleHint(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "قم بتدوير الهاتف حتى يشير السهم الذهبي للأعلى"
+    AppLanguage.BENGALI -> "তীরচিহ্নটি সোজা না হওয়া পর্যন্ত ফোনটি ঘুরান"
+    AppLanguage.SPANISH -> "Gira el teléfono hasta que la aguja apunte arriba"
+    AppLanguage.PORTUGUESE -> "Gire o telefone até que a agulha aponte para cima"
+    AppLanguage.ENGLISH -> "Align device until needle points straight up"
+  }
+
+  fun getTowardsKaabaLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "نحو الكعبة المشرفة (مكة المكرمة)"
+    AppLanguage.BENGALI -> "পবিত্র কাবা শরিফ, মক্কার দিকে"
+    AppLanguage.SPANISH -> "Hacia la Kaaba (La Meca)"
+    AppLanguage.PORTUGUESE -> "Em direção à Caaba (Meca)"
+    AppLanguage.ENGLISH -> "Towards Kaaba, Makkah"
+  }
+
+  fun getDistanceToKaabaLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "المسافة إلى الكعبة"
+    AppLanguage.BENGALI -> "কাবা শরিফ থেকে দূরত্ব"
+    AppLanguage.SPANISH -> "Distancia a la Kaaba"
+    AppLanguage.PORTUGUESE -> "Distância até a Caaba"
+    AppLanguage.ENGLISH -> "Distance to Kaaba"
+  }
+
+  fun getCompassCalibrationHint(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "لزيادة الدقة، حرك الهاتف على شكل الرقم 8"
+    AppLanguage.BENGALI -> "কম্পাসের নির্ভুলতার জন্য ফোনটিকে ৮ এর মতো করে ঘোরান"
+    AppLanguage.SPANISH -> "Para calibrar, mueva el teléfono en forma de 8"
+    AppLanguage.PORTUGUESE -> "Para calibrar, mova o telefone em forma de 8"
+    AppLanguage.ENGLISH -> "Calibrate sensor by moving phone in figure-8"
+  }
+
+  // =========================================================================
+  // Tasbih Screen Strings
+  // =========================================================================
+  fun getTasbihTitle(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "المسبحة الإلكترونية"
+    AppLanguage.BENGALI -> "ডিজিটাল তাসবিহ"
+    AppLanguage.SPANISH -> "Tasbih Digital"
+    AppLanguage.PORTUGUESE -> "Tasbih Digital"
+    AppLanguage.ENGLISH -> "Digital Tasbih"
+  }
+
+  fun getTasbihSubtitle(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "ذكر الله وتسبيحه في كل وقت"
+    AppLanguage.BENGALI -> "আল্লাহর জিকির ও সার্বক্ষণিক স্মরণ"
+    AppLanguage.SPANISH -> "Dhikr y Recuerdo de Alá"
+    AppLanguage.PORTUGUESE -> "Dhikr e Lembrança de Allah"
+    AppLanguage.ENGLISH -> "Dhikr & Remembrance of Allah"
+  }
+
+  fun getTapToCountHint(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "المس الدائرة للعد"
+    AppLanguage.BENGALI -> "গণনা করতে বড় বৃত্তে ট্যাপ করুন"
+    AppLanguage.SPANISH -> "Toca el círculo para contar"
+    AppLanguage.PORTUGUESE -> "Toque no círculo para contar"
+    AppLanguage.ENGLISH -> "Tap circle to count"
+  }
+
+  fun getResetLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "إعادة تعيين"
+    AppLanguage.BENGALI -> "রিসেট"
+    AppLanguage.SPANISH -> "Reiniciar"
+    AppLanguage.PORTUGUESE -> "Redefinir"
+    AppLanguage.ENGLISH -> "Reset"
+  }
+
+  fun getCompletedRoundsLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "الجولات المكتملة"
+    AppLanguage.BENGALI -> "সম্পূর্ণ চক্র"
+    AppLanguage.SPANISH -> "Rondas Completadas"
+    AppLanguage.PORTUGUESE -> "Rodadas Concluídas"
+    AppLanguage.ENGLISH -> "Completed Rounds"
+  }
+
+  fun getTargetLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "الهدف"
+    AppLanguage.BENGALI -> "লক্ষ্য"
+    AppLanguage.SPANISH -> "Objetivo"
+    AppLanguage.PORTUGUESE -> "Meta"
+    AppLanguage.ENGLISH -> "Target"
+  }
+
+  fun getSelectDhikrTitle(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "اختر الذكر"
+    AppLanguage.BENGALI -> "জিকির নির্বাচন করুন"
+    AppLanguage.SPANISH -> "Seleccionar Dhikr"
+    AppLanguage.PORTUGUESE -> "Selecionar Dhikr"
+    AppLanguage.ENGLISH -> "Select Dhikr"
+  }
+
+  // =========================================================================
+  // Dua Screen Strings
+  // =========================================================================
+  fun getDuaTitle(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "الأدعية والأذكار اليومية"
+    AppLanguage.BENGALI -> "দৈনন্দিন দোয়া ও মোনাজাত"
+    AppLanguage.SPANISH -> "Súplicas y Adhkar Diarios"
+    AppLanguage.PORTUGUESE -> "Súplicas e Adhkar Diários"
+    AppLanguage.ENGLISH -> "Daily Duas & Adhkar"
+  }
+
+  fun getDuaSubtitle(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "حصن المسلم من أذكار الكتاب والسنة"
+    AppLanguage.BENGALI -> "হিসনুল মুসলিম (কুরআন ও সুন্নাহর দোয়া)"
+    AppLanguage.SPANISH -> "Hisn al-Muslim (Fortaleza del Musulmán)"
+    AppLanguage.PORTUGUESE -> "Hisn al-Muslim (Fortaleza do Muçulmano)"
+    AppLanguage.ENGLISH -> "Hisn al-Muslim (Fortress of the Muslim)"
+  }
+
+  fun getSearchDuaPlaceholder(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "ابحث في الأدعية والترجمات..."
+    AppLanguage.BENGALI -> "দোয়া বা অর্থ অনুসন্ধান করুন..."
+    AppLanguage.SPANISH -> "Buscar súplicas, traducciones..."
+    AppLanguage.PORTUGUESE -> "Pesquisar súplicas, traduções..."
+    AppLanguage.ENGLISH -> "Search duas, translations..."
+  }
+
+  fun getBookmarksOnlyLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "المحفوظة"
+    AppLanguage.BENGALI -> "সংরক্ষিত"
+    AppLanguage.SPANISH -> "Guardadas"
+    AppLanguage.PORTUGUESE -> "Salvas"
+    AppLanguage.ENGLISH -> "Bookmarks"
+  }
+
+  fun getNoDuasFoundTitle(language: AppLanguage, showBookmarksOnly: Boolean): String = when (language) {
+    AppLanguage.ARABIC -> if (showBookmarksOnly) "لا توجد أدعية محفوظة بعد" else "لم يتم العثور على أدعية"
+    AppLanguage.BENGALI -> if (showBookmarksOnly) "এখনো কোনো দোয়া সংরক্ষণ করা হয়নি" else "কোনো দোয়া খুঁজে পাওয়া যায়নি"
+    AppLanguage.SPANISH -> if (showBookmarksOnly) "No hay súplicas guardadas aún" else "No se encontraron súplicas"
+    AppLanguage.PORTUGUESE -> if (showBookmarksOnly) "Nenhuma súplica salva ainda" else "Nenhuma súplica encontrada"
+    AppLanguage.ENGLISH -> if (showBookmarksOnly) "No saved bookmarks yet" else "No duas found"
+  }
+
+  fun getNoDuasFoundSubtitle(language: AppLanguage, showBookmarksOnly: Boolean): String = when (language) {
+    AppLanguage.ARABIC -> if (showBookmarksOnly) "اضغط على علامة الحفظ لحفظ أي دعاء هنا" else "حاول مسح فلاتر البحث"
+    AppLanguage.BENGALI -> if (showBookmarksOnly) "যে কোনো দোয়ার বুকমার্ক আইকনে ট্যাপ করে এখানে সংরক্ষণ করুন" else "অনুসন্ধান ফিল্টার পরিবর্তন করে দেখুন"
+    AppLanguage.SPANISH -> if (showBookmarksOnly) "Toca el ícono de marcador para guardar aquí" else "Intenta borrar tus filtros de búsqueda"
+    AppLanguage.PORTUGUESE -> if (showBookmarksOnly) "Toque no ícone de marcador para salvar aqui" else "Tente limpar seus filtros de pesquisa"
+    AppLanguage.ENGLISH -> if (showBookmarksOnly) "Tap the bookmark icon on any Du'a to save it here" else "Try clearing your search filters"
+  }
+
+  fun getSourceLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "المصدر"
+    AppLanguage.BENGALI -> "উৎস"
+    AppLanguage.SPANISH -> "Fuente"
+    AppLanguage.PORTUGUESE -> "Fonte"
+    AppLanguage.ENGLISH -> "Source"
+  }
+
+  // Madhab Selection Strings
+  fun getSelectMadhabTitle(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "المذاهب الفقهية الأربعة"
+    AppLanguage.BENGALI -> "চারটি ফিকহী মাজহাব নির্বাচন"
+    AppLanguage.SPANISH -> "Seleccionar Escuela Jurídica (Madhab)"
+    AppLanguage.PORTUGUESE -> "Selecionar Escola Jurídica (Madhab)"
+    AppLanguage.ENGLISH -> "Select Juristic Madhab"
+  }
+
+  fun getSelectMadhabSubtitle(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "يحدد وقت صلاة العصر وفق مذهب الفقه المختار (الافتراضي: الشافعي)"
+    AppLanguage.BENGALI -> "নির্বাচিত মাজহাব অনুযায়ী আসর নামাজের সময় নির্ধারিত হবে (ডিফল্ট: ইমাম শাফেয়ী)"
+    AppLanguage.SPANISH -> "Determina la hora de Asr según el madhab elegido (Por defecto: Imam Shafi'i)"
+    AppLanguage.PORTUGUESE -> "Determina o horário de Asr de acordo com o madhab escolhido (Padrão: Imam Shafi'i)"
+    AppLanguage.ENGLISH -> "Determines Asr prayer time calculation (Default: Imam Shafi'i)"
+  }
+
+  fun getDefaultBadge(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "الافتراضي"
+    AppLanguage.BENGALI -> "ডিফল্ট"
+    AppLanguage.SPANISH -> "Por defecto"
+    AppLanguage.PORTUGUESE -> "Padrão"
+    AppLanguage.ENGLISH -> "Default"
+  }
+
+  fun getAsrShadowRatioLabel(language: AppLanguage, factor: Double): String = when (language) {
+    AppLanguage.ARABIC -> "العصر: ظل ${if (factor == 1.0) "١x" else "٢x"}"
+    AppLanguage.BENGALI -> "আসর: ছায়া ${if (factor == 1.0) "১ গুণ" else "২ গুণ"}"
+    AppLanguage.SPANISH -> "Asr: Sombra ${if (factor == 1.0) "1x" else "2x"}"
+    AppLanguage.PORTUGUESE -> "Asr: Sombra ${if (factor == 1.0) "1x" else "2x"}"
+    AppLanguage.ENGLISH -> "Asr: ${if (factor == 1.0) "1x" else "2x"} Shadow"
+  }
 }
+

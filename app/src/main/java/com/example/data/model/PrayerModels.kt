@@ -1,5 +1,6 @@
 package com.example.data.model
 
+import com.example.data.prayer.IslamicMadhab
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -31,10 +32,12 @@ data class DailyPrayerSchedule(
   val city: String,
   val country: String,
   val calculationMethodName: String,
+  val madhab: IslamicMadhab = IslamicMadhab.SHAFI,
   val items: List<PrayerTimeItem>,
   val nextPrayer: PrayerTimeItem?,
   val timeUntilNextFormatted: String,
-  val progressToNext: Float // 0.0f to 1.0f
+  val progressToNext: Float, // 0.0f to 1.0f
+  val currentTime: LocalTime = LocalTime.now()
 ) {
   val sunrise: LocalTime?
     get() = items.find { it.prayer == PrayerName.SUNRISE }?.time

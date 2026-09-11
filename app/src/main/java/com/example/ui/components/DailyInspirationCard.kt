@@ -104,7 +104,7 @@ fun DailyInspirationCard(
       Spacer(modifier = Modifier.height(8.dp))
 
       Text(
-        text = "“${inspiration.ayahTranslation}”",
+        text = "“${inspiration.getLocalizedAyah(language)}”",
         style = MaterialTheme.typography.bodyMedium,
         lineHeight = 22.sp,
         color = DarkForestInk
@@ -151,7 +151,7 @@ fun DailyInspirationCard(
       Spacer(modifier = Modifier.height(10.dp))
 
       Text(
-        text = "“${inspiration.hadithTranslation}”",
+        text = "“${inspiration.getLocalizedHadith(language)}”",
         style = MaterialTheme.typography.bodyMedium,
         lineHeight = 22.sp,
         color = DarkForestInk
