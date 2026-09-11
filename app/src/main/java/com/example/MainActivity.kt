@@ -81,6 +81,7 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
   val tasbihList by viewModel.tasbihList.collectAsStateWithLifecycle()
   val selectedTasbih by viewModel.selectedTasbih.collectAsStateWithLifecycle()
   val bookmarkedDuaIds by viewModel.bookmarkedDuaIds.collectAsStateWithLifecycle()
+  val allDuas by viewModel.allDuas.collectAsStateWithLifecycle()
   val currentLanguage by viewModel.currentLanguage.collectAsStateWithLifecycle()
   val selectedMadhab by viewModel.selectedMadhab.collectAsStateWithLifecycle()
 
@@ -180,6 +181,7 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
         )
 
         4 -> DuaScreen(
+          allDuas = allDuas,
           bookmarkedDuaIds = bookmarkedDuaIds,
           onToggleBookmark = { id -> viewModel.toggleDuaBookmark(id) },
           language = currentLanguage

@@ -34,6 +34,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.Dispatchers
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -87,6 +88,15 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
 
   // Live Timer trigger (updates every second for real-time countdown)
   private val _secondTicker = MutableStateFlow(System.currentTimeMillis())
+
+  // Hisn Al-Muslim Duas
+  private val _hisnDuas = MutableStateFlow<List<com.example.data.dua.DuaItem>>(emptyList())
+  val allDuas: StateFlow<List<com.example.data.dua.DuaItem>> = combine(
+    _hisnDuas,
+    MutableStateFlow(com.example.data.dua.IslamicContentProvider.DUAS)
+  ) { hisn, builtIn ->
+    builtIn + hisn
+  }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), com.example.data.dua.IslamicContentProvider.DUAS)
 
   // Weather state
   private val _weatherState = MutableStateFlow<WeatherUiState>(WeatherUiState.Loading)
@@ -186,6 +196,49 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
     startSecondTicker()
     seedTasbihIfNeeded()
     refreshWeather()
+    loadHisnAlMuslimData()
+  }
+
+  private fun loadHisnAlMuslimData() {
+    viewModelScope.launch(Dispatchers.IO) {
+      try {
+        val jsonString = getApplication<Application>().assets.open("hisn_al_muslim.json").bufferedReader().use { it.readText() }
+        val root = org.json.JSONObject(jsonString)
+        val englishArray = root.getJSONArray("English")
+        
+        val items = mutableListOf<com.example.data.dua.DuaItem>()
+        for (i in 0 until englishArray.length()) {
+          val categoryObj = englishArray.getJSONObject(i)
+          val categoryTitle = categoryObj.optString("TITLE", "Category")
+          val textArray = categoryObj.optJSONArray("TEXT") ?: continue
+          
+          for (j in 0 until textArray.length()) {
+            val duaObj = textArray.getJSONObject(j)
+            val id = duaObj.optString("ID")
+            val arabic = duaObj.optString("ARABIC_TEXT")
+            val transliteration = duaObj.optString("LANGUAGE_ARABIC_TRANSLATED_TEXT")
+            val translation = duaObj.optString("TRANSLATED_TEXT")
+            val repeat = duaObj.optInt("REPEAT", 1)
+            
+            items.add(
+              com.example.data.dua.DuaItem(
+                id = "hisn_${i}_${id}",
+                title = categoryTitle,
+                category = com.example.data.dua.DuaCategory.ALL,
+                arabic = arabic,
+                transliteration = transliteration,
+                translation = translation,
+                reference = "Hisn al-Muslim",
+                repetition = "${repeat}x"
+              )
+            )
+          }
+        }
+        _hisnDuas.value = items
+      } catch (e: Exception) {
+        e.printStackTrace()
+      }
+    }
   }
 
   private fun startSecondTicker() {

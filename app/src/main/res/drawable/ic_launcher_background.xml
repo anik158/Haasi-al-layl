@@ -5,28 +5,5 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <path android:pathData="M0,0h108v108h-108z">
-        <aapt:attr name="android:fillColor">
-            <gradient
-                android:angle="315"
-                android:endX="108"
-                android:endY="108"
-                android:startX="0"
-                android:startY="0"
-                android:type="linear">
-                <item android:color="#FF063E2F" android:offset="0.0" />
-                <item android:color="#FF0D5C46" android:offset="0.5" />
-                <item android:color="#FF02231A" android:offset="1.0" />
-            </gradient>
-        </aapt:attr>
-    </path>
-    <!-- Subtle geometric Islamic star motif in background -->
-    <path
-        android:fillColor="#15FFFFFF"
-        android:pathData="M54,26 L60,40 L74,34 L68,48 L82,54 L68,60 L74,74 L60,68 L54,82 L48,68 L34,74 L40,60 L26,54 L40,48 L34,34 L48,40 Z" />
-    <path
-        android:fillColor="#0DFFFFFF"
-        android:strokeColor="#25D4AF37"
-        android:strokeWidth="0.8"
-        android:pathData="M54,18 L64,36 L84,30 L76,50 L94,54 L76,58 L84,78 L64,72 L54,90 L44,72 L24,78 L32,58 L14,54 L32,50 L24,30 L44,36 Z" />
+    <path android:pathData="M0,0h108v108h-108z" android:fillColor="#FFFFFFFF"/>
 </vector>

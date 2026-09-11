@@ -236,23 +236,6 @@ fun NotificationSettingsSheet(
                 modifier = Modifier.testTag("switch_prayer_notifs")
               )
             }
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            OutlinedButton(
-              onClick = {
-                checkAndRequestPermission {
-                  PrayerNotificationManager.sendTestPrayerNotification(context, language)
-                  testSentMessage = "Prayer test notification sent to system bar!"
-                }
-              },
-              shape = RoundedCornerShape(10.dp),
-              modifier = Modifier.fillMaxWidth().testTag("btn_test_prayer_notif")
-            ) {
-              Icon(Icons.Default.Notifications, contentDescription = null, modifier = Modifier.size(16.dp))
-              Spacer(modifier = Modifier.width(8.dp))
-              Text("Send Test Prayer Notification")
-            }
           }
         }
       }
@@ -315,23 +298,6 @@ fun NotificationSettingsSheet(
                 ),
                 modifier = Modifier.testTag("switch_forbidden_notifs")
               )
-            }
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            OutlinedButton(
-              onClick = {
-                checkAndRequestPermission {
-                  PrayerNotificationManager.sendTestForbiddenNotification(context, language)
-                  testSentMessage = "Forbidden time test notification sent to system bar!"
-                }
-              },
-              shape = RoundedCornerShape(10.dp),
-              modifier = Modifier.fillMaxWidth().testTag("btn_test_forbidden_notif")
-            ) {
-              Icon(Icons.Default.Warning, contentDescription = null, modifier = Modifier.size(16.dp))
-              Spacer(modifier = Modifier.width(8.dp))
-              Text("Send Test Forbidden Time Alert")
             }
           }
         }

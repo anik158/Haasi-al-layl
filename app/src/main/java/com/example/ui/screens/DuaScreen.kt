@@ -55,6 +55,7 @@ import com.example.ui.theme.WarmGoldAccent
 
 @Composable
 fun DuaScreen(
+  allDuas: List<com.example.data.dua.DuaItem>,
   bookmarkedDuaIds: Set<String>,
   onToggleBookmark: (String) -> Unit,
   language: AppLanguage = AppLanguage.ENGLISH
@@ -63,8 +64,8 @@ fun DuaScreen(
   var selectedCategory by remember { mutableStateOf<DuaCategory?>(null) }
   var showBookmarksOnly by remember { mutableStateOf(false) }
 
-  val filteredDuas = remember(searchQuery, selectedCategory, showBookmarksOnly, bookmarkedDuaIds) {
-    IslamicContentProvider.DUAS.filter { dua ->
+  val filteredDuas = remember(searchQuery, selectedCategory, showBookmarksOnly, bookmarkedDuaIds, allDuas) {
+    allDuas.filter { dua ->
       val matchesSearch = searchQuery.isBlank() ||
         dua.title.contains(searchQuery, ignoreCase = true) ||
         dua.titleBn.contains(searchQuery, ignoreCase = true) ||

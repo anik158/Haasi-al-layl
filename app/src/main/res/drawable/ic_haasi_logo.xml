@@ -4,23 +4,6 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
 
-    <!-- Deep Midnight Forest Radial Background -->
-    <path
-        android:fillColor="#FF08231A"
-        android:pathData="M54,4 C81.6,4 104,26.4 104,54 C104,81.6 81.6,104 54,104 C26.4,104 4,81.6 4,54 C4,26.4 26.4,4 54,4 Z" />
-
-    <!-- Ornate Outer Gold Ring -->
-    <path
-        android:strokeColor="#FFD4AF37"
-        android:strokeWidth="1.6"
-        android:pathData="M54,6 C80.5,6 102,27.5 102,54 C102,80.5 80.5,102 54,102 C27.5,102 6,80.5 6,54 C6,27.5 27.5,6 54,6 Z" />
-
-    <!-- Inner Subtle Gold Filigree Ring -->
-    <path
-        android:strokeColor="#44FFE894"
-        android:strokeWidth="0.8"
-        android:pathData="M54,9 C78.8,9 99,29.2 99,54 C99,78.8 78.8,99 54,99 C29.2,99 9,78.8 9,54 C9,29.2 29.2,9 54,9 Z" />
-
     <!-- Majestic Golden Crescent Moon (Al-Hilal) framing the night sky -->
     <path
         android:fillColor="#FFE8BF4A"
