@@ -2,6 +2,8 @@ package com.example.ui
 
 import android.app.Application
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -16,6 +18,7 @@ import com.example.data.model.CityLocation
 import com.example.data.model.DailyPrayerSchedule
 import com.example.data.prayer.CalculationMethod
 import com.example.data.prayer.JuristicMethod
+import com.example.data.preferences.UserPreferences
 import com.example.data.prayer.PrayerCalculator
 import com.example.data.qibla.QiblaCalculator
 import com.example.data.qibla.QiblaSensorManager
@@ -55,6 +58,21 @@ sealed interface WeatherUiState {
   data class Error(val message: String) : WeatherUiState
 }
 
+/**
+ * Whether the first-run prompts are needed. The app asks only when it cannot work the answers
+ * out for itself, and only once per installation.
+ */
+enum class OnboardingState {
+  /** Auto-detection is still in flight; show nothing yet. */
+  RESOLVING,
+
+  /** Already onboarded, or location and language were detected without asking. */
+  NOT_NEEDED,
+
+  /** Detection failed, so the user picks a language and then a city by hand. */
+  REQUIRED
+}
+
 class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(application) {
 
   private val database = HaasiAlLaylDatabase.getDatabase(application)
@@ -62,12 +80,27 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
   private val weatherRepository = WeatherRepository()
   private val sensorManager = QiblaSensorManager(application)
 
-  // Selected Location
-  private val _selectedCity = MutableStateFlow(PrayerCalculator.PRESET_CITIES[0]) // Default to Makkah
+  private val userPrefs = UserPreferences(application)
+
+  // Selected Location - restored from disk so a returning user keeps their city.
+  private val _selectedCity = MutableStateFlow(
+    userPrefs.selectedCity ?: PrayerCalculator.PRESET_CITIES[0] // Default to Makkah
+  )
   val selectedCity: StateFlow<CityLocation> = _selectedCity.asStateFlow()
 
+  /**
+   * Whether the first-run language/location prompts still need to be shown. Resolves to
+   * [OnboardingState.RESOLVING] first so no dialog flashes while auto-detection is in flight.
+   */
+  private val _onboardingState = MutableStateFlow(
+    if (userPrefs.isOnboardingComplete) OnboardingState.NOT_NEEDED else OnboardingState.RESOLVING
+  )
+  val onboardingState: StateFlow<OnboardingState> = _onboardingState.asStateFlow()
+
   // App Language (Auto location-based by default, can be overridden)
-  private val _manualLanguage = MutableStateFlow<com.example.data.localization.AppLanguage?>(null)
+  private val _manualLanguage = MutableStateFlow<com.example.data.localization.AppLanguage?>(
+    userPrefs.manualLanguage
+  )
   val manualLanguage: StateFlow<com.example.data.localization.AppLanguage?> = _manualLanguage.asStateFlow()
 
   val currentLanguage: StateFlow<com.example.data.localization.AppLanguage> = combine(
@@ -78,7 +111,11 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
   }.stateIn(
     viewModelScope,
     SharingStarted.WhileSubscribed(5000),
-    com.example.data.localization.LocalizationManager.detectLanguageForCountry(PrayerCalculator.PRESET_CITIES[0].country)
+    // Seed from the restored choices, so a returning user never sees a frame in the wrong
+    // language before the flow emits.
+    _manualLanguage.value
+      ?: com.example.data.localization.LocalizationManager
+        .detectLanguageForCountry(_selectedCity.value.country)
   )
 
   // Calculation Settings
@@ -218,6 +255,7 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
       }
     }
 
+    resolveOnboarding()
     startSecondTicker()
     seedTasbihIfNeeded()
     refreshWeather()
@@ -287,60 +325,101 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
   }
 
 
-  fun autoDetectLocation() {
+  /**
+   * Resolves the first run. If the device can reach the network we take the location from the
+   * user's IP and derive the language from its country, and the user is never prompted. Only when
+   * that is impossible - no connectivity, or the lookup fails - do we fall back to asking.
+   */
+  private fun resolveOnboarding() {
+    if (userPrefs.isOnboardingComplete) return
     viewModelScope.launch {
-      try {
-        val jsonString = withContext(Dispatchers.IO) {
-          val url = URL("https://ipinfo.io/json")
-          val connection = url.openConnection() as java.net.HttpURLConnection
-          connection.requestMethod = "GET"
-          connection.setRequestProperty("User-Agent", "Mozilla/5.0")
-          connection.connectTimeout = 5000
-          connection.readTimeout = 5000
-          
-          if (connection.responseCode == 200) {
-            val reader = java.io.BufferedReader(java.io.InputStreamReader(connection.inputStream))
-            val response = StringBuilder()
-            var line: String?
-            while (reader.readLine().also { line = it } != null) {
-              response.append(line)
-            }
-            reader.close()
-            response.toString()
-          } else {
-            null
-          }
-        }
-        
-        if (jsonString != null) {
-          val json = org.json.JSONObject(jsonString)
-          val city = json.optString("city", "Unknown")
-          val country = json.optString("country", "Unknown")
-          val loc = json.optString("loc", "0.0,0.0").split(",")
-          val lat = loc.getOrNull(0)?.toDoubleOrNull() ?: 0.0
-          val lon = loc.getOrNull(1)?.toDoubleOrNull() ?: 0.0
-          val timezone = json.optString("timezone", "UTC")
-          
-          val detectedLocation = CityLocation(city, country, lat, lon, timezone)
-          _selectedCity.value = detectedLocation
-        }
-      } catch (e: Exception) {
-        Log.e("HaasiAlLaylViewModel", "Error auto-detecting location", e)
+      val detected = if (isNetworkAvailable()) fetchIpLocation() else null
+      if (detected != null) {
+        applyCity(detected)
+        markOnboardingComplete()
+      } else {
+        _onboardingState.value = OnboardingState.REQUIRED
       }
     }
   }
 
-  fun selectCity(city: CityLocation) {
+  /** Marks the first run settled so the prompts never reappear for this installation. */
+  fun markOnboardingComplete() {
+    userPrefs.isOnboardingComplete = true
+    _onboardingState.value = OnboardingState.NOT_NEEDED
+  }
+
+  private fun isNetworkAvailable(): Boolean {
+    val manager = getApplication<Application>()
+      .getSystemService(ConnectivityManager::class.java) ?: return false
+    val capabilities = manager.getNetworkCapabilities(manager.activeNetwork) ?: return false
+    return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
+      capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+  }
+
+  private suspend fun fetchIpLocation(): CityLocation? = withContext(Dispatchers.IO) {
+    try {
+      val url = URL("https://ipinfo.io/json")
+      val connection = url.openConnection() as java.net.HttpURLConnection
+      connection.requestMethod = "GET"
+      connection.setRequestProperty("User-Agent", "Mozilla/5.0")
+      connection.connectTimeout = 5000
+      connection.readTimeout = 5000
+
+      val body = if (connection.responseCode == 200) {
+        connection.inputStream.bufferedReader().use { it.readText() }
+      } else {
+        null
+      } ?: return@withContext null
+
+      val json = org.json.JSONObject(body)
+      val city = json.optString("city", "").ifBlank { return@withContext null }
+      // ipinfo reports the country as an ISO 3166-1 alpha-2 code; expand it so the UI reads
+      // "Dhaka, Bangladesh" rather than "Dhaka, BD".
+      val countryCode = json.optString("country", "")
+      val country = if (countryCode.length == 2) {
+        java.util.Locale("", countryCode).getDisplayCountry(java.util.Locale.ENGLISH)
+          .ifBlank { countryCode }
+      } else {
+        countryCode
+      }
+      val loc = json.optString("loc", "0.0,0.0").split(",")
+      val lat = loc.getOrNull(0)?.toDoubleOrNull() ?: return@withContext null
+      val lon = loc.getOrNull(1)?.toDoubleOrNull() ?: return@withContext null
+      val timezone = json.optString("timezone", "").ifBlank { "UTC" }
+
+      CityLocation(city, country, lat, lon, timezone)
+    } catch (e: Exception) {
+      Log.e("HaasiAlLaylViewModel", "Error auto-detecting location", e)
+      null
+    }
+  }
+
+  fun autoDetectLocation() {
+    viewModelScope.launch {
+      fetchIpLocation()?.let { applyCity(it) }
+    }
+  }
+
+  /** Applies a city and writes it through, so it survives the next launch. */
+  private fun applyCity(city: CityLocation) {
     _selectedCity.value = city
+    userPrefs.selectedCity = city
+  }
+
+  fun selectCity(city: CityLocation) {
+    applyCity(city)
     refreshWeather()
   }
 
   fun setLanguage(language: com.example.data.localization.AppLanguage?) {
     _manualLanguage.value = language
+    userPrefs.manualLanguage = language
   }
 
   fun resetLanguageToLocation() {
     _manualLanguage.value = null
+    userPrefs.manualLanguage = null
   }
 
   fun setMadhab(madhab: com.example.data.prayer.IslamicMadhab) {

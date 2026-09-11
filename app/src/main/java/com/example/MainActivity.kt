@@ -31,7 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -41,6 +41,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.data.localization.LocalizationManager
 import com.example.ui.HaasiAlLaylViewModel
 import com.example.ui.components.CitySelectionSheet
+import com.example.ui.OnboardingState
 import com.example.ui.components.WelcomeDialog
 import com.example.ui.screens.DuaScreen
 import com.example.ui.screens.HomeScreen
@@ -86,8 +87,8 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
   val currentLanguage by viewModel.currentLanguage.collectAsStateWithLifecycle()
   val selectedMadhab by viewModel.selectedMadhab.collectAsStateWithLifecycle()
 
-  var showCitySheet by remember { mutableStateOf(false) }
-      var showWelcome by remember { mutableStateOf(true) }
+  var showCitySheet by rememberSaveable { mutableStateOf(false) }
+  val onboardingState by viewModel.onboardingState.collectAsStateWithLifecycle()
 
   val destinations = listOf(
     NavDestination(LocalizationManager.getNavToday(currentLanguage), Icons.Filled.Home, Icons.Outlined.Home, "nav_today"),
@@ -192,12 +193,14 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
     }
 
     
-      if (showWelcome) {
+      // Only surfaces when the app could not work out language and location on its own,
+      // and only until the user has been through it once.
+      if (onboardingState == OnboardingState.REQUIRED) {
         WelcomeDialog(
           language = currentLanguage,
           onLanguageSelect = { viewModel.setLanguage(it) },
           onOpenCitySelection = { showCitySheet = true },
-          onDismiss = { showWelcome = false }
+          onDismiss = { viewModel.markOnboardingComplete() }
         )
       }
       

@@ -38,13 +38,39 @@ object LocalizationManager {
     "Sao Tome and Principe", "Timor-Leste"
   )
 
+  // Geolocation lookups report ISO 3166-1 alpha-2 codes ("BD", "SA") rather than the full
+  // names the sets above hold, so both spellings have to resolve to the same language.
+  private val ARABIC_COUNTRY_CODES = setOf(
+    "SA", "AE", "EG", "QA", "KW", "OM", "BH", "JO", "LB", "IQ", "PS", "YE",
+    "MA", "DZ", "TN", "LY", "SD", "SY", "MR", "SO", "DJ", "KM"
+  )
+
+  private val SPANISH_COUNTRY_CODES = setOf(
+    "ES", "MX", "CO", "AR", "PE", "VE", "CL", "GT", "EC", "CU", "BO", "DO",
+    "HN", "PY", "SV", "NI", "CR", "PA", "PR", "UY", "GQ"
+  )
+
+  private val PORTUGUESE_COUNTRY_CODES = setOf(
+    "BR", "PT", "AO", "MZ", "CV", "GW", "ST", "TL"
+  )
+
+  /**
+   * Picks the app language for a country, accepting either a display name ("Bangladesh") or an
+   * ISO 3166-1 alpha-2 code ("BD"). Bangladesh reads Bengali, the Arab world Arabic, and the
+   * Spanish- and Portuguese-speaking worlds their own languages; everywhere else falls back to
+   * English.
+   */
   fun detectLanguageForCountry(country: String): AppLanguage {
     val clean = country.trim()
+    val code = clean.uppercase()
     return when {
-      clean.equals("Bangladesh", ignoreCase = true) -> AppLanguage.BENGALI
-      ARABIC_COUNTRIES.any { it.equals(clean, ignoreCase = true) } -> AppLanguage.ARABIC
-      SPANISH_COUNTRIES.any { it.equals(clean, ignoreCase = true) } -> AppLanguage.SPANISH
-      PORTUGUESE_COUNTRIES.any { it.equals(clean, ignoreCase = true) } -> AppLanguage.PORTUGUESE
+      clean.equals("Bangladesh", ignoreCase = true) || code == "BD" -> AppLanguage.BENGALI
+      code in ARABIC_COUNTRY_CODES ||
+        ARABIC_COUNTRIES.any { it.equals(clean, ignoreCase = true) } -> AppLanguage.ARABIC
+      code in SPANISH_COUNTRY_CODES ||
+        SPANISH_COUNTRIES.any { it.equals(clean, ignoreCase = true) } -> AppLanguage.SPANISH
+      code in PORTUGUESE_COUNTRY_CODES ||
+        PORTUGUESE_COUNTRIES.any { it.equals(clean, ignoreCase = true) } -> AppLanguage.PORTUGUESE
       else -> AppLanguage.ENGLISH
     }
   }
