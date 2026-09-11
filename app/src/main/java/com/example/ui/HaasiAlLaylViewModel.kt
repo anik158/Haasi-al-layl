@@ -200,7 +200,24 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
 
   private var tickerJob: Job? = null
 
+  // State to prevent spamming the Tahajjud notification
+  private var lastTahajjudNotifiedDate: java.time.LocalDate? = null
+
   init {
+    viewModelScope.launch {
+      prayerSchedule.collect { schedule ->
+        if (schedule.isTahajjudTime) {
+          val today = schedule.date
+          if (lastTahajjudNotifiedDate != today) {
+            lastTahajjudNotifiedDate = today
+            com.example.data.notification.PrayerNotificationManager.showTahajjudNotification(getApplication<android.app.Application>(), currentLanguage.value)
+            // Show emotional message via notification (since we are reusing the Prayer Notification, 
+            // maybe we can send a custom one instead, but let's build a custom notification method for Tahajjud)
+          }
+        }
+      }
+    }
+
     startSecondTicker()
     seedTasbihIfNeeded()
     refreshWeather()
