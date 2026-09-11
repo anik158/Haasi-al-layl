@@ -644,6 +644,22 @@ object LocalizationManager {
   }
 
   // Madhab Selection Strings
+  fun getSelectMethodTitle(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "طريقة حساب مواقيت الصلاة"
+    AppLanguage.BENGALI -> "নামাজের সময় গণনার পদ্ধতি"
+    AppLanguage.SPANISH -> "Metodo de calculo de oracion"
+    AppLanguage.PORTUGUESE -> "Metodo de calculo da oracao"
+    AppLanguage.ENGLISH -> "Prayer Calculation Method"
+  }
+
+  fun getSelectMethodSubtitle(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "تحدد زوايا الفجر والعشاء. أم القرى هي معيار مكة المكرمة."
+    AppLanguage.BENGALI -> "ফজর ও ইশার কোণ নির্ধারণ করে। উম্মুল কুরা হলো মক্কার মান।"
+    AppLanguage.SPANISH -> "Define los angulos de Fayr e Isha. Umm al-Qura es el estandar de La Meca."
+    AppLanguage.PORTUGUESE -> "Define os angulos de Fajr e Isha. Umm al-Qura e o padrao de Meca."
+    AppLanguage.ENGLISH -> "Sets the Fajr and Isha angles. Umm al-Qura is the Makkah standard."
+  }
+
   fun getSelectMadhabTitle(language: AppLanguage): String = when (language) {
     AppLanguage.ARABIC -> "المذاهب الفقهية الأربعة"
     AppLanguage.BENGALI -> "চারটি ফিকহী মাজহাব নির্বাচন"

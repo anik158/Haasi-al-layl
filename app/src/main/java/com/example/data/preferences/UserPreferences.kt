@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.example.data.localization.AppLanguage
 import com.example.data.model.CityLocation
+import com.example.data.prayer.CalculationMethod
 
 /**
  * User choices that must survive leaving the app.
@@ -29,6 +30,16 @@ class UserPreferences(context: Context) {
       if (value == null) remove(KEY_MANUAL_LANGUAGE) else putString(KEY_MANUAL_LANGUAGE, value.code)
       apply()
     }
+
+  /**
+   * Which convention prayer times are calculated with. Defaults to Umm al-Qura, the standard
+   * published by Saudi Arabia and used for Makkah and Madinah.
+   */
+  var calculationMethod: CalculationMethod
+    get() = prefs.getString(KEY_CALCULATION_METHOD, null)
+      ?.let { name -> CalculationMethod.entries.find { it.name == name } }
+      ?: CalculationMethod.UMM_AL_QURA
+    set(value) = prefs.edit().putString(KEY_CALCULATION_METHOD, value.name).apply()
 
   var selectedCity: CityLocation?
     get() {
@@ -63,6 +74,7 @@ class UserPreferences(context: Context) {
     const val PREFS_NAME = "haasi_user_prefs"
     const val KEY_ONBOARDING_COMPLETE = "onboarding_complete"
     const val KEY_MANUAL_LANGUAGE = "manual_language"
+    const val KEY_CALCULATION_METHOD = "calculation_method"
     const val KEY_CITY_NAME = "city_name"
     const val KEY_CITY_COUNTRY = "city_country"
     const val KEY_CITY_LAT = "city_lat"

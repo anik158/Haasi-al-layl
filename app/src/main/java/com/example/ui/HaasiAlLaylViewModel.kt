@@ -119,7 +119,8 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
   )
 
   // Calculation Settings
-  val calculationMethod = MutableStateFlow(CalculationMethod.MUSLIM_WORLD_LEAGUE)
+  val calculationMethod = MutableStateFlow(userPrefs.calculationMethod)
+  val selectedCalculationMethod: StateFlow<CalculationMethod> = calculationMethod.asStateFlow()
   val juristicMethod = MutableStateFlow(com.example.data.prayer.IslamicMadhab.SHAFI)
   val selectedMadhab: StateFlow<com.example.data.prayer.IslamicMadhab> = juristicMethod.asStateFlow()
 
@@ -424,6 +425,11 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
 
   fun setMadhab(madhab: com.example.data.prayer.IslamicMadhab) {
     juristicMethod.value = madhab
+  }
+
+  fun setCalculationMethod(method: CalculationMethod) {
+    calculationMethod.value = method
+    userPrefs.calculationMethod = method
   }
 
   fun toggleTemperatureUnit() {

@@ -86,6 +86,7 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
   val allDuas by viewModel.allDuas.collectAsStateWithLifecycle()
   val currentLanguage by viewModel.currentLanguage.collectAsStateWithLifecycle()
   val selectedMadhab by viewModel.selectedMadhab.collectAsStateWithLifecycle()
+  val selectedMethod by viewModel.selectedCalculationMethod.collectAsStateWithLifecycle()
 
   var showCitySheet by rememberSaveable { mutableStateOf(false) }
   val onboardingState by viewModel.onboardingState.collectAsStateWithLifecycle()
@@ -145,11 +146,13 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
           formatTemperature = { viewModel.formatTemperature(it) },
           language = currentLanguage,
           madhab = selectedMadhab,
+          method = selectedMethod,
           onLocationClick = { showCitySheet = true },
           onNavigateToWeather = { viewModel.setTab(1) },
           onLanguageSelect = { lang -> viewModel.setLanguage(lang) },
           onResetLanguageToLocation = { viewModel.resetLanguageToLocation() },
           onMadhabSelect = { madhab -> viewModel.setMadhab(madhab) },
+          onMethodSelect = { method -> viewModel.setCalculationMethod(method) },
           onTogglePrayer = { prayerKey -> viewModel.togglePrayerCheck(prayerKey) }
         )
 

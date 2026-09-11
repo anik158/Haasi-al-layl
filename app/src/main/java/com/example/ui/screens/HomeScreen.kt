@@ -50,6 +50,7 @@ import com.example.data.localization.AppLanguage
 import com.example.data.localization.LocalizationManager
 import com.example.data.model.CityLocation
 import com.example.data.model.DailyPrayerSchedule
+import com.example.data.prayer.CalculationMethod
 import com.example.data.prayer.IslamicMadhab
 import com.example.data.weather.CurrentWeather
 import com.example.ui.WeatherUiState
@@ -80,11 +81,13 @@ fun HomeScreen(
   formatTemperature: (Double) -> String,
   language: AppLanguage = AppLanguage.ENGLISH,
   madhab: IslamicMadhab = IslamicMadhab.SHAFI,
+  method: CalculationMethod = CalculationMethod.UMM_AL_QURA,
   onLocationClick: () -> Unit,
   onNavigateToWeather: () -> Unit,
   onLanguageSelect: (AppLanguage) -> Unit = {},
   onResetLanguageToLocation: () -> Unit = {},
   onMadhabSelect: (IslamicMadhab) -> Unit = {},
+  onMethodSelect: (CalculationMethod) -> Unit = {},
   onTogglePrayer: (String) -> Unit
 ) {
   var showLanguageDialog by remember { mutableStateOf(false) }
@@ -207,8 +210,10 @@ fun HomeScreen(
         schedule = schedule,
         language = language,
         madhab = madhab,
+        method = method,
         onLanguageSelect = onLanguageSelect,
         onMadhabSelect = onMadhabSelect,
+        onMethodSelect = onMethodSelect,
         onDismiss = { showNotificationSheet = false }
       )
     }

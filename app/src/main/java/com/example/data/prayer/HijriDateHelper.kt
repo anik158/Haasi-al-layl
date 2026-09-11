@@ -40,6 +40,18 @@ object HijriDateHelper {
     }
   }
 
+  /**
+   * True during Ramadan. Umm al-Qura stretches the Isha interval from 90 to 120 minutes for the
+   * month, so the calculator needs to know.
+   */
+  fun isRamadan(date: LocalDate = LocalDate.now()): Boolean {
+    return try {
+      HijrahDate.from(date).get(java.time.temporal.ChronoField.MONTH_OF_YEAR) == 9
+    } catch (_: Exception) {
+      false
+    }
+  }
+
   fun getHijriDayOfMonth(date: LocalDate = LocalDate.now()): Int {
     return try {
       val hijrahDate = HijrahDate.from(date)

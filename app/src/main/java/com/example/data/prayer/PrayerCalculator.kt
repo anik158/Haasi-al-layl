@@ -21,16 +21,19 @@ import kotlin.math.tan
 
 enum class CalculationMethod(
   val title: String,
+  /** Short label for chips and pickers, where [title] is too long to read. */
+  val shortTitle: String,
   val fajrAngle: Double,
   val ishaAngle: Double,
+  /** When set, Isha is this many minutes after Maghrib instead of a twilight angle. */
   val ishaIntervalMinutes: Int? = null
 ) {
-  MUSLIM_WORLD_LEAGUE("Muslim World League", 18.0, 17.0),
-  ISNA("Islamic Society of North America (ISNA)", 15.0, 15.0),
-  EGYPTIAN("Egyptian General Authority", 19.5, 17.5),
-  UMM_AL_QURA("Umm al-Qura University, Makkah", 18.5, 0.0, 90),
-  KARACHI("University of Islamic Sciences, Karachi", 18.0, 18.0),
-  DUBAI("Dubai Religious Affairs", 18.2, 18.2)
+  UMM_AL_QURA("Umm al-Qura University, Makkah", "Makkah", 18.5, 0.0, 90),
+  MUSLIM_WORLD_LEAGUE("Muslim World League", "World League", 18.0, 17.0),
+  ISNA("Islamic Society of North America (ISNA)", "ISNA", 15.0, 15.0),
+  EGYPTIAN("Egyptian General Authority", "Egyptian", 19.5, 17.5),
+  KARACHI("University of Islamic Sciences, Karachi", "Karachi", 18.0, 18.0),
+  DUBAI("Dubai Religious Affairs", "Dubai", 18.2, 18.2)
 }
 
 typealias JuristicMethod = IslamicMadhab
@@ -68,7 +71,7 @@ object PrayerCalculator {
     location: CityLocation,
     now: LocalDateTime = LocalDateTime.now(),
     completedPrayerIds: Set<String> = emptySet(),
-    method: CalculationMethod = CalculationMethod.MUSLIM_WORLD_LEAGUE,
+    method: CalculationMethod = CalculationMethod.UMM_AL_QURA,
     madhab: IslamicMadhab = IslamicMadhab.SHAFI
   ): DailyPrayerSchedule {
     val timesMap = computePrayerTimes(date, location.latitude, location.longitude, location.timeZoneId, method, madhab)
@@ -249,9 +252,16 @@ object PrayerCalculator {
     val sunrise = noon - sunriseDiff
     val sunset = noon + sunriseDiff
 
+    // Above roughly 48 degrees of latitude the sun stops dipping far enough below the horizon
+    // in midsummer for the Fajr and Isha angles to occur at all - in London it only reaches
+    // about -15 degrees. Clamping the hour angle there would silently collapse both prayers onto
+    // solar midnight, so we fall back to the one-seventh-of-the-night rule instead.
+    val nightLength = 24.0 - (sunset - sunrise)
+
     // Fajr
-    val fajrDiff = sunAngleTime(90.0 + method.fajrAngle, lat, declination)
-    val fajr = noon - fajrDiff
+    val fajr = sunAngleTimeOrNull(90.0 + method.fajrAngle, lat, declination)
+      ?.let { noon - it }
+      ?: (sunrise - nightLength / 7.0)
 
     // Imsak (10 min before Fajr)
     val imsak = fajr - (10.0 / 60.0)
@@ -266,12 +276,17 @@ object PrayerCalculator {
     // Maghrib (same as sunset + 3 min precaution)
     val maghrib = sunset + (3.0 / 60.0)
 
-    // Isha
-    val isha: Double = if (method.ishaIntervalMinutes != null) {
-      maghrib + (method.ishaIntervalMinutes.toDouble() / 60.0)
+    // Isha. Umm al-Qura sets it by a fixed interval after Maghrib rather than an angle, and
+    // widens that interval from 90 to 120 minutes for Ramadan.
+    val ishaInterval = method.ishaIntervalMinutes?.let { interval ->
+      if (method == CalculationMethod.UMM_AL_QURA && HijriDateHelper.isRamadan(date)) 120 else interval
+    }
+    val isha: Double = if (ishaInterval != null) {
+      maghrib + (ishaInterval.toDouble() / 60.0)
     } else {
-      val ishaDiff = sunAngleTime(90.0 + method.ishaAngle, lat, declination)
-      noon + ishaDiff
+      sunAngleTimeOrNull(90.0 + method.ishaAngle, lat, declination)
+        ?.let { noon + it }
+        ?: (sunset + nightLength / 7.0)
     }
 
     return mapOf(
@@ -285,12 +300,26 @@ object PrayerCalculator {
     )
   }
 
-  private fun sunAngleTime(angle: Double, lat: Double, declination: Double): Double {
-    val cosHourAngle = (cos(Math.toRadians(angle)) -
+  private fun cosHourAngle(angle: Double, lat: Double, declination: Double): Double =
+    (cos(Math.toRadians(angle)) -
       sin(Math.toRadians(lat)) * sin(Math.toRadians(declination))) /
       (cos(Math.toRadians(lat)) * cos(Math.toRadians(declination)))
-    val clamped = cosHourAngle.coerceIn(-1.0, 1.0)
+
+  /**
+   * Hours between solar noon and the moment the sun sits at [angle]. Clamped, so it always
+   * returns something usable - only appropriate for sunrise, sunset and Asr, which do occur at
+   * the latitudes this app supports.
+   */
+  private fun sunAngleTime(angle: Double, lat: Double, declination: Double): Double {
+    val clamped = cosHourAngle(angle, lat, declination).coerceIn(-1.0, 1.0)
     return Math.toDegrees(acos(clamped)) / 15.0
+  }
+
+  /** As [sunAngleTime], but null when the sun never reaches [angle] on this date. */
+  private fun sunAngleTimeOrNull(angle: Double, lat: Double, declination: Double): Double? {
+    val cosH = cosHourAngle(angle, lat, declination)
+    if (cosH < -1.0 || cosH > 1.0) return null
+    return Math.toDegrees(acos(cosH)) / 15.0
   }
 
   private fun fixAngle(angle: Double): Double {

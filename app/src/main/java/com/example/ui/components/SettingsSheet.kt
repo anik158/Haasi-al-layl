@@ -66,6 +66,7 @@ import com.example.data.localization.LocalizationManager
 import com.example.data.model.DailyPrayerSchedule
 import com.example.data.notification.PrayerNotificationManager
 import com.example.data.prayer.ForbiddenTimeWindow
+import com.example.data.prayer.CalculationMethod
 import com.example.data.prayer.IslamicMadhab
 import com.example.ui.theme.DarkForestInk
 import com.example.ui.theme.LinenBorderLight
@@ -80,8 +81,10 @@ fun SettingsSheet(
   schedule: DailyPrayerSchedule?,
   language: AppLanguage,
   madhab: IslamicMadhab,
+  method: CalculationMethod,
   onLanguageSelect: (AppLanguage) -> Unit,
   onMadhabSelect: (IslamicMadhab) -> Unit,
+  onMethodSelect: (CalculationMethod) -> Unit,
   onDismiss: () -> Unit
 ) {
   val context = LocalContext.current
@@ -241,6 +244,61 @@ fun SettingsSheet(
                 }
               }
             }
+          }
+        }
+      }
+
+      // Prayer calculation method
+      item {
+        Card(
+          shape = RoundedCornerShape(18.dp),
+          colors = CardDefaults.cardColors(containerColor = WarmBeigeBackground),
+          border = androidx.compose.foundation.BorderStroke(1.dp, LinenBorderLight),
+          modifier = Modifier.fillMaxWidth()
+        ) {
+          Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+              text = LocalizationManager.getSelectMethodTitle(language),
+              fontWeight = FontWeight.Bold,
+              fontSize = 15.sp,
+              color = DarkForestInk
+            )
+            Text(
+              text = LocalizationManager.getSelectMethodSubtitle(language),
+              fontSize = 12.sp,
+              color = DarkForestInk.copy(alpha = 0.75f)
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            FlowRow(
+              modifier = Modifier.fillMaxWidth(),
+              horizontalArrangement = Arrangement.spacedBy(8.dp),
+              verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+              CalculationMethod.entries.forEach { m ->
+                val isSelected = method == m
+                Surface(
+                  onClick = { onMethodSelect(m) },
+                  shape = RoundedCornerShape(20.dp),
+                  color = if (isSelected) Color(0xFF0F3E2F) else Color.White,
+                  border = androidx.compose.foundation.BorderStroke(1.dp, if (isSelected) Color(0xFF0F3E2F) else OutlineDarkBorder),
+                ) {
+                  Text(
+                    text = m.shortTitle,
+                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                    fontSize = 12.sp,
+                    color = if (isSelected) Color.White else DarkForestInk,
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                  )
+                }
+              }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+              text = method.title,
+              fontSize = 11.sp,
+              color = DarkForestInk.copy(alpha = 0.6f)
+            )
           }
         }
       }
