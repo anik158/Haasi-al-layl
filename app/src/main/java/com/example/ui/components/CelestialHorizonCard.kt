@@ -27,12 +27,19 @@ import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.WbTwilight
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -81,6 +88,8 @@ fun CelestialHorizonCard(
   currentDate: LocalDate = schedule?.date ?: LocalDate.now(),
   currentTime: LocalTime = schedule?.currentTime ?: LocalTime.now()
 ) {
+  var showDetailsDialog by remember { mutableStateOf(false) }
+
   // Lunar calculations
   val hijriDay = HijriDateHelper.getHijriDayOfMonth(currentDate).coerceIn(1, 30)
   val moonInfo = calculateMoonPhase(hijriDay)
@@ -177,11 +186,13 @@ fun CelestialHorizonCard(
           }
         }
 
-        // Live status pill with crisp white/dark border
+        // Live status pill with crisp white/dark border (clickable for celestial details)
         Surface(
+          onClick = { showDetailsDialog = true },
           shape = RoundedCornerShape(20.dp),
           color = Color.White,
-          border = androidx.compose.foundation.BorderStroke(1.dp, OutlineDarkBorder)
+          border = androidx.compose.foundation.BorderStroke(1.dp, OutlineDarkBorder),
+          modifier = Modifier.testTag("celestial_sky_status_chip")
         ) {
           Row(
             modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
@@ -523,6 +534,97 @@ fun CelestialHorizonCard(
         }
       }
     }
+  }
+
+  if (showDetailsDialog) {
+    AlertDialog(
+      onDismissRequest = { showDetailsDialog = false },
+      title = {
+        Row(
+          modifier = Modifier.fillMaxWidth(),
+          horizontalArrangement = Arrangement.SpaceBetween,
+          verticalAlignment = Alignment.CenterVertically
+        ) {
+          Text(
+            text = "Celestial Horizon Details",
+            fontWeight = FontWeight.Bold,
+            color = DarkForestInk
+          )
+          IconButton(onClick = { showDetailsDialog = false }) {
+            Icon(Icons.Default.Close, contentDescription = "Close", tint = DarkForestInk)
+          }
+        }
+      },
+      text = {
+        Column(
+          modifier = Modifier.fillMaxWidth(),
+          verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+          Surface(
+            shape = RoundedCornerShape(12.dp),
+            color = if (isDaytime) Color(0xFFFFF9C4) else Color(0xFFECEFF1),
+            modifier = Modifier.fillMaxWidth()
+          ) {
+            Row(
+              modifier = Modifier.padding(12.dp),
+              verticalAlignment = Alignment.CenterVertically
+            ) {
+              Icon(
+                imageVector = if (isDaytime) Icons.Default.Brightness5 else Icons.Default.DarkMode,
+                contentDescription = null,
+                tint = if (isDaytime) SunGoldenGlow else DarkForestInk
+              )
+              Spacer(modifier = Modifier.width(10.dp))
+              Column {
+                Text(
+                  text = if (isDaytime) "Daytime Solar Tracking Active" else "Night Sky & Lunar Tracking Active",
+                  fontWeight = FontWeight.Bold,
+                  fontSize = 13.sp,
+                  color = DarkForestInk
+                )
+                Text(
+                  text = "Time: ${currentTime.format(java.time.format.DateTimeFormatter.ofPattern("hh:mm a"))}",
+                  fontSize = 12.sp,
+                  color = DarkForestInk.copy(alpha = 0.7f)
+                )
+              }
+            }
+          }
+
+          Surface(
+            shape = RoundedCornerShape(12.dp),
+            color = WarmBeigeBackground,
+            border = androidx.compose.foundation.BorderStroke(1.dp, LinenBorderLight),
+            modifier = Modifier.fillMaxWidth()
+          ) {
+            Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+              Text("☀️ Solar Markers:", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = DarkForestInk)
+              Text("• Sunrise: ${sunrise.format(java.time.format.DateTimeFormatter.ofPattern("hh:mm a"))}", fontSize = 11.sp, color = DarkForestInk.copy(alpha = 0.8f))
+              Text("• Solar Noon (Dhuhr): ${noon.format(java.time.format.DateTimeFormatter.ofPattern("hh:mm a"))}", fontSize = 11.sp, color = DarkForestInk.copy(alpha = 0.8f))
+              Text("• Sunset (Maghrib): ${sunset.format(java.time.format.DateTimeFormatter.ofPattern("hh:mm a"))}", fontSize = 11.sp, color = DarkForestInk.copy(alpha = 0.8f))
+            }
+          }
+
+          Surface(
+            shape = RoundedCornerShape(12.dp),
+            color = WarmBeigeBackground,
+            border = androidx.compose.foundation.BorderStroke(1.dp, LinenBorderLight),
+            modifier = Modifier.fillMaxWidth()
+          ) {
+            Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+              Text("🌙 Lunar Details:", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = DarkForestInk)
+              Text("• Hijri Day: $hijriDay (${moonInfo.phaseNameEn})", fontSize = 11.sp, color = DarkForestInk.copy(alpha = 0.8f))
+              Text("• Lunar Illumination: ${moonInfo.illuminationPercent}%", fontSize = 11.sp, color = DarkForestInk.copy(alpha = 0.8f))
+            }
+          }
+        }
+      },
+      confirmButton = {
+        TextButton(onClick = { showDetailsDialog = false }) {
+          Text("Got it", color = DarkForestInk, fontWeight = FontWeight.Bold)
+        }
+      }
+    )
   }
 }
 

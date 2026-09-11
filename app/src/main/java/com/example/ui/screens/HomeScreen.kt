@@ -21,6 +21,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.NotificationsActive
 import androidx.compose.material.icons.outlined.Mosque
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
@@ -51,9 +53,13 @@ import com.example.data.model.DailyPrayerSchedule
 import com.example.data.prayer.IslamicMadhab
 import com.example.data.weather.CurrentWeather
 import com.example.ui.WeatherUiState
+import com.example.ui.components.AboutHaasiDialog
 import com.example.ui.components.CelestialHorizonCard
 import com.example.ui.components.DailyInspirationCard
+import com.example.ui.components.ForbiddenPrayerTimesBanner
+import com.example.ui.components.HaasiBrandLogo
 import com.example.ui.components.MadhabSelectionDialog
+import com.example.ui.components.NotificationSettingsSheet
 import com.example.ui.components.PrayerNextHeroCard
 import com.example.ui.components.PrayerScheduleListCard
 import com.example.ui.components.WeatherHomeScreenCard
@@ -80,6 +86,8 @@ fun HomeScreen(
 ) {
   var showLanguageDialog by remember { mutableStateOf(false) }
   var showMadhabDialog by remember { mutableStateOf(false) }
+  var showNotificationSheet by remember { mutableStateOf(false) }
+  var showAboutDialog by remember { mutableStateOf(false) }
 
   val currentWeather: CurrentWeather? = when (weatherState) {
     is WeatherUiState.Success -> weatherState.data.current
@@ -105,24 +113,15 @@ fun HomeScreen(
       verticalAlignment = Alignment.CenterVertically
     ) {
       Row(
-        modifier = Modifier.weight(1f, fill = false),
+        modifier = Modifier
+          .weight(1f, fill = false)
+          .clickable { showAboutDialog = true },
         verticalAlignment = Alignment.CenterVertically
       ) {
-        Box(
-          modifier = Modifier
-            .size(38.dp)
-            .clip(CircleShape)
-            .background(CoolMintGradientBase)
-            .border(1.dp, OutlineDarkBorder, CircleShape),
-          contentAlignment = Alignment.Center
-        ) {
-          Icon(
-            Icons.Outlined.Mosque,
-            contentDescription = null,
-            modifier = Modifier.size(20.dp),
-            tint = DarkForestInk
-          )
-        }
+        HaasiBrandLogo(
+          size = 40.dp,
+          onClick = { showAboutDialog = true }
+        )
         Spacer(modifier = Modifier.width(10.dp))
         Column {
           Text(
@@ -140,12 +139,36 @@ fun HomeScreen(
         }
       }
 
-      Spacer(modifier = Modifier.width(8.dp))
+      Spacer(modifier = Modifier.width(6.dp))
 
       Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(6.dp)
+        horizontalArrangement = Arrangement.spacedBy(5.dp)
       ) {
+        // Notification & Forbidden Times Bell Button
+        Surface(
+          onClick = { showNotificationSheet = true },
+          shape = RoundedCornerShape(20.dp),
+          color = if (schedule.activeForbiddenTime != null) Color(0xFFFFF3E0) else Color.White,
+          border = androidx.compose.foundation.BorderStroke(
+            1.dp,
+            if (schedule.activeForbiddenTime != null) Color(0xFFFFB74D) else OutlineDarkBorder
+          ),
+          modifier = Modifier.testTag("top_notifications_button")
+        ) {
+          Box(
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
+            contentAlignment = Alignment.Center
+          ) {
+            Icon(
+              imageVector = if (schedule.activeForbiddenTime != null) Icons.Default.NotificationsActive else Icons.Default.Notifications,
+              contentDescription = "Notifications & Forbidden Times",
+              modifier = Modifier.size(15.dp),
+              tint = if (schedule.activeForbiddenTime != null) Color(0xFFE65100) else DarkForestInk
+            )
+          }
+        }
+
         // Quick Language Switcher Button
         Surface(
           onClick = { showLanguageDialog = true },
@@ -155,20 +178,20 @@ fun HomeScreen(
           modifier = Modifier.testTag("top_language_chip")
         ) {
           Row(
-            modifier = Modifier.padding(horizontal = 9.dp, vertical = 6.dp),
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically
           ) {
             Icon(
               Icons.Default.Language,
               contentDescription = "Language",
-              modifier = Modifier.size(14.dp),
+              modifier = Modifier.size(13.dp),
               tint = DarkForestInk
             )
-            Spacer(modifier = Modifier.width(4.dp))
+            Spacer(modifier = Modifier.width(3.dp))
             Text(
               text = language.code.uppercase(),
               fontWeight = FontWeight.Bold,
-              fontSize = 12.sp,
+              fontSize = 11.sp,
               color = DarkForestInk
             )
           }
@@ -183,19 +206,19 @@ fun HomeScreen(
           modifier = Modifier.testTag("top_madhab_chip")
         ) {
           Row(
-            modifier = Modifier.padding(horizontal = 9.dp, vertical = 6.dp),
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically
           ) {
             Text(
               text = "⚖ ${madhab.getLocalizedName(language).split(" ").last()}",
               fontWeight = FontWeight.SemiBold,
-              fontSize = 12.sp,
+              fontSize = 11.sp,
               color = DarkForestInk
             )
           }
         }
 
-        // Quick Location Selector Button with crisp white/dark pill border
+        // Quick Location Selector Button
         Surface(
           onClick = onLocationClick,
           shape = RoundedCornerShape(20.dp),
@@ -204,20 +227,20 @@ fun HomeScreen(
           modifier = Modifier.testTag("top_city_chip")
         ) {
           Row(
-            modifier = Modifier.padding(horizontal = 9.dp, vertical = 6.dp),
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically
           ) {
             Icon(
               Icons.Default.LocationOn,
               contentDescription = null,
-              modifier = Modifier.size(14.dp),
+              modifier = Modifier.size(13.dp),
               tint = DarkForestInk
             )
-            Spacer(modifier = Modifier.width(4.dp))
+            Spacer(modifier = Modifier.width(3.dp))
             Text(
               text = currentCity.name,
               fontWeight = FontWeight.SemiBold,
-              fontSize = 12.sp,
+              fontSize = 11.sp,
               color = DarkForestInk
             )
           }
@@ -240,6 +263,15 @@ fun HomeScreen(
           language = language,
           onLocationClick = onLocationClick,
           onWeatherClick = onNavigateToWeather
+        )
+      }
+
+      // 2. Forbidden Prayer Times Live Status Banner (Clickable to open Notification Center)
+      item {
+        ForbiddenPrayerTimesBanner(
+          schedule = schedule,
+          language = language,
+          onClick = { showNotificationSheet = true }
         )
       }
 
@@ -405,6 +437,24 @@ fun HomeScreen(
         onMadhabSelect(selected)
       },
       onDismiss = { showMadhabDialog = false }
+    )
+  }
+
+  // Notification & Forbidden Prayer Times Center Sheet
+  if (showNotificationSheet) {
+    NotificationSettingsSheet(
+      schedule = schedule,
+      language = language,
+      onDismiss = { showNotificationSheet = false }
+    )
+  }
+
+  // About Ḥaasi al-Layl (The Night Sipper) Meaning & Brand Logo Dialog
+  if (showAboutDialog) {
+    AboutHaasiDialog(
+      language = language,
+      onDismiss = { showAboutDialog = false },
+      onOpenNotifications = { showNotificationSheet = true }
     )
   }
 }

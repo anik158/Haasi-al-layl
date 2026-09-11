@@ -26,4 +26,41 @@ class ExampleRobolectricTest {
     assertEquals(1433, banglaDate.year)
     assertEquals("ভাদ্র", banglaDate.monthNameBn)
   }
+
+  @Test
+  fun `verify forbidden prayer times calculation`() {
+    val sunrise = java.time.LocalTime.of(6, 0)
+    val dhuhr = java.time.LocalTime.of(12, 5)
+    val maghrib = java.time.LocalTime.of(18, 15)
+
+    val windows = com.example.data.prayer.ForbiddenPrayerTimesHelper.calculateWindows(
+      sunrise = sunrise,
+      dhuhr = dhuhr,
+      maghrib = maghrib
+    )
+
+    assertEquals(3, windows.size)
+    assertEquals(com.example.data.prayer.ForbiddenWindowType.SUNRISE, windows[0].type)
+    assertEquals(sunrise, windows[0].startTime)
+    assertEquals(sunrise.plusMinutes(15), windows[0].endTime)
+
+    assertEquals(com.example.data.prayer.ForbiddenWindowType.ZENITH, windows[1].type)
+    assertEquals(dhuhr.minusMinutes(10), windows[1].startTime)
+    assertEquals(dhuhr, windows[1].endTime)
+
+    assertEquals(com.example.data.prayer.ForbiddenWindowType.SUNSET, windows[2].type)
+    assertEquals(maghrib.minusMinutes(20), windows[2].startTime)
+    assertEquals(maghrib, windows[2].endTime)
+  }
+
+  @Test
+  fun `verify notification channels initialization`() {
+    val context = ApplicationProvider.getApplicationContext<Context>()
+    com.example.data.notification.PrayerNotificationManager.createNotificationChannels(context)
+    val notifManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as android.app.NotificationManager
+    val prayerChannel = notifManager.getNotificationChannel(com.example.data.notification.PrayerNotificationManager.CHANNEL_PRAYER_ID)
+    val forbiddenChannel = notifManager.getNotificationChannel(com.example.data.notification.PrayerNotificationManager.CHANNEL_FORBIDDEN_ID)
+    org.junit.Assert.assertNotNull(prayerChannel)
+    org.junit.Assert.assertNotNull(forbiddenChannel)
+  }
 }

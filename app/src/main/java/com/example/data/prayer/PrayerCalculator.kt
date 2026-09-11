@@ -165,6 +165,11 @@ object PrayerCalculator {
       progress = 0f
     }
 
+    val sunriseTime = timesMap[PrayerName.SUNRISE] ?: LocalTime.of(6, 0)
+    val dhuhrTime = timesMap[PrayerName.DHUHR] ?: LocalTime.of(12, 10)
+    val maghribTime = timesMap[PrayerName.MAGHRIB] ?: LocalTime.of(18, 15)
+    val forbiddenWindows = ForbiddenPrayerTimesHelper.calculateWindows(sunriseTime, dhuhrTime, maghribTime)
+
     return DailyPrayerSchedule(
       date = date,
       city = location.name,
@@ -175,7 +180,8 @@ object PrayerCalculator {
       nextPrayer = nextItem,
       timeUntilNextFormatted = timeUntilFormatted,
       progressToNext = progress,
-      currentTime = now.toLocalTime()
+      currentTime = now.toLocalTime(),
+      forbiddenTimes = forbiddenWindows
     )
   }
 

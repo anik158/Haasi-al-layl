@@ -37,8 +37,15 @@ data class DailyPrayerSchedule(
   val nextPrayer: PrayerTimeItem?,
   val timeUntilNextFormatted: String,
   val progressToNext: Float, // 0.0f to 1.0f
-  val currentTime: LocalTime = LocalTime.now()
+  val currentTime: LocalTime = LocalTime.now(),
+  val forbiddenTimes: List<com.example.data.prayer.ForbiddenTimeWindow> = emptyList()
 ) {
+  val activeForbiddenTime: com.example.data.prayer.ForbiddenTimeWindow?
+    get() = forbiddenTimes.firstOrNull { it.isActive(currentTime) }
+
+  val nextForbiddenTime: com.example.data.prayer.ForbiddenTimeWindow?
+    get() = forbiddenTimes.filter { it.isUpcoming(currentTime) }.minByOrNull { it.startTime }
+
   val sunrise: LocalTime?
     get() = items.find { it.prayer == PrayerName.SUNRISE }?.time
   val maghrib: LocalTime?

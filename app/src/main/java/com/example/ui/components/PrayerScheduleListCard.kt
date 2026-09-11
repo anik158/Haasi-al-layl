@@ -161,10 +161,15 @@ private fun PrayerRowItem(
     else -> Color.Transparent
   }
 
+  val rowClickModifier = if (isMainPrayer) {
+    Modifier.clickable(onClick = onToggleCheck)
+  } else Modifier
+
   Row(
     modifier = Modifier
       .fillMaxWidth()
       .clip(RoundedCornerShape(12.dp))
+      .then(rowClickModifier)
       .background(backgroundColor)
       .padding(horizontal = 8.dp, vertical = 10.dp)
       .testTag("prayer_row_${item.prayer.name.lowercase()}"),
