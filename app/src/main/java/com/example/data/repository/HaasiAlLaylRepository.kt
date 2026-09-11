@@ -1,13 +1,13 @@
 package com.example.data.repository
 
 import com.example.data.local.DuaBookmarkEntity
-import com.example.data.local.MuslimDayDao
+import com.example.data.local.HaasiAlLaylDao
 import com.example.data.local.PrayerLogEntity
 import com.example.data.local.TasbihEntity
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 
-class MuslimDayRepository(private val dao: MuslimDayDao) {
+class HaasiAlLaylRepository(private val dao: HaasiAlLaylDao) {
 
   fun getPrayerLogForDate(date: LocalDate): Flow<PrayerLogEntity?> {
     return dao.getPrayerLogForDate(date.toString())

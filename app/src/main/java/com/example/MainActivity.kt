@@ -38,7 +38,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.ui.MuslimDayViewModel
+import com.example.ui.HaasiAlLaylViewModel
 import com.example.ui.components.CitySelectionSheet
 import com.example.ui.screens.DuaScreen
 import com.example.ui.screens.HomeScreen
@@ -67,7 +67,7 @@ private data class NavDestination(
 )
 
 @Composable
-fun MainAppContent(viewModel: MuslimDayViewModel = viewModel()) {
+fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
   val selectedTab by viewModel.selectedTab.collectAsStateWithLifecycle()
   val prayerSchedule by viewModel.prayerSchedule.collectAsStateWithLifecycle()
   val weatherState by viewModel.weatherState.collectAsStateWithLifecycle()

@@ -7,7 +7,7 @@ import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface MuslimDayDao {
+interface HaasiAlLaylDao {
 
   // Prayer logs
   @Query("SELECT * FROM prayer_logs WHERE date = :date LIMIT 1")

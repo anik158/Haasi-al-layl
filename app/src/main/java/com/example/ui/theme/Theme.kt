@@ -47,14 +47,7 @@ fun HaasiTheme(
 
 // Aliases for compatibility
 @Composable
-fun SakeenahTheme(
-  darkTheme: Boolean = false,
-  dynamicColor: Boolean = false,
-  content: @Composable () -> Unit,
-) = HaasiTheme(darkTheme = darkTheme, dynamicColor = dynamicColor, content = content)
-
-@Composable
-fun MuslimDayTheme(
+fun HaasiAlLaylTheme(
   darkTheme: Boolean = false,
   dynamicColor: Boolean = false,
   content: @Composable () -> Unit,

@@ -14,19 +14,19 @@ import androidx.room.RoomDatabase
   version = 1,
   exportSchema = false
 )
-abstract class MuslimDayDatabase : RoomDatabase() {
-  abstract fun muslimDayDao(): MuslimDayDao
+abstract class HaasiAlLaylDatabase : RoomDatabase() {
+  abstract fun haasiAlLaylDao(): HaasiAlLaylDao
 
   companion object {
     @Volatile
-    private var INSTANCE: MuslimDayDatabase? = null
+    private var INSTANCE: HaasiAlLaylDatabase? = null
 
-    fun getDatabase(context: Context): MuslimDayDatabase {
+    fun getDatabase(context: Context): HaasiAlLaylDatabase {
       return INSTANCE ?: synchronized(this) {
         val instance = Room.databaseBuilder(
           context.applicationContext,
-          MuslimDayDatabase::class.java,
-          "muslim_day_database"
+          HaasiAlLaylDatabase::class.java,
+          "haasi_al_layl_database"
         ).fallbackToDestructiveMigration().build()
         INSTANCE = instance
         instance

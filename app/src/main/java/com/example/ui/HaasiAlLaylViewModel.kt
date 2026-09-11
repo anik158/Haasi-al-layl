@@ -9,7 +9,7 @@ import android.os.VibratorManager
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.data.dua.IslamicContentProvider
-import com.example.data.local.MuslimDayDatabase
+import com.example.data.local.HaasiAlLaylDatabase
 import com.example.data.local.PrayerLogEntity
 import com.example.data.local.TasbihEntity
 import com.example.data.model.CityLocation
@@ -19,7 +19,7 @@ import com.example.data.prayer.JuristicMethod
 import com.example.data.prayer.PrayerCalculator
 import com.example.data.qibla.QiblaCalculator
 import com.example.data.qibla.QiblaSensorManager
-import com.example.data.repository.MuslimDayRepository
+import com.example.data.repository.HaasiAlLaylRepository
 import com.example.data.weather.FullWeatherData
 import com.example.data.weather.WeatherRepository
 import kotlinx.coroutines.Job
@@ -43,10 +43,10 @@ sealed interface WeatherUiState {
   data class Error(val message: String) : WeatherUiState
 }
 
-class MuslimDayViewModel(application: Application) : AndroidViewModel(application) {
+class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(application) {
 
-  private val database = MuslimDayDatabase.getDatabase(application)
-  private val repository = MuslimDayRepository(database.muslimDayDao())
+  private val database = HaasiAlLaylDatabase.getDatabase(application)
+  private val repository = HaasiAlLaylRepository(database.haasiAlLaylDao())
   private val weatherRepository = WeatherRepository()
   private val sensorManager = QiblaSensorManager(application)
 
