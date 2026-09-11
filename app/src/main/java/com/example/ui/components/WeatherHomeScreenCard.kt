@@ -57,6 +57,8 @@ fun WeatherHomeScreenCard(
   highFormatted: String,
   lowFormatted: String,
   language: AppLanguage = AppLanguage.ENGLISH,
+  isLoading: Boolean = false,
+  isError: Boolean = false,
   onViewForecastClick: () -> Unit
 ) {
   Card(
@@ -111,10 +113,10 @@ fun WeatherHomeScreenCard(
           border = androidx.compose.foundation.BorderStroke(1.dp, OutlineDarkBorder)
         ) {
           Text(
-            text = "LIVE",
+            text = if (isError) LocalizationManager.getOfflineStatus(language) else LocalizationManager.getLiveStatus(language),
             style = MaterialTheme.typography.labelSmall,
             fontWeight = FontWeight.Bold,
-            color = DarkForestInk,
+            color = if (isError) Color(0xFFD32F2F) else DarkForestInk,
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
           )
         }
@@ -151,7 +153,7 @@ fun WeatherHomeScreenCard(
                 color = DarkForestInk
               )
               Text(
-                text = "H: $highFormatted  •  L: $lowFormatted",
+                text = "${LocalizationManager.getHighShort(language)}: $highFormatted  •  ${LocalizationManager.getLowShort(language)}: $lowFormatted",
                 style = MaterialTheme.typography.bodySmall,
                 color = DarkForestInk.copy(alpha = 0.7f)
               )
@@ -254,9 +256,29 @@ fun WeatherHomeScreenCard(
             tint = DarkForestInk
           )
         }
+      } else if (isError) {
+        Surface(
+          shape = RoundedCornerShape(16.dp),
+          color = Color(0xFFFFF3E0),
+          border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFFFB74D)),
+          modifier = Modifier.fillMaxWidth()
+        ) {
+          Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+          ) {
+            Icon(Icons.Outlined.Cloud, contentDescription = null, tint = Color(0xFFE65100))
+            Spacer(modifier = Modifier.width(12.dp))
+            Text(
+              text = LocalizationManager.getWeatherErrorDesc(language),
+              style = MaterialTheme.typography.bodyMedium,
+              color = Color(0xFFE65100)
+            )
+          }
+        }
       } else {
         Text(
-          text = "Loading weather information...",
+          text = LocalizationManager.getWeatherLoadingDesc(language),
           style = MaterialTheme.typography.bodyMedium,
           color = DarkForestInk.copy(alpha = 0.7f)
         )

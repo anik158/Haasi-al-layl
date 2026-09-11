@@ -59,7 +59,10 @@ import com.example.ui.components.DailyInspirationCard
 import com.example.ui.components.ForbiddenPrayerTimesBanner
 import com.example.ui.components.HaasiBrandLogo
 import com.example.ui.components.MadhabSelectionDialog
-import com.example.ui.components.NotificationSettingsSheet
+import androidx.compose.material.icons.filled.Settings
+
+// ... existing imports ...
+import com.example.ui.components.SettingsSheet
 import com.example.ui.components.PrayerNextHeroCard
 import com.example.ui.components.PrayerScheduleListCard
 import com.example.ui.components.WeatherHomeScreenCard
@@ -145,79 +148,6 @@ fun HomeScreen(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(5.dp)
       ) {
-        // Notification & Forbidden Times Bell Button
-        Surface(
-          onClick = { showNotificationSheet = true },
-          shape = RoundedCornerShape(20.dp),
-          color = if (schedule.activeForbiddenTime != null) Color(0xFFFFF3E0) else Color.White,
-          border = androidx.compose.foundation.BorderStroke(
-            1.dp,
-            if (schedule.activeForbiddenTime != null) Color(0xFFFFB74D) else OutlineDarkBorder
-          ),
-          modifier = Modifier.testTag("top_notifications_button")
-        ) {
-          Box(
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
-            contentAlignment = Alignment.Center
-          ) {
-            Icon(
-              imageVector = if (schedule.activeForbiddenTime != null) Icons.Default.NotificationsActive else Icons.Default.Notifications,
-              contentDescription = "Notifications & Forbidden Times",
-              modifier = Modifier.size(15.dp),
-              tint = if (schedule.activeForbiddenTime != null) Color(0xFFE65100) else DarkForestInk
-            )
-          }
-        }
-
-        // Quick Language Switcher Button
-        Surface(
-          onClick = { showLanguageDialog = true },
-          shape = RoundedCornerShape(20.dp),
-          color = Color.White,
-          border = androidx.compose.foundation.BorderStroke(1.dp, OutlineDarkBorder),
-          modifier = Modifier.testTag("top_language_chip")
-        ) {
-          Row(
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
-            verticalAlignment = Alignment.CenterVertically
-          ) {
-            Icon(
-              Icons.Default.Language,
-              contentDescription = "Language",
-              modifier = Modifier.size(13.dp),
-              tint = DarkForestInk
-            )
-            Spacer(modifier = Modifier.width(3.dp))
-            Text(
-              text = language.code.uppercase(),
-              fontWeight = FontWeight.Bold,
-              fontSize = 11.sp,
-              color = DarkForestInk
-            )
-          }
-        }
-
-        // Quick Madhab Switcher Button (Default: Shafi'i)
-        Surface(
-          onClick = { showMadhabDialog = true },
-          shape = RoundedCornerShape(20.dp),
-          color = Color.White,
-          border = androidx.compose.foundation.BorderStroke(1.dp, OutlineDarkBorder),
-          modifier = Modifier.testTag("top_madhab_chip")
-        ) {
-          Row(
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
-            verticalAlignment = Alignment.CenterVertically
-          ) {
-            Text(
-              text = "⚖ ${madhab.getLocalizedName(language).split(" ").last()}",
-              fontWeight = FontWeight.SemiBold,
-              fontSize = 11.sp,
-              color = DarkForestInk
-            )
-          }
-        }
-
         // Quick Location Selector Button
         Surface(
           onClick = onLocationClick,
@@ -238,14 +168,49 @@ fun HomeScreen(
             )
             Spacer(modifier = Modifier.width(3.dp))
             Text(
-              text = currentCity.name,
+              text = "Change City",
               fontWeight = FontWeight.SemiBold,
               fontSize = 11.sp,
               color = DarkForestInk
             )
           }
         }
+
+        // Settings Button (Notification, Language, Madhab)
+        Surface(
+          onClick = { showNotificationSheet = true },
+          shape = RoundedCornerShape(20.dp),
+          color = if (schedule.activeForbiddenTime != null) Color(0xFFFFF3E0) else Color.White,
+          border = androidx.compose.foundation.BorderStroke(
+            1.dp,
+            if (schedule.activeForbiddenTime != null) Color(0xFFFFB74D) else OutlineDarkBorder
+          ),
+          modifier = Modifier.testTag("top_settings_button")
+        ) {
+          Box(
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
+            contentAlignment = Alignment.Center
+          ) {
+            Icon(
+              imageVector = if (schedule.activeForbiddenTime != null) Icons.Default.NotificationsActive else Icons.Default.Settings,
+              contentDescription = "Settings & Notifications",
+              modifier = Modifier.size(15.dp),
+              tint = if (schedule.activeForbiddenTime != null) Color(0xFFE65100) else DarkForestInk
+            )
+          }
+        }
       }
+    }
+
+    if (showNotificationSheet) {
+      com.example.ui.components.SettingsSheet(
+        schedule = schedule,
+        language = language,
+        madhab = madhab,
+        onLanguageSelect = onLanguageSelect,
+        onMadhabSelect = onMadhabSelect,
+        onDismiss = { showNotificationSheet = false }
+      )
     }
 
     LazyColumn(
@@ -296,6 +261,8 @@ fun HomeScreen(
           highFormatted = highFormatted,
           lowFormatted = lowFormatted,
           language = language,
+          isLoading = weatherState is WeatherUiState.Loading,
+          isError = weatherState is WeatherUiState.Error,
           onViewForecastClick = onNavigateToWeather
         )
       }
@@ -306,7 +273,7 @@ fun HomeScreen(
           items = schedule.items,
           language = language,
           madhab = madhab,
-          onMadhabClick = { showMadhabDialog = true },
+          onMadhabClick = { showNotificationSheet = true },
           onTogglePrayer = onTogglePrayer
         )
       }
@@ -323,130 +290,6 @@ fun HomeScreen(
         Spacer(modifier = Modifier.height(24.dp))
       }
     }
-  }
-
-  // Language Selection Dialog
-  if (showLanguageDialog) {
-    AlertDialog(
-      onDismissRequest = { showLanguageDialog = false },
-      containerColor = Color.White,
-      title = {
-        Text(
-          text = "Choose Language / ভাষা নির্বাচন",
-          style = MaterialTheme.typography.titleMedium,
-          fontWeight = FontWeight.Bold,
-          color = DarkForestInk
-        )
-      },
-      text = {
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-          // Auto Location option
-          Surface(
-            shape = RoundedCornerShape(12.dp),
-            color = CoolMintGradientBase.copy(alpha = 0.5f),
-            border = androidx.compose.foundation.BorderStroke(1.dp, LinenBorderLight),
-            modifier = Modifier
-              .fillMaxWidth()
-              .clickable {
-                onResetLanguageToLocation()
-                showLanguageDialog = false
-              }
-          ) {
-            Row(
-              modifier = Modifier.padding(12.dp),
-              horizontalArrangement = Arrangement.SpaceBetween,
-              verticalAlignment = Alignment.CenterVertically
-            ) {
-              Column {
-                Text(
-                  text = "🌐 Auto (From City Location)",
-                  fontWeight = FontWeight.Bold,
-                  style = MaterialTheme.typography.bodyMedium,
-                  color = DarkForestInk
-                )
-                Text(
-                  text = "Detects based on ${currentCity.name}, ${currentCity.country}",
-                  style = MaterialTheme.typography.labelSmall,
-                  color = DarkForestInk.copy(alpha = 0.7f)
-                )
-              }
-            }
-          }
-
-          AppLanguage.entries.forEach { appLang ->
-            val isSelected = language == appLang
-            Surface(
-              shape = RoundedCornerShape(12.dp),
-              color = if (isSelected) CoolMintGradientBase else Color(0xFFFAF7EE),
-              border = androidx.compose.foundation.BorderStroke(
-                1.dp,
-                if (isSelected) OutlineDarkBorder else LinenBorderLight
-              ),
-              modifier = Modifier
-                .fillMaxWidth()
-                .clickable {
-                  onLanguageSelect(appLang)
-                  showLanguageDialog = false
-                }
-            ) {
-              Row(
-                modifier = Modifier.padding(12.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-              ) {
-                Column {
-                  Text(
-                    text = "${appLang.flag} ${appLang.nativeName}",
-                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.SemiBold,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = DarkForestInk
-                  )
-                  Text(
-                    text = appLang.englishName,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = DarkForestInk.copy(alpha = 0.7f)
-                  )
-                }
-                if (isSelected) {
-                  Icon(
-                    Icons.Default.Check,
-                    contentDescription = null,
-                    tint = DarkForestInk,
-                    modifier = Modifier.size(18.dp)
-                  )
-                }
-              }
-            }
-          }
-        }
-      },
-      confirmButton = {
-        TextButton(onClick = { showLanguageDialog = false }) {
-          Text("Close", color = DarkForestInk, fontWeight = FontWeight.Bold)
-        }
-      }
-    )
-  }
-
-  // Madhab Selection Dialog (4 Madhabs with Shafi'i default)
-  if (showMadhabDialog) {
-    MadhabSelectionDialog(
-      currentMadhab = madhab,
-      language = language,
-      onMadhabSelected = { selected ->
-        onMadhabSelect(selected)
-      },
-      onDismiss = { showMadhabDialog = false }
-    )
-  }
-
-  // Notification & Forbidden Prayer Times Center Sheet
-  if (showNotificationSheet) {
-    NotificationSettingsSheet(
-      schedule = schedule,
-      language = language,
-      onDismiss = { showNotificationSheet = false }
-    )
   }
 
   // About Ḥaasi al-Layl (The Night Sipper) Meaning & Brand Logo Dialog

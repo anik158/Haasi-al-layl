@@ -132,7 +132,7 @@ fun AboutHaasiDialog(
         ) {
           Spacer(modifier = Modifier.weight(1f))
           IconButton(onClick = onDismiss) {
-            Icon(Icons.Default.Close, contentDescription = "Close", tint = DarkForestInk)
+            Icon(Icons.Default.Close, contentDescription = LocalizationManager.getCloseLabel(language), tint = DarkForestInk)
           }
         }
 
@@ -172,21 +172,21 @@ fun AboutHaasiDialog(
         ) {
           Column(modifier = Modifier.padding(14.dp)) {
             Text(
-              text = "Poetic & Spiritual Context:",
+              text = LocalizationManager.getAboutContextLabel(language),
               fontWeight = FontWeight.Bold,
               fontSize = 13.sp,
               color = DarkForestInk
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-              text = "Ḥaasi (حَاسِي) comes from the Arabic verb ḥasā (حَسَا), meaning to sip a liquid slowly with contemplation and reverence. Al-Layl (اللَّيْل) is the night.",
+              text = LocalizationManager.getAboutContextBody1(language),
               fontSize = 12.sp,
               color = DarkForestInk.copy(alpha = 0.85f),
               lineHeight = 17.sp
             )
             Spacer(modifier = Modifier.height(6.dp))
             Text(
-              text = "It describes the devout worshipper who drinks in the spiritual nectar of the late hours — Tahajjud, quiet reflection, and the serenity before dawn — with gradual, deliberate mindfulness.",
+              text = LocalizationManager.getAboutContextBody2(language),
               fontSize = 12.sp,
               color = DarkForestInk.copy(alpha = 0.85f),
               lineHeight = 17.sp
@@ -213,13 +213,13 @@ fun AboutHaasiDialog(
             Spacer(modifier = Modifier.width(10.dp))
             Column {
               Text(
-                text = "Configure Prayer & Forbidden Time Alerts",
+                text = LocalizationManager.getAboutConfigureAlertsTitle(language),
                 fontWeight = FontWeight.Bold,
                 fontSize = 13.sp,
                 color = Color.White
               )
               Text(
-                text = "Receive notifications when prayers and prohibited windows start/end",
+                text = LocalizationManager.getAboutConfigureAlertsDesc(language),
                 fontSize = 11.sp,
                 color = Color.White.copy(alpha = 0.8f)
               )
@@ -230,7 +230,7 @@ fun AboutHaasiDialog(
     },
     confirmButton = {
       TextButton(onClick = onDismiss) {
-        Text("Close", color = DarkForestInk, fontWeight = FontWeight.Bold)
+        Text(LocalizationManager.getCloseLabel(language), color = DarkForestInk, fontWeight = FontWeight.Bold)
       }
     }
   )

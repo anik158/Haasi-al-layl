@@ -10,6 +10,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,6 +29,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.NotificationsActive
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -54,6 +57,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
@@ -62,6 +66,7 @@ import com.example.data.localization.LocalizationManager
 import com.example.data.model.DailyPrayerSchedule
 import com.example.data.notification.PrayerNotificationManager
 import com.example.data.prayer.ForbiddenTimeWindow
+import com.example.data.prayer.IslamicMadhab
 import com.example.ui.theme.DarkForestInk
 import com.example.ui.theme.LinenBorderLight
 import com.example.ui.theme.OutlineDarkBorder
@@ -69,11 +74,14 @@ import com.example.ui.theme.SunGoldenGlow
 import com.example.ui.theme.WarmBeigeBackground
 import java.time.LocalTime
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun NotificationSettingsSheet(
+fun SettingsSheet(
   schedule: DailyPrayerSchedule?,
   language: AppLanguage,
+  madhab: IslamicMadhab,
+  onLanguageSelect: (AppLanguage) -> Unit,
+  onMadhabSelect: (IslamicMadhab) -> Unit,
   onDismiss: () -> Unit
 ) {
   val context = LocalContext.current
@@ -116,7 +124,7 @@ fun NotificationSettingsSheet(
     onDismissRequest = onDismiss,
     sheetState = sheetState,
     containerColor = Color.White,
-    modifier = Modifier.testTag("notification_settings_sheet")
+    modifier = Modifier.testTag("settings_sheet")
   ) {
     LazyColumn(
       modifier = Modifier
@@ -140,7 +148,7 @@ fun NotificationSettingsSheet(
               contentAlignment = Alignment.Center
             ) {
               Icon(
-                Icons.Default.NotificationsActive,
+                Icons.Default.Settings,
                 contentDescription = null,
                 tint = SunGoldenGlow,
                 modifier = Modifier.size(22.dp)
@@ -149,13 +157,13 @@ fun NotificationSettingsSheet(
             Spacer(modifier = Modifier.width(12.dp))
             Column {
               Text(
-                text = "Notifications & Forbidden Times",
+                text = LocalizationManager.getSettingsTitle(language),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.ExtraBold,
                 color = DarkForestInk
               )
               Text(
-                text = "Prayer start alerts & forbidden time warnings",
+                text = LocalizationManager.getSettingsSubtitle(language),
                 style = MaterialTheme.typography.bodySmall,
                 color = DarkForestInk.copy(alpha = 0.7f)
               )
@@ -193,6 +201,99 @@ fun NotificationSettingsSheet(
         }
       }
 
+      // Language Selection
+      item {
+        Card(
+          shape = RoundedCornerShape(18.dp),
+          colors = CardDefaults.cardColors(containerColor = WarmBeigeBackground),
+          border = androidx.compose.foundation.BorderStroke(1.dp, LinenBorderLight),
+          modifier = Modifier.fillMaxWidth()
+        ) {
+          Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+              text = LocalizationManager.getLanguageLabel(language),
+              fontWeight = FontWeight.Bold,
+              fontSize = 15.sp,
+              color = DarkForestInk
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            FlowRow(
+              modifier = Modifier.fillMaxWidth(),
+              horizontalArrangement = Arrangement.spacedBy(8.dp),
+              verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+              AppLanguage.entries.forEach { lang ->
+                val isSelected = language == lang
+                Surface(
+                  onClick = { onLanguageSelect(lang) },
+                  shape = RoundedCornerShape(20.dp),
+                  color = if (isSelected) Color(0xFF0F3E2F) else Color.White,
+                  border = androidx.compose.foundation.BorderStroke(1.dp, if (isSelected) Color(0xFF0F3E2F) else OutlineDarkBorder),
+                ) {
+                  Text(
+                    text = "${lang.flag} ${lang.displayName}",
+                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                    fontSize = 12.sp,
+                    color = if (isSelected) Color.White else DarkForestInk,
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                  )
+                }
+              }
+            }
+          }
+        }
+      }
+
+      // Madhab Selection
+      item {
+        Card(
+          shape = RoundedCornerShape(18.dp),
+          colors = CardDefaults.cardColors(containerColor = WarmBeigeBackground),
+          border = androidx.compose.foundation.BorderStroke(1.dp, LinenBorderLight),
+          modifier = Modifier.fillMaxWidth()
+        ) {
+          Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+              text = LocalizationManager.getSelectMadhabTitle(language),
+              fontWeight = FontWeight.Bold,
+              fontSize = 15.sp,
+              color = DarkForestInk
+            )
+            Text(
+              text = LocalizationManager.getSelectMadhabSubtitle(language),
+              fontSize = 12.sp,
+              color = DarkForestInk.copy(alpha = 0.75f)
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            FlowRow(
+              modifier = Modifier.fillMaxWidth(),
+              horizontalArrangement = Arrangement.spacedBy(8.dp),
+              verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+              IslamicMadhab.entries.forEach { m ->
+                val isSelected = madhab == m
+                Surface(
+                  onClick = { onMadhabSelect(m) },
+                  shape = RoundedCornerShape(20.dp),
+                  color = if (isSelected) Color(0xFF0F3E2F) else Color.White,
+                  border = androidx.compose.foundation.BorderStroke(1.dp, if (isSelected) Color(0xFF0F3E2F) else OutlineDarkBorder),
+                ) {
+                  Text(
+                    text = m.getLocalizedName(language),
+                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                    fontSize = 12.sp,
+                    color = if (isSelected) Color.White else DarkForestInk,
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                  )
+                }
+              }
+            }
+          }
+        }
+      }
+
       // Section 1: Prayer Start Notifications Toggle
       item {
         Card(
@@ -209,13 +310,13 @@ fun NotificationSettingsSheet(
             ) {
               Column(modifier = Modifier.weight(1f)) {
                 Text(
-                  text = "Prayer Start Notifications",
+                  text = LocalizationManager.getPrayerStartAlertsLabel(language),
                   fontWeight = FontWeight.Bold,
                   fontSize = 15.sp,
                   color = DarkForestInk
                 )
                 Text(
-                  text = "Receive notifications when Fajr, Dhuhr, Asr, Maghrib, and Isha begin",
+                  text = LocalizationManager.getPrayerStartAlertsDesc(language),
                   fontSize = 12.sp,
                   color = DarkForestInk.copy(alpha = 0.75f)
                 )
@@ -257,7 +358,7 @@ fun NotificationSettingsSheet(
               Column(modifier = Modifier.weight(1f)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                   Text(
-                    text = "Forbidden Prayer Time Alerts",
+                    text = LocalizationManager.getForbiddenAlertsLabel(language),
                     fontWeight = FontWeight.Bold,
                     fontSize = 15.sp,
                     color = DarkForestInk
@@ -278,7 +379,7 @@ fun NotificationSettingsSheet(
                   }
                 }
                 Text(
-                  text = "Alerts when prohibited windows start (Nafl prohibited) and when they end (prayer permitted)",
+                  text = LocalizationManager.getForbiddenAlertsDesc(language),
                   fontSize = 12.sp,
                   color = DarkForestInk.copy(alpha = 0.75f)
                 )
@@ -306,7 +407,7 @@ fun NotificationSettingsSheet(
       // Section 3: Today's 3 Forbidden Windows
       item {
         Text(
-          text = "Today's Prohibited Windows (أوقات النهي)",
+          text = LocalizationManager.getTodaysProhibitedWindows(language) + " (أوقات النهي)",
           fontWeight = FontWeight.ExtraBold,
           fontSize = 16.sp,
           color = DarkForestInk

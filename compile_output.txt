@@ -1,0 +1,477 @@
+Reusing configuration cache.
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:generateDebugBuildConfig UP-TO-DATE
+> Task :app:processDebugGoogleServices UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:kspDebugKotlin UP-TO-DATE
+> Task :app:processDebugNavigationResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:generateDebugRFile UP-TO-DATE
+
+> Task :app:compileDebugKotlin FAILED
+e: file:///app/applet/app/src/main/java/com/example/MainActivity.kt:91:40 Unresolved reference 'getNavToday'.
+e: file:///app/applet/app/src/main/java/com/example/MainActivity.kt:92:40 Unresolved reference 'getNavWeather'.
+e: file:///app/applet/app/src/main/java/com/example/MainActivity.kt:93:40 Unresolved reference 'getNavQibla'.
+e: file:///app/applet/app/src/main/java/com/example/MainActivity.kt:94:40 Unresolved reference 'getNavTasbih'.
+e: file:///app/applet/app/src/main/java/com/example/MainActivity.kt:95:40 Unresolved reference 'getNavDuas'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:79:81 Return type mismatch: expected 'String', actual 'Any'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:131:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:139:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:139:7 Unresolved reference 'getCelestialHorizonSubtitle'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:139:43 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:139:57 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:139:57 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:139:59 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:139:68 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:147:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:155:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:155:7 Unresolved reference 'getWestLabel'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:155:28 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:155:42 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:155:42 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:155:44 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:155:53 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:163:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:171:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:171:7 Unresolved reference 'getNightSkyLabel'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:171:32 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:171:46 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:171:46 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:171:48 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:171:57 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:179:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:187:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:187:7 Unresolved reference 'getNextSunsetLabel'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:187:34 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:187:48 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:187:48 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:187:50 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:187:59 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:195:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:203:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:203:7 Unresolved reference 'getSunriseIshraqSub'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:203:35 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:203:49 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:203:49 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:203:51 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:203:60 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:211:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:211:75 Return type mismatch: expected 'String', actual 'Any'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:268:5 'else' entry must be the last one in a 'when' expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:276:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:285:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:285:7 Unresolved reference 'getWeatherCardTitle'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:285:35 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:285:49 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:285:49 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:285:51 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:285:60 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:293:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:301:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:301:7 Unresolved reference 'getDailyAdviceHeader'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:301:36 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:301:50 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:301:50 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:301:52 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:301:61 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:310:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:318:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:318:7 Unresolved reference 'getTodaysPrayersTitle'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:318:37 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:318:51 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:318:51 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:318:53 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:318:62 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:320:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:328:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:328:7 Unresolved reference 'getDailyInspirationTitle'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:328:40 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:328:54 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:328:54 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:328:56 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:328:65 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:336:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:344:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:344:7 Unresolved reference 'getHadithOfTheDayTitle'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:344:38 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:344:52 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:344:52 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:344:54 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:344:63 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:355:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:363:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:363:7 Unresolved reference 'getNavWeather'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:363:29 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:363:43 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:363:43 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:363:45 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:363:54 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:371:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:379:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:379:7 Unresolved reference 'getNavTasbih'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:379:28 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:379:42 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:379:42 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:379:44 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:379:53 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:387:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:398:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:398:7 Unresolved reference 'getWeatherForecastTitle'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:398:39 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:398:53 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:398:53 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:398:55 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:398:64 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:406:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:414:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:414:7 Unresolved reference 'getDailyForecastTitle'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:414:37 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:414:51 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:414:51 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:414:53 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:414:62 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:422:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:430:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:430:7 Unresolved reference 'getHumidityLabel'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:430:32 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:430:46 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:430:46 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:430:48 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:430:57 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:438:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:446:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:446:7 Unresolved reference 'getUvIndexLabel'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:446:31 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:446:45 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:446:45 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:446:47 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:446:56 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:454:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:462:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:462:7 Unresolved reference 'getPressureLabel'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:462:32 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:462:46 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:462:46 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:462:48 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:462:57 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:473:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:481:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:481:7 Unresolved reference 'getQiblaSubtitle'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:481:32 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:481:46 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:481:46 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:481:48 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:481:57 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:489:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:497:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:497:7 Unresolved reference 'getAlignNeedleHint'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:497:34 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:497:48 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:497:48 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:497:50 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:497:59 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:505:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:513:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:513:7 Unresolved reference 'getDistanceToKaabaLabel'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:513:39 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:513:53 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:513:53 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:513:55 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:513:64 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:521:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:532:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:532:7 Unresolved reference 'getTasbihTitle'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:532:30 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:532:44 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:532:44 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:532:46 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:532:55 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:540:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:548:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:548:7 Unresolved reference 'getTapToCountHint'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:548:33 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:548:47 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:548:47 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:548:49 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:548:58 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:556:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:564:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:564:7 Unresolved reference 'getCompletedRoundsLabel'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:564:39 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:564:53 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:564:53 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:564:55 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:564:64 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:572:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:580:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:580:7 Unresolved reference 'getSelectDhikrTitle'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:580:35 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:580:49 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:580:49 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:580:51 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:580:60 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:591:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:599:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:599:7 Unresolved reference 'getDuaSubtitle'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:599:30 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:599:44 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:599:44 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:599:46 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:599:55 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:607:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:615:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:615:7 Unresolved reference 'getBookmarksOnlyLabel'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:615:37 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:615:51 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:615:51 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:615:53 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:615:62 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:623:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:631:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:631:7 Unresolved reference 'getNoDuasFoundSubtitle'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:631:38 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:631:53 Unresolved reference 'showBookmarksOnly'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:631:70 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:631:80 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:631:80 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:631:82 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:631:91 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:632:31 Unresolved reference 'showBookmarksOnly'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:633:32 Unresolved reference 'showBookmarksOnly'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:634:32 Unresolved reference 'showBookmarksOnly'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:635:35 Unresolved reference 'showBookmarksOnly'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:636:32 Unresolved reference 'showBookmarksOnly'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:639:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:648:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:648:7 Unresolved reference 'getSelectMadhabTitle'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:648:36 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:648:50 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:648:50 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:648:52 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:648:61 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:656:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:664:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:664:7 Unresolved reference 'getDefaultBadge'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:664:31 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:664:45 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:664:45 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:664:47 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:664:56 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:672:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:682:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:682:7 Unresolved reference 'getSettingsTitle'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:682:32 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:682:46 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:682:46 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:682:48 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:682:57 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:690:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:698:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:698:7 Unresolved reference 'getLanguageLabel'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:698:32 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:698:46 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:698:46 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:698:48 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:698:57 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:706:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:714:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:714:7 Unresolved reference 'getPrayerStartAlertsDesc'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:714:40 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:714:54 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:714:54 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:714:56 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:714:65 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:722:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:730:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:730:7 Unresolved reference 'getForbiddenAlertsDesc'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:730:38 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:730:52 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:730:52 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:730:54 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:730:63 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:738:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:747:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:747:7 Unresolved reference 'getAboutContextLabel'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:747:36 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:747:50 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:747:50 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:747:52 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:747:61 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:755:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:763:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:763:7 Unresolved reference 'getAboutContextBody2'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:763:36 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:763:50 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:763:50 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:763:52 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:763:61 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:771:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:779:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:779:7 Unresolved reference 'getAboutConfigureAlertsDesc'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:779:43 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:779:57 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:779:57 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:779:59 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:779:68 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:787:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:797:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:797:7 Unresolved reference 'getLiveStatus'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:797:29 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:797:43 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:797:43 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:797:45 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:797:54 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:805:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:813:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:813:7 Unresolved reference 'getWeatherErrorDesc'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:813:35 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:813:49 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:813:49 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:813:51 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:813:60 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:821:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:829:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:829:7 Unresolved reference 'getHighShort'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:829:28 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:829:42 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:829:42 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:829:44 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:829:53 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:837:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:845:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:845:7 Unresolved reference 'getRetryLabel'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:845:29 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:845:43 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:845:43 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:845:45 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:845:54 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:853:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:861:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:861:7 Unresolved reference 'getIslamicWeatherGuidance'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:861:41 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:861:55 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:861:55 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:861:57 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:861:66 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:869:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:877:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:877:7 Unresolved reference 'getHumidityLabel'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:877:32 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:877:46 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:877:46 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:877:48 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:877:57 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:885:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:893:3 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:893:7 Unresolved reference 'getUvIndexLabel'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:893:31 Syntax error: Unexpected type specification.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:893:45 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:893:45 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:893:47 Variable expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:893:56 Assignment type mismatch: actual type is 'String', but 'String.Companion' was expected.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:901:7 Anonymous functions with names are prohibited.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:907:4 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:909:2 Syntax error: Expecting '->'.
+e: file:///app/applet/app/src/main/java/com/example/data/localization/LocalizationManager.kt:909:2 Syntax error: Expecting an expression.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/CelestialHorizonCard.kt:176:42 Unresolved reference 'getCelestialHorizonTitle'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/CelestialHorizonCard.kt:182:42 Unresolved reference 'getCelestialHorizonSubtitle'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/CelestialHorizonCard.kt:209:57 Unresolved reference 'getDaySkyLabel'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/CelestialHorizonCard.kt:209:107 Unresolved reference 'getNightSkyLabel'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/CelestialHorizonCard.kt:424:38 Unresolved reference 'getEastLabel'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/CelestialHorizonCard.kt:435:38 Unresolved reference 'getWestLabel'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/CelestialHorizonCard.kt:476:40 Unresolved reference 'getNextSunsetLabel'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/CelestialHorizonCard.kt:478:40 Unresolved reference 'getNextSunriseLabel'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/CelestialHorizonCard.kt:481:37 Unresolved reference 'getSunsetMaghribSub'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/CelestialHorizonCard.kt:483:37 Unresolved reference 'getSunriseIshraqSub'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/CelestialHorizonCard.kt:521:44 Unresolved reference 'getMoonPhaseName'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/CelestialHorizonCard.kt:527:44 Unresolved reference 'getIlluminationLabel'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/DailyInspirationCard.kt:85:38 Unresolved reference 'getAyahOfTheDayTitle'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/DailyInspirationCard.kt:144:38 Unresolved reference 'getHadithOfTheDayTitle'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/HaasiBrandLogo.kt:135:80 Unresolved reference 'getCloseLabel'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/HaasiBrandLogo.kt:175:42 Unresolved reference 'getAboutContextLabel'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/HaasiBrandLogo.kt:182:42 Unresolved reference 'getAboutContextBody1'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/HaasiBrandLogo.kt:189:42 Unresolved reference 'getAboutContextBody2'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/HaasiBrandLogo.kt:216:44 Unresolved reference 'getAboutConfigureAlertsTitle'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/HaasiBrandLogo.kt:222:44 Unresolved reference 'getAboutConfigureAlertsDesc'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/HaasiBrandLogo.kt:233:34 Unresolved reference 'getCloseLabel'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/MadhabSelectionDialog.kt:78:38 Unresolved reference 'getSelectMadhabTitle'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/MadhabSelectionDialog.kt:85:38 Unresolved reference 'getSelectMadhabSubtitle'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/MadhabSelectionDialog.kt:141:52 Unresolved reference 'getDefaultBadge'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/MadhabSelectionDialog.kt:195:46 Unresolved reference 'getAsrShadowRatioLabel'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/PrayerScheduleListCard.kt:88:40 Unresolved reference 'getTodaysPrayersTitle'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/PrayerScheduleListCard.kt:94:40 Unresolved reference 'getTapCircleHint'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/SettingsSheet.kt:160:44 Unresolved reference 'getSettingsTitle'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/SettingsSheet.kt:166:44 Unresolved reference 'getSettingsSubtitle'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/SettingsSheet.kt:214:42 Unresolved reference 'getLanguageLabel'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/SettingsSheet.kt:258:42 Unresolved reference 'getSelectMadhabTitle'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/SettingsSheet.kt:264:42 Unresolved reference 'getSelectMadhabSubtitle'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/SettingsSheet.kt:313:46 Unresolved reference 'getPrayerStartAlertsLabel'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/SettingsSheet.kt:319:46 Unresolved reference 'getPrayerStartAlertsDesc'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/SettingsSheet.kt:361:48 Unresolved reference 'getForbiddenAlertsLabel'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/SettingsSheet.kt:382:46 Unresolved reference 'getForbiddenAlertsDesc'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/SettingsSheet.kt:410:38 Unresolved reference 'getTodaysProhibitedWindows'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/WeatherHomeScreenCard.kt:103:40 Unresolved reference 'getWeatherCardTitle'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/WeatherHomeScreenCard.kt:116:53 Unresolved reference 'getOfflineStatus'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/WeatherHomeScreenCard.kt:116:105 Unresolved reference 'getLiveStatus'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/WeatherHomeScreenCard.kt:156:47 Unresolved reference 'getHighShort'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/WeatherHomeScreenCard.kt:156:113 Unresolved reference 'getLowShort'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/WeatherHomeScreenCard.kt:217:48 Unresolved reference 'getDailyAdviceHeader'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/WeatherHomeScreenCard.kt:247:40 Unresolved reference 'getViewForecastButton'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/WeatherHomeScreenCard.kt:273:42 Unresolved reference 'getWeatherErrorDesc'.
+e: file:///app/applet/app/src/main/java/com/example/ui/components/WeatherHomeScreenCard.kt:281:38 Unresolved reference 'getWeatherLoadingDesc'.
+e: file:///app/applet/app/src/main/java/com/example/ui/screens/DuaScreen.kt:107:38 Unresolved reference 'getDuaTitle'.
+e: file:///app/applet/app/src/main/java/com/example/ui/screens/DuaScreen.kt:113:38 Unresolved reference 'getDuaSubtitle'.
+e: file:///app/applet/app/src/main/java/com/example/ui/screens/DuaScreen.kt:124:48 Unresolved reference 'getSearchDuaPlaceholder'.
+e: file:///app/applet/app/src/main/java/com/example/ui/screens/DuaScreen.kt:148:51 Unresolved reference 'getBookmarksOnlyLabel'.
+e: file:///app/applet/app/src/main/java/com/example/ui/screens/DuaScreen.kt:204:40 Unresolved reference 'getNoDuasFoundTitle'.
+e: file:///app/applet/app/src/main/java/com/example/ui/screens/DuaScreen.kt:209:40 Unresolved reference 'getNoDuasFoundSubtitle'.
+e: file:///app/applet/app/src/main/java/com/example/ui/screens/DuaScreen.kt:355:39 Unresolved reference 'getSourceLabel'.
+e: file:///app/applet/app/src/main/java/com/example/ui/screens/QiblaScreen.kt:101:38 Unresolved reference 'getQiblaTitle'.
+e: file:///app/applet/app/src/main/java/com/example/ui/screens/QiblaScreen.kt:133:47 Unresolved reference 'getTowardsKaabaLabel'.
+e: file:///app/applet/app/src/main/java/com/example/ui/screens/QiblaScreen.kt:167:40 Unresolved reference 'getFacingQiblaText'.
+e: file:///app/applet/app/src/main/java/com/example/ui/screens/QiblaScreen.kt:374:40 Unresolved reference 'getDistanceToKaabaLabel'.
+e: file:///app/applet/app/src/main/java/com/example/ui/screens/QiblaScreen.kt:416:38 Unresolved reference 'getCompassCalibrationHint'.
+e: file:///app/applet/app/src/main/java/com/example/ui/screens/TasbihScreen.kt:128:38 Unresolved reference 'getTasbihTitle'.
+e: file:///app/applet/app/src/main/java/com/example/ui/screens/TasbihScreen.kt:134:38 Unresolved reference 'getTasbihSubtitle'.
+e: file:///app/applet/app/src/main/java/com/example/ui/screens/TasbihScreen.kt:261:41 Unresolved reference 'getTargetLabel'.
+e: file:///app/applet/app/src/main/java/com/example/ui/screens/TasbihScreen.kt:276:40 Unresolved reference 'getTapToCountHint'.
+e: file:///app/applet/app/src/main/java/com/example/ui/screens/TasbihScreen.kt:304:40 Unresolved reference 'getCompletedRoundsLabel'.
+e: file:///app/applet/app/src/main/java/com/example/ui/screens/TasbihScreen.kt:354:32 Unresolved reference 'getResetLabel'.
+e: file:///app/applet/app/src/main/java/com/example/ui/screens/WeatherScreen.kt:90:38 Unresolved reference 'getWeatherForecastTitle'.
+e: file:///app/applet/app/src/main/java/com/example/ui/screens/WeatherScreen.kt:160:42 Unresolved reference 'getWeatherLoadingDesc'.
+e: file:///app/applet/app/src/main/java/com/example/ui/screens/WeatherScreen.kt:177:42 Unresolved reference 'getWeatherErrorDesc'.
+e: file:///app/applet/app/src/main/java/com/example/ui/screens/WeatherScreen.kt:193:40 Unresolved reference 'getRetryLabel'.
+e: file:///app/applet/app/src/main/java/com/example/ui/screens/WeatherScreen.kt:284:38 Unresolved reference 'getFeelsLikeLabel'.
+e: file:///app/applet/app/src/main/java/com/example/ui/screens/WeatherScreen.kt:284:130 Unresolved reference 'getHighShort'.
+e: file:///app/applet/app/src/main/java/com/example/ui/screens/WeatherScreen.kt:284:213 Unresolved reference 'getLowShort'.
+e: file:///app/applet/app/src/main/java/com/example/ui/screens/WeatherScreen.kt:286:38 Unresolved reference 'getFeelsLikeLabel'.
+e: file:///app/applet/app/src/main/java/com/example/ui/screens/WeatherScreen.kt:286:130 Unresolved reference 'getHighShort'.
+e: file:///app/applet/app/src/main/java/com/example/ui/screens/WeatherScreen.kt:286:213 Unresolved reference 'getLowShort'.
+e: file:///app/applet/app/src/main/java/com/example/ui/screens/WeatherScreen.kt:322:42 Unresolved reference 'getIslamicWeatherGuidance'.
+e: file:///app/applet/app/src/main/java/com/example/ui/screens/WeatherScreen.kt:343:46 Unresolved reference 'getRecommendedDuaLabel'.
+e: file:///app/applet/app/src/main/java/com/example/ui/screens/WeatherScreen.kt:364:36 Unresolved reference 'getHourlyForecastTitle'.
+e: file:///app/applet/app/src/main/java/com/example/ui/screens/WeatherScreen.kt:383:36 Unresolved reference 'getConditionsDetailsLabel'.
+e: file:///app/applet/app/src/main/java/com/example/ui/screens/WeatherScreen.kt:395:39 Unresolved reference 'getHumidityLabel'.
+e: file:///app/applet/app/src/main/java/com/example/ui/screens/WeatherScreen.kt:402:39 Unresolved reference 'getWindSpeedLabel'.
+e: file:///app/applet/app/src/main/java/com/example/ui/screens/WeatherScreen.kt:415:39 Unresolved reference 'getUvIndexLabel'.
+e: file:///app/applet/app/src/main/java/com/example/ui/screens/WeatherScreen.kt:422:39 Unresolved reference 'getFeelsLikeLabel'.
+e: file:///app/applet/app/src/main/java/com/example/ui/screens/WeatherScreen.kt:433:36 Unresolved reference 'getDailyForecastTitle'.
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileDebugKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 15s
+9 actionable tasks: 1 executed, 8 up-to-date
+Configuration cache entry reused.

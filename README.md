@@ -29,8 +29,8 @@ Calculations are computed 100% locally and instantaneously using astronomical so
 
 ---
 
-### 2. 📖 Offline & Local Dua Dataset with Multilingual Support
-The application's **Dua & Supplications** database operates completely offline with zero external API dependencies or trackers. Every entry includes:
+### 2. 📖 Comprehensive Hisn al-Muslim (Fortress of the Muslim)
+The application's **Duas** tab now features the complete **Hisn al-Muslim** database (132 chapters, 267 supplications), operating completely offline. Every entry includes:
 - **Authentic Arabic Text with Full Tashkeel**
 - **Phonetic Transliteration**
 - **Verified Translations in 5 Languages**:
@@ -41,6 +41,13 @@ The application's **Dua & Supplications** database operates completely offline w
   - 🇸🇦 Arabic (عربي)
 - **Categorized Sections**: Weather & Nature, Morning Adhkar, Evening Adhkar, Prayer & Mosque, Daily Life.
 - **Bookmarks & Instant Search** across titles and translations in all languages.
+
+---
+
+### 3. ⚙️ Centralized Settings & Customization
+- **Unified Settings Bottom Sheet**: Quickly configure Prayer Start Alerts, Forbidden Time Warnings, App Language, and Madhab selection from a single intuitive menu in the Top Bar.
+- **Offline Weather Graceful Degradation**: Real-time weather and temperature widgets cleanly handle network loss with an offline state banner instead of endless loading loops.
+- **Dynamic Top Bar**: Displays a minimal logo, app branding, an actionable City Changer, and the Settings hub to maximize screen real estate.
 
 ---
 

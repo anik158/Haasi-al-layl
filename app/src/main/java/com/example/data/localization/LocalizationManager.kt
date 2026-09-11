@@ -49,22 +49,18 @@ object LocalizationManager {
     }
   }
 
-  fun getAppName(language: AppLanguage): String {
-    return when (language) {
+  fun getAppName(language: AppLanguage): String = when (language) {
       AppLanguage.ARABIC -> "حصي الليل"
       AppLanguage.BENGALI -> "হাসী আল-লাইল"
       else -> "Haasi al-layl"
     }
-  }
 
-  fun getAppSubtitle(language: AppLanguage): String {
-    return when (language) {
+  fun getAppSubtitle(language: AppLanguage): String = when (language) {
       AppLanguage.ARABIC -> "أراقب إيقاع الليل والنهار الهادئ"
       AppLanguage.BENGALI -> "রাত ও দিনের নীরব ছন্দ পর্যবেক্ষণ"
       AppLanguage.SPANISH -> "El ritmo sereno del día y la noche"
       AppLanguage.PORTUGUESE -> "O ritmo sereno do dia e da noite"
       AppLanguage.ENGLISH -> "I watch the quiet rhythm of night and day"
-    }
   }
 
   // Prayer hero texts
@@ -211,17 +207,17 @@ object LocalizationManager {
 
   fun getMoonPhaseName(phaseKey: String, language: AppLanguage): String = when (phaseKey) {
     "NEW_MOON" -> when (language) {
-      AppLanguage.ARABIC -> "محاق (هلال جديد)"
-      AppLanguage.BENGALI -> "নতুন চাঁদ (হিলাল)"
+      AppLanguage.ARABIC -> "محاق"
+      AppLanguage.BENGALI -> "অমাবস্যা"
       AppLanguage.SPANISH -> "Luna Nueva"
       AppLanguage.PORTUGUESE -> "Lua Nova"
       AppLanguage.ENGLISH -> "New Moon"
     }
     "WAXING_CRESCENT" -> when (language) {
       AppLanguage.ARABIC -> "هلال متزايد"
-      AppLanguage.BENGALI -> "বর্ধমান ক্রিসেন্ট"
-      AppLanguage.SPANISH -> "Creciente Inicial"
-      AppLanguage.PORTUGUESE -> "Quarto Crescente"
+      AppLanguage.BENGALI -> "শুক্লপক্ষের প্রথমাংশ"
+      AppLanguage.SPANISH -> "Luna Creciente"
+      AppLanguage.PORTUGUESE -> "Lua Crescente"
       AppLanguage.ENGLISH -> "Waxing Crescent"
     }
     "FIRST_QUARTER" -> when (language) {
@@ -233,23 +229,23 @@ object LocalizationManager {
     }
     "WAXING_GIBBOUS" -> when (language) {
       AppLanguage.ARABIC -> "أحدب متزايد"
-      AppLanguage.BENGALI -> "শুক্লপক্ষ গিবস"
-      AppLanguage.SPANISH -> "Gibosa Creciente"
-      AppLanguage.PORTUGUESE -> "Crescente Gibosa"
+      AppLanguage.BENGALI -> "শুক্লপক্ষের দ্বিতীয়াংশ"
+      AppLanguage.SPANISH -> "Luna Gibosa Creciente"
+      AppLanguage.PORTUGUESE -> "Lua Gibosa Crescente"
       AppLanguage.ENGLISH -> "Waxing Gibbous"
     }
     "FULL_MOON" -> when (language) {
-      AppLanguage.ARABIC -> "بدر كامل"
-      AppLanguage.BENGALI -> "পূর্ণিমা (বদর)"
-      AppLanguage.SPANISH -> "Luna Llena (Badr)"
-      AppLanguage.PORTUGUESE -> "Lua Cheia (Badr)"
-      AppLanguage.ENGLISH -> "Full Moon (Badr)"
+      AppLanguage.ARABIC -> "بدر"
+      AppLanguage.BENGALI -> "পূর্ণিমা"
+      AppLanguage.SPANISH -> "Luna Llena"
+      AppLanguage.PORTUGUESE -> "Lua Cheia"
+      AppLanguage.ENGLISH -> "Full Moon"
     }
     "WANING_GIBBOUS" -> when (language) {
       AppLanguage.ARABIC -> "أحدب متناقص"
-      AppLanguage.BENGALI -> "কৃষ্ণপক্ষ গিবস"
-      AppLanguage.SPANISH -> "Gibosa Menguante"
-      AppLanguage.PORTUGUESE -> "Minguante Gibosa"
+      AppLanguage.BENGALI -> "কৃষ্ণপক্ষের প্রথমাংশ"
+      AppLanguage.SPANISH -> "Luna Gibosa Menguante"
+      AppLanguage.PORTUGUESE -> "Lua Gibosa Minguante"
       AppLanguage.ENGLISH -> "Waning Gibbous"
     }
     "LAST_QUARTER" -> when (language) {
@@ -261,9 +257,9 @@ object LocalizationManager {
     }
     "WANING_CRESCENT" -> when (language) {
       AppLanguage.ARABIC -> "هلال متناقص"
-      AppLanguage.BENGALI -> "ক্ষীণ ক্রিসেন্ট"
-      AppLanguage.SPANISH -> "Creciente Menguante"
-      AppLanguage.PORTUGUESE -> "Minguante Côncava"
+      AppLanguage.BENGALI -> "কৃষ্ণপক্ষের দ্বিতীয়াংশ"
+      AppLanguage.SPANISH -> "Luna Menguante"
+      AppLanguage.PORTUGUESE -> "Lua Minguante"
       AppLanguage.ENGLISH -> "Waning Crescent"
     }
     else -> when (language) {
@@ -429,37 +425,12 @@ object LocalizationManager {
     AppLanguage.ENGLISH -> "Feels Like"
   }
 
-  fun getHumidityLabel(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "الرطوبة"
-    AppLanguage.BENGALI -> "আর্দ্রতা"
-    AppLanguage.SPANISH -> "Humedad"
-    AppLanguage.PORTUGUESE -> "Umidade"
-    AppLanguage.ENGLISH -> "Humidity"
-  }
 
-  fun getWindSpeedLabel(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "سرعة الرياح"
-    AppLanguage.BENGALI -> "বাতাসের গতি"
-    AppLanguage.SPANISH -> "Viento"
-    AppLanguage.PORTUGUESE -> "Vento"
-    AppLanguage.ENGLISH -> "Wind Speed"
-  }
 
-  fun getUvIndexLabel(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "مؤشر الأشعة فوق البنفسجية"
-    AppLanguage.BENGALI -> "ইউভি সূচক"
-    AppLanguage.SPANISH -> "Índice UV"
-    AppLanguage.PORTUGUESE -> "Índice UV"
-    AppLanguage.ENGLISH -> "UV Index"
-  }
 
-  fun getPrecipitationLabel(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "احتمال الهطول"
-    AppLanguage.BENGALI -> "বৃষ্টির সম্ভাবনা"
-    AppLanguage.SPANISH -> "Precipitación"
-    AppLanguage.PORTUGUESE -> "Precipitação"
-    AppLanguage.ENGLISH -> "Precipitation"
-  }
+
+
+
 
   fun getPressureLabel(language: AppLanguage): String = when (language) {
     AppLanguage.ARABIC -> "الضغط الجوي"
@@ -678,5 +649,245 @@ object LocalizationManager {
     AppLanguage.PORTUGUESE -> "Asr: Sombra ${if (factor == 1.0) "1x" else "2x"}"
     AppLanguage.ENGLISH -> "Asr: ${if (factor == 1.0) "1x" else "2x"} Shadow"
   }
-}
 
+
+  // Settings & Notifications
+  fun getSettingsTitle(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "الإعدادات"
+    AppLanguage.BENGALI -> "সেটিংস"
+    AppLanguage.SPANISH -> "Ajustes"
+    AppLanguage.PORTUGUESE -> "Configurações"
+    AppLanguage.ENGLISH -> "Settings"
+  }
+
+  fun getSettingsSubtitle(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "اللغة، المذهب والإشعارات"
+    AppLanguage.BENGALI -> "ভাষা, মাজহাব এবং বিজ্ঞপ্তি"
+    AppLanguage.SPANISH -> "Idioma, Madhab y Notificaciones"
+    AppLanguage.PORTUGUESE -> "Idioma, Madhab e Notificações"
+    AppLanguage.ENGLISH -> "Language, Madhab & Notifications"
+  }
+
+  fun getLanguageLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "اللغة"
+    AppLanguage.BENGALI -> "ভাষা"
+    AppLanguage.SPANISH -> "Idioma"
+    AppLanguage.PORTUGUESE -> "Idioma"
+    AppLanguage.ENGLISH -> "Language"
+  }
+
+  fun getPrayerStartAlertsLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "إشعارات دخول الوقت"
+    AppLanguage.BENGALI -> "নামাজের সময় শুরু হওয়ার অ্যালার্ট"
+    AppLanguage.SPANISH -> "Alertas de Inicio de Oración"
+    AppLanguage.PORTUGUESE -> "Alertas de Início de Oração"
+    AppLanguage.ENGLISH -> "Prayer Start Notifications"
+  }
+
+  fun getPrayerStartAlertsDesc(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "تلقي إشعارات عند دخول وقت الفجر، الظهر، العصر، المغرب، والعشاء"
+    AppLanguage.BENGALI -> "ফজর, জোহর, আসর, মাগরিব এবং এশার সময় শুরু হলে বিজ্ঞপ্তি পান"
+    AppLanguage.SPANISH -> "Recibe notificaciones cuando comiencen Fajr, Dhuhr, Asr, Maghrib e Isha"
+    AppLanguage.PORTUGUESE -> "Receba notificações quando Fajr, Dhuhr, Asr, Maghrib e Isha começarem"
+    AppLanguage.ENGLISH -> "Receive notifications when Fajr, Dhuhr, Asr, Maghrib, and Isha begin"
+  }
+
+  fun getForbiddenAlertsLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "تنبيهات أوقات النهي"
+    AppLanguage.BENGALI -> "নিষিদ্ধ সময়ের অ্যালার্ট"
+    AppLanguage.SPANISH -> "Alertas de Tiempos Prohibidos"
+    AppLanguage.PORTUGUESE -> "Alertas de Tempos Proibidos"
+    AppLanguage.ENGLISH -> "Forbidden Prayer Time Alerts"
+  }
+
+  fun getForbiddenAlertsDesc(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "تنبيه عند بدء وقت النهي وعند انتهائه"
+    AppLanguage.BENGALI -> "নিষিদ্ধ সময় শুরু এবং শেষ হলে অ্যালার্ট পান (নফল নামাজ নিষিদ্ধ)"
+    AppLanguage.SPANISH -> "Alertas cuando inician y terminan los tiempos prohibidos"
+    AppLanguage.PORTUGUESE -> "Alertas quando iniciam e terminam os tempos proibidos"
+    AppLanguage.ENGLISH -> "Alerts when prohibited windows start (Nafl prohibited) and when they end (prayer permitted)"
+  }
+
+  fun getTodaysProhibitedWindows(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "أوقات النهي اليوم"
+    AppLanguage.BENGALI -> "আজকের নিষিদ্ধ সময়"
+    AppLanguage.SPANISH -> "Tiempos Prohibidos de Hoy"
+    AppLanguage.PORTUGUESE -> "Tempos Proibidos de Hoje"
+    AppLanguage.ENGLISH -> "Today's Prohibited Windows"
+  }
+
+  // About Dialog
+  fun getAboutContextLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "السياق الشعري والروحي:"
+    AppLanguage.BENGALI -> "কাব্যিক এবং আধ্যাত্মিক প্রেক্ষাপট:"
+    AppLanguage.SPANISH -> "Contexto Poético y Espiritual:"
+    AppLanguage.PORTUGUESE -> "Contexto Poético e Espiritual:"
+    AppLanguage.ENGLISH -> "Poetic & Spiritual Context:"
+  }
+
+  fun getAboutContextBody1(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "كلمة حاسي تأتي من الفعل حسى، وهو شرب السائل ببطء مع التأمل. الليل يعني وقت الليل."
+    AppLanguage.BENGALI -> "হাসি (حاسي) শব্দটি আরবি ক্রিয়াপদ হাসা (حسَا) থেকে এসেছে, যার অর্থ ধীরে ধীরে ও মনোযোগ দিয়ে তরল পান করা। আল-লাইল (الليل) অর্থ রাত।"
+    AppLanguage.SPANISH -> "Ḥaasi (حاسي) proviene del verbo árabe ḥasā (حسَا), que significa sorber un líquido lentamente con contemplación y reverencia. Al-Layl (الليل) es la noche."
+    AppLanguage.PORTUGUESE -> "Ḥaasi (حاسي) vem do verbo árabe ḥasā (حسَا), que significa sorver um líquido lentamente com contemplação e reverência. Al-Layl (الليل) é a noite."
+    AppLanguage.ENGLISH -> "Ḥaasi (حاسي) comes from the Arabic verb ḥasā (حسَا), meaning to sip a liquid slowly with contemplation and reverence. Al-Layl (الليل) is the night."
+  }
+
+  fun getAboutContextBody2(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "تصف العابد المخلص الذي يشرب من رحيق الروحانيات في الساعات المتأخرة - التهجد والتفكر - بتأمل وتأنٍ."
+    AppLanguage.BENGALI -> "এটি সেই একনিষ্ঠ ইবাদতকারীকে বোঝায় যে রাতের শেষ প্রহরে আধ্যাত্মিক সুধা পান করে - তাহাজ্জুদ, নীরব চিন্তাভাবনা এবং ভোরের আগের প্রশান্তি - ধীরে ও মনোযোগের সাথে।"
+    AppLanguage.SPANISH -> "Describe al adorador devoto que bebe el néctar espiritual de las altas horas de la noche con plena conciencia."
+    AppLanguage.PORTUGUESE -> "Descreve o adorador devoto que bebe o néctar espiritual das madrugadas com plena consciência."
+    AppLanguage.ENGLISH -> "It describes the devout worshipper who drinks in the spiritual nectar of the late hours — Tahajjud, quiet reflection, and the serenity before dawn — with gradual, deliberate mindfulness."
+  }
+
+  fun getAboutConfigureAlertsTitle(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "تكوين إشعارات الصلاة وأوقات النهي"
+    AppLanguage.BENGALI -> "নামাজ এবং নিষিদ্ধ সময়ের অ্যালার্ট কনফিগার করুন"
+    AppLanguage.SPANISH -> "Configurar Alertas de Oración y Tiempos Prohibidos"
+    AppLanguage.PORTUGUESE -> "Configurar Alertas de Oração e Tempos Proibidos"
+    AppLanguage.ENGLISH -> "Configure Prayer & Forbidden Time Alerts"
+  }
+
+  fun getAboutConfigureAlertsDesc(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "تلقي إشعارات عند دخول وخروج أوقات الصلوات وأوقات النهي"
+    AppLanguage.BENGALI -> "নামাজ এবং নিষিদ্ধ সময়ের শুরু/শেষে বিজ্ঞপ্তি পান"
+    AppLanguage.SPANISH -> "Recibe notificaciones de inicio y fin de tiempos de oración y tiempos prohibidos"
+    AppLanguage.PORTUGUESE -> "Receba notificações de início e fim de tempos de oração e tempos proibidos"
+    AppLanguage.ENGLISH -> "Receive notifications when prayers and prohibited windows start/end"
+  }
+
+  fun getCloseLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "إغلاق"
+    AppLanguage.BENGALI -> "বন্ধ করুন"
+    AppLanguage.SPANISH -> "Cerrar"
+    AppLanguage.PORTUGUESE -> "Fechar"
+    AppLanguage.ENGLISH -> "Close"
+  }
+
+
+  // Weather Screen Additions
+  fun getLiveStatus(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "مباشر"
+    AppLanguage.BENGALI -> "লাইভ"
+    AppLanguage.SPANISH -> "EN VIVO"
+    AppLanguage.PORTUGUESE -> "AO VIVO"
+    AppLanguage.ENGLISH -> "LIVE"
+  }
+
+  fun getOfflineStatus(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "غير متصل"
+    AppLanguage.BENGALI -> "অফলাইন"
+    AppLanguage.SPANISH -> "SIN CONEXIÓN"
+    AppLanguage.PORTUGUESE -> "OFFLINE"
+    AppLanguage.ENGLISH -> "OFFLINE"
+  }
+
+  fun getWeatherErrorDesc(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "بيانات الطقس غير متوفرة حالياً. يرجى التحقق من اتصالك بالإنترنت."
+    AppLanguage.BENGALI -> "আবহাওয়ার তথ্য বর্তমানে অনুপলব্ধ। অনুগ্রহ করে আপনার ইন্টারনেট সংযোগ পরীক্ষা করুন।"
+    AppLanguage.SPANISH -> "Los datos del clima no están disponibles. Por favor, comprueba tu conexión a internet."
+    AppLanguage.PORTUGUESE -> "Os dados meteorológicos estão indisponíveis. Verifique sua conexão com a internet."
+    AppLanguage.ENGLISH -> "Weather data is currently unavailable. Please check your internet connection."
+  }
+
+  fun getWeatherLoadingDesc(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "جاري تحميل معلومات الطقس..."
+    AppLanguage.BENGALI -> "আবহাওয়ার তথ্য লোড হচ্ছে..."
+    AppLanguage.SPANISH -> "Cargando información del clima..."
+    AppLanguage.PORTUGUESE -> "Carregando informações meteorológicas..."
+    AppLanguage.ENGLISH -> "Loading weather information..."
+  }
+
+  fun getHighShort(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "العظمى"
+    AppLanguage.BENGALI -> "সর্বোচ্চ"
+    AppLanguage.SPANISH -> "Máx"
+    AppLanguage.PORTUGUESE -> "Máx"
+    AppLanguage.ENGLISH -> "H"
+  }
+
+  fun getLowShort(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "الصغرى"
+    AppLanguage.BENGALI -> "সর্বনিম্ন"
+    AppLanguage.SPANISH -> "Mín"
+    AppLanguage.PORTUGUESE -> "Mín"
+    AppLanguage.ENGLISH -> "L"
+  }
+
+  fun getRetryLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "إعادة المحاولة"
+    AppLanguage.BENGALI -> "পুনরায় চেষ্টা করুন"
+    AppLanguage.SPANISH -> "Reintentar"
+    AppLanguage.PORTUGUESE -> "Tentar novamente"
+    AppLanguage.ENGLISH -> "Retry"
+  }
+
+  fun getConditionsDetailsLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "الظروف والتفاصيل"
+    AppLanguage.BENGALI -> "আবহাওয়া বিবরণ ও পরিমাপ"
+    AppLanguage.SPANISH -> "Condiciones y Detalles"
+    AppLanguage.PORTUGUESE -> "Condições e Detalhes"
+    AppLanguage.ENGLISH -> "Conditions & Details"
+  }
+
+  fun getIslamicWeatherGuidance(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "الإرشاد الإسلامي للطقس"
+    AppLanguage.BENGALI -> "ইসলামিক আবহাওয়া নির্দেশনা"
+    AppLanguage.SPANISH -> "Guía Islámica del Clima"
+    AppLanguage.PORTUGUESE -> "Guia Islâmico do Clima"
+    AppLanguage.ENGLISH -> "Islamic Weather Guidance"
+  }
+
+  fun getRecommendedDuaLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "الدعاء الموصى به:"
+    AppLanguage.BENGALI -> "প্রস্তাবিত দোয়া:"
+    AppLanguage.SPANISH -> "Súplica Recomendada:"
+    AppLanguage.PORTUGUESE -> "Súplica Recomendada:"
+    AppLanguage.ENGLISH -> "Recommended Du'a:"
+  }
+
+
+
+
+
+
+
+
+
+
+
+  fun getHumidityLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "الرطوبة"
+    AppLanguage.BENGALI -> "আর্দ্রতা"
+    AppLanguage.SPANISH -> "Humedad"
+    AppLanguage.PORTUGUESE -> "Umidade"
+    AppLanguage.ENGLISH -> "Humidity"
+  }
+
+
+  fun getUvIndexLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "الأشعة فوق البنفسجية"
+    AppLanguage.BENGALI -> "ইউভি সূচক"
+    AppLanguage.SPANISH -> "Índice UV"
+    AppLanguage.PORTUGUESE -> "Índice UV"
+    AppLanguage.ENGLISH -> "UV Index"
+  }
+
+  fun getPrecipitationLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "هطول الأمطار"
+    AppLanguage.BENGALI -> "বৃষ্টিপাত"
+    AppLanguage.SPANISH -> "Precipitación"
+    AppLanguage.PORTUGUESE -> "Precipitação"
+    AppLanguage.ENGLISH -> "Precipitation"
+  }
+
+
+  fun getWindSpeedLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "سرعة الرياح"
+    AppLanguage.BENGALI -> "বাতাসের গতি"
+    AppLanguage.SPANISH -> "Velocidad del Viento"
+    AppLanguage.PORTUGUESE -> "Velocidade do Vento"
+    AppLanguage.ENGLISH -> "Wind Speed"
+  }
+}
