@@ -1,6 +1,15 @@
 package com.example
 
 import android.os.Bundle
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
+import com.example.data.preferences.UserPreferences
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import android.graphics.Color
@@ -100,6 +109,28 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
   val selectedMadhab by viewModel.selectedMadhab.collectAsStateWithLifecycle()
   val selectedMethod by viewModel.selectedCalculationMethod.collectAsStateWithLifecycle()
 
+  // Ask once, on first launch. The only existing request sat behind the notification toggles,
+  // which default to on - so the switches rendered already-enabled and the prompt never fired,
+  // leaving POST_NOTIFICATIONS denied and every notify() a silent no-op.
+  val context = LocalContext.current
+  val permissionLauncher = rememberLauncherForActivityResult(
+    contract = ActivityResultContracts.RequestPermission()
+  ) { /* Either way, the flag below stops us asking again. */ }
+  LaunchedEffect(Unit) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      val prefs = UserPreferences(context)
+      val granted = ContextCompat.checkSelfPermission(
+        context,
+        Manifest.permission.POST_NOTIFICATIONS
+      ) == PackageManager.PERMISSION_GRANTED
+      // The system stops showing the dialog after two denials, so only ask once ourselves.
+      if (!granted && !prefs.hasAskedNotificationPermission) {
+        prefs.hasAskedNotificationPermission = true
+        permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+      }
+    }
+  }
+
   var showCitySheet by rememberSaveable { mutableStateOf(false) }
   val onboardingState by viewModel.onboardingState.collectAsStateWithLifecycle()
 
@@ -165,6 +196,7 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
           onResetLanguageToLocation = { viewModel.resetLanguageToLocation() },
           onMadhabSelect = { madhab -> viewModel.setMadhab(madhab) },
           onMethodSelect = { method -> viewModel.setCalculationMethod(method) },
+          onSettingsChanged = { viewModel.rescheduleAlarms() },
           onTogglePrayer = { prayerKey -> viewModel.togglePrayerCheck(prayerKey) }
         )
 

@@ -8,7 +8,14 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <!-- Prayer alerts are the app's core function, which is what USE_EXACT_ALARM is for: it is a
+         normal permission, auto-granted, with no prompt. SCHEDULE_EXACT_ALARM stays for API 31-32,
+         where USE_EXACT_ALARM does not exist; leaving it unbounded on 33+ is flagged by Play. -->
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission
+        android:name="android.permission.SCHEDULE_EXACT_ALARM"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <uses-feature android:name="android.hardware.sensor.compass" android:required="false" />
     <uses-feature android:name="android.hardware.sensor.accelerometer" android:required="false" />
@@ -34,14 +41,26 @@
             </intent-filter>
         </activity>
 
+
+        <!-- No intent-filter: always invoked by an explicit Intent, so a filter would be pure
+             attack surface. -->
         <receiver
-            android:name=".data.notification.PrayerNotificationReceiver"
-            android:exported="false">
+            android:name=".data.notification.PrayerAlarmReceiver"
+            android:exported="false" />
+
+        <receiver
+            android:name=".data.notification.BootAndTimeChangeReceiver"
+            android:enabled="true"
+            android:exported="true">
             <intent-filter>
-                <action android:name="com.example.haasi.ACTION_PRAYER_NOTIFICATION" />
-                <action android:name="com.example.haasi.ACTION_FORBIDDEN_TIME_NOTIFICATION" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+                <action android:name="android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED" />
             </intent-filter>
         </receiver>
+
     </application>
 
 </manifest>

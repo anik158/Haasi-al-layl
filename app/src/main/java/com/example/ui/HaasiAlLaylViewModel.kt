@@ -293,24 +293,10 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
 
   private var tickerJob: Job? = null
 
-  // State to prevent spamming the Tahajjud notification
-  private var lastTahajjudNotifiedDate: java.time.LocalDate? = null
-
   init {
-    viewModelScope.launch {
-      prayerSchedule.collect { schedule ->
-        if (schedule.isTahajjudTime) {
-          val today = schedule.date
-          if (lastTahajjudNotifiedDate != today) {
-            lastTahajjudNotifiedDate = today
-            com.example.data.notification.PrayerNotificationManager.showTahajjudNotification(getApplication<android.app.Application>(), currentLanguage.value)
-            // Show emotional message via notification (since we are reusing the Prayer Notification, 
-            // maybe we can send a custom one instead, but let's build a custom notification method for Tahajjud)
-          }
-        }
-      }
-    }
-
+    // The Tahajjud notification used to be driven from a prayerSchedule collector here, which
+    // meant it could only ever fire while the app was open. PrayerAlarmScheduler owns it now,
+    // along with every other alert, so it works with the app closed.
     resolveOnboarding()
     startSecondTicker()
     seedTasbih()
@@ -461,6 +447,7 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
   private fun applyCity(city: CityLocation) {
     _selectedCity.value = city
     userPrefs.selectedCity = city
+    rescheduleAlarms()
   }
 
   fun selectCity(city: CityLocation) {
@@ -481,11 +468,27 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
   fun setMadhab(madhab: com.example.data.prayer.IslamicMadhab) {
     _juristicMethod.value = madhab
     userPrefs.madhab = madhab
+    rescheduleAlarms()
   }
 
   fun setCalculationMethod(method: CalculationMethod) {
     _calculationMethod.value = method
     userPrefs.calculationMethod = method
+    rescheduleAlarms()
+  }
+
+  /**
+   * Re-arms the alarm schedule after a change that moves prayer times.
+   *
+   * Deliberately hooked to the setters rather than to prayerSchedule: that flow is driven by the
+   * one-second ticker and would re-arm roughly thirty alarms every second the app is open.
+   */
+  fun rescheduleAlarms() {
+    viewModelScope.launch(Dispatchers.IO) {
+      com.example.data.notification.PrayerAlarmScheduler.rescheduleAll(
+        getApplication<Application>()
+      )
+    }
   }
 
   fun toggleTemperatureUnit() {

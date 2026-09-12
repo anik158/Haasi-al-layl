@@ -182,7 +182,12 @@ object PrayerCalculator {
       progressToNext = progress,
       currentTime = now.toLocalTime(),
       forbiddenTimes = forbiddenWindows,
-      isTahajjudTime = isTahajjudTime
+      isTahajjudTime = isTahajjudTime,
+      // floorMod normalises the past-midnight case, where the last third starts before 00:00.
+      tahajjudStart = LocalTime.of(
+        Math.floorMod(tahajjudStartMinutes, 24 * 60) / 60,
+        Math.floorMod(tahajjudStartMinutes, 24 * 60) % 60
+      )
     )
   }
 

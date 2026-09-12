@@ -39,7 +39,12 @@ data class DailyPrayerSchedule(
   val progressToNext: Float, // 0.0f to 1.0f
   val currentTime: LocalTime = LocalTime.now(),
   val forbiddenTimes: List<com.example.data.prayer.ForbiddenTimeWindow> = emptyList(),
-  val isTahajjudTime: Boolean = false
+  val isTahajjudTime: Boolean = false,
+  /**
+   * When the last third of the night begins, in the city's local time. The alarm scheduler needs
+   * the instant, not just [isTahajjudTime]; null when it could not be derived.
+   */
+  val tahajjudStart: LocalTime? = null
 ) {
   val activeForbiddenTime: com.example.data.prayer.ForbiddenTimeWindow?
     get() = forbiddenTimes.firstOrNull { it.isActive(currentTime) }

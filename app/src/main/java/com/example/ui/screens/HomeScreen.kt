@@ -88,6 +88,7 @@ fun HomeScreen(
   onResetLanguageToLocation: () -> Unit = {},
   onMadhabSelect: (IslamicMadhab) -> Unit = {},
   onMethodSelect: (CalculationMethod) -> Unit = {},
+  onSettingsChanged: () -> Unit = {},
   onTogglePrayer: (String) -> Unit
 ) {
   var showLanguageDialog by remember { mutableStateOf(false) }
@@ -214,6 +215,7 @@ fun HomeScreen(
         onLanguageSelect = onLanguageSelect,
         onMadhabSelect = onMadhabSelect,
         onMethodSelect = onMethodSelect,
+        onSettingsChanged = onSettingsChanged,
         onDismiss = { showNotificationSheet = false }
       )
     }

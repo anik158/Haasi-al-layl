@@ -7,7 +7,6 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.media.RingtoneManager
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -25,22 +24,57 @@ import java.time.ZoneId
 
 object PrayerNotificationManager {
 
-  const val CHANNEL_PRAYER_ID = "haasi_prayer_alerts"
-  const val CHANNEL_FORBIDDEN_ID = "haasi_forbidden_alerts"
+  private const val TAG = "HaasiNotifications"
+
+  // A channel's sound, importance and vibration are frozen at creation on API 26+, so changing
+  // any of them means a new id. Bump ONLY for such a change, never for copy - each bump costs
+  // the user their per-channel customisations.
+  private const val PREFIX_PRAYER = "haasi_prayer_alerts"
+  private const val PREFIX_FORBIDDEN = "haasi_forbidden_alerts"
+  private const val PREFIX_TAHAJJUD = "haasi_tahajjud_alerts"
+  private const val PRAYER_CHANNEL_VERSION = 2
+  private const val FORBIDDEN_CHANNEL_VERSION = 2
+  private const val TAHAJJUD_CHANNEL_VERSION = 1
+
+  const val CHANNEL_PRAYER_ID = "${PREFIX_PRAYER}_v$PRAYER_CHANNEL_VERSION"
+  const val CHANNEL_FORBIDDEN_ID = "${PREFIX_FORBIDDEN}_v$FORBIDDEN_CHANNEL_VERSION"
+  const val CHANNEL_TAHAJJUD_ID = "${PREFIX_TAHAJJUD}_v$TAHAJJUD_CHANNEL_VERSION"
+
+  private val CHANNEL_PREFIXES = listOf(PREFIX_PRAYER, PREFIX_FORBIDDEN, PREFIX_TAHAJJUD)
 
   private const val PREFS_NAME = "haasi_notifications_prefs"
   private const val KEY_PRAYER_NOTIFS = "key_prayer_notifs"
   private const val KEY_FORBIDDEN_NOTIFS = "key_forbidden_notifs"
+  private const val KEY_TAHAJJUD_NOTIFS = "key_tahajjud_notifs"
+  private const val KEY_FOLLOW_UP_NOTIFS = "key_follow_up_notifs"
 
   private const val NOTIF_ID_PRAYER_BASE = 1000
   private const val NOTIF_ID_FORBIDDEN_START = 2000
   private const val NOTIF_ID_FORBIDDEN_END = 2100
 
-  fun createNotificationChannels(context: Context) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+  /** The alert tone. USAGE_ALARM routes it to the alarm stream, which survives silent mode. */
+  private fun alertSoundUri(context: Context) =
+    android.net.Uri.parse("android.resource://${context.packageName}/${R.raw.haasi_alert}")
 
-      val prayerChannel = NotificationChannel(
+  /**
+   * Creates the current channels and deletes superseded ones. Idempotent, and safe to call on
+   * every process start.
+   *
+   * Without the sweep, the user's notification settings accumulate one dead "Prayer Time
+   * Notifications" row per version shipped.
+   */
+  fun ensureChannels(context: Context) {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
+    val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+    val audioAttributes = android.media.AudioAttributes.Builder()
+      .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
+      .setUsage(android.media.AudioAttributes.USAGE_ALARM)
+      .build()
+    val sound = alertSoundUri(context)
+
+    val current = listOf(
+      NotificationChannel(
         CHANNEL_PRAYER_ID,
         "Prayer Time Notifications",
         NotificationManager.IMPORTANCE_HIGH
@@ -48,9 +82,9 @@ object PrayerNotificationManager {
         description = "Alerts when each Islamic prayer time begins"
         enableVibration(true)
         enableLights(true)
-      }
-
-      val forbiddenChannel = NotificationChannel(
+        setSound(sound, audioAttributes)
+      },
+      NotificationChannel(
         CHANNEL_FORBIDDEN_ID,
         "Forbidden Prayer Time Alerts",
         NotificationManager.IMPORTANCE_HIGH
@@ -58,12 +92,29 @@ object PrayerNotificationManager {
         description = "Alerts when prohibited prayer windows start and end"
         enableVibration(true)
         enableLights(true)
+        setSound(sound, audioAttributes)
+      },
+      // Its own channel so a 3am alert can be silenced without losing Fajr.
+      NotificationChannel(
+        CHANNEL_TAHAJJUD_ID,
+        "Tahajjud Reminders",
+        NotificationManager.IMPORTANCE_DEFAULT
+      ).apply {
+        description = "A reminder when the last third of the night begins"
+        enableVibration(true)
+        setSound(sound, audioAttributes)
       }
+    )
+    current.forEach { manager.createNotificationChannel(it) }
 
-      notificationManager.createNotificationChannel(prayerChannel)
-      notificationManager.createNotificationChannel(forbiddenChannel)
-    }
+    val liveIds = current.map { it.id }.toSet()
+    manager.notificationChannels
+      .filter { channel -> CHANNEL_PREFIXES.any { channel.id.startsWith(it) } && channel.id !in liveIds }
+      .forEach { manager.deleteNotificationChannel(it.id) }
   }
+
+  @Deprecated("Use ensureChannels", ReplaceWith("ensureChannels(context)"))
+  fun createNotificationChannels(context: Context) = ensureChannels(context)
 
   private fun getPrefs(context: Context): SharedPreferences {
     return context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -85,9 +136,27 @@ object PrayerNotificationManager {
     getPrefs(context).edit().putBoolean(KEY_FORBIDDEN_NOTIFS, enabled).apply()
   }
 
+  fun isTahajjudNotificationsEnabled(context: Context): Boolean =
+    getPrefs(context).getBoolean(KEY_TAHAJJUD_NOTIFS, true)
+
+  fun setTahajjudNotificationsEnabled(context: Context, enabled: Boolean) {
+    getPrefs(context).edit().putBoolean(KEY_TAHAJJUD_NOTIFS, enabled).apply()
+  }
+
+  /** The five-minute nudge after each prayer, independent of the start alert. */
+  fun isFollowUpNotificationsEnabled(context: Context): Boolean =
+    getPrefs(context).getBoolean(KEY_FOLLOW_UP_NOTIFS, true)
+
+  fun setFollowUpNotificationsEnabled(context: Context, enabled: Boolean) {
+    getPrefs(context).edit().putBoolean(KEY_FOLLOW_UP_NOTIFS, enabled).apply()
+  }
+
 
   fun showTahajjudNotification(context: Context, language: AppLanguage) {
-    if (!isPrayerNotificationsEnabled(context)) return
+    if (!isTahajjudNotificationsEnabled(context)) return
+    // This was missing, so on API 26+ the notification was posted to a channel that had never
+    // been created and the system dropped it silently.
+    ensureChannels(context)
 
     val title = when (language) {
       AppLanguage.BENGALI -> "তাহাজ্জুদের সময় হয়েছে"
@@ -111,36 +180,44 @@ object PrayerNotificationManager {
       PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
 
-    val alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-
-    val builder = NotificationCompat.Builder(context, CHANNEL_PRAYER_ID)
-      .setSmallIcon(R.drawable.ic_launcher_foreground) // using default icon for now
+    val builder = NotificationCompat.Builder(context, CHANNEL_TAHAJJUD_ID)
+      .setSmallIcon(R.drawable.ic_notification)
       .setContentTitle(title)
       .setContentText(message)
       .setStyle(NotificationCompat.BigTextStyle().bigText(message))
       .setPriority(NotificationCompat.PRIORITY_HIGH)
       .setCategory(NotificationCompat.CATEGORY_ALARM)
-      .setSound(alarmSound)
+      // Channels own the sound on API 26+; below that the builder is the only path, and
+      // minSdk is 24.
+      .setSound(alertSoundUri(context))
       .setAutoCancel(true)
       .setContentIntent(pendingIntent)
 
     val notificationManager = NotificationManagerCompat.from(context)
     try {
       notificationManager.notify(3000, builder.build())
-    } catch (_: SecurityException) {
-      // Permission not granted
+    } catch (e: SecurityException) {
+      android.util.Log.w(TAG, "notify denied - POST_NOTIFICATIONS not granted", e)
     }
   }
 
-  fun showPrayerNotification(
+  /**
+   * Posts one prayer alert.
+   *
+   * Keyed on [PrayerName] rather than a display string, so the notification id is stable across
+   * languages - the old scheme hashed the localized name, giving the same prayer a different id
+   * in each language, with collisions unguarded inside a 100-slot space.
+   */
+  fun showPrayerAlert(
     context: Context,
-    prayerName: String,
-    arabicName: String,
+    prayer: PrayerName,
+    kind: PrayerAlertKind,
     timeFormatted: String,
-    cityName: String,
     language: AppLanguage
   ) {
-    createNotificationChannels(context)
+    if (!isPrayerNotificationsEnabled(context)) return
+    if (kind == PrayerAlertKind.FOLLOW_UP && !isFollowUpNotificationsEnabled(context)) return
+    ensureChannels(context)
 
     val intent = Intent(context, MainActivity::class.java).apply {
       flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -152,36 +229,25 @@ object PrayerNotificationManager {
       PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
 
-    val title = when (language) {
-      AppLanguage.ARABIC -> "حان الآن وقت صلاة $arabicName ($timeFormatted)"
-      AppLanguage.BENGALI -> "ওয়াক্ত শুরু হয়েছে: $prayerName ($timeFormatted)"
-      AppLanguage.SPANISH -> "Ha comenzado la oración de $prayerName ($timeFormatted)"
-      AppLanguage.PORTUGUESE -> "Começou o horário da oração de $prayerName ($timeFormatted)"
-      AppLanguage.ENGLISH -> "Prayer Time: $prayerName has begun ($timeFormatted)"
-    }
-
-    val contentText = when (language) {
-      AppLanguage.ARABIC -> "في مدينة $cityName. حيّ على الصلاة، حيّ على الفلاح."
-      AppLanguage.BENGALI -> "$cityName শহরে নামাজের সময় হয়েছে। হাইয়া আলাস সালাহ।"
-      AppLanguage.SPANISH -> "En $cityName. Acude a la oración, acude al éxito."
-      AppLanguage.PORTUGUESE -> "Em $cityName. Vinde para a oração, vinde para o sucesso."
-      AppLanguage.ENGLISH -> "In $cityName. Come to prayer, come to success."
-    }
+    val title = PrayerAlertMessages.title(prayer, kind, language, timeFormatted)
+    val body = PrayerAlertMessages.body(prayer, kind, language)
 
     val builder = NotificationCompat.Builder(context, CHANNEL_PRAYER_ID)
       .setSmallIcon(R.drawable.ic_notification)
       .setContentTitle(title)
-      .setContentText(contentText)
-      .setStyle(NotificationCompat.BigTextStyle().bigText("$contentText\nḤaasi al-Layl • The Night Sipper"))
+      .setContentText(body)
+      .setStyle(NotificationCompat.BigTextStyle().bigText(body))
       .setPriority(NotificationCompat.PRIORITY_HIGH)
+      .setCategory(NotificationCompat.CATEGORY_ALARM)
       .setAutoCancel(true)
       .setContentIntent(pendingIntent)
-      .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+      .setSound(alertSoundUri(context))
 
     try {
-      NotificationManagerCompat.from(context).notify(NOTIF_ID_PRAYER_BASE + prayerName.hashCode().let { kotlin.math.abs(it) % 100 }, builder.build())
-    } catch (_: SecurityException) {
-      // Permission not yet granted
+      NotificationManagerCompat.from(context)
+        .notify(AlertIds.prayer(prayer, kind), builder.build())
+    } catch (e: SecurityException) {
+      android.util.Log.w(TAG, "notify denied - POST_NOTIFICATIONS not granted", e)
     }
   }
 
@@ -251,22 +317,22 @@ object PrayerNotificationManager {
       .setPriority(NotificationCompat.PRIORITY_HIGH)
       .setAutoCancel(true)
       .setContentIntent(pendingIntent)
-      .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+      .setSound(alertSoundUri(context))
 
     try {
       NotificationManagerCompat.from(context).notify(notifId, builder.build())
-    } catch (_: SecurityException) {
-      // Permission not granted
+    } catch (e: SecurityException) {
+      android.util.Log.w(TAG, "notify denied - POST_NOTIFICATIONS not granted", e)
     }
   }
 
   fun sendTestPrayerNotification(context: Context, language: AppLanguage) {
-    showPrayerNotification(
+    showPrayerAlert(
       context = context,
-      prayerName = "Asr",
-      arabicName = "العصر",
-      timeFormatted = LocalTime.now().format(java.time.format.DateTimeFormatter.ofPattern("hh:mm a")),
-      cityName = "Dhaka",
+      prayer = PrayerName.ASR,
+      kind = PrayerAlertKind.AT_TIME,
+      timeFormatted = LocalTime.now()
+        .format(java.time.format.DateTimeFormatter.ofPattern("hh:mm a")),
       language = language
     )
   }

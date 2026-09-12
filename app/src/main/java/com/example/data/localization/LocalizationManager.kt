@@ -930,6 +930,54 @@ object LocalizationManager {
     AppLanguage.ENGLISH -> "Receive notifications when Fajr, Dhuhr, Asr, Maghrib, and Isha begin"
   }
 
+  fun getFollowUpAlertsLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "تذكير بعد ٥ دقائق"
+    AppLanguage.BENGALI -> "৫ মিনিট পর পুনরায় মনে করিয়ে দিন"
+    AppLanguage.SPANISH -> "Recordatorio a los 5 minutos"
+    AppLanguage.PORTUGUESE -> "Lembrete aos 5 minutos"
+    AppLanguage.ENGLISH -> "5-minute reminder"
+  }
+
+  fun getFollowUpAlertsDesc(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "تذكير ثانٍ بعد خمس دقائق، ويُلغى إذا سجّلت الصلاة كمؤداة"
+    AppLanguage.BENGALI -> "পাঁচ মিনিট পর দ্বিতীয় বিজ্ঞপ্তি; নামাজ আদায় চিহ্নিত করলে বাতিল হবে"
+    AppLanguage.SPANISH -> "Un segundo aviso cinco minutos después, omitido si ya marcaste la oración"
+    AppLanguage.PORTUGUESE -> "Um segundo aviso cinco minutos depois, omitido se já marcou a oração"
+    AppLanguage.ENGLISH -> "A second nudge five minutes later, skipped once you mark the prayer done"
+  }
+
+  fun getTahajjudAlertsLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "تنبيه التهجد"
+    AppLanguage.BENGALI -> "তাহাজ্জুদের বিজ্ঞপ্তি"
+    AppLanguage.SPANISH -> "Aviso de Tahayyud"
+    AppLanguage.PORTUGUESE -> "Aviso de Tahajjud"
+    AppLanguage.ENGLISH -> "Tahajjud reminder"
+  }
+
+  fun getTahajjudAlertsDesc(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "تنبيه عند دخول الثلث الأخير من الليل"
+    AppLanguage.BENGALI -> "রাতের শেষ তৃতীয়াংশ শুরু হলে জানানো হবে"
+    AppLanguage.SPANISH -> "Avisa cuando comienza el último tercio de la noche"
+    AppLanguage.PORTUGUESE -> "Avisa quando começa o último terço da noite"
+    AppLanguage.ENGLISH -> "Alerts when the last third of the night begins"
+  }
+
+  fun getDiscreetAlarmsLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "إخفاء رمز المنبّه"
+    AppLanguage.BENGALI -> "অ্যালার্ম আইকন লুকান"
+    AppLanguage.SPANISH -> "Ocultar el icono de alarma"
+    AppLanguage.PORTUGUESE -> "Ocultar o ícone de alarme"
+    AppLanguage.ENGLISH -> "Hide the alarm icon"
+  }
+
+  fun getDiscreetAlarmsDesc(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "يزيل رمز المنبّه من شريط الحالة، وقد يتأخر تذكير الخمس دقائق حتى تسع دقائق أثناء نوم الهاتف"
+    AppLanguage.BENGALI -> "স্ট্যাটাস বার থেকে অ্যালার্ম আইকন সরায়; ফোন ঘুমিয়ে থাকলে ৫ মিনিটের রিমাইন্ডার ৯ মিনিট পর্যন্ত দেরি হতে পারে"
+    AppLanguage.SPANISH -> "Quita el icono de la barra de estado; el recordatorio de 5 minutos puede tardar hasta 9 con el teléfono dormido"
+    AppLanguage.PORTUGUESE -> "Remove o ícone da barra de estado; o lembrete de 5 minutos pode demorar até 9 com o telemóvel a dormir"
+    AppLanguage.ENGLISH -> "Removes the status bar alarm icon. The 5-minute reminder may then arrive up to 9 minutes late while the phone is asleep"
+  }
+
   fun getForbiddenAlertsLabel(language: AppLanguage): String = when (language) {
     AppLanguage.ARABIC -> "تنبيهات أوقات النهي"
     AppLanguage.BENGALI -> "নিষিদ্ধ সময়ের অ্যালার্ট"
