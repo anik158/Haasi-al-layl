@@ -283,7 +283,7 @@ fun SettingsSheet(
                   border = androidx.compose.foundation.BorderStroke(1.dp, if (isSelected) Color(0xFF0F3E2F) else OutlineDarkBorder),
                 ) {
                   Text(
-                    text = m.shortTitle,
+                    text = m.getLocalizedShortName(language),
                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                     fontSize = 12.sp,
                     color = if (isSelected) Color.White else DarkForestInk,
@@ -295,7 +295,7 @@ fun SettingsSheet(
             }
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-              text = method.title,
+              text = method.getLocalizedName(language),
               fontSize = 11.sp,
               color = DarkForestInk.copy(alpha = 0.6f)
             )

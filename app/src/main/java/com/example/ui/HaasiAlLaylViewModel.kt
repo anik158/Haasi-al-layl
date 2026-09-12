@@ -228,7 +228,7 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
   val tasbihList: StateFlow<List<TasbihEntity>> = repository.getAllTasbihItems()
     .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-  private val _selectedTasbihId = MutableStateFlow<String?>("subhanallah")
+  private val _selectedTasbihId = MutableStateFlow(userPrefs.lastTasbihId ?: "subhanallah")
   val selectedTasbih: StateFlow<TasbihEntity?> = combine(tasbihList, _selectedTasbihId) { list, id ->
     list.find { it.id == id } ?: list.firstOrNull()
   }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
@@ -260,7 +260,7 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
 
     resolveOnboarding()
     startSecondTicker()
-    seedTasbihIfNeeded()
+    seedTasbih()
     refreshWeather()
     loadHisnAlMuslimData()
   }
@@ -317,9 +317,9 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
     }
   }
 
-  private fun seedTasbihIfNeeded() {
+  private fun seedTasbih() {
     viewModelScope.launch {
-      repository.seedDefaultTasbihIfEmpty()
+      repository.seedDefaultTasbih()
     }
   }
 
@@ -470,6 +470,7 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
   // Tasbih actions
   fun selectTasbih(id: String) {
     _selectedTasbihId.value = id
+    userPrefs.lastTasbihId = id
   }
 
   fun incrementTasbih() {

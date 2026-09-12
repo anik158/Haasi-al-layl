@@ -19,23 +19,6 @@ import kotlin.math.floor
 import kotlin.math.sin
 import kotlin.math.tan
 
-enum class CalculationMethod(
-  val title: String,
-  /** Short label for chips and pickers, where [title] is too long to read. */
-  val shortTitle: String,
-  val fajrAngle: Double,
-  val ishaAngle: Double,
-  /** When set, Isha is this many minutes after Maghrib instead of a twilight angle. */
-  val ishaIntervalMinutes: Int? = null
-) {
-  UMM_AL_QURA("Umm al-Qura University, Makkah", "Makkah", 18.5, 0.0, 90),
-  MUSLIM_WORLD_LEAGUE("Muslim World League", "World League", 18.0, 17.0),
-  ISNA("Islamic Society of North America (ISNA)", "ISNA", 15.0, 15.0),
-  EGYPTIAN("Egyptian General Authority", "Egyptian", 19.5, 17.5),
-  KARACHI("University of Islamic Sciences, Karachi", "Karachi", 18.0, 18.0),
-  DUBAI("Dubai Religious Affairs", "Dubai", 18.2, 18.2)
-}
-
 typealias JuristicMethod = IslamicMadhab
 
 object PrayerCalculator {

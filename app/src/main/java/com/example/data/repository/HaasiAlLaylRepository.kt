@@ -5,6 +5,7 @@ import com.example.data.local.HaasiAlLaylDao
 import com.example.data.local.PrayerLogEntity
 import com.example.data.local.TasbihEntity
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import java.time.LocalDate
 
 class HaasiAlLaylRepository(private val dao: HaasiAlLaylDao) {
@@ -31,60 +32,14 @@ class HaasiAlLaylRepository(private val dao: HaasiAlLaylDao) {
     dao.insertOrUpdatePrayerLog(log)
   }
 
-  fun getAllTasbihItems(): Flow<List<TasbihEntity>> = dao.getAllTasbihItems()
+  fun getAllTasbihItems(): Flow<List<TasbihEntity>> = dao.getAllTasbihItems().map { items ->
+    items.sortedBy { item ->
+      CANONICAL_TASBIH_ORDER.indexOf(item.id).let { if (it < 0) Int.MAX_VALUE else it }
+    }
+  }
 
-  suspend fun seedDefaultTasbihIfEmpty() {
-    val defaults = listOf(
-      TasbihEntity(
-        id = "subhanallah",
-        name = "SubhanAllah",
-        arabic = "سُبْحَانَ اللَّهِ",
-        transliteration = "Glory be to Allah",
-        currentCount = 0,
-        targetCount = 33
-      ),
-      TasbihEntity(
-        id = "alhamdulillah",
-        name = "Alhamdulillah",
-        arabic = "الْحَمْدُ لِلَّهِ",
-        transliteration = "Praise be to Allah",
-        currentCount = 0,
-        targetCount = 33
-      ),
-      TasbihEntity(
-        id = "allahu_akbar",
-        name = "Allahu Akbar",
-        arabic = "اللَّهُ أَكْبَرُ",
-        transliteration = "Allah is the Greatest",
-        currentCount = 0,
-        targetCount = 34
-      ),
-      TasbihEntity(
-        id = "astaghfirullah",
-        name = "Astaghfirullah",
-        arabic = "أَسْتَغْفِرُ اللَّهَ",
-        transliteration = "I seek forgiveness from Allah",
-        currentCount = 0,
-        targetCount = 100
-      ),
-      TasbihEntity(
-        id = "la_ilaha_illallah",
-        name = "La Ilaha Illallah",
-        arabic = "لَا إِلَهَ إِلَّا اللَّهُ",
-        transliteration = "There is no deity except Allah",
-        currentCount = 0,
-        targetCount = 100
-      ),
-      TasbihEntity(
-        id = "salawat",
-        name = "Salawat upon the Prophet",
-        arabic = "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ",
-        transliteration = "O Allah, send blessings upon Muhammad",
-        currentCount = 0,
-        targetCount = 100
-      )
-    )
-    dao.insertAllTasbih(defaults)
+  suspend fun seedDefaultTasbih() {
+    dao.insertTasbihIfAbsent(DEFAULT_TASBIH)
   }
 
   suspend fun incrementTasbih(id: String, newCount: Int) {
@@ -105,3 +60,64 @@ class HaasiAlLaylRepository(private val dao: HaasiAlLaylDao) {
     }
   }
 }
+
+/**
+ * The dhikr every install starts with. Seeded with INSERT OR IGNORE, so these values only ever
+ * apply to rows that do not exist yet - an existing row keeps its counts.
+ *
+ * The English text here is only a fallback; TasbihScreen renders names and meanings through
+ * LocalizationManager, keyed by [TasbihEntity.id].
+ */
+private val DEFAULT_TASBIH = listOf(
+    TasbihEntity(
+      id = "subhanallah",
+      name = "SubhanAllah",
+      arabic = "سُبْحَانَ اللَّهِ",
+      transliteration = "Glory be to Allah",
+      currentCount = 0,
+      targetCount = 33
+    ),
+    TasbihEntity(
+      id = "alhamdulillah",
+      name = "Alhamdulillah",
+      arabic = "الْحَمْدُ لِلَّهِ",
+      transliteration = "Praise be to Allah",
+      currentCount = 0,
+      targetCount = 33
+    ),
+    TasbihEntity(
+      id = "allahu_akbar",
+      name = "Allahu Akbar",
+      arabic = "اللَّهُ أَكْبَرُ",
+      transliteration = "Allah is the Greatest",
+      currentCount = 0,
+      targetCount = 34
+    ),
+    TasbihEntity(
+      id = "astaghfirullah",
+      name = "Astaghfirullah",
+      arabic = "أَسْتَغْفِرُ اللَّهَ",
+      transliteration = "I seek forgiveness from Allah",
+      currentCount = 0,
+      targetCount = 100
+    ),
+    TasbihEntity(
+      id = "la_ilaha_illallah",
+      name = "La Ilaha Illallah",
+      arabic = "لَا إِلَهَ إِلَّا اللَّهُ",
+      transliteration = "There is no deity except Allah",
+      currentCount = 0,
+      targetCount = 100
+    ),
+    TasbihEntity(
+      id = "salawat",
+      name = "Salawat upon the Prophet ﷺ",
+      arabic = "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ",
+      transliteration = "O Allah, send blessings upon Muhammad ﷺ",
+      currentCount = 0,
+      targetCount = 100
+    )
+)
+
+/** Display order for the preset chips, independent of when a row was last touched. */
+private val CANONICAL_TASBIH_ORDER = DEFAULT_TASBIH.map { it.id }

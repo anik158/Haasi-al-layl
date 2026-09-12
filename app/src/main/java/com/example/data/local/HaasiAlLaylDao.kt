@@ -20,7 +20,9 @@ interface HaasiAlLaylDao {
   suspend fun insertOrUpdatePrayerLog(log: PrayerLogEntity)
 
   // Tasbih items
-  @Query("SELECT * FROM tasbih_items ORDER BY lastUpdated DESC")
+  // No ORDER BY: the repository imposes a canonical order. Ordering by lastUpdated reshuffled
+  // the chip row every time the user counted.
+  @Query("SELECT * FROM tasbih_items")
   fun getAllTasbihItems(): Flow<List<TasbihEntity>>
 
   @Query("SELECT * FROM tasbih_items WHERE id = :id LIMIT 1")
@@ -29,8 +31,16 @@ interface HaasiAlLaylDao {
   @Insert(onConflict = OnConflictStrategy.REPLACE)
   suspend fun insertOrUpdateTasbih(item: TasbihEntity)
 
-  @Insert(onConflict = OnConflictStrategy.REPLACE)
-  suspend fun insertAllTasbih(items: List<TasbihEntity>)
+  /**
+   * Seeds rows that are absent and leaves existing ones untouched, so counts survive. IGNORE is
+   * better than a "is the table empty" guard: it also lets a later release add new dhikr without
+   * resetting the ones already there.
+   */
+  @Insert(onConflict = OnConflictStrategy.IGNORE)
+  suspend fun insertTasbihIfAbsent(items: List<TasbihEntity>)
+
+  @Query("SELECT COUNT(*) FROM tasbih_items")
+  suspend fun countTasbihItems(): Int
 
   @Query("UPDATE tasbih_items SET currentCount = :newCount, totalLifetimeCount = totalLifetimeCount + 1, lastUpdated = :timestamp WHERE id = :id")
   suspend fun incrementTasbih(id: String, newCount: Int, timestamp: Long = System.currentTimeMillis())
