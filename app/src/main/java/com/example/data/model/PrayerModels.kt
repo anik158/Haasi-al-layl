@@ -32,7 +32,7 @@ data class DailyPrayerSchedule(
   val city: String,
   val country: String,
   val calculationMethodName: String,
-  val madhab: IslamicMadhab = IslamicMadhab.SHAFI,
+  val madhab: IslamicMadhab = IslamicMadhab.DEFAULT,
   val items: List<PrayerTimeItem>,
   val nextPrayer: PrayerTimeItem?,
   val timeUntilNextFormatted: String,

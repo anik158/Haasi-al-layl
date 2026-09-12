@@ -80,7 +80,7 @@ fun HomeScreen(
   currentCity: CityLocation,
   formatTemperature: (Double) -> String,
   language: AppLanguage = AppLanguage.ENGLISH,
-  madhab: IslamicMadhab = IslamicMadhab.SHAFI,
+  madhab: IslamicMadhab = IslamicMadhab.DEFAULT,
   method: CalculationMethod = CalculationMethod.UMM_AL_QURA,
   onLocationClick: () -> Unit,
   onNavigateToWeather: () -> Unit,

@@ -669,11 +669,11 @@ object LocalizationManager {
   }
 
   fun getSelectMadhabSubtitle(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "يحدد وقت صلاة العصر وفق مذهب الفقه المختار (الافتراضي: الشافعي)"
-    AppLanguage.BENGALI -> "নির্বাচিত মাজহাব অনুযায়ী আসর নামাজের সময় নির্ধারিত হবে (ডিফল্ট: ইমাম শাফেয়ী)"
-    AppLanguage.SPANISH -> "Determina la hora de Asr según el madhab elegido (Por defecto: Imam Shafi'i)"
-    AppLanguage.PORTUGUESE -> "Determina o horário de Asr de acordo com o madhab escolhido (Padrão: Imam Shafi'i)"
-    AppLanguage.ENGLISH -> "Determines Asr prayer time calculation (Default: Imam Shafi'i)"
+    AppLanguage.ARABIC -> "يحدد وقت صلاة العصر وفق مذهب الفقه المختار (الافتراضي: مالك)"
+    AppLanguage.BENGALI -> "নির্বাচিত মাজহাব অনুযায়ী আসর নামাজের সময় নির্ধারিত হবে (ডিফল্ট: ইমাম মালিক)"
+    AppLanguage.SPANISH -> "Determina la hora de Asr según el madhab elegido (Por defecto: Imam Malik)"
+    AppLanguage.PORTUGUESE -> "Determina o horário de Asr de acordo com o madhab escolhido (Padrão: Imam Malik)"
+    AppLanguage.ENGLISH -> "Determines Asr prayer time calculation (Default: Imam Malik)"
   }
 
   fun getDefaultBadge(language: AppLanguage): String = when (language) {

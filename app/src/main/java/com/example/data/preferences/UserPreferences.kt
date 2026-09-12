@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import com.example.data.localization.AppLanguage
 import com.example.data.model.CityLocation
 import com.example.data.prayer.CalculationMethod
+import com.example.data.prayer.IslamicMadhab
 
 /**
  * User choices that must survive leaving the app.
@@ -12,6 +13,11 @@ import com.example.data.prayer.CalculationMethod
  * Everything here is written to SharedPreferences, so it lives for the whole installation
  * lifecycle - across process death, restarts and reboots - and is only cleared when the user
  * uninstalls or clears app data. Onboarding asks once, not on every launch.
+ *
+ * Every setter commits synchronously rather than using `apply()`. `apply()` already survives
+ * ordinary process death, but a force-stop inside its async flush window loses the write - which
+ * is exactly the "my setting reset itself" report these values exist to prevent. These are rare,
+ * user-initiated writes of a handful of keys, so the blocking write is sub-millisecond.
  */
 class UserPreferences(context: Context) {
 
@@ -21,15 +27,21 @@ class UserPreferences(context: Context) {
   /** True once the user has a language and a location, whether auto-detected or chosen by hand. */
   var isOnboardingComplete: Boolean
     get() = prefs.getBoolean(KEY_ONBOARDING_COMPLETE, false)
-    set(value) = prefs.edit().putBoolean(KEY_ONBOARDING_COMPLETE, value).apply()
+    set(value) {
+      prefs.edit().putBoolean(KEY_ONBOARDING_COMPLETE, value).commit()
+    }
+
+  /** True once the POST_NOTIFICATIONS prompt has been shown, so a denial is not re-asked forever. */
+  var hasAskedNotificationPermission: Boolean
+    get() = prefs.getBoolean(KEY_ASKED_NOTIF_PERMISSION, false)
+    set(value) {
+      prefs.edit().putBoolean(KEY_ASKED_NOTIF_PERMISSION, value).commit()
+    }
 
   /** An explicit language choice. Null means "follow the location". */
   var manualLanguage: AppLanguage?
     get() = prefs.getString(KEY_MANUAL_LANGUAGE, null)?.let { AppLanguage.fromCode(it) }
-    set(value) = prefs.edit().run {
-      if (value == null) remove(KEY_MANUAL_LANGUAGE) else putString(KEY_MANUAL_LANGUAGE, value.code)
-      apply()
-    }
+    set(value) = writeString(KEY_MANUAL_LANGUAGE, value?.code)
 
   /**
    * Which convention prayer times are calculated with. Defaults to Umm al-Qura, the standard
@@ -39,7 +51,19 @@ class UserPreferences(context: Context) {
     get() = prefs.getString(KEY_CALCULATION_METHOD, null)
       ?.let { name -> CalculationMethod.entries.find { it.name == name } }
       ?: CalculationMethod.UMM_AL_QURA
-    set(value) = prefs.edit().putString(KEY_CALCULATION_METHOD, value.name).apply()
+    set(value) = writeString(KEY_CALCULATION_METHOD, value.name)
+
+  /** Which school of jurisprudence sets the Asr shadow factor. */
+  var madhab: IslamicMadhab
+    get() = prefs.getString(KEY_MADHAB, null)
+      ?.let { name -> IslamicMadhab.entries.find { it.name == name } }
+      ?: IslamicMadhab.DEFAULT
+    set(value) = writeString(KEY_MADHAB, value.name)
+
+  /** The dhikr the user was last counting, so the Tasbih screen reopens where they left off. */
+  var lastTasbihId: String?
+    get() = prefs.getString(KEY_LAST_TASBIH_ID, null)
+    set(value) = writeString(KEY_LAST_TASBIH_ID, value)
 
   var selectedCity: CityLocation?
     get() {
@@ -55,26 +79,38 @@ class UserPreferences(context: Context) {
         timeZoneId = timeZoneId
       )
     }
-    set(value) = prefs.edit().run {
-      if (value == null) {
-        remove(KEY_CITY_NAME); remove(KEY_CITY_COUNTRY)
-        remove(KEY_CITY_LAT); remove(KEY_CITY_LON); remove(KEY_CITY_TZ)
-      } else {
-        putString(KEY_CITY_NAME, value.name)
-        putString(KEY_CITY_COUNTRY, value.country)
-        // SharedPreferences has no double, and storing the raw bits round-trips exactly.
-        putLong(KEY_CITY_LAT, value.latitude.toRawBits())
-        putLong(KEY_CITY_LON, value.longitude.toRawBits())
-        putString(KEY_CITY_TZ, value.timeZoneId)
+    set(value) {
+      prefs.edit().run {
+        if (value == null) {
+          remove(KEY_CITY_NAME); remove(KEY_CITY_COUNTRY)
+          remove(KEY_CITY_LAT); remove(KEY_CITY_LON); remove(KEY_CITY_TZ)
+        } else {
+          putString(KEY_CITY_NAME, value.name)
+          putString(KEY_CITY_COUNTRY, value.country)
+          // SharedPreferences has no double, and storing the raw bits round-trips exactly.
+          putLong(KEY_CITY_LAT, value.latitude.toRawBits())
+          putLong(KEY_CITY_LON, value.longitude.toRawBits())
+          putString(KEY_CITY_TZ, value.timeZoneId)
+        }
+        commit()
       }
-      apply()
     }
+
+  private fun writeString(key: String, value: String?) {
+    prefs.edit().run {
+      if (value == null) remove(key) else putString(key, value)
+      commit()
+    }
+  }
 
   private companion object {
     const val PREFS_NAME = "haasi_user_prefs"
     const val KEY_ONBOARDING_COMPLETE = "onboarding_complete"
+    const val KEY_ASKED_NOTIF_PERMISSION = "asked_notification_permission"
     const val KEY_MANUAL_LANGUAGE = "manual_language"
     const val KEY_CALCULATION_METHOD = "calculation_method"
+    const val KEY_MADHAB = "madhab"
+    const val KEY_LAST_TASBIH_ID = "last_tasbih_id"
     const val KEY_CITY_NAME = "city_name"
     const val KEY_CITY_COUNTRY = "city_country"
     const val KEY_CITY_LAT = "city_lat"

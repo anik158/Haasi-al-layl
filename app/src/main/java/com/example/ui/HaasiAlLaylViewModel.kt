@@ -119,10 +119,11 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
   )
 
   // Calculation Settings
-  val calculationMethod = MutableStateFlow(userPrefs.calculationMethod)
-  val selectedCalculationMethod: StateFlow<CalculationMethod> = calculationMethod.asStateFlow()
-  val juristicMethod = MutableStateFlow(com.example.data.prayer.IslamicMadhab.SHAFI)
-  val selectedMadhab: StateFlow<com.example.data.prayer.IslamicMadhab> = juristicMethod.asStateFlow()
+  // Private-backed so nothing outside this class can change a setting without writing it through.
+  private val _calculationMethod = MutableStateFlow(userPrefs.calculationMethod)
+  val selectedCalculationMethod: StateFlow<CalculationMethod> = _calculationMethod.asStateFlow()
+  private val _juristicMethod = MutableStateFlow(userPrefs.madhab)
+  val selectedMadhab: StateFlow<com.example.data.prayer.IslamicMadhab> = _juristicMethod.asStateFlow()
 
   // Temperature unit ('C' or 'F')
   private val _isFahrenheit = MutableStateFlow(false)
@@ -172,8 +173,8 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
   val prayerSchedule: StateFlow<DailyPrayerSchedule> = combine(
     _selectedCity,
     todayPrayerLog,
-    calculationMethod,
-    juristicMethod,
+    _calculationMethod,
+    _juristicMethod,
     _secondTicker
   ) { city, log, method, juristic, _ ->
     val cityZoned = getCityZonedDateTime(city)
@@ -203,7 +204,8 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
       date = getCityZonedDateTime(_selectedCity.value).toLocalDate(),
       location = _selectedCity.value,
       now = getCityZonedDateTime(_selectedCity.value).toLocalDateTime(),
-      madhab = com.example.data.prayer.IslamicMadhab.SHAFI
+      method = _calculationMethod.value,
+      madhab = _juristicMethod.value
     )
   )
 
@@ -424,11 +426,12 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
   }
 
   fun setMadhab(madhab: com.example.data.prayer.IslamicMadhab) {
-    juristicMethod.value = madhab
+    _juristicMethod.value = madhab
+    userPrefs.madhab = madhab
   }
 
   fun setCalculationMethod(method: CalculationMethod) {
-    calculationMethod.value = method
+    _calculationMethod.value = method
     userPrefs.calculationMethod = method
   }
 

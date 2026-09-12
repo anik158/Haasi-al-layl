@@ -5,9 +5,9 @@ import com.example.data.localization.AppLanguage
 /**
  * IslamicMadhab
  * Represents the four major Sunni jurisprudence schools (Madhabs):
- * 1. Shafi'i (Default) - Standard Asr time (shadow factor = 1.0)
+ * 1. Shafi'i - Standard Asr time (shadow factor = 1.0)
  * 2. Hanafi - Later Asr time (shadow factor = 2.0)
- * 3. Maliki - Standard Asr time (shadow factor = 1.0)
+ * 3. Maliki (Default) - Standard Asr time (shadow factor = 1.0)
  * 4. Hanbali - Standard Asr time (shadow factor = 1.0)
  */
 enum class IslamicMadhab(
@@ -33,12 +33,11 @@ enum class IslamicMadhab(
     spanishName = "Imán Shafi'i",
     portugueseName = "Imame Shafi'i",
     shadowFactor = 1.0,
-    descriptionEn = "Standard Asr time when shadow equals object length (1x). Default madhab.",
-    descriptionBn = "আসর ওয়াক্ত শুরু যখন ছায়া বস্তুর সমান (১ গুণ)। ডিফল্ট মাজহাব।",
-    descriptionAr = "يبدأ وقت العصر إذا صار ظل كل شيء مثله (1x). المذهب الافتراضي.",
-    descriptionEs = "Hora de Asr estándar cuando la sombra es igual a la longitud del objeto (1x). Por defecto.",
-    descriptionPt = "Horário de Asr padrão quando a sombra é igual ao comprimento do objeto (1x). Padrão.",
-    isDefault = true
+    descriptionEn = "Standard Asr time when shadow equals object length (1x).",
+    descriptionBn = "আসর ওয়াক্ত শুরু যখন ছায়া বস্তুর সমান (১ গুণ)।",
+    descriptionAr = "يبدأ وقت العصر إذا صار ظل كل شيء مثله (1x).",
+    descriptionEs = "Hora de Asr estándar cuando la sombra es igual a la longitud del objeto (1x).",
+    descriptionPt = "Horário de Asr padrão quando a sombra é igual ao comprimento do objeto (1x)."
   ),
   HANAFI(
     id = "hanafi",
@@ -62,11 +61,12 @@ enum class IslamicMadhab(
     spanishName = "Imán Malik",
     portugueseName = "Imame Malik",
     shadowFactor = 1.0,
-    descriptionEn = "Standard Asr time when shadow equals object length (1x).",
-    descriptionBn = "আসর ওয়াক্ত শুরু যখন ছায়া বস্তুর সমান (১ গুণ)।",
-    descriptionAr = "يبدأ وقت العصر إذا صار ظل كل شيء مثله (1x).",
-    descriptionEs = "Hora de Asr estándar cuando la sombra es igual a la longitud del objeto (1x).",
-    descriptionPt = "Horário de Asr padrão quando a sombra é igual ao comprimento do objeto (1x)."
+    descriptionEn = "Standard Asr time when shadow equals object length (1x). Default madhab.",
+    descriptionBn = "আসর ওয়াক্ত শুরু যখন ছায়া বস্তুর সমান (১ গুণ)। ডিফল্ট মাজহাব।",
+    descriptionAr = "يبدأ وقت العصر إذا صار ظل كل شيء مثله (1x). المذهب الافتراضي.",
+    descriptionEs = "Hora de Asr estándar cuando la sombra es igual a la longitud del objeto (1x). Por defecto.",
+    descriptionPt = "Horário de Asr padrão quando a sombra é igual ao comprimento do objeto (1x). Padrão.",
+    isDefault = true
   ),
   HANBALI(
     id = "hanbali",
@@ -97,5 +97,14 @@ enum class IslamicMadhab(
     AppLanguage.SPANISH -> descriptionEs
     AppLanguage.PORTUGUESE -> descriptionPt
     AppLanguage.ENGLISH -> descriptionEn
+  }
+
+  companion object {
+    /**
+     * The madhab a fresh install starts on. Derived from [isDefault], so the flag and the real
+     * default cannot drift apart. A `get()` accessor rather than an initialised property, to stay
+     * clear of enum/companion class-initialisation ordering.
+     */
+    val DEFAULT: IslamicMadhab get() = entries.firstOrNull { it.isDefault } ?: MALIKI
   }
 }

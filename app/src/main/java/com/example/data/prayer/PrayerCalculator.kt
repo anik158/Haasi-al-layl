@@ -72,7 +72,7 @@ object PrayerCalculator {
     now: LocalDateTime = LocalDateTime.now(),
     completedPrayerIds: Set<String> = emptySet(),
     method: CalculationMethod = CalculationMethod.UMM_AL_QURA,
-    madhab: IslamicMadhab = IslamicMadhab.SHAFI
+    madhab: IslamicMadhab = IslamicMadhab.DEFAULT
   ): DailyPrayerSchedule {
     val timesMap = computePrayerTimes(date, location.latitude, location.longitude, location.timeZoneId, method, madhab)
 
