@@ -1,5 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.MyApplication" parent="android:Theme.DeviceDefault.NoActionBar" />
+    <!--
+      The theme the activity settles on. The parent is Material.Light rather than DeviceDefault:
+      DeviceDefault follows the system dark-mode setting, which is what painted the pre-Compose
+      starting window a plain dark rectangle. windowBackground is set explicitly so the starting
+      window is already the app's parchment before Compose draws anything.
+    -->
+    <style name="Theme.Haasi" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/haasi_parchment</item>
+        <item name="android:colorBackground">@color/haasi_parchment</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <!-- Launch theme: the brand mark on the night sky, handing over to Theme.Haasi. -->
+    <style name="Theme.Haasi.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/haasi_night_navy</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="postSplashScreenTheme">@style/Theme.Haasi</item>
+    </style>
 </resources>

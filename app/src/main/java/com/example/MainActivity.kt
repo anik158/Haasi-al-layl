@@ -3,7 +3,10 @@ package com.example
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import android.graphics.Color
+import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -52,8 +55,15 @@ import com.example.ui.theme.HaasiTheme
 
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
+    // Must precede super.onCreate: it swaps Theme.Haasi.Splash for Theme.Haasi.
+    installSplashScreen()
     super.onCreate(savedInstanceState)
-    enableEdgeToEdge()
+    // The no-arg overload picks system-bar icon colour from the system dark-mode flag, which put
+    // white icons on the parchment background. The app is light-only, so say so explicitly.
+    enableEdgeToEdge(
+      statusBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT),
+      navigationBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
+    )
     setContent {
       HaasiTheme {
         MainAppContent()

@@ -32,10 +32,13 @@ private val HaasiBrandColorScheme =
     outline = OutlineDarkBorder
   )
 
+/**
+ * The app is deliberately light-only: the warm parchment palette is the brand, so there is no
+ * dark scheme and no dynamic colour. The theme took `darkTheme` and `dynamicColor` parameters and
+ * silently ignored both, which read as a bug; they are gone rather than honoured.
+ */
 @Composable
 fun HaasiTheme(
-  darkTheme: Boolean = false, // Strictly preserve signature warm beige brand palette
-  dynamicColor: Boolean = false,
   content: @Composable () -> Unit,
 ) {
   MaterialTheme(
@@ -44,14 +47,6 @@ fun HaasiTheme(
     content = content
   )
 }
-
-// Aliases for compatibility
-@Composable
-fun HaasiAlLaylTheme(
-  darkTheme: Boolean = false,
-  dynamicColor: Boolean = false,
-  content: @Composable () -> Unit,
-) = HaasiTheme(darkTheme = darkTheme, dynamicColor = dynamicColor, content = content)
 
 
 

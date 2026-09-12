@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Identical to values/themes.xml on purpose. The app is deliberately light-only, and pinning the
+  night qualifier too stops the platform (or an OEM overlay) substituting a dark window.
+-->
+<resources>
+    <style name="Theme.Haasi" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/haasi_parchment</item>
+        <item name="android:colorBackground">@color/haasi_parchment</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <style name="Theme.Haasi.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/haasi_night_navy</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="postSplashScreenTheme">@style/Theme.Haasi</item>
+    </style>
+</resources>
