@@ -91,4 +91,9 @@ val GoldAccent = WarmGoldAccent
 val MosqueEmerald = DeepPine
 val SoftEmerald = BotanicalSage
 
-
+/**
+ * Ground for the About dialog. Deliberately a step warmer and darker than
+ * [WarmBeigeBackground], which the dialog's inner etymology card uses - identical values would
+ * dissolve that card into the background.
+ */
+val ParchmentDialogSurface = Color(0xFFF4EFE6)

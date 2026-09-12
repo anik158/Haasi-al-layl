@@ -16,8 +16,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.outlined.Mosque
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -49,8 +47,8 @@ import com.example.R
 import com.example.data.localization.AppLanguage
 import com.example.data.localization.LocalizationManager
 import com.example.ui.theme.DarkForestInk
+import com.example.ui.theme.ParchmentDialogSurface
 import com.example.ui.theme.LinenBorderLight
-import com.example.ui.theme.SunGoldenGlow
 import com.example.ui.theme.WarmBeigeBackground
 
 /**
@@ -114,11 +112,11 @@ fun HaasiBrandLogo(
 @Composable
 fun AboutHaasiDialog(
   language: AppLanguage,
-  onDismiss: () -> Unit,
-  onOpenNotifications: () -> Unit
+  onDismiss: () -> Unit
 ) {
   AlertDialog(
     onDismissRequest = onDismiss,
+    containerColor = ParchmentDialogSurface,
     modifier = Modifier.testTag("about_haasi_dialog"),
     title = null,
     text = {
@@ -156,7 +154,7 @@ fun AboutHaasiDialog(
         )
 
         Text(
-          text = "“The One Who Sips the Night”",
+          text = LocalizationManager.getAppTagline(language),
           style = MaterialTheme.typography.bodyMedium,
           fontWeight = FontWeight.SemiBold,
           color = DarkForestInk.copy(alpha = 0.8f)
@@ -194,38 +192,6 @@ fun AboutHaasiDialog(
           }
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
-
-        Surface(
-          onClick = {
-            onDismiss()
-            onOpenNotifications()
-          },
-          shape = RoundedCornerShape(14.dp),
-          color = Color(0xFF0F3E2F),
-          modifier = Modifier.fillMaxWidth()
-        ) {
-          Row(
-            modifier = Modifier.padding(vertical = 12.dp, horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-          ) {
-            Icon(Icons.Default.Notifications, contentDescription = null, tint = SunGoldenGlow, modifier = Modifier.size(18.dp))
-            Spacer(modifier = Modifier.width(10.dp))
-            Column {
-              Text(
-                text = LocalizationManager.getAboutConfigureAlertsTitle(language),
-                fontWeight = FontWeight.Bold,
-                fontSize = 13.sp,
-                color = Color.White
-              )
-              Text(
-                text = LocalizationManager.getAboutConfigureAlertsDesc(language),
-                fontSize = 11.sp,
-                color = Color.White.copy(alpha = 0.8f)
-              )
-            }
-          }
-        }
       }
     },
     confirmButton = {

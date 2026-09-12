@@ -325,8 +325,7 @@ fun HomeScreen(
   if (showAboutDialog) {
     AboutHaasiDialog(
       language = language,
-      onDismiss = { showAboutDialog = false },
-      onOpenNotifications = { showNotificationSheet = true }
+      onDismiss = { showAboutDialog = false }
     )
   }
 }

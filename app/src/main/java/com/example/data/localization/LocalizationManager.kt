@@ -81,6 +81,15 @@ object LocalizationManager {
       else -> "Haasi al-layl"
     }
 
+  /** A literal gloss of the name, distinct from [getAppSubtitle]. Shown in the About dialog. */
+  fun getAppTagline(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "“الذي يرتشف الليل”"
+    AppLanguage.BENGALI -> "“যে রাত চুমুক দিয়ে পান করে”"
+    AppLanguage.SPANISH -> "“El que sorbe la noche”"
+    AppLanguage.PORTUGUESE -> "“Aquele que sorve a noite”"
+    AppLanguage.ENGLISH -> "“The One Who Sips the Night”"
+  }
+
   fun getAppSubtitle(language: AppLanguage): String = when (language) {
       AppLanguage.ARABIC -> "أراقب إيقاع الليل والنهار الهادئ"
       AppLanguage.BENGALI -> "রাত ও দিনের নীরব ছন্দ পর্যবেক্ষণ"
@@ -932,22 +941,6 @@ object LocalizationManager {
     AppLanguage.SPANISH -> "Describe al adorador devoto que bebe el néctar espiritual de las altas horas de la noche con plena conciencia."
     AppLanguage.PORTUGUESE -> "Descreve o adorador devoto que bebe o néctar espiritual das madrugadas com plena consciência."
     AppLanguage.ENGLISH -> "It describes the devout worshipper who drinks in the spiritual nectar of the late hours — Tahajjud, quiet reflection, and the serenity before dawn — with gradual, deliberate mindfulness."
-  }
-
-  fun getAboutConfigureAlertsTitle(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "تكوين إشعارات الصلاة وأوقات النهي"
-    AppLanguage.BENGALI -> "নামাজ এবং নিষিদ্ধ সময়ের অ্যালার্ট কনফিগার করুন"
-    AppLanguage.SPANISH -> "Configurar Alertas de Oración y Tiempos Prohibidos"
-    AppLanguage.PORTUGUESE -> "Configurar Alertas de Oração e Tempos Proibidos"
-    AppLanguage.ENGLISH -> "Configure Prayer & Forbidden Time Alerts"
-  }
-
-  fun getAboutConfigureAlertsDesc(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "تلقي إشعارات عند دخول وخروج أوقات الصلوات وأوقات النهي"
-    AppLanguage.BENGALI -> "নামাজ এবং নিষিদ্ধ সময়ের শুরু/শেষে বিজ্ঞপ্তি পান"
-    AppLanguage.SPANISH -> "Recibe notificaciones de inicio y fin de tiempos de oración y tiempos prohibidos"
-    AppLanguage.PORTUGUESE -> "Receba notificações de início e fim de tempos de oração e tempos proibidos"
-    AppLanguage.ENGLISH -> "Receive notifications when prayers and prohibited windows start/end"
   }
 
   fun getCloseLabel(language: AppLanguage): String = when (language) {
