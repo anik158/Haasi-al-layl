@@ -528,6 +528,122 @@ object LocalizationManager {
   // =========================================================================
   // Tasbih Screen Strings
   // =========================================================================
+  /**
+   * Display name for a seeded dhikr, keyed by [com.example.data.local.TasbihEntity.id].
+   *
+   * The names are held here rather than in the Room row because the row is storage: it is written
+   * once at seed time and would otherwise pin the user to whatever language was current then.
+   * [fallback] covers ids this build does not know about.
+   */
+  fun getTasbihName(id: String, language: AppLanguage, fallback: String): String = when (id) {
+    "default", "subhanallah" -> when (language) {
+      AppLanguage.ARABIC -> "سُبْحَانَ اللَّهِ"
+      AppLanguage.BENGALI -> "সুবহানাল্লাহ"
+      AppLanguage.SPANISH -> "SubhanAllah"
+      AppLanguage.PORTUGUESE -> "SubhanAllah"
+      AppLanguage.ENGLISH -> "SubhanAllah"
+    }
+    "alhamdulillah" -> when (language) {
+      AppLanguage.ARABIC -> "الْحَمْدُ لِلَّهِ"
+      AppLanguage.BENGALI -> "আলহামদুলিল্লাহ"
+      AppLanguage.SPANISH -> "Alhamdulillah"
+      AppLanguage.PORTUGUESE -> "Alhamdulillah"
+      AppLanguage.ENGLISH -> "Alhamdulillah"
+    }
+    "allahu_akbar" -> when (language) {
+      AppLanguage.ARABIC -> "اللَّهُ أَكْبَرُ"
+      AppLanguage.BENGALI -> "আল্লাহু আকবার"
+      AppLanguage.SPANISH -> "Allahu Akbar"
+      AppLanguage.PORTUGUESE -> "Allahu Akbar"
+      AppLanguage.ENGLISH -> "Allahu Akbar"
+    }
+    "astaghfirullah" -> when (language) {
+      AppLanguage.ARABIC -> "أَسْتَغْفِرُ اللَّهَ"
+      AppLanguage.BENGALI -> "আস্তাগফিরুল্লাহ"
+      AppLanguage.SPANISH -> "Astaghfirullah"
+      AppLanguage.PORTUGUESE -> "Astaghfirullah"
+      AppLanguage.ENGLISH -> "Astaghfirullah"
+    }
+    "la_ilaha_illallah" -> when (language) {
+      AppLanguage.ARABIC -> "لَا إِلَهَ إِلَّا اللَّهُ"
+      AppLanguage.BENGALI -> "লা ইলাহা ইল্লাল্লাহ"
+      AppLanguage.SPANISH -> "La ilaha illallah"
+      AppLanguage.PORTUGUESE -> "La ilaha illallah"
+      AppLanguage.ENGLISH -> "La Ilaha Illallah"
+    }
+    "salawat" -> when (language) {
+      AppLanguage.ARABIC -> "الصلاة على النبي ﷺ"
+      AppLanguage.BENGALI -> "নবী ﷺ-এর উপর দরুদ"
+      AppLanguage.SPANISH -> "Salawat sobre el Profeta ﷺ"
+      AppLanguage.PORTUGUESE -> "Salawat sobre o Profeta ﷺ"
+      AppLanguage.ENGLISH -> "Salawat upon the Prophet ﷺ"
+    }
+    else -> fallback
+  }
+
+  /** Meaning of a seeded dhikr. See [getTasbihName] for why these are not stored on the row. */
+  fun getTasbihMeaning(id: String, language: AppLanguage, fallback: String): String = when (id) {
+    "default", "subhanallah" -> when (language) {
+      AppLanguage.ARABIC -> "تنزيه الله عن كل نقص"
+      AppLanguage.BENGALI -> "আল্লাহর পবিত্রতা বর্ণনা"
+      AppLanguage.SPANISH -> "Gloria a Alá"
+      AppLanguage.PORTUGUESE -> "Glória a Allah"
+      AppLanguage.ENGLISH -> "Glory be to Allah"
+    }
+    "alhamdulillah" -> when (language) {
+      AppLanguage.ARABIC -> "الثناء على الله"
+      AppLanguage.BENGALI -> "সমস্ত প্রশংসা আল্লাহর"
+      AppLanguage.SPANISH -> "Alabado sea Alá"
+      AppLanguage.PORTUGUESE -> "Louvado seja Allah"
+      AppLanguage.ENGLISH -> "Praise be to Allah"
+    }
+    "allahu_akbar" -> when (language) {
+      AppLanguage.ARABIC -> "الله أكبر من كل شيء"
+      AppLanguage.BENGALI -> "আল্লাহ সবচেয়ে মহান"
+      AppLanguage.SPANISH -> "Alá es el más grande"
+      AppLanguage.PORTUGUESE -> "Allah é o Maior"
+      AppLanguage.ENGLISH -> "Allah is the Greatest"
+    }
+    "astaghfirullah" -> when (language) {
+      AppLanguage.ARABIC -> "أطلب المغفرة من الله"
+      AppLanguage.BENGALI -> "আমি আল্লাহর কাছে ক্ষমা চাই"
+      AppLanguage.SPANISH -> "Pido perdón a Alá"
+      AppLanguage.PORTUGUESE -> "Peço perdão a Allah"
+      AppLanguage.ENGLISH -> "I seek forgiveness from Allah"
+    }
+    "la_ilaha_illallah" -> when (language) {
+      AppLanguage.ARABIC -> "لا معبود بحق إلا الله"
+      AppLanguage.BENGALI -> "আল্লাহ ছাড়া কোনো উপাস্য নেই"
+      AppLanguage.SPANISH -> "No hay más divinidad que Alá"
+      AppLanguage.PORTUGUESE -> "Não há divindade além de Allah"
+      AppLanguage.ENGLISH -> "There is no deity except Allah"
+    }
+    "salawat" -> when (language) {
+      AppLanguage.ARABIC -> "اللهم صل على محمد ﷺ"
+      AppLanguage.BENGALI -> "হে আল্লাহ, মুহাম্মদ ﷺ-এর উপর রহমত বর্ষণ করুন"
+      AppLanguage.SPANISH -> "Oh Alá, envía bendiciones sobre Muhammad ﷺ"
+      AppLanguage.PORTUGUESE -> "Ó Allah, envie bênçãos sobre Muhammad ﷺ"
+      AppLanguage.ENGLISH -> "O Allah, send blessings upon Muhammad ﷺ"
+    }
+    else -> fallback
+  }
+
+  fun getLifetimeTotalLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "الإجمالي الكلي"
+    AppLanguage.BENGALI -> "সর্বমোট গণনা"
+    AppLanguage.SPANISH -> "Total acumulado"
+    AppLanguage.PORTUGUESE -> "Total acumulado"
+    AppLanguage.ENGLISH -> "Lifetime Total"
+  }
+
+  fun getResetCounterDescription(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "إعادة تعيين العداد"
+    AppLanguage.BENGALI -> "কাউন্টার রিসেট করুন"
+    AppLanguage.SPANISH -> "Reiniciar contador"
+    AppLanguage.PORTUGUESE -> "Reiniciar contador"
+    AppLanguage.ENGLISH -> "Reset counter"
+  }
+
   fun getTasbihTitle(language: AppLanguage): String = when (language) {
     AppLanguage.ARABIC -> "المسبحة الإلكترونية"
     AppLanguage.BENGALI -> "ডিজিটাল তাসবিহ"
@@ -1083,7 +1199,7 @@ object LocalizationManager {
     }
     code in listOf(51, 53, 55, 61, 63, 65, 80, 81, 82) -> when (language) {
       AppLanguage.ARABIC -> "المطر يتساقط — أشار النبي (ﷺ) إلى أن هذا وقت مبارك لإجابة الدعاء!"
-      AppLanguage.BENGALI -> "বৃষ্টি পড়ছে — নবী (সাঃ) বলেছেন এটি দোয়া কবুলের বরকতময় সময়!"
+      AppLanguage.BENGALI -> "বৃষ্টি পড়ছে — নবী ﷺ বলেছেন এটি দোয়া কবুলের বরকতময় সময়!"
       AppLanguage.SPANISH -> "Cae lluvia — ¡El Profeta (ﷺ) notó que es un tiempo bendito para orar!"
       AppLanguage.PORTUGUESE -> "A chuva cai — O Profeta (ﷺ) notou ser um tempo abençoado para orar!"
       AppLanguage.ENGLISH -> "Rain is descending — the Prophet (ﷺ) noted this is a blessed time for prayers to be answered!"
