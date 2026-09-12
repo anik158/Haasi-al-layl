@@ -45,6 +45,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import android.util.Log
 
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -76,7 +77,7 @@ enum class OnboardingState {
 class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(application) {
 
   private val database = HaasiAlLaylDatabase.getDatabase(application)
-  private val repository = HaasiAlLaylRepository(database.haasiAlLaylDao())
+  private val repository = HaasiAlLaylRepository(database)
   private val weatherRepository = WeatherRepository()
   private val sensorManager = QiblaSensorManager(application)
 
@@ -163,10 +164,25 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
     return ZonedDateTime.now(zone)
   }
 
-  // Today's Prayer log from Room for selected city's local date
-  val todayPrayerLog: StateFlow<PrayerLogEntity?> = _selectedCity.flatMapLatest { city ->
-    val cityDate = getCityZonedDateTime(city).toLocalDate()
-    repository.getPrayerLogForDate(cityDate)
+  /**
+   * The selected city's current local date, re-emitting only when the date actually rolls over.
+   *
+   * The reader and the writer have to agree on this. Deriving it once per city emission left the
+   * query watching yesterday while a tap wrote to today, so across local midnight the circles
+   * stopped responding.
+   */
+  private val currentCityDate: StateFlow<LocalDate> = combine(_selectedCity, _secondTicker) { city, _ ->
+    getCityZonedDateTime(city).toLocalDate()
+  }.distinctUntilChanged()
+    .stateIn(
+      viewModelScope,
+      SharingStarted.Eagerly,
+      getCityZonedDateTime(_selectedCity.value).toLocalDate()
+    )
+
+  // Today's Prayer log from Room for the selected city's local date
+  val todayPrayerLog: StateFlow<PrayerLogEntity?> = currentCityDate.flatMapLatest { date ->
+    repository.getPrayerLogForDate(date)
   }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
   // Daily Prayer Schedule (Live calculated using city's local timezone)
@@ -453,17 +469,7 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
   // Prayer Completion Tracking in Room
   fun togglePrayerCheck(prayerKey: String) {
     viewModelScope.launch {
-      val currentDateStr = getCityZonedDateTime(_selectedCity.value).toLocalDate().toString()
-      val current = todayPrayerLog.value ?: PrayerLogEntity(date = currentDateStr)
-      val updated = when (prayerKey.uppercase()) {
-        "FAJR" -> current.copy(fajrDone = !current.fajrDone)
-        "DHUHR" -> current.copy(dhuhrDone = !current.dhuhrDone)
-        "ASR" -> current.copy(asrDone = !current.asrDone)
-        "MAGHRIB" -> current.copy(maghribDone = !current.maghribDone)
-        "ISHA" -> current.copy(ishaDone = !current.ishaDone)
-        else -> current
-      }
-      repository.savePrayerLog(updated)
+      repository.togglePrayerCompletion(currentCityDate.value, prayerKey)
     }
   }
 

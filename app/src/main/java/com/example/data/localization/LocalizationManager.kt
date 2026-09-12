@@ -535,6 +535,41 @@ object LocalizationManager {
    * once at seed time and would otherwise pin the user to whatever language was current then.
    * [fallback] covers ids this build does not know about.
    */
+  /** Announces both the prayer and the current state, so the toggle is usable with TalkBack. */
+  fun getPrayerToggleDescription(
+    prayer: PrayerName,
+    isCompleted: Boolean,
+    language: AppLanguage
+  ): String {
+    val name = getPrayerDisplayName(prayer, language)
+    return if (isCompleted) {
+      when (language) {
+        AppLanguage.ARABIC -> "$name - مُسجَّلة كمؤداة، اضغط للتراجع"
+        AppLanguage.BENGALI -> "$name - আদায় করা হয়েছে, বাতিল করতে ট্যাপ করুন"
+        AppLanguage.SPANISH -> "$name - marcada como rezada, toca para deshacer"
+        AppLanguage.PORTUGUESE -> "$name - marcada como rezada, toque para desfazer"
+        AppLanguage.ENGLISH -> "$name - marked as prayed, tap to undo"
+      }
+    } else {
+      when (language) {
+        AppLanguage.ARABIC -> "$name - غير مُسجَّلة، اضغط بعد أدائها"
+        AppLanguage.BENGALI -> "$name - এখনো চিহ্নিত নয়, আদায়ের পর ট্যাপ করুন"
+        AppLanguage.SPANISH -> "$name - sin marcar, toca cuando hayas rezado"
+        AppLanguage.PORTUGUESE -> "$name - sem marcar, toque quando tiver rezado"
+        AppLanguage.ENGLISH -> "$name - not yet marked, tap when you have prayed"
+      }
+    }
+  }
+
+  /** "3 of 5 prayed today", so the circles read as a tracker rather than decoration. */
+  fun getPrayedTodaySummary(done: Int, total: Int, language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "$done من $total صلوات اليوم"
+    AppLanguage.BENGALI -> "আজ $total ওয়াক্তের মধ্যে $done টি আদায় হয়েছে"
+    AppLanguage.SPANISH -> "$done de $total rezadas hoy"
+    AppLanguage.PORTUGUESE -> "$done de $total rezadas hoje"
+    AppLanguage.ENGLISH -> "$done of $total prayed today"
+  }
+
   fun getTasbihName(id: String, language: AppLanguage, fallback: String): String = when (id) {
     "default", "subhanallah" -> when (language) {
       AppLanguage.ARABIC -> "سُبْحَانَ اللَّهِ"

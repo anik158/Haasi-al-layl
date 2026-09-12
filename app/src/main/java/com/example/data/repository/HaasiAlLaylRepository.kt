@@ -1,31 +1,41 @@
 package com.example.data.repository
 
+import androidx.room.withTransaction
 import com.example.data.local.DuaBookmarkEntity
 import com.example.data.local.HaasiAlLaylDao
+import com.example.data.local.HaasiAlLaylDatabase
 import com.example.data.local.PrayerLogEntity
 import com.example.data.local.TasbihEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.LocalDate
 
-class HaasiAlLaylRepository(private val dao: HaasiAlLaylDao) {
+class HaasiAlLaylRepository(private val database: HaasiAlLaylDatabase) {
+
+  private val dao: HaasiAlLaylDao = database.haasiAlLaylDao()
 
   fun getPrayerLogForDate(date: LocalDate): Flow<PrayerLogEntity?> {
     return dao.getPrayerLogForDate(date.toString())
   }
 
-  suspend fun togglePrayerCompletion(date: LocalDate, prayerName: String, isDone: Boolean) {
-    val dateStr = date.toString()
-    // Retrieve or create
-    val currentLog = dao.getPrayerLogForDate(dateStr)
-    // We can insert/update safely
-    val existing = try {
-      // In suspend function, retrieve latest or construct default
-      null
-    } catch (_: Exception) { null }
-
-    // Read current state or create new
-    // We can write a specific query or fetch in transaction
+  /**
+   * Flips one prayer for one date atomically. The row is read inside the transaction, so a stale
+   * or not-yet-loaded cache can never blank the day's other prayers.
+   */
+  suspend fun togglePrayerCompletion(date: LocalDate, prayerKey: String) {
+    database.withTransaction {
+      val dateStr = date.toString()
+      val current = dao.getPrayerLogOnce(dateStr) ?: PrayerLogEntity(date = dateStr)
+      val flipped = when (prayerKey.uppercase()) {
+        "FAJR" -> current.copy(fajrDone = !current.fajrDone)
+        "DHUHR" -> current.copy(dhuhrDone = !current.dhuhrDone)
+        "ASR" -> current.copy(asrDone = !current.asrDone)
+        "MAGHRIB" -> current.copy(maghribDone = !current.maghribDone)
+        "ISHA" -> current.copy(ishaDone = !current.ishaDone)
+        else -> return@withTransaction
+      }
+      dao.insertOrUpdatePrayerLog(flipped.copy(lastUpdated = System.currentTimeMillis()))
+    }
   }
 
   suspend fun savePrayerLog(log: PrayerLogEntity) {

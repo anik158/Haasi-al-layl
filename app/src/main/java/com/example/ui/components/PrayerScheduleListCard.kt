@@ -32,6 +32,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -95,6 +96,16 @@ fun PrayerScheduleListCard(
             style = MaterialTheme.typography.bodySmall,
             color = DarkForestInk.copy(alpha = 0.7f)
           )
+          Text(
+            text = LocalizationManager.getPrayedTodaySummary(
+              done = items.count { it.isCompleted && it.prayer in MAIN_PRAYERS },
+              total = MAIN_PRAYERS.size,
+              language = language
+            ),
+            style = MaterialTheme.typography.bodySmall,
+            fontWeight = FontWeight.Bold,
+            color = DarkForestInk
+          )
         }
 
         if (madhab != null) {
@@ -147,13 +158,7 @@ private fun PrayerRowItem(
   language: AppLanguage,
   onToggleCheck: () -> Unit
 ) {
-  val isMainPrayer = item.prayer in listOf(
-    PrayerName.FAJR,
-    PrayerName.DHUHR,
-    PrayerName.ASR,
-    PrayerName.MAGHRIB,
-    PrayerName.ISHA
-  )
+  val isMainPrayer = item.prayer in MAIN_PRAYERS
 
   val backgroundColor = when {
     item.isCurrent -> CoolMintGradientBase.copy(alpha = 0.5f)
@@ -266,8 +271,16 @@ private fun PrayerRowItem(
       ) {
         Icon(
           imageVector = if (item.isCompleted) Icons.Filled.CheckCircle else Icons.Filled.RadioButtonUnchecked,
-          contentDescription = "Mark ${item.prayer.displayName} as completed",
-          tint = if (item.isCompleted) DarkForestInk else DarkForestInk.copy(alpha = 0.4f)
+          contentDescription = LocalizationManager.getPrayerToggleDescription(
+            item.prayer,
+            item.isCompleted,
+            language
+          ),
+          // An unchecked circle at 0.4 alpha reads as a disabled decoration rather than a control.
+          tint = animateColorAsState(
+            targetValue = if (item.isCompleted) DarkForestInk else DarkForestInk.copy(alpha = 0.7f),
+            label = "prayer_check_tint"
+          ).value
         )
       }
     } else {
@@ -287,3 +300,12 @@ private fun getPrayerIcon(name: PrayerName): ImageVector {
     PrayerName.ISHA -> Icons.Outlined.DarkMode
   }
 }
+
+/** The five fardh prayers the completion circles track. */
+private val MAIN_PRAYERS = listOf(
+  PrayerName.FAJR,
+  PrayerName.DHUHR,
+  PrayerName.ASR,
+  PrayerName.MAGHRIB,
+  PrayerName.ISHA
+)

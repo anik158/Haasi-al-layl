@@ -27,7 +27,10 @@ abstract class HaasiAlLaylDatabase : RoomDatabase() {
           context.applicationContext,
           HaasiAlLaylDatabase::class.java,
           "haasi_al_layl_database"
-        ).fallbackToDestructiveMigration().build()
+        // No fallbackToDestructiveMigration: it would silently wipe every lifetime tasbih
+        // count, prayer log and bookmark the next time someone bumps the version. Any future
+        // schema change needs a real Migration.
+        ).build()
         INSTANCE = instance
         instance
       }

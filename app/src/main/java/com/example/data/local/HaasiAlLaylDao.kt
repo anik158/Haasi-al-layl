@@ -16,6 +16,10 @@ interface HaasiAlLaylDao {
   @Query("SELECT * FROM prayer_logs ORDER BY date DESC LIMIT 7")
   fun getRecentPrayerLogs(): Flow<List<PrayerLogEntity>>
 
+  /** One-shot read, so a toggle can read-modify-write inside a transaction. */
+  @Query("SELECT * FROM prayer_logs WHERE date = :date LIMIT 1")
+  suspend fun getPrayerLogOnce(date: String): PrayerLogEntity?
+
   @Insert(onConflict = OnConflictStrategy.REPLACE)
   suspend fun insertOrUpdatePrayerLog(log: PrayerLogEntity)
 
