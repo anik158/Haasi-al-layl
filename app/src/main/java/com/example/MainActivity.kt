@@ -90,6 +90,8 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
   val qiblaBearing by viewModel.qiblaBearing.collectAsStateWithLifecycle()
   val distanceToKaaba by viewModel.distanceToKaabaKm.collectAsStateWithLifecycle()
   val isFacingQibla by viewModel.isFacingQibla.collectAsStateWithLifecycle()
+  val magneticDeclination by viewModel.magneticDeclination.collectAsStateWithLifecycle()
+  val needsCompassCalibration by viewModel.needsCompassCalibration.collectAsStateWithLifecycle()
   val tasbihList by viewModel.tasbihList.collectAsStateWithLifecycle()
   val selectedTasbih by viewModel.selectedTasbih.collectAsStateWithLifecycle()
   val bookmarkedDuaIds by viewModel.bookmarkedDuaIds.collectAsStateWithLifecycle()
@@ -183,6 +185,8 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
           qiblaBearing = qiblaBearing,
           distanceToKaabaKm = distanceToKaaba,
           isFacingQibla = isFacingQibla,
+          magneticDeclination = magneticDeclination,
+          needsCalibration = needsCompassCalibration,
           onLocationClick = { showCitySheet = true },
           language = currentLanguage
         )

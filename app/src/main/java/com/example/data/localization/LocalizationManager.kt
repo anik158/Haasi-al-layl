@@ -526,6 +526,42 @@ object LocalizationManager {
     AppLanguage.ENGLISH -> "Distance to Kaaba"
   }
 
+  fun getQiblaBearingLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "اتجاه القبلة"
+    AppLanguage.BENGALI -> "কিবলার দিককোণ"
+    AppLanguage.SPANISH -> "Rumbo de la Quibla"
+    AppLanguage.PORTUGUESE -> "Direção da Quibla"
+    AppLanguage.ENGLISH -> "Qibla Bearing"
+  }
+
+  fun getTrueNorthLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "من الشمال الحقيقي"
+    AppLanguage.BENGALI -> "প্রকৃত উত্তর দিক থেকে"
+    AppLanguage.SPANISH -> "Desde el norte verdadero"
+    AppLanguage.PORTUGUESE -> "A partir do norte verdadeiro"
+    AppLanguage.ENGLISH -> "From True North"
+  }
+
+  fun getGreatCircleDistanceLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "المسافة الجغرافية"
+    AppLanguage.BENGALI -> "ভৌগোলিক দূরত্ব"
+    AppLanguage.SPANISH -> "Distancia ortodrómica"
+    AppLanguage.PORTUGUESE -> "Distância ortodrómica"
+    AppLanguage.ENGLISH -> "Great-circle distance"
+  }
+
+  /** Shows the magnetic-to-true correction, so the reading can be checked against a plain compass. */
+  fun getDeclinationNote(declinationDegrees: Float, language: AppLanguage): String {
+    val value = "%+.1f°".format(declinationDegrees)
+    return when (language) {
+      AppLanguage.ARABIC -> "تم تطبيق الانحراف المغناطيسي $value"
+      AppLanguage.BENGALI -> "চৌম্বক বিচ্যুতি $value প্রয়োগ করা হয়েছে"
+      AppLanguage.SPANISH -> "Declinación magnética $value aplicada"
+      AppLanguage.PORTUGUESE -> "Declinação magnética $value aplicada"
+      AppLanguage.ENGLISH -> "Magnetic declination $value applied"
+    }
+  }
+
   fun getCompassCalibrationHint(language: AppLanguage): String = when (language) {
     AppLanguage.ARABIC -> "لزيادة الدقة، حرك الهاتف على شكل الرقم 8"
     AppLanguage.BENGALI -> "কম্পাসের নির্ভুলতার জন্য ফোনটিকে ইংরেজি \'8\' (আট) আকৃতিতে ঘোরান"

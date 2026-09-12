@@ -1,6 +1,8 @@
 package com.example.ui
 
 import android.app.Application
+import android.hardware.GeomagneticField
+import android.hardware.SensorManager
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -20,6 +22,7 @@ import com.example.data.prayer.CalculationMethod
 import com.example.data.prayer.JuristicMethod
 import com.example.data.preferences.UserPreferences
 import com.example.data.prayer.PrayerCalculator
+import com.example.data.qibla.CompassReading
 import com.example.data.qibla.QiblaCalculator
 import com.example.data.qibla.QiblaSensorManager
 import com.example.data.repository.HaasiAlLaylRepository
@@ -151,8 +154,42 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
   val weatherState: StateFlow<WeatherUiState> = _weatherState.asStateFlow()
 
   // Compass Heading
-  val compassHeading: StateFlow<Float> = sensorManager.getCompassHeadingFlow()
-    .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0f)
+  private val compassReading: StateFlow<CompassReading> = sensorManager.getCompassReadingFlow()
+    .stateIn(
+      viewModelScope,
+      SharingStarted.WhileSubscribed(5000),
+      CompassReading(0f, SensorManager.SENSOR_STATUS_UNRELIABLE)
+    )
+
+  /**
+   * The gap between magnetic and true north at the selected city, from the offline World Magnetic
+   * Model. Under a degree in Dhaka, but 5 to 20 degrees across the UK and North America.
+   */
+  val magneticDeclination: StateFlow<Float> = _selectedCity.map { city ->
+    GeomagneticField(
+      city.latitude.toFloat(),
+      city.longitude.toFloat(),
+      0f,
+      System.currentTimeMillis()
+    ).declination
+  }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0f)
+
+  /**
+   * Heading clockwise from **true** north.
+   *
+   * The sensors report magnetic north while [qiblaBearing] is a true great-circle bearing, so
+   * subtracting one from the other left the needle wrong by the local declination. Correcting
+   * here keeps both sides of that subtraction in the same reference frame.
+   */
+  val compassHeading: StateFlow<Float> =
+    combine(compassReading, magneticDeclination) { reading, declination ->
+      (reading.magneticAzimuth + declination + 360f) % 360f
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0f)
+
+  /** True while the magnetometer is uncalibrated, so the figure-of-eight hint means something. */
+  val needsCompassCalibration: StateFlow<Boolean> = compassReading.map { reading ->
+    reading.accuracy <= SensorManager.SENSOR_STATUS_ACCURACY_LOW
+  }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
   // Get current ZonedDateTime for a given city
   fun getCityZonedDateTime(city: CityLocation): ZonedDateTime {
@@ -237,7 +274,7 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
   // True if user device is oriented towards Qibla (within +/- 3 degrees)
   val isFacingQibla: StateFlow<Boolean> = combine(compassHeading, qiblaBearing) { heading, bearing ->
     val diff = abs((bearing - heading + 540f) % 360f - 180f)
-    diff < 4.0f
+    diff < QIBLA_FACING_TOLERANCE_DEGREES
   }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
   // Tasbih list from Room
@@ -536,4 +573,13 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
       "%.0f°C".format(tempC)
     }
   }
+  private companion object {
+    /**
+     * Consumer magnetometers are good to roughly 5-10 degrees. The old 4-degree gate was
+     * narrower than that, and narrower than the declination error it was masking, so it
+     * essentially never latched.
+     */
+    const val QIBLA_FACING_TOLERANCE_DEGREES = 7.5f
+  }
+
 }

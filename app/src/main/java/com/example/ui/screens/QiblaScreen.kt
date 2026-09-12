@@ -32,6 +32,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,21 +63,33 @@ fun QiblaScreen(
   qiblaBearing: Float,
   distanceToKaabaKm: Int,
   isFacingQibla: Boolean,
+  magneticDeclination: Float,
+  needsCalibration: Boolean,
   onLocationClick: () -> Unit,
   language: AppLanguage = AppLanguage.ENGLISH
 ) {
-  // Smooth rotation animation
+  // Needle angle relative to device top:
+  // When device faces Qibla, needle points straight up (0 degrees).
+  val needleAngle = (qiblaBearing - compassHeading + 360f) % 360f
+
+  // Animating a wrapped angle directly makes a 359 -> 1 step spin the dial 358 degrees backwards.
+  // Accumulate the shortest signed delta instead, so the spring always takes the short way round.
+  var headingTarget by remember { mutableFloatStateOf(-compassHeading) }
+  LaunchedEffect(compassHeading) {
+    headingTarget += shortestDelta(headingTarget, -compassHeading)
+  }
   val animatedHeading by animateFloatAsState(
-    targetValue = -compassHeading,
+    targetValue = headingTarget,
     animationSpec = spring(stiffness = 50f),
     label = "compass_rotation"
   )
 
-  // Needle angle relative to device top:
-  // When device faces Qibla, needle points straight up (0 degrees).
-  val needleAngle = (qiblaBearing - compassHeading + 360f) % 360f
+  var needleTarget by remember { mutableFloatStateOf(needleAngle) }
+  LaunchedEffect(needleAngle) {
+    needleTarget += shortestDelta(needleTarget, needleAngle)
+  }
   val animatedNeedleAngle by animateFloatAsState(
-    targetValue = needleAngle,
+    targetValue = needleTarget,
     animationSpec = spring(stiffness = 50f),
     label = "needle_rotation"
   )
@@ -341,7 +355,7 @@ fun QiblaScreen(
           horizontalAlignment = Alignment.CenterHorizontally
         ) {
           Text(
-            text = if (language == AppLanguage.BENGALI) "কিবলার দিককোণ" else "Qibla Bearing",
+            text = LocalizationManager.getQiblaBearingLabel(language),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
           )
@@ -352,10 +366,16 @@ fun QiblaScreen(
             color = MaterialTheme.colorScheme.primary
           )
           Text(
-            text = if (language == AppLanguage.BENGALI) "প্রকৃত উত্তর দিক থেকে" else "From True North",
+            text = LocalizationManager.getTrueNorthLabel(language),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.outline,
             fontSize = 10.sp
+          )
+          Text(
+            text = LocalizationManager.getDeclinationNote(magneticDeclination, language),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.outline,
+            fontSize = 9.sp
           )
         }
       }
@@ -382,7 +402,7 @@ fun QiblaScreen(
             color = MaterialTheme.colorScheme.secondary
           )
           Text(
-            text = if (language == AppLanguage.BENGALI) "ভৌগোলিক দূরত্ব" else "Great-circle distance",
+            text = LocalizationManager.getGreatCircleDistanceLabel(language),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.outline,
             fontSize = 10.sp
@@ -391,35 +411,42 @@ fun QiblaScreen(
       }
     }
 
-    Spacer(modifier = Modifier.height(14.dp))
+    // Calibration & Guidance Tip - only while the magnetometer actually reports low accuracy.
+    // Showing it unconditionally trained users to ignore it.
+    if (needsCalibration) {
+      Spacer(modifier = Modifier.height(14.dp))
 
-    // Calibration & Guidance Tip
-    Card(
-      modifier = Modifier.fillMaxWidth(),
-      shape = RoundedCornerShape(16.dp),
-      colors = CardDefaults.cardColors(
-        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-      )
-    ) {
-      Row(
-        modifier = Modifier.padding(14.dp),
-        verticalAlignment = Alignment.CenterVertically
+      Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+          containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+        )
       ) {
-        Icon(
-          Icons.Default.CompassCalibration,
-          contentDescription = null,
-          tint = MaterialTheme.colorScheme.primary,
-          modifier = Modifier.size(24.dp)
-        )
-        Spacer(modifier = Modifier.width(12.dp))
-        Text(
-          text = LocalizationManager.getCompassCalibrationHint(language),
-          style = MaterialTheme.typography.bodySmall,
-          color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        Row(
+          modifier = Modifier.padding(14.dp),
+          verticalAlignment = Alignment.CenterVertically
+        ) {
+          Icon(
+            Icons.Default.CompassCalibration,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.size(24.dp)
+          )
+          Spacer(modifier = Modifier.width(12.dp))
+          Text(
+            text = LocalizationManager.getCompassCalibrationHint(language),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+          )
+        }
       }
     }
 
     Spacer(modifier = Modifier.height(24.dp))
   }
 }
+
+/** Signed shortest rotation from [from] to [to], in the range (-180, 180]. */
+private fun shortestDelta(from: Float, to: Float): Float =
+  ((to - from + 540f) % 360f) - 180f
