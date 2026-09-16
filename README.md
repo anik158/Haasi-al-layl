@@ -72,18 +72,35 @@ of the night, each with its own opt-in notification channel.
 
 The app asks as little as possible, and asks it **once per installation**:
 
-- **When the device is online**, the location is resolved from the IP address (via `ipinfo.io`) and
-  the language is derived from its country. No prompts are shown at all.
-- **When it is not**, and only then, the language prompt appears, followed by the city picker.
+- **Location** is resolved down a ladder, best first: the device's own GPS fix, then IP
+  geolocation, then whatever city was last chosen by hand.
+- **Language** is derived from the resolved country. No prompts are shown at all when detection
+  succeeds; the language prompt and city picker appear only when it cannot.
 - Every choice — language, city, calculation method, madhab — is written to `SharedPreferences`, so
   it survives process death, restarts and reboots until the app is uninstalled.
 
-> **Known limitation — location accuracy.** The prayer *mathematics* is fully offline, but finding
-> your coordinates currently is not: there is no GPS code in the app, and auto-detection resolves
-> whatever city your ISP registered for your IP address. That is often a regional hub rather than
-> where you are — a user in Helsinki is reported as Turku, 150 km away, which shifts prayer times by
-> 8 to 11 minutes. **If auto-detection names the wrong city, set it by hand with Change City.**
-> Device GPS, which would give exact coordinates without a network, is planned.
+**Coordinates and the city name are separate things, and only one of them needs a network.**
+
+GPS is a *receiver*: the phone solves its own position from the timing of signals broadcast by
+satellites, and nothing leaves the device. So with no connectivity at all the app still has exact
+coordinates, and the prayer arithmetic is exact with them. What does need a network is turning
+`60.1699°N` into `"Helsinki"` — so offline the location simply reads **`60.17°N, 24.94°E`**, and
+the name is filled in on the next launch that has connectivity, without touching the coordinates.
+
+Two honest limits: a cold GPS fix with no internet must read orbit data from the satellites
+themselves, which takes tens of seconds and needs a view of the sky, and indoors it often never
+arrives. So the last good fix is cached and preferred on launch, and a live fix is requested only
+when you tap **Detect**.
+
+> IP geolocation remains as a fallback, and it is the *rough* one — it reports where your ISP
+> registered the address block, which is frequently a regional hub. It placed a Helsinki user in
+> Turku, 150 km away, which shifts prayer times by 8 to 11 minutes. GPS exists precisely to avoid
+> that; if both are unavailable, set the city by hand.
+
+**Finding a city by hand.** The picker is not limited to the built-in presets: typing searches
+Open-Meteo's geocoding service — the same family as the weather API — so Faridpur, or any town in
+Mexico, resolves to a full location with coordinates and an IANA timezone. Results show their
+administrative region, to separate the several places that share a name.
 
 Language follows the detected country, and can always be overridden in Settings:
 
@@ -184,7 +201,8 @@ bookmarks and instant search across titles and translations.
 - **Hardware Integration:** Android `SensorManager` (rotation vector, magnetometer and accelerometer) and `GeomagneticField` for magnetic declination
 - **Background Work:** `AlarmManager` (`setAlarmClock` for prayer alerts, exempt from Doze) with a boot receiver; no WorkManager, whose best-effort scheduling is unsuitable for prayer times
 - **Startup:** `androidx.core:core-splashscreen`
-- **Network Layer:** Retrofit + OkHttp + Moshi. Weather from the Open-Meteo public API (no key required); location from `ipinfo.io`
+- **Location:** platform `LocationManager` (GPS provider first, offline-capable); place search and reverse geocoding over HTTP, with the coordinates never depending on either
+- **Network Layer:** Retrofit + OkHttp + Moshi. Weather and geocoding from the Open-Meteo public APIs (no key required); IP fallback via `ipinfo.io`
 - **Screenshot Tests:** Roborazzi over Robolectric
 
 ---
