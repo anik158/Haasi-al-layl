@@ -930,6 +930,71 @@ object LocalizationManager {
     AppLanguage.ENGLISH -> "Receive notifications when Fajr, Dhuhr, Asr, Maghrib, and Isha begin"
   }
 
+  fun getReliabilityTitle(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "موثوقية التنبيهات"
+    AppLanguage.BENGALI -> "বিজ্ঞপ্তির নির্ভরযোগ্যতা"
+    AppLanguage.SPANISH -> "Fiabilidad de los avisos"
+    AppLanguage.PORTUGUESE -> "Fiabilidade dos avisos"
+    AppLanguage.ENGLISH -> "Notification reliability"
+  }
+
+  fun getReliabilityNotificationsRow(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "التنبيهات مسموح بها"
+    AppLanguage.BENGALI -> "বিজ্ঞপ্তি অনুমোদিত"
+    AppLanguage.SPANISH -> "Notificaciones permitidas"
+    AppLanguage.PORTUGUESE -> "Notificações permitidas"
+    AppLanguage.ENGLISH -> "Notifications allowed"
+  }
+
+  fun getReliabilityExactAlarmsRow(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "المنبّهات الدقيقة مسموح بها"
+    AppLanguage.BENGALI -> "নির্ভুল অ্যালার্ম অনুমোদিত"
+    AppLanguage.SPANISH -> "Alarmas exactas permitidas"
+    AppLanguage.PORTUGUESE -> "Alarmes exatos permitidos"
+    AppLanguage.ENGLISH -> "Exact alarms allowed"
+  }
+
+  fun getReliabilityBatteryRow(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "البطارية غير مقيّدة"
+    AppLanguage.BENGALI -> "ব্যাটারি সীমাবদ্ধ নয়"
+    AppLanguage.SPANISH -> "Batería sin restricciones"
+    AppLanguage.PORTUGUESE -> "Bateria sem restrições"
+    AppLanguage.ENGLISH -> "Battery unrestricted"
+  }
+
+  fun getReliabilityFixAction(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "إصلاح"
+    AppLanguage.BENGALI -> "ঠিক করুন"
+    AppLanguage.SPANISH -> "Corregir"
+    AppLanguage.PORTUGUESE -> "Corrigir"
+    AppLanguage.ENGLISH -> "Fix"
+  }
+
+  fun getTestAlarmAction(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "تجربة تنبيه بعد دقيقة"
+    AppLanguage.BENGALI -> "১ মিনিট পর পরীক্ষামূলক অ্যালার্ম"
+    AppLanguage.SPANISH -> "Probar aviso en 1 minuto"
+    AppLanguage.PORTUGUESE -> "Testar aviso em 1 minuto"
+    AppLanguage.ENGLISH -> "Test alert in 1 minute"
+  }
+
+  fun getTestAlarmSent(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "تم ضبط التنبيه. أغلق التطبيق وانتظر دقيقة."
+    AppLanguage.BENGALI -> "অ্যালার্ম সেট হয়েছে। অ্যাপ বন্ধ করে ১ মিনিট অপেক্ষা করুন।"
+    AppLanguage.SPANISH -> "Aviso programado. Cierra la app y espera un minuto."
+    AppLanguage.PORTUGUESE -> "Aviso agendado. Feche a app e aguarde um minuto."
+    AppLanguage.ENGLISH -> "Alert scheduled. Close the app and wait one minute."
+  }
+
+  /** Shown on manufacturers whose power management drops alarms by default. */
+  fun getOemBatteryHint(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "على أجهزة أوبو وشاومي وفيفو: فعّل التشغيل التلقائي، وأوقف تحسين وضع السكون، وثبّت التطبيق في قائمة التطبيقات الأخيرة."
+    AppLanguage.BENGALI -> "OPPO/Xiaomi/Vivo ডিভাইসে: অটো-লঞ্চ চালু করুন, Sleep standby optimisation বন্ধ করুন, এবং রিসেন্ট অ্যাপে অ্যাপটি লক করুন।"
+    AppLanguage.SPANISH -> "En OPPO/Xiaomi/Vivo: activa el inicio automático, desactiva la optimización de reposo y bloquea la app en Recientes."
+    AppLanguage.PORTUGUESE -> "Em OPPO/Xiaomi/Vivo: ative o arranque automático, desative a otimização de suspensão e bloqueie a app em Recentes."
+    AppLanguage.ENGLISH -> "On OPPO/Xiaomi/Vivo: enable auto-launch, turn off Sleep standby optimisation, and lock the app in Recents."
+  }
+
   fun getFollowUpAlertsLabel(language: AppLanguage): String = when (language) {
     AppLanguage.ARABIC -> "تذكير بعد ٥ دقائق"
     AppLanguage.BENGALI -> "৫ মিনিট পর পুনরায় মনে করিয়ে দিন"

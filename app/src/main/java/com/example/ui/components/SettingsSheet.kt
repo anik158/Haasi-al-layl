@@ -62,6 +62,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.example.data.localization.AppLanguage
+import androidx.core.app.NotificationManagerCompat
+import android.content.Intent
+import com.example.data.notification.PrayerAlarmScheduler
+import androidx.compose.material3.TextButton
+import android.content.Context
 import com.example.data.localization.LocalizationManager
 import com.example.data.model.DailyPrayerSchedule
 import com.example.data.notification.PrayerNotificationManager
@@ -359,6 +364,109 @@ fun SettingsSheet(
                   )
                 }
               }
+            }
+          }
+        }
+      }
+
+      // Notification reliability - the first thing to check when alerts do not arrive.
+      item {
+        val notificationsAllowed = NotificationManagerCompat.from(context).areNotificationsEnabled()
+        val exactAlarmsAllowed = PrayerAlarmScheduler.canScheduleExactAlarms(context)
+        val batteryUnrestricted = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+          (context.getSystemService(Context.POWER_SERVICE) as android.os.PowerManager)
+            .isIgnoringBatteryOptimizations(context.packageName)
+        } else {
+          true
+        }
+        val aggressiveOem = Build.MANUFACTURER.lowercase() in
+          setOf("oppo", "realme", "oneplus", "xiaomi", "redmi", "poco", "vivo", "huawei", "honor")
+
+        Card(
+          shape = RoundedCornerShape(18.dp),
+          colors = CardDefaults.cardColors(containerColor = WarmBeigeBackground),
+          border = androidx.compose.foundation.BorderStroke(1.dp, LinenBorderLight),
+          modifier = Modifier.fillMaxWidth()
+        ) {
+          Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+              text = LocalizationManager.getReliabilityTitle(language),
+              fontWeight = FontWeight.Bold,
+              fontSize = 15.sp,
+              color = DarkForestInk
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+
+            ReliabilityRow(
+              label = LocalizationManager.getReliabilityNotificationsRow(language),
+              ok = notificationsAllowed,
+              fixLabel = LocalizationManager.getReliabilityFixAction(language),
+              onFix = {
+                context.startActivity(
+                  Intent(android.provider.Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                    .putExtra(android.provider.Settings.EXTRA_APP_PACKAGE, context.packageName)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                )
+              }
+            )
+            ReliabilityRow(
+              label = LocalizationManager.getReliabilityExactAlarmsRow(language),
+              ok = exactAlarmsAllowed,
+              fixLabel = LocalizationManager.getReliabilityFixAction(language),
+              onFix = {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                  runCatching {
+                    context.startActivity(
+                      Intent(android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
+                        .setData(android.net.Uri.fromParts("package", context.packageName, null))
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    )
+                  }
+                }
+              }
+            )
+            ReliabilityRow(
+              label = LocalizationManager.getReliabilityBatteryRow(language),
+              ok = batteryUnrestricted,
+              fixLabel = LocalizationManager.getReliabilityFixAction(language),
+              onFix = {
+                // The list, not the direct request: the direct one is Play-policy restricted.
+                runCatching {
+                  context.startActivity(
+                    Intent(android.provider.Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+                      .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                  )
+                }
+              }
+            )
+
+            if (aggressiveOem) {
+              Spacer(modifier = Modifier.height(8.dp))
+              Text(
+                text = LocalizationManager.getOemBatteryHint(language),
+                fontSize = 11.sp,
+                color = DarkForestInk.copy(alpha = 0.75f)
+              )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+            Surface(
+              onClick = {
+                PrayerAlarmScheduler.scheduleTestAlarm(context)
+                testSentMessage = LocalizationManager.getTestAlarmSent(language)
+              },
+              shape = RoundedCornerShape(14.dp),
+              color = Color(0xFF0F3E2F),
+              modifier = Modifier.fillMaxWidth().testTag("btn_test_alarm")
+            ) {
+              Text(
+                text = LocalizationManager.getTestAlarmAction(language),
+                fontWeight = FontWeight.Bold,
+                fontSize = 13.sp,
+                color = Color.White,
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp)
+              )
             }
           }
         }
@@ -718,6 +826,32 @@ fun SettingsSheet(
 
       item {
         Spacer(modifier = Modifier.height(20.dp))
+      }
+    }
+  }
+}
+
+@Composable
+private fun ReliabilityRow(
+  label: String,
+  ok: Boolean,
+  fixLabel: String,
+  onFix: () -> Unit
+) {
+  Row(
+    modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+    horizontalArrangement = Arrangement.SpaceBetween,
+    verticalAlignment = Alignment.CenterVertically
+  ) {
+    Text(
+      text = (if (ok) "✓  " else "⚠  ") + label,
+      fontSize = 13.sp,
+      color = if (ok) DarkForestInk else Color(0xFFB06A00),
+      modifier = Modifier.weight(1f)
+    )
+    if (!ok) {
+      TextButton(onClick = onFix) {
+        Text(text = fixLabel, fontSize = 12.sp, color = Color(0xFF0F3E2F))
       }
     }
   }

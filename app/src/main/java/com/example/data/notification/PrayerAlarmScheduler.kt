@@ -117,6 +117,53 @@ object PrayerAlarmScheduler {
     Log.i(TAG, "armed ${alerts.size} alerts for ${city.name} through +${HORIZON_HOURS}h")
   }
 
+  /**
+   * Arms a real alarm one minute out, through the same receiver, PendingIntent and channel the
+   * daily alerts use.
+   *
+   * A notification posted directly only proves the notification path. This proves the *alarm*
+   * path, which is the part an aggressive power manager breaks - so if this does not arrive, the
+   * problem is the device holding the alarm, not the app building it.
+   */
+  fun scheduleTestAlarm(context: Context) {
+    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager ?: return
+    val prefs = UserPreferences(context)
+    val city = prefs.selectedCity ?: PrayerCalculator.PRESET_CITIES[0]
+    val zone = zoneOf(city.timeZoneId)
+    val schedule = PrayerCalculator.calculateSchedule(
+      date = LocalDate.now(zone),
+      location = city,
+      now = LocalDateTime.now(zone),
+      completedPrayerIds = emptySet(),
+      method = prefs.calculationMethod,
+      madhab = prefs.madhab
+    )
+    val nextPrayer = schedule.items
+      .firstOrNull { it.prayer in PrayerAlertPlanner.ALERTED_PRAYERS }
+      ?.prayer ?: com.example.data.model.PrayerName.FAJR
+
+    arm(
+      context,
+      alarmManager,
+      ScheduledAlert.Prayer(
+        prayer = nextPrayer,
+        kind = PrayerAlertKind.AT_TIME,
+        prayerTime = LocalTime.now(zone),
+        triggerAtMillis = System.currentTimeMillis() + 60_000L,
+        requestCode = AlertIds.prayer(nextPrayer, PrayerAlertKind.AT_TIME)
+      ),
+      discreet = prefs.discreetAlarmMode
+    )
+    Log.i(TAG, "test alarm armed for +60s")
+  }
+
+  /** Whether exact alarms are currently permitted, for the diagnostics card. */
+  fun canScheduleExactAlarms(context: Context): Boolean {
+    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
+      ?: return false
+    return canScheduleExact(alarmManager)
+  }
+
   fun cancelAll(
     context: Context,
     alarmManager: AlarmManager? =
@@ -185,30 +232,40 @@ object PrayerAlarmScheduler {
     }
   }
 
+  /**
+   * The shell of an alert intent: explicit component, unique data, and the action.
+   *
+   * All three matter. Extras are *not* part of PendingIntent identity but action and data are, so
+   * a cancel has to rebuild the same action the arm used - otherwise FLAG_NO_CREATE finds nothing
+   * and the old alarm survives, which is how duplicates accumulate.
+   */
   private fun baseIntent(context: Context, requestCode: Int) =
     Intent(context, PrayerAlarmReceiver::class.java).apply {
-      // Extras are not part of PendingIntent identity, but data is. Stamping the code here keeps
-      // two alerts distinct even if a refactor ever collides their request codes.
+      action = actionFor(requestCode)
       data = Uri.parse("haasi://alert/$requestCode")
     }
+
+  private fun actionFor(requestCode: Int): String = when {
+    requestCode >= AlertIds.BASE_MAINTENANCE -> PrayerAlarmReceiver.ACTION_DAILY_REFRESH
+    requestCode >= AlertIds.BASE_TAHAJJUD -> PrayerAlarmReceiver.ACTION_TAHAJJUD_ALERT
+    requestCode >= AlertIds.BASE_FORBIDDEN -> PrayerAlarmReceiver.ACTION_FORBIDDEN_ALERT
+    else -> PrayerAlarmReceiver.ACTION_PRAYER_ALERT
+  }
 
   private fun intentFor(context: Context, alert: ScheduledAlert): Intent {
     val intent = baseIntent(context, alert.requestCode)
     when (alert) {
       is ScheduledAlert.Prayer -> {
-        intent.action = PrayerAlarmReceiver.ACTION_PRAYER_ALERT
         intent.putExtra(PrayerAlarmReceiver.EXTRA_PRAYER, alert.prayer.name)
         intent.putExtra(PrayerAlarmReceiver.EXTRA_KIND, alert.kind.name)
       }
 
       is ScheduledAlert.Forbidden -> {
-        intent.action = PrayerAlarmReceiver.ACTION_FORBIDDEN_ALERT
         intent.putExtra(PrayerAlarmReceiver.EXTRA_WINDOW, alert.type.name)
         intent.putExtra(PrayerAlarmReceiver.EXTRA_IS_START, alert.isStart)
       }
 
-      is ScheduledAlert.Tahajjud -> intent.action = PrayerAlarmReceiver.ACTION_TAHAJJUD_ALERT
-      is ScheduledAlert.DailyRefresh -> intent.action = PrayerAlarmReceiver.ACTION_DAILY_REFRESH
+      is ScheduledAlert.Tahajjud, is ScheduledAlert.DailyRefresh -> Unit
     }
     // Lets a late-firing alarm tell that it is stale rather than announcing a passed prayer.
     intent.putExtra(

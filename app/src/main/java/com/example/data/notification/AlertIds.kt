@@ -24,10 +24,10 @@ enum class PrayerAlertKind {
  * so the same prayer got a different id in every language, with collisions unguarded.
  */
 object AlertIds {
-  private const val BASE_PRAYER = 10_000
-  private const val BASE_FORBIDDEN = 20_000
-  private const val BASE_TAHAJJUD = 30_000
-  private const val BASE_MAINTENANCE = 40_000
+  const val BASE_PRAYER = 10_000
+  const val BASE_FORBIDDEN = 20_000
+  const val BASE_TAHAJJUD = 30_000
+  const val BASE_MAINTENANCE = 40_000
 
   // Keyed on enum ordinal. Reordering PrayerName or ForbiddenWindowType silently rebinds every
   // slot, so AlertIdsTest pins the exact values.
