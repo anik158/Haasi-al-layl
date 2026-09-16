@@ -71,6 +71,14 @@ data class CityLocation(
   val longitude: Double,
   val timeZoneId: String
 ) {
+  /**
+   * "Dhaka, Bangladesh", or just the name when there is no country - which is the case for a
+   * coordinates-only location, where [name] already reads "23.81 N, 90.41 E".
+   */
   val displayName: String
-    get() = "$name, $country"
+    get() = if (country.isBlank()) name else "$name, $country"
+
+  /** True when only coordinates are known, because nothing could name them offline. */
+  val isCoordinatesOnly: Boolean
+    get() = country.isBlank()
 }

@@ -9,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
+import com.example.data.location.DeviceLocationProvider
 import com.example.data.preferences.UserPreferences
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -101,6 +102,9 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
   val isFacingQibla by viewModel.isFacingQibla.collectAsStateWithLifecycle()
   val magneticDeclination by viewModel.magneticDeclination.collectAsStateWithLifecycle()
   val needsCompassCalibration by viewModel.needsCompassCalibration.collectAsStateWithLifecycle()
+  val placeResults by viewModel.placeResults.collectAsStateWithLifecycle()
+  val isSearchingPlaces by viewModel.isSearchingPlaces.collectAsStateWithLifecycle()
+  val isDetectingLocation by viewModel.isDetectingLocation.collectAsStateWithLifecycle()
   val tasbihList by viewModel.tasbihList.collectAsStateWithLifecycle()
   val selectedTasbih by viewModel.selectedTasbih.collectAsStateWithLifecycle()
   val bookmarkedDuaIds by viewModel.bookmarkedDuaIds.collectAsStateWithLifecycle()
@@ -129,6 +133,14 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
         permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
       }
     }
+  }
+
+  // Asked only when the user taps "detect", so the very first launch is not met with a
+  // permission dialog it has not earned.
+  val locationPermissionLauncher = rememberLauncherForActivityResult(
+    contract = ActivityResultContracts.RequestMultiplePermissions()
+  ) { granted ->
+    if (granted.values.any { it }) viewModel.autoDetectLocation()
   }
 
   var showCitySheet by rememberSaveable { mutableStateOf(false) }
@@ -255,7 +267,22 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
       
       if (showCitySheet) {
       CitySelectionSheet(
-        onAutoDetect = { viewModel.autoDetectLocation(); showCitySheet = false },
+        onAutoDetect = {
+          if (DeviceLocationProvider.hasPermission(context)) {
+            viewModel.autoDetectLocation()
+          } else {
+            locationPermissionLauncher.launch(
+              arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+              )
+            )
+          }
+        },
+        onSearch = { query -> viewModel.searchPlaces(query) },
+        searchResults = placeResults,
+        isSearching = isSearchingPlaces,
+        isDetecting = isDetectingLocation,
         language = currentLanguage,
         currentCity = currentCity,
         onCitySelected = { city -> viewModel.selectCity(city) },

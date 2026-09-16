@@ -17,6 +17,10 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import com.example.ui.theme.DarkForestInk
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.foundation.layout.size
+import com.example.data.location.GeocodingResult
 import com.example.data.localization.LocalizationManager
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -47,10 +51,17 @@ fun CitySelectionSheet(
   language: com.example.data.localization.AppLanguage,
   currentCity: CityLocation,
   onCitySelected: (CityLocation) -> Unit,
+  /** Free-text place lookup, so any city on earth can be found, not just the presets. */
+  onSearch: (String) -> Unit = {},
+  searchResults: List<GeocodingResult> = emptyList(),
+  isSearching: Boolean = false,
+  isDetecting: Boolean = false,
   onDismiss: () -> Unit
 ) {
   val sheetState = rememberModalBottomSheetState()
   var searchQuery by remember { mutableStateOf("") }
+
+  LaunchedEffect(searchQuery) { onSearch(searchQuery) }
 
   val filteredCities = remember(searchQuery) {
     if (searchQuery.isBlank()) {
@@ -102,12 +113,27 @@ fun CitySelectionSheet(
       
       Button(
         onClick = { onAutoDetect() },
+        enabled = !isDetecting,
         modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp),
         colors = ButtonDefaults.buttonColors(containerColor = DarkForestInk)
       ) {
-        Icon(Icons.Default.LocationOn, contentDescription = null)
+        if (isDetecting) {
+          CircularProgressIndicator(
+            modifier = Modifier.size(16.dp),
+            strokeWidth = 2.dp,
+            color = MaterialTheme.colorScheme.onPrimary
+          )
+        } else {
+          Icon(Icons.Default.LocationOn, contentDescription = null)
+        }
         Spacer(modifier = Modifier.width(8.dp))
-        Text(LocalizationManager.getAutoDetectLocationLabel(language))
+        Text(
+          if (isDetecting) {
+            LocalizationManager.getDetectingLocationLabel(language)
+          } else {
+            LocalizationManager.getAutoDetectLocationLabel(language)
+          }
+        )
       }
       
       LazyColumn(
@@ -115,6 +141,66 @@ fun CitySelectionSheet(
           .fillMaxWidth()
           .height(340.dp)
       ) {
+        if (isSearching) {
+          item {
+            Row(
+              modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+              verticalAlignment = Alignment.CenterVertically
+            ) {
+              CircularProgressIndicator(modifier = Modifier.size(14.dp), strokeWidth = 2.dp)
+              Spacer(modifier = Modifier.width(10.dp))
+              Text(
+                text = LocalizationManager.getSearchingLabel(language),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+              )
+            }
+          }
+        }
+
+        if (searchResults.isNotEmpty()) {
+          items(searchResults) { result ->
+            Surface(
+              modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                  onCitySelected(result.toCityLocation())
+                  onDismiss()
+                }
+                .testTag("search_result_${result.name.lowercase()}"),
+              color = MaterialTheme.colorScheme.surface
+            ) {
+              Row(
+                modifier = Modifier
+                  .fillMaxWidth()
+                  .padding(vertical = 12.dp, horizontal = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+              ) {
+                Icon(
+                  Icons.Default.Search,
+                  contentDescription = null,
+                  tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+                Column {
+                  Text(
+                    text = result.name,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface
+                  )
+                  if (result.subtitle.isNotBlank()) {
+                    Text(
+                      text = result.subtitle,
+                      style = MaterialTheme.typography.bodySmall,
+                      color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                  }
+                }
+              }
+            }
+          }
+        }
+
         items(filteredCities) { city ->
           val isSelected = city.name == currentCity.name && city.country == currentCity.country
           Surface(

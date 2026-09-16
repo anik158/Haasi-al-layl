@@ -13,6 +13,8 @@ import android.os.VibratorManager
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.data.dua.IslamicContentProvider
+import com.example.data.location.GeocodingResult
+import com.example.data.location.LocationRepository
 import com.example.data.local.HaasiAlLaylDatabase
 import com.example.data.local.PrayerLogEntity
 import com.example.data.local.TasbihEntity
@@ -292,12 +294,23 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
     .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptySet())
 
   private var tickerJob: Job? = null
+  private var placeSearchJob: Job? = null
+
+  private val _isDetectingLocation = MutableStateFlow(false)
+  val isDetectingLocation: StateFlow<Boolean> = _isDetectingLocation.asStateFlow()
+
+  private val _placeResults = MutableStateFlow<List<GeocodingResult>>(emptyList())
+  val placeResults: StateFlow<List<GeocodingResult>> = _placeResults.asStateFlow()
+
+  private val _isSearchingPlaces = MutableStateFlow(false)
+  val isSearchingPlaces: StateFlow<Boolean> = _isSearchingPlaces.asStateFlow()
 
   init {
     // The Tahajjud notification used to be driven from a prayerSchedule collector here, which
     // meant it could only ever fire while the app was open. PrayerAlarmScheduler owns it now,
     // along with every other alert, so it works with the app closed.
     resolveOnboarding()
+    nameCurrentCityIfNeeded()
     startSecondTicker()
     seedTasbih()
     refreshWeather()
@@ -368,14 +381,21 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
 
 
   /**
-   * Resolves the first run. If the device can reach the network we take the location from the
-   * user's IP and derive the language from its country, and the user is never prompted. Only when
-   * that is impossible - no connectivity, or the lookup fails - do we fall back to asking.
+   * Resolves the first run, preferring the device's own coordinates and only then the IP.
+   *
+   * The cached GPS fix is used rather than a live one: a live fix can take tens of seconds
+   * outdoors and may never arrive indoors, and a first launch should not sit waiting on it. The
+   * explicit "detect" button asks for a live fix instead.
    */
   private fun resolveOnboarding() {
     if (userPrefs.isOnboardingComplete) return
     viewModelScope.launch {
-      val detected = if (isNetworkAvailable()) fetchIpLocation() else null
+      val fromDevice = LocationRepository.detectFromDevice(
+        getApplication<Application>(),
+        allowSlowFix = false
+      )
+      val detected = fromDevice
+        ?: if (isNetworkAvailable()) fetchIpLocation() else null
       if (detected != null) {
         applyCity(detected)
         markOnboardingComplete()
@@ -439,7 +459,57 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
 
   fun autoDetectLocation() {
     viewModelScope.launch {
-      fetchIpLocation()?.let { applyCity(it) }
+      _isDetectingLocation.value = true
+      try {
+        // Device coordinates are exact and work offline; the IP only ever names the ISP's hub,
+        // which can be a hundred kilometres out, so it is the fallback rather than the source.
+        val detected = LocationRepository.detectFromDevice(
+          getApplication<Application>(),
+          allowSlowFix = true
+        ) ?: fetchIpLocation()
+        detected?.let { applyCity(it) }
+      } finally {
+        _isDetectingLocation.value = false
+      }
+    }
+  }
+
+  /**
+   * Puts a name to a location that was detected offline.
+   *
+   * A fix taken with no network stores coordinates as its name. Once there is a network, this
+   * fills in the real place name without touching the coordinates the times are computed from.
+   */
+  private fun nameCurrentCityIfNeeded() {
+    val city = _selectedCity.value
+    if (!city.isCoordinatesOnly || !isNetworkAvailable()) return
+    viewModelScope.launch {
+      val named = LocationRepository.reverseGeocode(
+        getApplication<Application>(),
+        city.latitude,
+        city.longitude
+      ) ?: return@launch
+      // Guard against the city having changed while the lookup was in flight.
+      if (_selectedCity.value == city) {
+        applyCity(city.copy(name = named.first, country = named.second))
+      }
+    }
+  }
+
+  /** Free-text place search for the city picker, so it is not limited to the presets. */
+  fun searchPlaces(query: String) {
+    placeSearchJob?.cancel()
+    if (query.isBlank()) {
+      _placeResults.value = emptyList()
+      _isSearchingPlaces.value = false
+      return
+    }
+    placeSearchJob = viewModelScope.launch {
+      _isSearchingPlaces.value = true
+      // Debounce, so a lookup does not fire on every keystroke.
+      kotlinx.coroutines.delay(350)
+      _placeResults.value = LocationRepository.searchPlaces(query)
+      _isSearchingPlaces.value = false
     }
   }
 

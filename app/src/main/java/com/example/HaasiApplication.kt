@@ -3,6 +3,10 @@ package com.example
 import android.app.Application
 import com.example.data.notification.PrayerAlarmScheduler
 import com.example.data.notification.PrayerNotificationManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
 /**
  * Runs on every process start, including ones woken by a broadcast rather than by the user.
@@ -11,13 +15,20 @@ import com.example.data.notification.PrayerNotificationManager
  * previously only two of the three `show*` functions created channels lazily, and the Tahajjud
  * one did not, so on API 26+ the system dropped it silently.
  *
- * [PrayerAlarmScheduler.ensureScheduled] is a no-op unless the day or the settings signature
- * changed, so this stays cheap even though it runs on every cold start.
+ * Scheduling is pushed off the main thread: arming a day of alarms means three prayer-time
+ * computations, roughly thirty PendingIntents and a preferences commit, none of which should sit
+ * between the user tapping the icon and the first frame.
  */
 class HaasiApplication : Application() {
+
+  private val appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
   override fun onCreate() {
     super.onCreate()
     PrayerNotificationManager.ensureChannels(this)
-    PrayerAlarmScheduler.ensureScheduled(this)
+    appScope.launch {
+      // A no-op unless the day or the settings signature changed.
+      PrayerAlarmScheduler.ensureScheduled(this@HaasiApplication)
+    }
   }
 }

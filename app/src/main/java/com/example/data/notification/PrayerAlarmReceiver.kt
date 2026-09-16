@@ -22,25 +22,38 @@ import java.time.format.DateTimeFormatter
  * recomputed here from preferences, so an alert stays correct after a language change, a
  * calculation-method change, or a reboot between arming and firing.
  *
- * `onReceive` stays fully synchronous: PrayerCalculator is pure, and the one parameter that would
- * pull in Room (`completedPrayerIds`) only feeds a display flag notifications never read. No
- * coroutine, no `goAsync()`.
+ * The work runs on a background thread under `goAsync()`. PrayerCalculator is pure and needs no
+ * database - the one parameter that would pull in Room (`completedPrayerIds`) only feeds a display
+ * flag notifications never read - but the follow-up still has to check the prayer log, and
+ * re-arming the schedule is not free either.
  */
 class PrayerAlarmReceiver : BroadcastReceiver() {
 
   override fun onReceive(context: Context, intent: Intent?) {
     val action = intent?.action
-    try {
-      if (action != ACTION_DAILY_REFRESH) {
-        dispatch(context, action, intent)
+    // Posting the alert reads the prayer log and recomputes three days of times, and re-arming
+    // builds roughly thirty PendingIntents. goAsync keeps that off the main thread while holding
+    // the broadcast alive, instead of blocking it inside onReceive's ten-second budget.
+    val pendingResult = goAsync()
+    val appContext = context.applicationContext
+    Thread {
+      try {
+        if (action != ACTION_DAILY_REFRESH) {
+          dispatch(appContext, action, intent)
+        }
+      } catch (e: Exception) {
+        Log.e(TAG, "failed to post alert for $action", e)
+      } finally {
+        try {
+          // The self-extending chain: as long as one alarm fires, the window keeps rolling
+          // forward with no app launch required.
+          PrayerAlarmScheduler.rescheduleAll(appContext)
+        } catch (e: Exception) {
+          Log.e(TAG, "failed to reschedule after $action", e)
+        }
+        pendingResult.finish()
       }
-    } catch (e: Exception) {
-      Log.e(TAG, "failed to post alert for $action", e)
-    } finally {
-      // The self-extending chain: as long as one alarm fires, the window keeps rolling forward
-      // with no app launch required.
-      PrayerAlarmScheduler.rescheduleAll(context)
-    }
+    }.start()
   }
 
   private fun dispatch(context: Context, action: String?, intent: Intent?) {
@@ -122,9 +135,8 @@ class PrayerAlarmReceiver : BroadcastReceiver() {
   }
 
   /**
-   * Reads the prayer log directly. This is a blocking query on the broadcast thread, which is
-   * acceptable for a single indexed row read inside the ten-second `onReceive` budget, and avoids
-   * `goAsync()` for the one case that needs the database.
+   * Reads the prayer log directly. Blocking is fine here: the caller already moved off the main
+   * thread under `goAsync()`, and this is a single indexed row read.
    */
   private fun isAlreadyPrayed(context: Context, date: LocalDate, prayer: PrayerName): Boolean =
     try {

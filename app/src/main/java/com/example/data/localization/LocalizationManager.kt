@@ -930,6 +930,30 @@ object LocalizationManager {
     AppLanguage.ENGLISH -> "Receive notifications when Fajr, Dhuhr, Asr, Maghrib, and Isha begin"
   }
 
+  fun getDetectingLocationLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "جارٍ تحديد الموقع..."
+    AppLanguage.BENGALI -> "অবস্থান নির্ণয় করা হচ্ছে..."
+    AppLanguage.SPANISH -> "Detectando ubicación..."
+    AppLanguage.PORTUGUESE -> "A detetar a localização..."
+    AppLanguage.ENGLISH -> "Detecting location..."
+  }
+
+  fun getSearchingLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "جارٍ البحث..."
+    AppLanguage.BENGALI -> "খোঁজা হচ্ছে..."
+    AppLanguage.SPANISH -> "Buscando..."
+    AppLanguage.PORTUGUESE -> "A procurar..."
+    AppLanguage.ENGLISH -> "Searching..."
+  }
+
+  fun getLocationPermissionRationale(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "يستخدم إذن الموقع لتحديد إحداثياتك بدقة، وهو ما يجعل مواقيت الصلاة صحيحة حتى بدون إنترنت."
+    AppLanguage.BENGALI -> "সঠিক স্থানাঙ্ক পেতে অবস্থানের অনুমতি প্রয়োজন - এতে ইন্টারনেট ছাড়াই নামাজের সময় নির্ভুল থাকে।"
+    AppLanguage.SPANISH -> "El permiso de ubicación se usa para obtener tus coordenadas exactas, lo que mantiene correctos los horarios de oración incluso sin internet."
+    AppLanguage.PORTUGUESE -> "A permissão de localização serve para obter as suas coordenadas exatas, o que mantém os horários de oração corretos mesmo sem internet."
+    AppLanguage.ENGLISH -> "Location permission gives your exact coordinates, which keeps prayer times correct even with no internet."
+  }
+
   fun getReliabilityTitle(language: AppLanguage): String = when (language) {
     AppLanguage.ARABIC -> "موثوقية التنبيهات"
     AppLanguage.BENGALI -> "বিজ্ঞপ্তির নির্ভরযোগ্যতা"
