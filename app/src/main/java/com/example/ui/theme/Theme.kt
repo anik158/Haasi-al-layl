@@ -5,7 +5,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-// Haasi al-layl signature brand color scheme
+// Haasi al-Layl signature brand colour scheme
 // Main background: #F5EEDD (Warm light beige)
 // Gradient base: #D8EAE3 (Cool mint-green tint)
 // Text & Borders: #1C2A24 (Deep forest charcoal) & #FFFFFF

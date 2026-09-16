@@ -75,10 +75,15 @@ object LocalizationManager {
     }
   }
 
+  /**
+   * The name as shown inside the app, carrying the h-dot-below of the scholarly transliteration.
+   * The launcher label and the store title use the plain ASCII spelling in `strings.xml` instead,
+   * because a store title is a search key.
+   */
   fun getAppName(language: AppLanguage): String = when (language) {
-      AppLanguage.ARABIC -> "حصي الليل"
+      AppLanguage.ARABIC -> "حَاسِي اللَّيْل"
       AppLanguage.BENGALI -> "হাসী আল-লাইল"
-      else -> "Haasi al-layl"
+      else -> "Ḥaasi al-Layl"
     }
 
   /** A literal gloss of the name, distinct from [getAppSubtitle]. Shown in the About dialog. */
@@ -1325,9 +1330,9 @@ object LocalizationManager {
   fun getWelcomeSetupTitle(language: AppLanguage): String = when (language) {
     AppLanguage.ARABIC -> "مرحباً بك في حصي الليل"
     AppLanguage.BENGALI -> "হাসী আল-লাইল এ স্বাগতম"
-    AppLanguage.SPANISH -> "Bienvenido a Haasi al-layl"
-    AppLanguage.PORTUGUESE -> "Bem-vindo ao Haasi al-layl"
-    AppLanguage.ENGLISH -> "Welcome to Haasi al-layl"
+    AppLanguage.SPANISH -> "Bienvenido a Ḥaasi al-Layl"
+    AppLanguage.PORTUGUESE -> "Bem-vindo ao Ḥaasi al-Layl"
+    AppLanguage.ENGLISH -> "Welcome to Ḥaasi al-Layl"
   }
 
   fun getWelcomeSetupSubtitle(language: AppLanguage): String = when (language) {

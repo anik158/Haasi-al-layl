@@ -89,6 +89,20 @@ default cannot drift. **Maliki, Shafi'i and Hanbali all share `shadowFactor = 1.
 - Place search uses **Open-Meteo's geocoding API** — same family as the weather API, free, no key,
   and it returns an IANA timezone, so a result maps straight onto `CityLocation`.
 
+### The app name is deliberately spelled two ways
+
+| Where | Spelling | Why |
+| --- | --- | --- |
+| `strings.xml` → launcher label, Play Store title | `Haasi al-Layl` | A store title is a search key. The overwhelmingly common query is the unaccented spelling, and Play's diacritic folding is not something to bet the listing on |
+| `LocalizationManager.getAppName` → in-app header, welcome, About | `Ḥaasi al-Layl` | The scholarly transliteration, where `ḥ` marks the Arabic ḥāʾ (ح) as distinct from hāʾ (ه) |
+
+The article stays lowercase (`al-Layl`, not `Al-Layl`) because that is the transliteration
+convention for a medial definite article, and it matches the logo artwork and the About dialog.
+
+`Ḥ` is U+1E24, in Latin Extended Additional. Typography uses `FontFamily.Default`, and every
+modern Android system font covers that block — but if a custom font is ever introduced, check the
+glyph before using it in the header, or it renders as tofu.
+
 ### Localization
 
 `LocalizationManager` is a ~1400-line object of `fun getX(language): String = when (language)`.

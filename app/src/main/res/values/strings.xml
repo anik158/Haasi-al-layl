@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">Haasi al-layl</string>
+    <!--
+        Launcher label and Play Store title. Deliberately plain ASCII: the in-app name carries the
+        scholarly transliteration (Haasi with h-dot-below), but a store title is a search key, and
+        the overwhelmingly common query is the unaccented spelling.
+    -->
+    <string name="app_name">Haasi al-Layl</string>
 </resources>

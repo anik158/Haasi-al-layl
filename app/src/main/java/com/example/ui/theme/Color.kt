@@ -3,7 +3,7 @@ package com.example.ui.theme
 import androidx.compose.ui.graphics.Color
 
 // =============================================================================
-// Haasi al-layl Color Palette
+// Haasi al-Layl colour palette
 // Faithfully aligned with Ahsanul Houqe's design (from user screenshot):
 // - Background: Warm parchment canvas (#F9F6EE to #F8F5EC) with gentle amber-champagne glow (#FAF2DF)
 // - Water channel: Soft translucent watercolor celadon (#BAD6CC, #CFE2DA)
