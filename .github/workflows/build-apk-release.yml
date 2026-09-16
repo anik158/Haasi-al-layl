@@ -30,6 +30,11 @@ jobs:
           # The action pipes "yes" to sdkmanager, but still echoes every licence in full -
           # thousands of lines that bury whatever actually failed.
           log-accepted-android-sdk-licenses: false
+          # Empty on purpose. The action otherwise runs `sdkmanager tools`, and the legacy
+          # "tools" package was removed from the SDK repository years ago - cmdline-tools 16.0
+          # on the current runner image fails with "Failed to find package 'tools'". The runner
+          # already ships platform-tools, and AGP downloads any platform it still needs.
+          packages: ''
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
