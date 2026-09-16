@@ -81,16 +81,29 @@ The app asks as little as possible, and asks it **once per installation**:
 
 **Coordinates and the city name are separate things, and only one of them needs a network.**
 
-GPS is a *receiver*: the phone solves its own position from the timing of signals broadcast by
-satellites, and nothing leaves the device. So with no connectivity at all the app still has exact
-coordinates, and the prayer arithmetic is exact with them. What does need a network is turning
-`60.1699°N` into `"Helsinki"` — so offline the location simply reads **`60.17°N, 24.94°E`**, and
-the name is filled in on the next launch that has connectivity, without touching the coordinates.
+**Why GPS works with no signal.** Around thirty satellites continuously broadcast timestamped
+signals. Your phone listens to four or more and solves for its own position from the tiny
+differences in when each one arrives — the receiver transmits nothing and contacts no server. It is
+the same reason a hiking GPS works in a forest with no phone coverage. Turning on the system
+Location toggle is a *permission* gate, not a network one: Location on with mobile data off still
+gives coordinates.
 
-Two honest limits: a cold GPS fix with no internet must read orbit data from the satellites
-themselves, which takes tens of seconds and needs a view of the sky, and indoors it often never
-arrives. So the last good fix is cached and preferred on launch, and a live fix is requested only
-when you tap **Detect**.
+So with no connectivity at all the app still has exact coordinates, and the prayer arithmetic is
+exact with them. What does need a network is turning `60.1699°N` into `"Helsinki"` — so offline the
+location simply reads **`60.17°N, 24.94°E`**, and the name is filled in on the next launch that has
+connectivity, without touching the coordinates.
+
+Two honest limits. Normally the phone downloads satellite orbit data over the internet (A-GPS) to
+get a fix in seconds; without that it must read the same data off the satellites themselves, which
+takes tens of seconds to a few minutes and needs a view of the sky. And indoors a fix often never
+arrives at all. So the last good fix is cached and preferred on launch, and a live fix is requested
+only when you tap **Detect** — where a spinner runs, because it can take twenty seconds.
+
+**Testing it offline:** get one fix outdoors first (tap Detect with Location on), then turn data
+off entirely. The app will keep using those coordinates, prayer times stay exact, and the location
+will show as coordinates rather than a name until connectivity returns. Starting from a fresh
+install with no network *and* no cached fix is the one case that falls through to the manual city
+picker — there is nothing to compute from until a fix exists.
 
 > IP geolocation remains as a fallback, and it is the *rough* one — it reports where your ISP
 > registered the address block, which is frequently a regional hub. It placed a Helsinki user in
