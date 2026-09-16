@@ -23,18 +23,34 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-        with:
-          accept-android-sdk-licenses: true
-          # The action pipes "yes" to sdkmanager, but still echoes every licence in full -
-          # thousands of lines that bury whatever actually failed.
-          log-accepted-android-sdk-licenses: false
-          # Empty on purpose. The action otherwise runs `sdkmanager tools`, and the legacy
-          # "tools" package was removed from the SDK repository years ago - cmdline-tools 16.0
-          # on the current runner image fails with "Failed to find package 'tools'". The runner
-          # already ships platform-tools, and AGP downloads any platform it still needs.
-          packages: ''
+      # Deliberately NOT android-actions/setup-android. The ubuntu runner already ships a complete
+      # Android SDK with licences accepted, and the action spent two builds fighting it: first
+      # failing outright on `sdkmanager tools` (a package removed from the SDK repository years
+      # ago), then rejecting the preinstalled cmdline-tools as the "wrong version" and retrying an
+      # aborting download for eight minutes before it finally succeeded. The same step took 37
+      # seconds on earlier runs, so this is the runner image moving under the action rather than
+      # anything in this project. Using the SDK that is already installed removes both failure
+      # modes and the eight minutes.
+      - name: Verify Android SDK
+        run: |
+          SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
+          echo "ANDROID_HOME=$SDK"
+          SDKMANAGER="$(find "$SDK/cmdline-tools" -name sdkmanager -type f 2>/dev/null | head -1)"
+          echo "sdkmanager: ${SDKMANAGER:-<none found>}"
+          # Licences are already accepted on the runner image; this is belt and braces and must
+          # never fail the build.
+          if [ -n "$SDKMANAGER" ]; then
+            yes | "$SDKMANAGER" --licenses > /dev/null 2>&1 || true
+          fi
+          echo "::group::Installed platforms"
+          ls "$SDK/platforms" 2>/dev/null || echo "(none)"
+          echo "::endgroup::"
+          echo "::group::Installed build-tools"
+          ls "$SDK/build-tools" 2>/dev/null || echo "(none)"
+          echo "::endgroup::"
+          # AGP resolves the compileSdk itself; this only records the starting state so a
+          # "platform not found" failure is diagnosable from the log.
+          echo "sdk.dir=$SDK" > local.properties
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4

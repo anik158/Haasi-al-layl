@@ -27,7 +27,8 @@ Last updated: 17 September 2026.
 | Symptom | Cause |
 | --- | --- |
 | Thousands of lines of Google TV / Glass / XR licence text | `setup-android` echoes every licence while accepting them. `log-accepted-android-sdk-licenses: false` |
-| `Failed to find package 'tools'` | `setup-android` installs the legacy `tools` package, removed from the SDK repo years ago. Fixed with `packages: ''` |
+| `Failed to find package 'tools'` | `setup-android` installs the legacy `tools` package, removed from the SDK repo years ago |
+| `Wrong version in preinstalled sdkmanager`, then an eight-minute retry loop | `setup-android` rejected the runner's own cmdline-tools and re-downloaded its own. It did eventually succeed, but the same step takes ~37s when it does not. **The action is no longer used** - the runner ships a complete SDK with licences accepted, so the workflow just uses it |
 | `KSP ... ApplicationManager.getApplication() is null` | **Not a failure.** Thrown on a background AWT thread inside KSP's IntelliJ embedding. Present even on successful builds. Ignore it |
 | Node 20 deprecation warning | Informational, every run |
 
