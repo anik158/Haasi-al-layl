@@ -373,6 +373,7 @@ fun SettingsSheet(
       item {
         val notificationsAllowed = NotificationManagerCompat.from(context).areNotificationsEnabled()
         val exactAlarmsAllowed = PrayerAlarmScheduler.canScheduleExactAlarms(context)
+        val fullScreenAlarmAllowed = PrayerNotificationManager.canUseFullScreenAlarm(context)
         val batteryUnrestricted = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
           (context.getSystemService(Context.POWER_SERVICE) as android.os.PowerManager)
             .isIgnoringBatteryOptimizations(context.packageName)
@@ -418,6 +419,26 @@ fun SettingsSheet(
                   runCatching {
                     context.startActivity(
                       Intent(android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
+                        .setData(android.net.Uri.fromParts("package", context.packageName, null))
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    )
+                  }
+                }
+              }
+            )
+            // Whether the alert can take over the screen and ring, or is only a shade row.
+            // Android 14 made this a user-granted permission, and when it is off the alarm
+            // silently degrades to a notification - so the panel says so instead of leaving the
+            // user to wonder why the alarm screen never appears.
+            ReliabilityRow(
+              label = LocalizationManager.getReliabilityFullScreenRow(language),
+              ok = fullScreenAlarmAllowed,
+              fixLabel = LocalizationManager.getReliabilityFixAction(language),
+              onFix = {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                  runCatching {
+                    context.startActivity(
+                      Intent(android.provider.Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT)
                         .setData(android.net.Uri.fromParts("package", context.packageName, null))
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     )

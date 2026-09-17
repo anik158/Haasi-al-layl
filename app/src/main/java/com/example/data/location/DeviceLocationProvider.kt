@@ -38,8 +38,18 @@ object DeviceLocationProvider {
   /** A fix this imprecise cannot distinguish neighbouring towns, so prayer times would drift. */
   private const val MAX_ACCEPTABLE_ACCURACY_METRES = 5_000f
 
-  /** How long to wait for a live fix before giving up and using whatever was cached. */
-  private const val LIVE_FIX_TIMEOUT_MS = 20_000L
+  /** How long to wait for a live fix when the caller does not say. */
+  const val LIVE_FIX_TIMEOUT_MS = 20_000L
+
+  /**
+   * How long a first run waits for a cold fix.
+   *
+   * A receiver with no almanac has to read the ephemeris off the satellites at 50 bits per
+   * second, which takes 30 to 60 seconds with a clear view of the sky. Twenty seconds gives up
+   * while that download is still in flight, which is why a first launch gets its own budget - and
+   * why the wait is shown rather than hidden.
+   */
+  const val COLD_FIX_TIMEOUT_MS = 90_000L
 
   fun hasPermission(context: Context): Boolean =
     ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) ==
@@ -91,9 +101,16 @@ object DeviceLocationProvider {
    *
    * Single-shot rather than continuous updates: prayer times do not change as the user walks
    * around, and a continuous listener is a battery cost with nothing to show for it.
+   *
+   * The GPS provider is preferred whenever it is on, even when the network provider would answer
+   * sooner, because the network provider needs connectivity - and being useful without it is the
+   * whole point.
    */
   @Suppress("MissingPermission")
-  suspend fun requestFreshFix(context: Context): Location? {
+  suspend fun requestFreshFix(
+    context: Context,
+    timeoutMs: Long = LIVE_FIX_TIMEOUT_MS
+  ): Location? {
     if (!hasPermission(context) || !isLocationEnabled(context)) return null
     val manager = context.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
       ?: return null
@@ -104,7 +121,7 @@ object DeviceLocationProvider {
       else -> return null
     }
 
-    return withTimeoutOrNull(LIVE_FIX_TIMEOUT_MS) {
+    return withTimeoutOrNull(timeoutMs) {
       suspendCancellableCoroutine { continuation ->
         val listener = object : android.location.LocationListener {
           override fun onLocationChanged(location: Location) {

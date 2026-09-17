@@ -113,21 +113,8 @@ data class DailyInspiration(
 
 object IslamicContentProvider {
 
-  val DAILY_INSPIRATION = DailyInspiration(
-    ayahArabic = "إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَّوْقُوتًا",
-    ayahTranslation = "Indeed, prayer has been decreed upon the believers a decree of specified times.",
-    ayahTranslationBn = "নিশ্চয়ই নামাজ মুমিনদের ওপর নির্দিষ্ট সময়ে ফরজ করা হয়েছে।",
-    ayahTranslationEs = "Ciertamente, la oración ha sido prescrita a los creyentes en horarios determinados.",
-    ayahTranslationPt = "Por certo, a oração está prescrita aos crentes em horários determinados.",
-    ayahSurah = "Surah An-Nisa (4:103)",
-    hadithArabic = "مَنْ سَلَكَ طَرِيقًا يَلْتَمِسُ فِيهِ عِلْمًا سَهَّلَ اللَّهُ لَهُ بِهِ طَرِيقًا إِلَى الْجَنَّةِ",
-    hadithTranslation = "Whoever takes a path upon which he seeks knowledge, Allah makes the path to Paradise easy for him.",
-    hadithTranslationBn = "যে ব্যক্তি জ্ঞান অর্জনের উদ্দেশ্যে কোনো পথ অবলম্বন করে, আল্লাহ তার জন্য জান্নাতের পথ সহজ করে দেন।",
-    hadithTranslationEs = "Quien emprenda un camino en busca de conocimiento, Allah le facilitará el camino hacia el Paraíso.",
-    hadithTranslationPt = "Aquele que trilha um caminho em busca de conhecimento, Allah facilitará para ele o caminho para o Paraíso.",
-    hadithNarrator = "Abu Hurairah (RA)",
-    hadithSource = "Sahih Muslim 2699"
-  )
+  // The single hard-coded inspiration that used to live here is now a rotating pool in
+  // DailyInspirationData, selected by epoch day. One constant could never be "of the day".
 
   val DUAS = listOf(
     // Weather & Nature Duas

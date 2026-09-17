@@ -38,6 +38,20 @@ class UserPreferences(context: Context) {
       prefs.edit().putBoolean(KEY_ASKED_NOTIF_PERMISSION, value).commit()
     }
 
+  /**
+   * True once the location prompt has been shown.
+   *
+   * Location is asked for on the first launch rather than when the user finds the "detect"
+   * button, because the device's own coordinates are the only rung of the location ladder that
+   * works offline, and without the permission the cached-fix read returns null without ever
+   * reaching the receiver. This flag keeps a denial from becoming a prompt on every launch.
+   */
+  var hasAskedLocationPermission: Boolean
+    get() = prefs.getBoolean(KEY_ASKED_LOCATION_PERMISSION, false)
+    set(value) {
+      prefs.edit().putBoolean(KEY_ASKED_LOCATION_PERMISSION, value).commit()
+    }
+
   /** An explicit language choice. Null means "follow the location". */
   var manualLanguage: AppLanguage?
     get() = prefs.getString(KEY_MANUAL_LANGUAGE, null)?.let { AppLanguage.fromCode(it) }
@@ -128,6 +142,7 @@ class UserPreferences(context: Context) {
     const val PREFS_NAME = "haasi_user_prefs"
     const val KEY_ONBOARDING_COMPLETE = "onboarding_complete"
     const val KEY_ASKED_NOTIF_PERMISSION = "asked_notification_permission"
+    const val KEY_ASKED_LOCATION_PERMISSION = "asked_location_permission"
     const val KEY_MANUAL_LANGUAGE = "manual_language"
     const val KEY_CALCULATION_METHOD = "calculation_method"
     const val KEY_MADHAB = "madhab"

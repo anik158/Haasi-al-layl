@@ -13,6 +13,7 @@ import android.os.VibratorManager
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.data.dua.IslamicContentProvider
+import com.example.data.location.DeviceLocationProvider
 import com.example.data.location.GeocodingResult
 import com.example.data.location.LocationRepository
 import com.example.data.local.HaasiAlLaylDatabase
@@ -36,6 +37,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -51,6 +53,7 @@ import kotlinx.coroutines.withContext
 import android.util.Log
 
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.flatMapLatest
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -67,15 +70,30 @@ sealed interface WeatherUiState {
 /**
  * Whether the first-run prompts are needed. The app asks only when it cannot work the answers
  * out for itself, and only once per installation.
+ *
+ * The order matters: the device's own coordinates are tried *first* and given a visible wait,
+ * because they are exact and work with no network. Asking the user to name a city is the last
+ * resort, not the opening move.
  */
 enum class OnboardingState {
-  /** Auto-detection is still in flight; show nothing yet. */
+  /** Deciding what to do; nothing on screen yet. Resolves within a frame or two. */
   RESOLVING,
 
-  /** Already onboarded, or location and language were detected without asking. */
+  /**
+   * The UI should ask for location permission. A fresh install has never been asked, and
+   * without it [com.example.data.location.DeviceLocationProvider.lastKnownFix] returns null
+   * before it even reaches the receiver - which used to send every offline first run straight
+   * to the manual language-and-city dialog.
+   */
+  NEEDS_LOCATION_PERMISSION,
+
+  /** Waiting on the satellites, with the wait shown rather than hidden. */
+  ACQUIRING_FIX,
+
+  /** Already onboarded, or location and language were worked out without asking. */
   NOT_NEEDED,
 
-  /** Detection failed, so the user picks a language and then a city by hand. */
+  /** Every automatic rung failed, so the user picks a language and then a city by hand. */
   REQUIRED
 }
 
@@ -224,6 +242,23 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
     repository.getPrayerLogForDate(date)
   }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
+  /**
+   * Today's ayah and hadith, for the selected city's local date.
+   *
+   * Keyed on [currentCityDate] rather than the system date so the card turns over at the same
+   * midnight the prayer log does - and so it turns over at all while the app is open, which a
+   * value read once at construction would not.
+   */
+  val dailyInspiration: StateFlow<com.example.data.dua.DailyInspiration> = currentCityDate
+    .map { date -> com.example.data.dua.DailyInspirationData.forDate(date) }
+    .stateIn(
+      viewModelScope,
+      SharingStarted.WhileSubscribed(5000),
+      com.example.data.dua.DailyInspirationData.forDate(
+        getCityZonedDateTime(_selectedCity.value).toLocalDate()
+      )
+    )
+
   // Daily Prayer Schedule (Live calculated using city's local timezone)
   val prayerSchedule: StateFlow<DailyPrayerSchedule> = combine(
     _selectedCity,
@@ -299,6 +334,26 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
   private val _isDetectingLocation = MutableStateFlow(false)
   val isDetectingLocation: StateFlow<Boolean> = _isDetectingLocation.asStateFlow()
 
+  /**
+   * Seconds spent waiting on the current fix.
+   *
+   * A cold GPS fix reads the ephemeris off the satellites at 50 bits per second and can take a
+   * minute, so a bare spinner reads as a hang. This is the number the acquisition screen counts
+   * up, and the reason the wait is tolerable.
+   */
+  private val _fixElapsedSeconds = MutableStateFlow(0)
+  val fixElapsedSeconds: StateFlow<Int> = _fixElapsedSeconds.asStateFlow()
+
+  /** How long the counter runs before the manual prompts take over. */
+  val fixTimeoutSeconds: Int = (DeviceLocationProvider.COLD_FIX_TIMEOUT_MS / 1000L).toInt()
+
+  /** True when the system Location toggle is off, which no amount of waiting will fix. */
+  private val _locationServicesOff = MutableStateFlow(false)
+  val locationServicesOff: StateFlow<Boolean> = _locationServicesOff.asStateFlow()
+
+  private var fixJob: Job? = null
+  private var fixTickerJob: Job? = null
+
   private val _placeResults = MutableStateFlow<List<GeocodingResult>>(emptyList())
   val placeResults: StateFlow<List<GeocodingResult>> = _placeResults.asStateFlow()
 
@@ -313,8 +368,28 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
     nameCurrentCityIfNeeded()
     startSecondTicker()
     seedTasbih()
-    refreshWeather()
+    observeCityForWeather()
     loadHisnAlMuslimData()
+  }
+
+  /**
+   * Keeps the weather pointed at the selected city.
+   *
+   * This replaces a single `refreshWeather()` in `init`, which fired once against whatever city
+   * was restored from disk - Makkah on a fresh install - and was never re-run when detection
+   * landed a moment later. The forecast then stayed Makkah's, under the right city's name, until
+   * the user pulled to refresh.
+   *
+   * Keyed on coordinates rather than the whole city so that naming a coordinates-only fix, which
+   * rewrites `name` and `country` and nothing else, does not spend a second request on an
+   * identical forecast.
+   */
+  private fun observeCityForWeather() {
+    viewModelScope.launch {
+      _selectedCity
+        .distinctUntilChangedBy { city -> city.latitude to city.longitude }
+        .collectLatest { city -> loadWeatherFor(city) }
+    }
   }
 
   private fun loadHisnAlMuslimData() {
@@ -381,28 +456,131 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
 
 
   /**
-   * Resolves the first run, preferring the device's own coordinates and only then the IP.
+   * Resolves the first run, preferring the device's own coordinates over everything else.
    *
-   * The cached GPS fix is used rather than a live one: a live fix can take tens of seconds
-   * outdoors and may never arrive indoors, and a first launch should not sit waiting on it. The
-   * explicit "detect" button asks for a live fix instead.
+   * The rungs, in order: a cached fix (instant), then a live one behind a visible wait, then IP
+   * geolocation, then the manual prompts. The first two are the ones that work with no network,
+   * which is the whole reason they come first.
+   *
+   * This used to start at the cached fix and give up immediately if there was not one - but on a
+   * fresh install `ACCESS_FINE_LOCATION` had never been requested, so the cached read returned
+   * null without ever consulting the receiver. Offline, that meant every first launch fell
+   * through to the manual language-and-city dialog, which is exactly what the GPS path exists to
+   * avoid. Asking for the permission is therefore the first thing that happens, not something
+   * deferred until the user finds the "detect" button.
    */
   private fun resolveOnboarding() {
     if (userPrefs.isOnboardingComplete) return
+    if (!DeviceLocationProvider.hasPermission(getApplication<Application>())) {
+      _onboardingState.value = OnboardingState.NEEDS_LOCATION_PERMISSION
+      return
+    }
+    startDetection()
+  }
+
+  /**
+   * The permission dialog's answer, reported back by the UI.
+   *
+   * A denial is not a dead end - it drops to IP geolocation, and then to the manual prompts.
+   */
+  fun onLocationPermissionResult(granted: Boolean) {
+    userPrefs.hasAskedLocationPermission = true
+    if (userPrefs.isOnboardingComplete) return
+    if (granted) {
+      startDetection()
+    } else {
+      Log.i(TAG, "location permission denied; falling back to IP geolocation")
+      fallBackWithoutDevice()
+    }
+  }
+
+  /**
+   * Runs the whole device ladder as one cancellable job, with the wait on screen throughout.
+   *
+   * Cached fix first, then a live one. Both are inside the same job and the same visible state,
+   * because the cached attempt is not actually instant - it reverse-geocodes, which can spend
+   * eight seconds on an HTTP timeout - and a blank screen for that long is the thing being fixed.
+   *
+   * Nothing here is hidden: a cold fix genuinely takes up to a minute and may never arrive
+   * indoors, so the honest thing is to show the attempt, show how long it has been going, and
+   * offer a way out of it.
+   */
+  private fun startDetection() {
+    if (!DeviceLocationProvider.isLocationEnabled(getApplication<Application>())) {
+      // No amount of waiting fixes a system toggle that is off.
+      _locationServicesOff.value = true
+      Log.i(TAG, "system location is off; skipping the satellite wait")
+      fallBackWithoutDevice()
+      return
+    }
+    _locationServicesOff.value = false
+    _onboardingState.value = OnboardingState.ACQUIRING_FIX
+    startFixTicker()
+    fixJob?.cancel()
+    fixJob = viewModelScope.launch {
+      try {
+        val app = getApplication<Application>()
+        val cached = LocationRepository.detectFromDevice(app, allowSlowFix = false)
+        if (cached != null) {
+          settleOn(cached)
+          return@launch
+        }
+        val live = LocationRepository.detectFromDevice(
+          app,
+          allowSlowFix = true,
+          fixTimeoutMs = DeviceLocationProvider.COLD_FIX_TIMEOUT_MS
+        )
+        if (live != null) settleOn(live) else fallBackWithoutDevice()
+      } finally {
+        stopFixTicker()
+      }
+    }
+  }
+
+  /**
+   * Abandons the satellite wait at the user's request.
+   *
+   * Offered because a wait nobody can escape is worse than no wait at all - indoors the fix may
+   * simply never arrive, and the user knows that before the timeout does.
+   */
+  fun skipFixAcquisition() {
+    fixJob?.cancel()
+    stopFixTicker()
+    fallBackWithoutDevice()
+  }
+
+  /** The rungs below the device: IP geolocation, then asking. */
+  private fun fallBackWithoutDevice() {
     viewModelScope.launch {
-      val fromDevice = LocationRepository.detectFromDevice(
-        getApplication<Application>(),
-        allowSlowFix = false
-      )
-      val detected = fromDevice
-        ?: if (isNetworkAvailable()) fetchIpLocation() else null
-      if (detected != null) {
-        applyCity(detected)
-        markOnboardingComplete()
+      val fromIp = if (isNetworkAvailable()) fetchIpLocation() else null
+      if (fromIp != null) {
+        settleOn(fromIp)
       } else {
         _onboardingState.value = OnboardingState.REQUIRED
       }
     }
+  }
+
+  /** Accepts a detected location as the answer to the first run. */
+  private fun settleOn(city: CityLocation) {
+    applyCity(city)
+    markOnboardingComplete()
+  }
+
+  private fun startFixTicker() {
+    fixTickerJob?.cancel()
+    _fixElapsedSeconds.value = 0
+    fixTickerJob = viewModelScope.launch {
+      while (isActive) {
+        delay(1000)
+        _fixElapsedSeconds.value += 1
+      }
+    }
+  }
+
+  private fun stopFixTicker() {
+    fixTickerJob?.cancel()
+    fixTickerJob = null
   }
 
   /** Marks the first run settled so the prompts never reappear for this installation. */
@@ -458,17 +636,23 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
   }
 
   fun autoDetectLocation() {
-    viewModelScope.launch {
+    fixJob?.cancel()
+    fixJob = viewModelScope.launch {
       _isDetectingLocation.value = true
+      startFixTicker()
       try {
         // Device coordinates are exact and work offline; the IP only ever names the ISP's hub,
         // which can be a hundred kilometres out, so it is the fallback rather than the source.
+        // The full cold-fix budget applies here too: the user asked for this and can see the
+        // counter, and twenty seconds gives up mid-ephemeris-download.
         val detected = LocationRepository.detectFromDevice(
           getApplication<Application>(),
-          allowSlowFix = true
+          allowSlowFix = true,
+          fixTimeoutMs = DeviceLocationProvider.COLD_FIX_TIMEOUT_MS
         ) ?: fetchIpLocation()
         detected?.let { applyCity(it) }
       } finally {
+        stopFixTicker()
         _isDetectingLocation.value = false
       }
     }
@@ -518,11 +702,17 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
     _selectedCity.value = city
     userPrefs.selectedCity = city
     rescheduleAlarms()
+    // A fix taken offline arrives named after its own coordinates. Try to name it here rather
+    // than only for the city restored at startup, so a detection that lands while the network
+    // is up gets a real place name immediately instead of waiting for the next launch. No
+    // recursion: a successful lookup yields a city with a country, which is not coordinates-only.
+    nameCurrentCityIfNeeded()
   }
 
   fun selectCity(city: CityLocation) {
+    // No refreshWeather() here: applyCity moves _selectedCity, and observeCityForWeather is
+    // watching it. Calling both raced two requests for the same forecast.
     applyCity(city)
-    refreshWeather()
   }
 
   fun setLanguage(language: com.example.data.localization.AppLanguage?) {
@@ -565,15 +755,20 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
     _isFahrenheit.value = !_isFahrenheit.value
   }
 
+  /** Pull-to-refresh and the refresh button. The city collector handles every other case. */
   fun refreshWeather() {
-    viewModelScope.launch {
-      _weatherState.value = WeatherUiState.Loading
-      val result = weatherRepository.fetchWeather(_selectedCity.value)
-      result.fold(
-        onSuccess = { _weatherState.value = WeatherUiState.Success(it) },
-        onFailure = { _weatherState.value = WeatherUiState.Error(it.message ?: "Failed to load weather") }
-      )
-    }
+    viewModelScope.launch { loadWeatherFor(_selectedCity.value) }
+  }
+
+  private suspend fun loadWeatherFor(city: CityLocation) {
+    _weatherState.value = WeatherUiState.Loading
+    val result = weatherRepository.fetchWeather(city)
+    result.fold(
+      onSuccess = { _weatherState.value = WeatherUiState.Success(it) },
+      onFailure = {
+        _weatherState.value = WeatherUiState.Error(it.message ?: "Failed to load weather")
+      }
+    )
   }
 
   // Prayer Completion Tracking in Room
@@ -647,6 +842,8 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
     }
   }
   private companion object {
+    const val TAG = "HaasiAlLaylViewModel"
+
     /**
      * Consumer magnetometers are good to roughly 5-10 degrees. The old 4-degree gate was
      * narrower than that, and narrower than the declination error it was masking, so it

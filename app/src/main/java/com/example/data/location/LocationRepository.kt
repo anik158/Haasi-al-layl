@@ -35,20 +35,23 @@ object LocationRepository {
    * Coordinates from the device, named if possible.
    *
    * [allowSlowFix] requests a live fix, which can take tens of seconds outdoors and may never
-   * arrive indoors - so it is opt-in, for when the user explicitly taps "detect", rather than
-   * something a launch waits on.
+   * arrive indoors - so it is opt-in, and the caller that opts in is expected to be showing the
+   * user that a wait is happening. [fixTimeoutMs] is how long that wait may run.
    */
   suspend fun detectFromDevice(
     context: Context,
-    allowSlowFix: Boolean
+    allowSlowFix: Boolean,
+    fixTimeoutMs: Long = DeviceLocationProvider.LIVE_FIX_TIMEOUT_MS
   ): CityLocation? = withContext(Dispatchers.IO) {
     val cached = DeviceLocationProvider.lastKnownFix(context)
     val fix = when {
       cached != null && DeviceLocationProvider.isFresh(cached) -> cached
-      allowSlowFix -> DeviceLocationProvider.requestFreshFix(context) ?: cached
+      allowSlowFix -> DeviceLocationProvider.requestFreshFix(context, fixTimeoutMs) ?: cached
       else -> cached
     } ?: return@withContext null
 
+    // Naming is a separate, network-dependent step, and its failure must not discard the fix:
+    // the coordinates are what the prayer mathematics needs, and they are already in hand.
     val named = reverseGeocode(context, fix.latitude, fix.longitude)
     CityLocation(
       name = named?.first ?: formatCoordinates(fix.latitude, fix.longitude),

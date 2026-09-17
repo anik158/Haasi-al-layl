@@ -16,6 +16,15 @@
         android:name="android.permission.SCHEDULE_EXACT_ALARM"
         android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- The prayer alert is an alarm, not a notice: it opens a screen over the lock screen and
+         rings until it is stopped. A full-screen intent is the only sanctioned way to do that
+         from a background broadcast, since background activity launches were blocked in
+         Android 10. Android 14 narrowed this permission to calling and alarm apps, which is what
+         this is - but PrayerNotificationManager.canUseFullScreenAlarm still asks before relying
+         on it, and falls back to an audible notification when the answer is no. -->
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+    <!-- Turning the screen on for a Fajr alarm. -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <uses-feature android:name="android.hardware.sensor.compass" android:required="false" />
     <uses-feature android:name="android.hardware.sensor.accelerometer" android:required="false" />
@@ -43,10 +52,31 @@
         </activity>
 
 
+        <!--
+          The alarm screen. singleInstance so a second prayer firing mid-ring lands in the one
+          that is already up rather than stacking; excludeFromRecents because a spent alarm has
+          no business in the recents list. No intent-filter and not exported: it is only ever
+          reached through this app's own full-screen intent.
+        -->
+        <activity
+            android:name=".PrayerAlarmActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
+            android:taskAffinity=""
+            android:theme="@style/Theme.Haasi.Alarm" />
+
         <!-- No intent-filter: always invoked by an explicit Intent, so a filter would be pure
              attack surface. -->
         <receiver
             android:name=".data.notification.PrayerAlarmReceiver"
+            android:exported="false" />
+
+        <!-- Silences a ringing alarm from its notification. Explicit intents only. -->
+        <receiver
+            android:name=".data.notification.AlarmStopReceiver"
             android:exported="false" />
 
         <receiver

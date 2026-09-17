@@ -991,12 +991,91 @@ object LocalizationManager {
     AppLanguage.ENGLISH -> "Battery unrestricted"
   }
 
+  fun getReliabilityFullScreenRow(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "تنبيه بملء الشاشة"
+    AppLanguage.BENGALI -> "পূর্ণ স্ক্রিন অ্যালার্ম"
+    AppLanguage.SPANISH -> "Alarma a pantalla completa"
+    AppLanguage.PORTUGUESE -> "Alarme em ecrã inteiro"
+    AppLanguage.ENGLISH -> "Full-screen alarm"
+  }
+
   fun getReliabilityFixAction(language: AppLanguage): String = when (language) {
     AppLanguage.ARABIC -> "إصلاح"
     AppLanguage.BENGALI -> "ঠিক করুন"
     AppLanguage.SPANISH -> "Corregir"
     AppLanguage.PORTUGUESE -> "Corrigir"
     AppLanguage.ENGLISH -> "Fix"
+  }
+
+  // ---------------------------------------------------------------------------------------------
+  // The full-screen alarm
+  // ---------------------------------------------------------------------------------------------
+
+  /** The single action on the alarm screen. Not "dismiss": it stops a sound that is playing. */
+  fun getStopAlarmAction(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "إيقاف"
+    AppLanguage.BENGALI -> "বন্ধ করুন"
+    AppLanguage.SPANISH -> "Detener"
+    AppLanguage.PORTUGUESE -> "Parar"
+    AppLanguage.ENGLISH -> "Stop"
+  }
+
+  fun getAlarmAutoStopHint(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "سيتوقف الصوت من تلقاء نفسه بعد ثلاث دقائق."
+    AppLanguage.BENGALI -> "তিন মিনিট পর শব্দ নিজেই বন্ধ হয়ে যাবে।"
+    AppLanguage.SPANISH -> "El sonido se detendrá por sí solo en tres minutos."
+    AppLanguage.PORTUGUESE -> "O som para sozinho depois de três minutos."
+    AppLanguage.ENGLISH -> "The sound stops on its own after three minutes."
+  }
+
+  // ---------------------------------------------------------------------------------------------
+  // First-run satellite acquisition
+  //
+  // The wait is shown rather than hidden, because a cold GPS fix genuinely takes up to a minute
+  // and a bare spinner for that long reads as a hang. The copy says what the phone is doing and
+  // why it may not work indoors, so a failure is understood rather than mysterious.
+  // ---------------------------------------------------------------------------------------------
+
+  fun getLocatingTitle(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "جارٍ تحديد موقعك"
+    AppLanguage.BENGALI -> "আপনার অবস্থান নির্ণয় করা হচ্ছে"
+    AppLanguage.SPANISH -> "Localizándote"
+    AppLanguage.PORTUGUESE -> "A localizá-lo"
+    AppLanguage.ENGLISH -> "Finding where you are"
+  }
+
+  fun getLocatingBody(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "يقرأ هاتفك إشارات الأقمار الصناعية مباشرة. لا يحتاج ذلك إلى إنترنت، ويمنح مواقيت صلاة دقيقة تمامًا."
+    AppLanguage.BENGALI -> "আপনার ফোন সরাসরি স্যাটেলাইট থেকে সংকেত পড়ছে। এতে ইন্টারনেট লাগে না, আর নামাজের সময় একেবারে নির্ভুল হয়।"
+    AppLanguage.SPANISH -> "Tu teléfono está leyendo señales de satélite directamente. No necesita internet, y da horarios de oración exactos."
+    AppLanguage.PORTUGUESE -> "O seu telefone está a ler sinais de satélite diretamente. Não precisa de internet, e dá horários de oração exatos."
+    AppLanguage.ENGLISH -> "Your phone is reading satellite signals directly. No internet needed, and it gives exact prayer times."
+  }
+
+  /** The honest caveat: a cold fix is slow, and indoors it may never arrive. */
+  fun getLocatingHint(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "قد تستغرق المحاولة الأولى دقيقة. إن كنت داخل مبنى، فالاقتراب من نافذة يساعد كثيرًا."
+    AppLanguage.BENGALI -> "প্রথমবার এক মিনিট পর্যন্ত লাগতে পারে। ঘরের ভিতরে থাকলে জানালার কাছে গেলে অনেক সাহায্য হয়।"
+    AppLanguage.SPANISH -> "El primer intento puede tardar un minuto. Si estás en interiores, acercarte a una ventana ayuda mucho."
+    AppLanguage.PORTUGUESE -> "A primeira tentativa pode levar um minuto. Se estiver dentro de casa, aproximar-se de uma janela ajuda muito."
+    AppLanguage.ENGLISH -> "The first attempt can take a minute. Indoors, moving near a window helps a great deal."
+  }
+
+  /** Offered throughout, so the wait is never a trap. */
+  fun getEnterLocationManuallyAction(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "أدخل موقعي بنفسي"
+    AppLanguage.BENGALI -> "নিজে অবস্থান লিখে দিন"
+    AppLanguage.SPANISH -> "Introducir mi ubicación"
+    AppLanguage.PORTUGUESE -> "Introduzir a minha localização"
+    AppLanguage.ENGLISH -> "Enter my location instead"
+  }
+
+  fun getLocationServicesOffHint(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "خدمة الموقع مغلقة في إعدادات الجهاز."
+    AppLanguage.BENGALI -> "ডিভাইসের সেটিংসে লোকেশন বন্ধ আছে।"
+    AppLanguage.SPANISH -> "La ubicación está desactivada en los ajustes del dispositivo."
+    AppLanguage.PORTUGUESE -> "A localização está desativada nas definições do dispositivo."
+    AppLanguage.ENGLISH -> "Location is switched off in your device settings."
   }
 
   fun getTestAlarmAction(language: AppLanguage): String = when (language) {

@@ -15,6 +15,20 @@
         <item name="android:windowLightStatusBar">true</item>
     </style>
 
+    <!--
+      The alarm screen's own theme. Night navy rather than parchment, because it fires at Fajr
+      and at 3am and a full white screen at that hour is hostile; and windowLightStatusBar off,
+      so the status-bar icons stay legible against it.
+    -->
+    <style name="Theme.Haasi.Alarm" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/haasi_night_navy</item>
+        <item name="android:colorBackground">@color/haasi_night_navy</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowShowWallpaper">false</item>
+    </style>
+
     <!-- Launch theme: the brand mark on the night sky, handing over to Theme.Haasi. -->
     <style name="Theme.Haasi.Splash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/haasi_night_navy</item>

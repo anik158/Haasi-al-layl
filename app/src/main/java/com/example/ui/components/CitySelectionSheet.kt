@@ -56,6 +56,11 @@ fun CitySelectionSheet(
   searchResults: List<GeocodingResult> = emptyList(),
   isSearching: Boolean = false,
   isDetecting: Boolean = false,
+  /**
+   * Seconds spent on the current detection. A cold GPS fix can take a minute, and a spinner with
+   * no number beside it reads as a hang long before the fix actually fails.
+   */
+  detectingSeconds: Int = 0,
   onDismiss: () -> Unit
 ) {
   val sheetState = rememberModalBottomSheetState()
@@ -129,7 +134,8 @@ fun CitySelectionSheet(
         Spacer(modifier = Modifier.width(8.dp))
         Text(
           if (isDetecting) {
-            LocalizationManager.getDetectingLocationLabel(language)
+            val label = LocalizationManager.getDetectingLocationLabel(language)
+            if (detectingSeconds > 0) "$label · ${detectingSeconds}s" else label
           } else {
             LocalizationManager.getAutoDetectLocationLabel(language)
           }

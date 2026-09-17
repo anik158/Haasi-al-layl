@@ -45,7 +45,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.data.dua.IslamicContentProvider
+import com.example.data.dua.DailyInspiration
 import com.example.data.localization.AppLanguage
 import com.example.data.localization.LocalizationManager
 import com.example.data.model.CityLocation
@@ -79,6 +79,11 @@ fun HomeScreen(
   weatherState: WeatherUiState,
   currentCity: CityLocation,
   formatTemperature: (Double) -> String,
+  /**
+   * Today's verse and narration. Passed in rather than read from a constant here, so the card
+   * actually changes from one day to the next.
+   */
+  inspiration: DailyInspiration,
   language: AppLanguage = AppLanguage.ENGLISH,
   madhab: IslamicMadhab = IslamicMadhab.DEFAULT,
   method: CalculationMethod = CalculationMethod.UMM_AL_QURA,
@@ -312,7 +317,7 @@ fun HomeScreen(
       // 5. Daily Inspiration (Ayah & Hadith)
       item {
         DailyInspirationCard(
-          inspiration = IslamicContentProvider.DAILY_INSPIRATION,
+          inspiration = inspiration,
           language = language
         )
       }

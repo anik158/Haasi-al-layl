@@ -77,11 +77,49 @@ default cannot drift. **Maliki, Shafi'i and Hanbali all share `shadowFactor = 1.
 - Four independent mechanisms keep the schedule alive: 48-hour horizon, reschedule at the tail of
   every fired alarm, a daily refresh at 00:05 local, and `Application.onCreate`.
 
+#### The prayer time is an alarm, not a notice
+
+A notification could not do this job: its sound is a system-played one-shot, and a row in the shade
+that goes quiet after four seconds cannot wake anyone for Fajr.
+
+- **`PrayerAlarmActivity` is reached through a notification's full-screen intent**, never
+  `startActivity`. Background activity launches have been blocked since Android 10; the full-screen
+  intent is the sanctioned path for an alarm that must appear over the lock screen. The notification
+  is the vehicle, not the alert.
+- **Two channels, on purpose.** `haasi_prayer_alarm_v1` is silent and vibration-free, because
+  `AlarmSoundPlayer` owns the tone on that path; `haasi_prayer_alerts_v2` stays audible and is the
+  fallback whenever full-screen intents are refused, plus what the five-minute nudge uses. Adding a
+  channel rather than bumping the audible one's version was deliberate - a bump costs every user
+  their per-channel settings.
+- **Android 14 narrowed `USE_FULL_SCREEN_INTENT`** to calling and alarm apps.
+  `canUseFullScreenAlarm` asks rather than assumes, and Settings' reliability panel has a row for it
+  with a deep link, so a refused permission is visible instead of silently degrading the alarm.
+- **The three-minute auto-stop lives in `AlarmSoundPlayer`, not the activity.** The system downgrades
+  a full-screen intent to a heads-up banner whenever the device is already unlocked and in use, so an
+  activity-owned timer would never run and an untapped banner would ring until the process died.
+- **Only `AT_TIME` and Tahajjud take over the screen.** The five-minute follow-up stays an ordinary
+  notification; taking over the display twice per prayer makes a reminder something to switch off.
+- `AlarmStopReceiver` backs both the notification's Stop action and its delete intent, so clearing
+  the notification by any route - including Clear all - silences the ring.
+
 ### Location
 
 - **Coordinates and the city name are separate problems.** GPS gives coordinates with no network;
   only the *name* needs a lookup. Offline the location renders as `23.81°N, 90.41°E` and the times
-  are still exact.
+  are still exact. `applyCity` re-attempts the naming for any coordinates-only city, so a fix taken
+  offline gets a real name as soon as there is a network, without touching the coordinates.
+- **Location permission is requested on the first launch**, before anything else, and the first run
+  blocks on the result. This is not negotiable: without the permission `lastKnownFix` returns null
+  *before it consults the receiver*, so deferring the request to the "Detect" button meant the GPS
+  rung was never tried at all. See the bug table.
+- **A cold fix gets 90 seconds, not 20.** A receiver with no almanac reads the ephemeris off the
+  satellites at 50 bits per second; 30 to 60 seconds is normal and 20 gives up mid-download.
+  `DeviceLocationProvider.COLD_FIX_TIMEOUT_MS` is used by the first run and by the Detect button,
+  both of which show the wait. The 20-second `LIVE_FIX_TIMEOUT_MS` remains the default for anything
+  that does not.
+- **The wait is shown, not hidden.** `SatelliteAcquisitionScreen` holds the screen with an orbital
+  animation, a second counter and a "enter my location instead" escape. A minute behind a bare
+  spinner reads as a hang, and the acquisition genuinely cannot be made faster.
 - **Platform `LocationManager`, not the fused provider.** Play Services' fused provider answers from
   Wi-Fi and cell towers, which needs connectivity and would defeat the entire point. GPS provider
   first, network only as a fallback.
@@ -116,6 +154,13 @@ There is no `strings.xml` for these. Two conventions:
   a fallback, because a stored string would pin the user to whatever language was current at seed
   time.
 
+**"Of the day" content is keyed on the epoch day**, not randomised and not stored:
+`DailyInspirationData.forDate`. Everyone sees the same verse on the same day, it survives a process
+restart without repeating or skipping, and the two pools are coprime in length (12 verses, 11
+narrations) so the *pairing* takes 132 days to come round rather than 12. It is driven from
+`currentCityDate`, so it turns over at the same local midnight the prayer log does, and turns over
+at all while the app is open.
+
 The app is **deliberately light-only**. `HaasiTheme` takes no `darkTheme` parameter — it used to
 accept one and silently ignore it, which read as a bug. A dark palette exists unused in `Color.kt`.
 
@@ -138,6 +183,9 @@ Worth reading before assuming a report is a device problem.
 | **Calculation-method chips unlocalized** | The enum lived in `PrayerCalculator`, a pure-astronomy file, with English-only strings |
 | **Salawat untranslated in all five languages** | The private helpers in `TasbihScreen` early-returned English for everything but Bengali, *and* both `when` blocks omitted the `"salawat"` id entirely |
 | **`PendingIntent` cancels were no-ops** | `cancelAll` built intents without an action while arming set one. Action is part of PendingIntent identity, so `FLAG_NO_CREATE` never matched |
+| **Offline first run ignored GPS entirely and asked for a language and a city** | The whole GPS ladder was in place and correct, but `ACCESS_FINE_LOCATION` was only requested when the user tapped Detect. `lastKnownFix` opens with `if (!hasPermission(context)) return null`, so on a fresh install the cached read returned null *without consulting the receiver*, and with no network there was no IP rung either — straight to the manual dialog. Read as "GPS does not work"; it had never been asked to |
+| **Weather stayed on Makkah until a manual refresh** | `refreshWeather()` was called once in the ViewModel's `init`, against the city restored from disk — Makkah on a fresh install — and `applyCity` never re-ran it. Detection landed a moment later and moved the city, the header, and the prayer times, but not the forecast. A city collector owns it now |
+| **"Ayah of the day" never changed** | `IslamicContentProvider.DAILY_INSPIRATION` was a single constant. One value cannot be "of the day"; it is now a pool selected by epoch day |
 
 ### The meta-lesson
 
@@ -162,12 +210,28 @@ repo should assert its match count.
 - **`fallbackToDestructiveMigration()` has been removed**, so the next schema change needs a real
   `Migration`. That was intentional — it was pointed at exactly the tasbih counts that were being
   protected.
-- **Location permission is only requested when the user taps Detect**, so a fresh install still
-  starts from IP geolocation.
 - **Onboarding language rules**: Bangladesh → Bengali, Arab states → Arabic, Spanish/Portuguese
   worlds → their own, everything else → English. `detectLanguageForCountry` accepts both display
   names and ISO alpha-2 codes — it used to accept only names, so every IP-detected location
   (which returns `"BD"`, not `"Bangladesh"`) fell through to English.
+
+### The first-run state machine
+
+`OnboardingState` is the contract between the ViewModel's ladder and what MainActivity puts on
+screen. Read them together or neither makes sense.
+
+| State | What is on screen | Leaves when |
+| --- | --- | --- |
+| `RESOLVING` | the acquisition screen | `init` decides, within a frame — except when location is off, where it covers the IP lookup too |
+| `NEEDS_LOCATION_PERMISSION` | the acquisition screen, under the system dialog | the user answers, via `onLocationPermissionResult` |
+| `ACQUIRING_FIX` | the acquisition screen, counter running | a fix lands, the 90s budget expires, or the user taps the escape |
+| `REQUIRED` | `WelcomeDialog` — language, then the city picker | the user dismisses it |
+| `NOT_NEEDED` | the app | never; also the initial state for a returning user |
+
+Two things are easy to break here. The **notification** prompt is gated on `NOT_NEEDED`, so it
+cannot land on top of the acquisition screen or the welcome dialog — two system dialogs racing into
+one frame means one is dropped. And the cached-fix attempt lives *inside* `ACQUIRING_FIX` rather
+than before it, because it reverse-geocodes and can spend eight seconds on an HTTP timeout.
 
 ## Device reality (OPPO / ColorOS, the main test device)
 

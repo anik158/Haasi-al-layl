@@ -55,6 +55,7 @@ import com.example.data.localization.LocalizationManager
 import com.example.ui.HaasiAlLaylViewModel
 import com.example.ui.components.CitySelectionSheet
 import com.example.ui.OnboardingState
+import com.example.ui.components.SatelliteAcquisitionScreen
 import com.example.ui.components.WelcomeDialog
 import com.example.ui.screens.DuaScreen
 import com.example.ui.screens.HomeScreen
@@ -112,15 +113,49 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
   val currentLanguage by viewModel.currentLanguage.collectAsStateWithLifecycle()
   val selectedMadhab by viewModel.selectedMadhab.collectAsStateWithLifecycle()
   val selectedMethod by viewModel.selectedCalculationMethod.collectAsStateWithLifecycle()
+  val dailyInspiration by viewModel.dailyInspiration.collectAsStateWithLifecycle()
 
-  // Ask once, on first launch. The only existing request sat behind the notification toggles,
-  // which default to on - so the switches rendered already-enabled and the prompt never fired,
-  // leaving POST_NOTIFICATIONS denied and every notify() a silent no-op.
   val context = LocalContext.current
-  val permissionLauncher = rememberLauncherForActivityResult(
+  var showCitySheet by rememberSaveable { mutableStateOf(false) }
+  val onboardingState by viewModel.onboardingState.collectAsStateWithLifecycle()
+  val fixElapsedSeconds by viewModel.fixElapsedSeconds.collectAsStateWithLifecycle()
+  val locationServicesOff by viewModel.locationServicesOff.collectAsStateWithLifecycle()
+
+  // Two permissions, asked one at a time and in this order. Location comes first because it
+  // gates the app's whole reason to exist - exact prayer times, offline - and because two
+  // system dialogs raced into the same frame means one of them is dropped.
+  val firstRunLocationLauncher = rememberLauncherForActivityResult(
+    contract = ActivityResultContracts.RequestMultiplePermissions()
+  ) { granted ->
+    viewModel.onLocationPermissionResult(granted.values.any { it })
+  }
+
+  // Asked on the first launch, not deferred to the "detect" button. Deferring it was the bug:
+  // with the permission never requested, the cached-fix read returned null without consulting
+  // the receiver at all, so an offline first run went straight to the manual prompts and the
+  // GPS path - the only one that works with no network - was never even tried.
+  var hasLaunchedLocationRequest by rememberSaveable { mutableStateOf(false) }
+  LaunchedEffect(onboardingState) {
+    if (onboardingState == OnboardingState.NEEDS_LOCATION_PERMISSION && !hasLaunchedLocationRequest) {
+      hasLaunchedLocationRequest = true
+      firstRunLocationLauncher.launch(
+        arrayOf(
+          Manifest.permission.ACCESS_FINE_LOCATION,
+          Manifest.permission.ACCESS_COARSE_LOCATION
+        )
+      )
+    }
+  }
+
+  // The notification prompt waits until the location question has settled, so it does not land
+  // on top of the acquisition screen or the welcome dialog. The only earlier request sat behind
+  // the notification toggles, which default to on - so the switches rendered already-enabled,
+  // the off-to-on transition never happened, and every notify() was a silent no-op.
+  val notificationPermissionLauncher = rememberLauncherForActivityResult(
     contract = ActivityResultContracts.RequestPermission()
   ) { /* Either way, the flag below stops us asking again. */ }
-  LaunchedEffect(Unit) {
+  LaunchedEffect(onboardingState) {
+    if (onboardingState != OnboardingState.NOT_NEEDED) return@LaunchedEffect
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
       val prefs = UserPreferences(context)
       val granted = ContextCompat.checkSelfPermission(
@@ -130,21 +165,37 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
       // The system stops showing the dialog after two denials, so only ask once ourselves.
       if (!granted && !prefs.hasAskedNotificationPermission) {
         prefs.hasAskedNotificationPermission = true
-        permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
       }
     }
   }
 
-  // Asked only when the user taps "detect", so the very first launch is not met with a
-  // permission dialog it has not earned.
-  val locationPermissionLauncher = rememberLauncherForActivityResult(
+  // The "detect" button in the city picker, which means something different from the first-run
+  // request: on a grant it starts a detection rather than answering the onboarding handshake.
+  val detectLocationLauncher = rememberLauncherForActivityResult(
     contract = ActivityResultContracts.RequestMultiplePermissions()
   ) { granted ->
     if (granted.values.any { it }) viewModel.autoDetectLocation()
   }
 
-  var showCitySheet by rememberSaveable { mutableStateOf(false) }
-  val onboardingState by viewModel.onboardingState.collectAsStateWithLifecycle()
+  // Held in front of everything while the fix is in flight, on the same night navy as the launch
+  // window, so the app does not show a half-populated Makkah home screen it is about to replace.
+  // RESOLVING is included deliberately: on a fresh install with location switched off it covers
+  // the IP lookup as well, rather than flashing a Makkah home screen for five seconds first.
+  // A returning user starts at NOT_NEEDED and never sees this.
+  if (onboardingState == OnboardingState.RESOLVING ||
+    onboardingState == OnboardingState.ACQUIRING_FIX ||
+    onboardingState == OnboardingState.NEEDS_LOCATION_PERMISSION
+  ) {
+    SatelliteAcquisitionScreen(
+      elapsedSeconds = fixElapsedSeconds,
+      timeoutSeconds = viewModel.fixTimeoutSeconds,
+      language = currentLanguage,
+      locationServicesOff = locationServicesOff,
+      onEnterManually = { viewModel.skipFixAcquisition() }
+    )
+    return
+  }
 
   val destinations = listOf(
     NavDestination(LocalizationManager.getNavToday(currentLanguage), Icons.Filled.Home, Icons.Outlined.Home, "nav_today"),
@@ -199,6 +250,7 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
           weatherState = weatherState,
           currentCity = currentCity,
           formatTemperature = { viewModel.formatTemperature(it) },
+          inspiration = dailyInspiration,
           language = currentLanguage,
           madhab = selectedMadhab,
           method = selectedMethod,
@@ -271,7 +323,7 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
           if (DeviceLocationProvider.hasPermission(context)) {
             viewModel.autoDetectLocation()
           } else {
-            locationPermissionLauncher.launch(
+            detectLocationLauncher.launch(
               arrayOf(
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION
@@ -283,6 +335,7 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
         searchResults = placeResults,
         isSearching = isSearchingPlaces,
         isDetecting = isDetectingLocation,
+        detectingSeconds = fixElapsedSeconds,
         language = currentLanguage,
         currentCity = currentCity,
         onCitySelected = { city -> viewModel.selectCity(city) },
