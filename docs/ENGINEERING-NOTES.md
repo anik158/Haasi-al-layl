@@ -141,6 +141,51 @@ user is not standing. `_deviceLocation` is populated **only** from real receiver
 never from IP geolocation, which names the ISP's hub and can be 150 km out. When the fallback is
 in use, `qiblaUsesDeviceLocation` is false and the screen says so.
 
+#### The ladder is ordered by what answers fastest, not by what is most accurate
+
+This reversed once and the reversal was wrong. **When there is a network, IP geolocation goes
+first** - it answers in under a second, needs no permission, and puts the app in a usable state
+immediately. Only with no network (or a failed IP lookup) does the app block on the receiver
+behind the acquisition screen. Putting GPS first unconditionally meant an online user was shown a
+"turn on location" screen to solve a problem the network had already solved.
+
+Accuracy is then recovered rather than traded away: `UserPreferences.locationFromDevice` records
+which rung answered, and while it is false the background watch keeps running and upgrades the IP
+estimate to real coordinates when a fix lands. So the *order* is by latency and the *outcome* is
+still the top of the ladder.
+
+Consequences worth not undoing:
+
+- `startBackgroundLocationWatch` is **not** gated on `hasResolvedLocation`. Having *a* location is
+  not the same as having a good one; the gate is `locationFromDevice`.
+- **Location permission is requested independently of the ladder.** It was briefly tied to the
+  `REQUESTING_PERMISSION` phase, which meant an online run - which shows no phases at all - never
+  asked, and so had nothing for the Qibla compass or the background upgrade.
+- `LocatingPhase.STARTING` renders the orbit animation and nothing else, so the sub-second pass
+  through `RESOLVING` reads as a continuation of the splash rather than a flash of prompts.
+
+#### "Turn on location" is wrong advice to someone who already has
+
+`isLocationEnabled` reports the **master** toggle. On ColorOS that can be on while the GPS
+provider is off, so the phone positions from Wi-Fi and masts alone: online merely imprecise,
+offline nothing at all - and indistinguishable, from the user's side, from location being enabled.
+The app spent ninety seconds on a switched-off receiver and reported "no signal", which is true,
+useless, and reasonably read as the app being broken.
+
+- `isGpsProviderEnabled` is a **separate check** from `isLocationEnabled`. Both are needed.
+- `LocatingPhase.GPS_PROVIDER_OFF` says exactly that, opening by acknowledging location *is* on.
+- The fix is one tap. `LocationSettingsResolver` wraps
+  `SettingsClient.checkLocationSettings(PRIORITY_HIGH_ACCURACY)`, which returns a `PendingIntent`
+  for the familiar system dialog that switches on whatever is missing - no per-OEM settings hunt.
+  An `IntentSender` can only be launched from an Activity, so the ViewModel emits the
+  `PendingIntent` and `MainActivity` consumes it through `StartIntentSenderForResult`.
+- **`play-services-location` is used for that dialog and nothing else.** The fused provider stays
+  unused on purpose: it answers from Wi-Fi and cell towers, needs connectivity, and would defeat
+  the premise. Play Services is also absent on some devices, so every caller must handle a null
+  resolution by falling back to `ACTION_LOCATION_SOURCE_SETTINGS`.
+- The dialog's result code is ignored; `onReturnedFromLocationSettings` re-reads the switches,
+  because the user may have changed them by hand or backed out.
+
 #### A first fix indoors is not on a timer
 
 Ninety seconds is still a timeout, and a cold fix indoors with no network does not arrive on one -
@@ -243,6 +288,8 @@ Worth reading before assuming a report is a device problem.
 | **A user who dismissed the welcome dialog was stuck on Makkah forever** | Dismissing it set `isOnboardingComplete`, which also gated the GPS ladder - so no later launch retried, anywhere, ever. The ladder is gated on `selectedCity == null` now |
 | **The Qibla needle pointed from Makkah to Makkah** | Bearing and distance were derived from `_selectedCity`, i.e. the placeholder: a bearing of nothing, 0 km away. They come from `qiblaOrigin` now |
 | **The full-screen alarm made no sound at all** | Self-inflicted, and worth the detail. The alert went on a *silent* channel with all audio left to a `MediaPlayer` started from the receiver. Android downgrades a full-screen intent to a heads-up banner whenever the device is unlocked and in use, so the screen often never opened - and a `MediaPlayer` started from a `BroadcastReceiver` has no live component keeping its process alive once `onReceive` returns. Both failed together. The notification carries the sound again; the full-screen intent is purely additive |
+| **An online first run was asked to turn on location** | The ladder ran GPS-first unconditionally, so a user with a working network was shown a permission prompt and a satellite wait to answer a question IP geolocation could have settled in under a second. Network first now, with the background watch upgrading the estimate |
+| **"Turn on location" when location was already on** | `isLocationEnabled` reports the master toggle only. ColorOS can have it on with the GPS provider off, which offline yields no fix at all - so the app waited 90s on a switched-off receiver and said "no signal" |
 | **`Missing '}'` and `Unclosed comment` from a scripted edit** | An insertion appended its own anchor twice, leaving a stray `/**` *inside* a KDoc. **Kotlin block comments nest**, unlike C, so the second opener swallowed the rest of the file. A bracket-balance check that resolves each `/*` to the first following `*/` cannot see this - it has to track depth |
 
 ### The meta-lesson
@@ -281,15 +328,17 @@ repo should assert its match count.
 | State | What is on screen |
 | --- | --- |
 | `RESOLVING` | the acquisition screen; resolves within a frame |
-| `LOCATING` | the acquisition screen, rendering the current `LocatingPhase` |
+| `LOCATING` | the acquisition screen, rendering the current `LocatingPhase`. Reached **only** when there is no network, or the IP rung failed - an online first run never enters it |
 | `REQUIRED` | `WelcomeDialog` - language, then the city picker |
 | `NOT_NEEDED` | the app |
 
 | Phase | Shows | Offers |
 | --- | --- | --- |
+| `STARTING` | the animation alone - no text, no counter, no buttons | nothing |
 | `REQUESTING_PERMISSION` | why location is needed, **no counter** | nothing; the system dialog is up |
 | `SEARCHING` | the counter, the elapsed bar, the indoor hint | nothing; it is working |
-| `LOCATION_SERVICES_OFF` | that the system toggle is off | `ACTION_LOCATION_SOURCE_SETTINGS` |
+| `LOCATION_SERVICES_OFF` | that the system toggle is off | the one-tap high-accuracy dialog |
+| `GPS_PROVIDER_OFF` | that location is on but the *receiver* is not | the one-tap high-accuracy dialog |
 | `PERMISSION_DENIED` | that rung 1 is unavailable and why it matters | app details settings |
 | `NO_FIX` | that it is still listening in the background | Try again |
 
@@ -313,6 +362,21 @@ Not fixable in code, and worth ruling out before debugging:
 - Locking the app in Recents is the most effective user-side mitigation.
 - A foreground service is **not** an escape hatch; ColorOS kills those too.
 
-Settings has a reliability panel reporting what is blocked, and a **Test alert in 1 minute** button
-that arms a real alarm through the production receiver, PendingIntent and channel. If that arrives
-with the app closed, the pipeline works and the problem is elsewhere.
+**Background running is the decisive one, and no API can set it.** ColorOS defaults every app to
+"Smart background running", which is what silences a Fajr alarm; the alarm works reliably only once
+the user picks **Run in Background** themselves, under Battery > App battery usage. Startup Manager
+is the same story. There is no intent, no permission and no flag that changes either, so
+`getOemBatteryHint` names the exact switches rather than gesturing at them - vague advice just
+leaves the user hunting. Apps that appear to "just work" were either whitelisted by the user or
+ship on an OEM allowlist; neither is something an app can grant itself.
+
+What *can* be offered is the direct battery-optimisation exemption - one "Allow" rather than
+finding this app in a list of every installed one. `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS` is
+restricted by Play to a short list of permitted use cases, of which "alarms or reminders as core
+functionality" is one, and is what this app is; it holds `USE_EXACT_ALARM` for the same reason. Some
+heavily skinned ROMs refuse the direct dialog, so it falls back to the full list.
+
+Settings has a reliability panel reporting what is blocked - notifications, exact alarms,
+full-screen alarm, battery - and a **Test alert in 1 minute** button that arms a real alarm through
+the production receiver, PendingIntent and channel. If that arrives with the app closed, the
+pipeline works and the problem is elsewhere.

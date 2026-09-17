@@ -72,12 +72,20 @@ of the night, each with its own opt-in notification channel.
 
 The app asks as little as possible, and asks it **once per installation**:
 
-- **Location** is resolved down a ladder, best first: the device's own GPS fix, then IP
-  geolocation, then whatever city was chosen by hand.
-- **Location permission is requested on the first launch**, before anything else, and the first run
-  waits on the answer behind a screen that shows what it is doing. This is not politeness deferred
-  — without the permission the cached-fix read returns null *before it consults the receiver*, so
-  an app that waits for you to find a "Detect" button has not tried the GPS rung at all.
+- **Location** is resolved down a ladder. With a network, IP geolocation answers first because it
+  answers in under a second — and the app then keeps listening for the device's own GPS fix and
+  silently upgrades to those exact coordinates when one arrives. With no network, the receiver is
+  the only rung there is, and the app waits for it visibly. A city chosen by hand always wins and
+  stops the upgrading.
+- **Location permission is requested on the first launch**, not deferred to a "Detect" button —
+  without it the cached-fix read returns null *before it consults the receiver*, so an app that
+  waits for you to find that button has not tried the GPS rung at all. When you are online this is
+  the only prompt you see; the app is already working by then.
+- **"Turn on location" is not one switch on every phone.** On some devices — ColorOS among them —
+  the master Location toggle can be on while the GPS receiver itself is off, and offline that
+  combination produces nothing while looking exactly like location being enabled. The app detects
+  that specific case, says so in those words, and offers the one-tap system dialog that turns the
+  receiver on, rather than sending you to hunt through a positioning-mode submenu.
 - **Language** is derived from the resolved country — and until a location is actually resolved, it
   follows your **device's** language rather than a default city's. No prompts are shown at all when
   detection succeeds; the language prompt and city picker appear only when the whole ladder fails.
