@@ -168,8 +168,7 @@ object DeviceLocationProvider {
   }
 
   /**
-   * Asks for one live fix, giving up after [LIVE_FIX_TIMEOUT_MS].  /**
-   * Asks for one live fix, giving up after [LIVE_FIX_TIMEOUT_MS].
+   * Asks for one live fix, giving up after [timeoutMs].
    *
    * Single-shot rather than continuous updates: prayer times do not change as the user walks
    * around, and a continuous listener is a battery cost with nothing to show for it.
