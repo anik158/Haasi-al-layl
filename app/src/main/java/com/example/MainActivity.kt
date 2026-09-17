@@ -2,6 +2,7 @@ package com.example
 
 import android.os.Bundle
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -54,6 +55,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.data.localization.LocalizationManager
 import com.example.ui.HaasiAlLaylViewModel
 import com.example.ui.components.CitySelectionSheet
+import com.example.ui.LocatingPhase
 import com.example.ui.OnboardingState
 import com.example.ui.components.SatelliteAcquisitionScreen
 import com.example.ui.components.WelcomeDialog
@@ -114,12 +116,15 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
   val selectedMadhab by viewModel.selectedMadhab.collectAsStateWithLifecycle()
   val selectedMethod by viewModel.selectedCalculationMethod.collectAsStateWithLifecycle()
   val dailyInspiration by viewModel.dailyInspiration.collectAsStateWithLifecycle()
+  val qiblaOrigin by viewModel.qiblaOrigin.collectAsStateWithLifecycle()
 
   val context = LocalContext.current
   var showCitySheet by rememberSaveable { mutableStateOf(false) }
   val onboardingState by viewModel.onboardingState.collectAsStateWithLifecycle()
   val fixElapsedSeconds by viewModel.fixElapsedSeconds.collectAsStateWithLifecycle()
-  val locationServicesOff by viewModel.locationServicesOff.collectAsStateWithLifecycle()
+  val locatingPhase by viewModel.locatingPhase.collectAsStateWithLifecycle()
+  val hasResolvedLocation by viewModel.hasResolvedLocation.collectAsStateWithLifecycle()
+  val qiblaUsesDeviceLocation by viewModel.qiblaUsesDeviceLocation.collectAsStateWithLifecycle()
 
   // Two permissions, asked one at a time and in this order. Location comes first because it
   // gates the app's whole reason to exist - exact prayer times, offline - and because two
@@ -135,8 +140,10 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
   // the receiver at all, so an offline first run went straight to the manual prompts and the
   // GPS path - the only one that works with no network - was never even tried.
   var hasLaunchedLocationRequest by rememberSaveable { mutableStateOf(false) }
-  LaunchedEffect(onboardingState) {
-    if (onboardingState == OnboardingState.NEEDS_LOCATION_PERMISSION && !hasLaunchedLocationRequest) {
+  LaunchedEffect(locatingPhase, onboardingState) {
+    val asking = onboardingState == OnboardingState.LOCATING &&
+      locatingPhase == LocatingPhase.REQUESTING_PERMISSION
+    if (asking && !hasLaunchedLocationRequest) {
       hasLaunchedLocationRequest = true
       firstRunLocationLauncher.launch(
         arrayOf(
@@ -181,20 +188,47 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
   // Held in front of everything while the fix is in flight, on the same night navy as the launch
   // window, so the app does not show a half-populated Makkah home screen it is about to replace.
   // RESOLVING is included deliberately: on a fresh install with location switched off it covers
-  // the IP lookup as well, rather than flashing a Makkah home screen for five seconds first.
-  // A returning user starts at NOT_NEEDED and never sees this.
+  // the IP lookup as well, rather than flashing a placeholder home screen for five seconds
+  // first. A user who already has a location starts at NOT_NEEDED and never sees this.
   if (onboardingState == OnboardingState.RESOLVING ||
-    onboardingState == OnboardingState.ACQUIRING_FIX ||
-    onboardingState == OnboardingState.NEEDS_LOCATION_PERMISSION
+    onboardingState == OnboardingState.LOCATING
   ) {
     SatelliteAcquisitionScreen(
+      phase = if (onboardingState == OnboardingState.RESOLVING) {
+        LocatingPhase.SEARCHING
+      } else {
+        locatingPhase
+      },
       elapsedSeconds = fixElapsedSeconds,
       timeoutSeconds = viewModel.fixTimeoutSeconds,
       language = currentLanguage,
-      locationServicesOff = locationServicesOff,
-      onEnterManually = { viewModel.skipFixAcquisition() }
+      onEnterManually = { viewModel.skipToManualEntry() },
+      onRetry = { viewModel.startDetection() },
+      onOpenLocationSettings = {
+        runCatching {
+          context.startActivity(
+            Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+              .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+          )
+        }
+      },
+      onOpenAppSettings = {
+        runCatching {
+          context.startActivity(
+            Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+              .setData(android.net.Uri.fromParts("package", context.packageName, null))
+              .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+          )
+        }
+      }
     )
     return
+  }
+
+  // A bearing is a property of where the needle is, so the compass wants a fix taken now - not
+  // one from an hour and a bus ride ago.
+  LaunchedEffect(selectedTab) {
+    if (selectedTab == 2) viewModel.refreshDeviceLocationForQibla()
   }
 
   val destinations = listOf(
@@ -249,6 +283,7 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
           schedule = prayerSchedule,
           weatherState = weatherState,
           currentCity = currentCity,
+          hasResolvedLocation = hasResolvedLocation,
           formatTemperature = { viewModel.formatTemperature(it) },
           inspiration = dailyInspiration,
           language = currentLanguage,
@@ -276,7 +311,8 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
         )
 
         2 -> QiblaScreen(
-          currentCity = currentCity,
+          currentCity = qiblaOrigin,
+          usesDeviceLocation = qiblaUsesDeviceLocation,
           compassHeading = compassHeading,
           qiblaBearing = qiblaBearing,
           distanceToKaabaKm = distanceToKaaba,

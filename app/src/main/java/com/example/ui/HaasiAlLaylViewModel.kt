@@ -68,33 +68,49 @@ sealed interface WeatherUiState {
 }
 
 /**
- * Whether the first-run prompts are needed. The app asks only when it cannot work the answers
- * out for itself, and only once per installation.
+ * What the app is showing while it works out where the user is.
  *
- * The order matters: the device's own coordinates are tried *first* and given a visible wait,
- * because they are exact and work with no network. Asking the user to name a city is the last
- * resort, not the opening move.
+ * Deliberately coarse; [LocatingPhase] carries the detail. Asking the user to name a city is the
+ * last rung of the ladder, not the opening move, and this type exists to make that ordering hard
+ * to get wrong.
  */
 enum class OnboardingState {
   /** Deciding what to do; nothing on screen yet. Resolves within a frame or two. */
   RESOLVING,
 
-  /**
-   * The UI should ask for location permission. A fresh install has never been asked, and
-   * without it [com.example.data.location.DeviceLocationProvider.lastKnownFix] returns null
-   * before it even reaches the receiver - which used to send every offline first run straight
-   * to the manual language-and-city dialog.
-   */
-  NEEDS_LOCATION_PERMISSION,
+  /** Working on it, with the attempt visible. See [LocatingPhase]. */
+  LOCATING,
 
-  /** Waiting on the satellites, with the wait shown rather than hidden. */
-  ACQUIRING_FIX,
-
-  /** Already onboarded, or location and language were worked out without asking. */
+  /** Already located, or the user has been asked once and declined to be asked again. */
   NOT_NEEDED,
 
   /** Every automatic rung failed, so the user picks a language and then a city by hand. */
   REQUIRED
+}
+
+/**
+ * The detail behind [OnboardingState.LOCATING], and what the acquisition screen renders.
+ *
+ * Every terminal phase here is *diagnosable*: it says which rung failed and offers the action
+ * that would fix it. The earlier version silently collapsed all of these into the manual
+ * language-and-city dialog, which is why a permission grant, a switched-off Location toggle and
+ * a genuine indoor no-fix were indistinguishable from each other on the device.
+ */
+enum class LocatingPhase {
+  /** The system permission dialog is up. No counter: nothing is being measured yet. */
+  REQUESTING_PERMISSION,
+
+  /** A fix is being waited on, with the seconds counting up. */
+  SEARCHING,
+
+  /** The system Location toggle is off. No amount of waiting fixes that. */
+  LOCATION_SERVICES_OFF,
+
+  /** Permission was refused, so rung 1 is unavailable until the user changes their mind. */
+  PERMISSION_DENIED,
+
+  /** Tried and failed - almost always indoors with no network. Offers a retry. */
+  NO_FIX
 }
 
 class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(application) {
@@ -106,20 +122,52 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
 
   private val userPrefs = UserPreferences(application)
 
-  // Selected Location - restored from disk so a returning user keeps their city.
+  // Selected Location - restored from disk so a returning user keeps their city. Makkah is a
+  // *placeholder* when there is nothing stored, not an answer; see hasResolvedLocation.
   private val _selectedCity = MutableStateFlow(
-    userPrefs.selectedCity ?: PrayerCalculator.PRESET_CITIES[0] // Default to Makkah
+    userPrefs.selectedCity ?: PrayerCalculator.PRESET_CITIES[0]
   )
   val selectedCity: StateFlow<CityLocation> = _selectedCity.asStateFlow()
 
   /**
-   * Whether the first-run language/location prompts still need to be shown. Resolves to
-   * [OnboardingState.RESOLVING] first so no dialog flashes while auto-detection is in flight.
+   * Whether [selectedCity] is a real answer rather than the Makkah placeholder.
+   *
+   * Everything that would otherwise treat the placeholder as fact has to consult this. Two bugs
+   * came straight out of not having it: the location chip announced "Makkah, Saudi Arabia" to a
+   * user in Helsinki, and the interface language was derived from that country, so the first-run
+   * screens came up in Arabic.
+   */
+  private val _hasResolvedLocation = MutableStateFlow(userPrefs.selectedCity != null)
+  val hasResolvedLocation: StateFlow<Boolean> = _hasResolvedLocation.asStateFlow()
+
+  /**
+   * Where the phone physically is, as distinct from the city whose prayer times are on screen.
+   *
+   * These are usually the same and occasionally must not be. Prayer times legitimately follow a
+   * chosen city - checking Makkah's times from Dhaka is a reasonable thing to want - but the
+   * **Qibla compass cannot**. A bearing is a property of where the needle is, so computing it
+   * from a chosen city points it somewhere the user is not standing, and with the Makkah
+   * placeholder in play it pointed at Makkah from Makkah: a bearing of nothing, 0 km away.
+   *
+   * Null until a fix is seen. Populated by every rung that produces real device coordinates.
+   */
+  private val _deviceLocation = MutableStateFlow<CityLocation?>(null)
+
+  /**
+   * What to show while the location is worked out.
+   *
+   * Seeded from whether a location is *stored*, not from `isOnboardingComplete`. Those are
+   * different questions, and conflating them is what left a user permanently on Makkah: they
+   * dismissed the welcome dialog, which set the completion flag, and the GPS ladder was never
+   * run again on any later launch.
    */
   private val _onboardingState = MutableStateFlow(
-    if (userPrefs.isOnboardingComplete) OnboardingState.NOT_NEEDED else OnboardingState.RESOLVING
+    if (userPrefs.selectedCity != null) OnboardingState.NOT_NEEDED else OnboardingState.RESOLVING
   )
   val onboardingState: StateFlow<OnboardingState> = _onboardingState.asStateFlow()
+
+  private val _locatingPhase = MutableStateFlow(LocatingPhase.SEARCHING)
+  val locatingPhase: StateFlow<LocatingPhase> = _locatingPhase.asStateFlow()
 
   // App Language (Auto location-based by default, can be overridden)
   private val _manualLanguage = MutableStateFlow<com.example.data.localization.AppLanguage?>(
@@ -127,20 +175,48 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
   )
   val manualLanguage: StateFlow<com.example.data.localization.AppLanguage?> = _manualLanguage.asStateFlow()
 
+  /**
+   * The interface language: an explicit choice, else the resolved country, else the device.
+   *
+   * The middle rung is gated on [hasResolvedLocation] for a reason. The placeholder city is
+   * Makkah, so deriving language from `_selectedCity` unconditionally meant every first run -
+   * including the permission prompt and the acquisition screen - rendered in Arabic for a user
+   * whose location was not yet known. The device's own locale is a far better guess than a
+   * placeholder's country, and it is what the user already reads their phone in.
+   */
   val currentLanguage: StateFlow<com.example.data.localization.AppLanguage> = combine(
     _selectedCity,
-    _manualLanguage
-  ) { city, manual ->
-    manual ?: com.example.data.localization.LocalizationManager.detectLanguageForCountry(city.country)
+    _manualLanguage,
+    _hasResolvedLocation
+  ) { city, manual, resolved ->
+    languageFor(city, manual, resolved)
   }.stateIn(
     viewModelScope,
     SharingStarted.WhileSubscribed(5000),
     // Seed from the restored choices, so a returning user never sees a frame in the wrong
     // language before the flow emits.
-    _manualLanguage.value
-      ?: com.example.data.localization.LocalizationManager
-        .detectLanguageForCountry(_selectedCity.value.country)
+    languageFor(_selectedCity.value, _manualLanguage.value, _hasResolvedLocation.value)
   )
+
+  /**
+   * The device's own language, mapped onto the five the app speaks.
+   *
+   * `AppLanguage.fromCode` already falls back to English for anything unrecognised, which is
+   * exactly the wanted behaviour for the roughly seven thousand languages not in that list.
+   */
+  private fun deviceLocaleLanguage(): com.example.data.localization.AppLanguage =
+    com.example.data.localization.AppLanguage.fromCode(java.util.Locale.getDefault().language)
+
+  private fun languageFor(
+    city: CityLocation,
+    manual: com.example.data.localization.AppLanguage?,
+    resolved: Boolean
+  ): com.example.data.localization.AppLanguage = when {
+    manual != null -> manual
+    resolved -> com.example.data.localization.LocalizationManager
+      .detectLanguageForCountry(city.country)
+    else -> deviceLocaleLanguage()
+  }
 
   // Calculation Settings
   // Private-backed so nothing outside this class can change a setting without writing it through.
@@ -182,10 +258,29 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
     )
 
   /**
-   * The gap between magnetic and true north at the selected city, from the offline World Magnetic
-   * Model. Under a degree in Dhaka, but 5 to 20 degrees across the UK and North America.
+   * Where the Qibla is measured from: the device's own position when it is known, otherwise the
+   * selected city as the only thing left to go on.
+   *
+   * [qiblaUsesDeviceLocation] says which of the two it is, so the compass screen can be honest
+   * about it rather than implying a precision it does not have.
    */
-  val magneticDeclination: StateFlow<Float> = _selectedCity.map { city ->
+  val qiblaOrigin: StateFlow<CityLocation> =
+    combine(_deviceLocation, _selectedCity) { device, city -> device ?: city }
+      .stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        _deviceLocation.value ?: _selectedCity.value
+      )
+
+  /** False when the compass is falling back to the selected city, which the screen should say. */
+  val qiblaUsesDeviceLocation: StateFlow<Boolean> = _deviceLocation.map { it != null }
+    .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+
+  /**
+   * The gap between magnetic and true north at the compass origin, from the offline World
+   * Magnetic Model. Under a degree in Dhaka, but 5 to 20 degrees across the UK and North America.
+   */
+  val magneticDeclination: StateFlow<Float> = qiblaOrigin.map { city ->
     GeomagneticField(
       city.latitude.toFloat(),
       city.longitude.toFloat(),
@@ -300,11 +395,11 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
   )
 
   // Qibla bearing & distance
-  val qiblaBearing: StateFlow<Float> = _selectedCity.map { city ->
+  val qiblaBearing: StateFlow<Float> = qiblaOrigin.map { city ->
     QiblaCalculator.calculateQiblaBearing(city.latitude, city.longitude)
   }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0f)
 
-  val distanceToKaabaKm: StateFlow<Int> = _selectedCity.map { city ->
+  val distanceToKaabaKm: StateFlow<Int> = qiblaOrigin.map { city ->
     QiblaCalculator.calculateDistanceToKaabaKm(city.latitude, city.longitude)
   }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
 
@@ -347,12 +442,9 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
   /** How long the counter runs before the manual prompts take over. */
   val fixTimeoutSeconds: Int = (DeviceLocationProvider.COLD_FIX_TIMEOUT_MS / 1000L).toInt()
 
-  /** True when the system Location toggle is off, which no amount of waiting will fix. */
-  private val _locationServicesOff = MutableStateFlow(false)
-  val locationServicesOff: StateFlow<Boolean> = _locationServicesOff.asStateFlow()
-
   private var fixJob: Job? = null
   private var fixTickerJob: Job? = null
+  private var locationWatchJob: Job? = null
 
   private val _placeResults = MutableStateFlow<List<GeocodingResult>>(emptyList())
   val placeResults: StateFlow<List<GeocodingResult>> = _placeResults.asStateFlow()
@@ -365,6 +457,9 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
     // meant it could only ever fire while the app was open. PrayerAlarmScheduler owns it now,
     // along with every other alert, so it works with the app closed.
     resolveOnboarding()
+    // Covers the launch where onboarding has already been dismissed once: the ladder is not
+    // shown, but the app still has no location and should still be listening for one.
+    if (userPrefs.selectedCity == null) startBackgroundLocationWatch()
     nameCurrentCityIfNeeded()
     startSecondTicker()
     seedTasbih()
@@ -456,23 +551,22 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
 
 
   /**
-   * Resolves the first run, preferring the device's own coordinates over everything else.
+   * Works out where the user is, device first, and keeps trying after it gives up looking.
    *
-   * The rungs, in order: a cached fix (instant), then a live one behind a visible wait, then IP
-   * geolocation, then the manual prompts. The first two are the ones that work with no network,
-   * which is the whole reason they come first.
+   * The rungs: a cached fix, then a live one behind a visible wait, then IP geolocation, then
+   * asking. The first two are the only ones that work with no network, which is why they come
+   * first and why they get the time they need.
    *
-   * This used to start at the cached fix and give up immediately if there was not one - but on a
-   * fresh install `ACCESS_FINE_LOCATION` had never been requested, so the cached read returned
-   * null without ever consulting the receiver. Offline, that meant every first launch fell
-   * through to the manual language-and-city dialog, which is exactly what the GPS path exists to
-   * avoid. Asking for the permission is therefore the first thing that happens, not something
-   * deferred until the user finds the "detect" button.
+   * Runs whenever **no location is stored**, not only on a nominal "first run". Two bugs came out
+   * of gating it on a completion flag instead: the flag was set when the user merely dismissed
+   * the welcome dialog, so an installation that never resolved a location stayed on the Makkah
+   * placeholder forever, and no later launch - outdoors, on wifi, anywhere - ever retried.
    */
   private fun resolveOnboarding() {
-    if (userPrefs.isOnboardingComplete) return
+    if (userPrefs.selectedCity != null) return
     if (!DeviceLocationProvider.hasPermission(getApplication<Application>())) {
-      _onboardingState.value = OnboardingState.NEEDS_LOCATION_PERMISSION
+      _onboardingState.value = OnboardingState.LOCATING
+      _locatingPhase.value = LocatingPhase.REQUESTING_PERMISSION
       return
     }
     startDetection()
@@ -481,40 +575,42 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
   /**
    * The permission dialog's answer, reported back by the UI.
    *
-   * A denial is not a dead end - it drops to IP geolocation, and then to the manual prompts.
+   * A denial is not a dead end, but it is worth *saying* rather than silently dropping to a city
+   * picker - rung 1 is the only offline one, and the user is the only one who can restore it.
    */
   fun onLocationPermissionResult(granted: Boolean) {
     userPrefs.hasAskedLocationPermission = true
-    if (userPrefs.isOnboardingComplete) return
+    if (userPrefs.selectedCity != null) return
     if (granted) {
       startDetection()
     } else {
-      Log.i(TAG, "location permission denied; falling back to IP geolocation")
-      fallBackWithoutDevice()
+      Log.i(TAG, "location permission denied")
+      _onboardingState.value = OnboardingState.LOCATING
+      _locatingPhase.value = LocatingPhase.PERMISSION_DENIED
+      // Still worth a try: IP geolocation needs no permission at all.
+      fallBackWithoutDevice(showPhaseOnFailure = LocatingPhase.PERMISSION_DENIED)
     }
   }
 
   /**
-   * Runs the whole device ladder as one cancellable job, with the wait on screen throughout.
+   * Runs the device rungs as one cancellable job, with the wait on screen throughout.
    *
-   * Cached fix first, then a live one. Both are inside the same job and the same visible state,
-   * because the cached attempt is not actually instant - it reverse-geocodes, which can spend
-   * eight seconds on an HTTP timeout - and a blank screen for that long is the thing being fixed.
-   *
-   * Nothing here is hidden: a cold fix genuinely takes up to a minute and may never arrive
-   * indoors, so the honest thing is to show the attempt, show how long it has been going, and
-   * offer a way out of it.
+   * Cached fix first, then a live one, both inside the same visible state - the cached attempt is
+   * not actually instant, because it reverse-geocodes and can spend eight seconds on an HTTP
+   * timeout, and a blank screen for that long is the thing being fixed.
    */
-  private fun startDetection() {
+  fun startDetection() {
     if (!DeviceLocationProvider.isLocationEnabled(getApplication<Application>())) {
-      // No amount of waiting fixes a system toggle that is off.
-      _locationServicesOff.value = true
-      Log.i(TAG, "system location is off; skipping the satellite wait")
-      fallBackWithoutDevice()
+      // No amount of waiting fixes a system toggle that is off, and quietly falling through to a
+      // city picker tells the user nothing about why. Say it, and offer the settings screen.
+      Log.i(TAG, "system location is off")
+      _onboardingState.value = OnboardingState.LOCATING
+      _locatingPhase.value = LocatingPhase.LOCATION_SERVICES_OFF
+      fallBackWithoutDevice(showPhaseOnFailure = LocatingPhase.LOCATION_SERVICES_OFF)
       return
     }
-    _locationServicesOff.value = false
-    _onboardingState.value = OnboardingState.ACQUIRING_FIX
+    _onboardingState.value = OnboardingState.LOCATING
+    _locatingPhase.value = LocatingPhase.SEARCHING
     startFixTicker()
     fixJob?.cancel()
     fixJob = viewModelScope.launch {
@@ -522,7 +618,7 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
         val app = getApplication<Application>()
         val cached = LocationRepository.detectFromDevice(app, allowSlowFix = false)
         if (cached != null) {
-          settleOn(cached)
+          settleOnDeviceFix(cached)
           return@launch
         }
         val live = LocationRepository.detectFromDevice(
@@ -530,7 +626,12 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
           allowSlowFix = true,
           fixTimeoutMs = DeviceLocationProvider.COLD_FIX_TIMEOUT_MS
         )
-        if (live != null) settleOn(live) else fallBackWithoutDevice()
+        if (live != null) {
+          settleOnDeviceFix(live)
+        } else {
+          Log.i(TAG, "no fix within ${DeviceLocationProvider.COLD_FIX_TIMEOUT_MS / 1000}s")
+          fallBackWithoutDevice(showPhaseOnFailure = LocatingPhase.NO_FIX)
+        }
       } finally {
         stopFixTicker()
       }
@@ -538,33 +639,120 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
   }
 
   /**
-   * Abandons the satellite wait at the user's request.
+   * Gives up on the visible wait at the user's request, and goes straight to the prompts.
    *
-   * Offered because a wait nobody can escape is worse than no wait at all - indoors the fix may
-   * simply never arrive, and the user knows that before the timeout does.
+   * Offered because a wait nobody can escape is worse than no wait at all: indoors the fix may
+   * simply never arrive, and the user knows that before the timeout does. The background watch
+   * keeps running regardless, so leaving here does not forfeit the GPS answer.
    */
-  fun skipFixAcquisition() {
+  fun skipToManualEntry() {
     fixJob?.cancel()
     stopFixTicker()
-    fallBackWithoutDevice()
+    _onboardingState.value = OnboardingState.REQUIRED
+    startBackgroundLocationWatch()
   }
 
-  /** The rungs below the device: IP geolocation, then asking. */
-  private fun fallBackWithoutDevice() {
+  /**
+   * The rungs below the device: IP geolocation, then asking.
+   *
+   * [showPhaseOnFailure] is the phase to sit on if the IP rung fails too - the diagnosis the
+   * acquisition screen shows, with the action that would fix it. The manual prompts follow only
+   * if the user has not already been through them once.
+   */
+  private fun fallBackWithoutDevice(showPhaseOnFailure: LocatingPhase) {
     viewModelScope.launch {
       val fromIp = if (isNetworkAvailable()) fetchIpLocation() else null
       if (fromIp != null) {
         settleOn(fromIp)
+        return@launch
+      }
+      // Rung 1 is still the best answer available; it is only slow. Keep listening for it in the
+      // background whatever the user does next, so walking outside is enough to fix this.
+      startBackgroundLocationWatch()
+      if (userPrefs.isOnboardingComplete) {
+        // Already asked once. Do not corner them with the same dialog on every launch; the
+        // location chip says it is unset, and the watch is still running.
+        _onboardingState.value = OnboardingState.NOT_NEEDED
       } else {
-        _onboardingState.value = OnboardingState.REQUIRED
+        _onboardingState.value = OnboardingState.LOCATING
+        _locatingPhase.value = showPhaseOnFailure
       }
     }
   }
 
-  /** Accepts a detected location as the answer to the first run. */
+  /**
+   * Keeps listening for a GPS fix for as long as the app has no location of its own.
+   *
+   * This is the part that makes "rely on the coordinates" true rather than aspirational. A first
+   * fix indoors with no network does not arrive in ninety seconds; it arrives when the user next
+   * steps outside. A timeout cannot wait that long, but a listener can - so the app stops
+   * *blocking* on the fix without giving up on it, and adopts it whenever it lands.
+   *
+   * Stops the moment a location is resolved, and never overrides a city the user chose by hand.
+   */
+  private fun startBackgroundLocationWatch() {
+    if (userPrefs.cityChosenManually) return
+    if (_hasResolvedLocation.value) return
+    if (locationWatchJob?.isActive == true) return
+    if (!DeviceLocationProvider.hasPermission(getApplication<Application>())) return
+    locationWatchJob = viewModelScope.launch {
+      Log.i(TAG, "watching for a GPS fix in the background")
+      LocationRepository.observeDeviceLocation(getApplication<Application>())
+        .collect { city ->
+          if (userPrefs.cityChosenManually) return@collect
+          Log.i(TAG, "background fix arrived; adopting it")
+          settleOnDeviceFix(city)
+        }
+    }
+  }
+
+  private fun stopBackgroundLocationWatch() {
+    locationWatchJob?.cancel()
+    locationWatchJob = null
+  }
+
+  /** Accepts a detected location as the answer, and stands everything else down. */
   private fun settleOn(city: CityLocation) {
     applyCity(city)
-    markOnboardingComplete()
+    userPrefs.isOnboardingComplete = true
+    _onboardingState.value = OnboardingState.NOT_NEEDED
+    stopBackgroundLocationWatch()
+  }
+
+  /**
+   * Records the device's own coordinates, which the Qibla compass measures from.
+   *
+   * Only ever called with coordinates that came off the receiver - never with an IP estimate,
+   * which names the ISP's hub and can be 150 km out, and never with a city the user typed. A
+   * compass is the one place where a rough answer is worse than an honest fallback.
+   */
+  private fun rememberDeviceLocation(city: CityLocation) {
+    _deviceLocation.value = city
+  }
+
+  /**
+   * Refreshes the device fix for the compass, without disturbing the selected city.
+   *
+   * Called when the Qibla screen opens: the bearing should be measured from where the user is
+   * standing now, and a fix from an hour and one bus ride ago is not that.
+   */
+  fun refreshDeviceLocationForQibla() {
+    if (!DeviceLocationProvider.hasPermission(getApplication<Application>())) return
+    viewModelScope.launch {
+      LocationRepository.detectFromDevice(
+        getApplication<Application>(),
+        allowSlowFix = true,
+        fixTimeoutMs = DeviceLocationProvider.COLD_FIX_TIMEOUT_MS
+      )?.let { rememberDeviceLocation(it) }
+    }
+  }
+
+  private fun settleOnDeviceFix(city: CityLocation) {
+    rememberDeviceLocation(city)
+    applyCity(city)
+    userPrefs.isOnboardingComplete = true
+    _onboardingState.value = OnboardingState.NOT_NEEDED
+    stopBackgroundLocationWatch()
   }
 
   private fun startFixTicker() {
@@ -583,10 +771,19 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
     fixTickerJob = null
   }
 
-  /** Marks the first run settled so the prompts never reappear for this installation. */
+  /**
+   * The user dismissed the welcome dialog. It records only that they have been asked - never
+   * that a location was found.
+   *
+   * Those two were the same flag once, and the cost was severe: dismissing this dialog made the
+   * app believe it knew where the user was, so it rendered "Makkah, Saudi Arabia" as fact,
+   * derived an Arabic interface from it, and never ran the GPS ladder again on any later launch.
+   * The background watch is left running, so stepping outside still fixes it.
+   */
   fun markOnboardingComplete() {
     userPrefs.isOnboardingComplete = true
     _onboardingState.value = OnboardingState.NOT_NEEDED
+    startBackgroundLocationWatch()
   }
 
   private fun isNetworkAvailable(): Boolean {
@@ -635,7 +832,12 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
     }
   }
 
+  /**
+   * The "detect" button in the city picker. Same rungs, but driven by an explicit tap, so it
+   * reports progress through [isDetectingLocation] rather than taking the screen over.
+   */
   fun autoDetectLocation() {
+    userPrefs.cityChosenManually = false
     fixJob?.cancel()
     fixJob = viewModelScope.launch {
       _isDetectingLocation.value = true
@@ -645,12 +847,26 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
         // which can be a hundred kilometres out, so it is the fallback rather than the source.
         // The full cold-fix budget applies here too: the user asked for this and can see the
         // counter, and twenty seconds gives up mid-ephemeris-download.
-        val detected = LocationRepository.detectFromDevice(
+        //
+        // The two rungs stay distinct rather than collapsing into one nullable: only the first
+        // produces coordinates good enough to point a compass with.
+        val fromDevice = LocationRepository.detectFromDevice(
           getApplication<Application>(),
           allowSlowFix = true,
           fixTimeoutMs = DeviceLocationProvider.COLD_FIX_TIMEOUT_MS
-        ) ?: fetchIpLocation()
-        detected?.let { applyCity(it) }
+        )
+        when {
+          fromDevice != null -> settleOnDeviceFix(fromDevice)
+          else -> {
+            val fromIp = fetchIpLocation()
+            if (fromIp != null) {
+              settleOn(fromIp)
+            } else {
+              // Nothing to show for it, but the watch will take the fix whenever it lands.
+              startBackgroundLocationWatch()
+            }
+          }
+        }
       } finally {
         stopFixTicker()
         _isDetectingLocation.value = false
@@ -701,6 +917,9 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
   private fun applyCity(city: CityLocation) {
     _selectedCity.value = city
     userPrefs.selectedCity = city
+    // Writing the city is what turns the Makkah placeholder into a real answer, so this is the
+    // one place that may set the flag.
+    _hasResolvedLocation.value = true
     rescheduleAlarms()
     // A fix taken offline arrives named after its own coordinates. Try to name it here rather
     // than only for the city restored at startup, so a detection that lands while the network
@@ -709,10 +928,18 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
     nameCurrentCityIfNeeded()
   }
 
+  /**
+   * The user picked a city. That is authoritative: it stops the background GPS watch, so a fix
+   * arriving later never silently overwrites a deliberate choice.
+   */
   fun selectCity(city: CityLocation) {
+    userPrefs.cityChosenManually = true
     // No refreshWeather() here: applyCity moves _selectedCity, and observeCityForWeather is
     // watching it. Calling both raced two requests for the same forecast.
     applyCity(city)
+    stopBackgroundLocationWatch()
+    userPrefs.isOnboardingComplete = true
+    _onboardingState.value = OnboardingState.NOT_NEEDED
   }
 
   fun setLanguage(language: com.example.data.localization.AppLanguage?) {

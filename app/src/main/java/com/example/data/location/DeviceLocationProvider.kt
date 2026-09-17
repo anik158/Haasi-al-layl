@@ -8,6 +8,9 @@ import android.location.LocationManager
 import android.os.Build
 import android.util.Log
 import androidx.core.content.ContextCompat
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.coroutines.resume
@@ -50,6 +53,10 @@ object DeviceLocationProvider {
    * why the wait is shown rather than hidden.
    */
   const val COLD_FIX_TIMEOUT_MS = 90_000L
+
+  /** [observeFixes] wants the first fix, not a stream of refinements. */
+  private const val WATCH_MIN_TIME_MS = 60_000L
+  private const val WATCH_MIN_DISTANCE_M = 0f
 
   fun hasPermission(context: Context): Boolean =
     ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) ==
@@ -97,6 +104,71 @@ object DeviceLocationProvider {
     nowMillis - location.time <= FRESH_FIX_MAX_AGE_MS
 
   /**
+   * Every fix the receiver produces, for as long as the flow is collected.
+   *
+   * The single-shot [requestFreshFix] is the wrong tool for the hardest case this app has: a
+   * first run, indoors, with no network and no cached fix. There the fix does not arrive in
+   * twenty seconds or in ninety - it arrives when the user next walks outside, which might be
+   * minutes later. A timeout cannot help with that; staying subscribed can.
+   *
+   * The caller is expected to collect this only while it genuinely has no location of its own,
+   * and to stop as soon as it has one. A listener left running is a real battery cost.
+   *
+   * `minTimeMs` is set to a minute rather than zero: the first fix is the one that matters and
+   * anything after it is a refinement, so there is no reason to ask the receiver for a stream.
+   */
+  @Suppress("MissingPermission")
+  fun observeFixes(context: Context): Flow<Location> = callbackFlow {
+    if (!hasPermission(context) || !isLocationEnabled(context)) {
+      close()
+      return@callbackFlow
+    }
+    val manager = context.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
+    if (manager == null) {
+      close()
+      return@callbackFlow
+    }
+
+    val listener = object : android.location.LocationListener {
+      override fun onLocationChanged(location: Location) {
+        trySend(location)
+      }
+
+      // Required on API 24-28, where the interface has no default implementations.
+      override fun onStatusChanged(p: String?, s: Int, e: android.os.Bundle?) = Unit
+      override fun onProviderEnabled(p: String) = Unit
+      override fun onProviderDisabled(p: String) = Unit
+    }
+
+    // Both providers at once, unlike requestFreshFix's either-or. Whichever answers first wins,
+    // and offline only the GPS one can answer anyway.
+    var registered = false
+    listOf(LocationManager.GPS_PROVIDER, LocationManager.NETWORK_PROVIDER).forEach { provider ->
+      if (manager.isProviderEnabled(provider)) {
+        try {
+          manager.requestLocationUpdates(
+            provider,
+            WATCH_MIN_TIME_MS,
+            WATCH_MIN_DISTANCE_M,
+            listener,
+            context.mainLooper
+          )
+          registered = true
+        } catch (e: SecurityException) {
+          Log.w(TAG, "could not watch $provider", e)
+        }
+      }
+    }
+    if (!registered) {
+      close()
+      return@callbackFlow
+    }
+
+    awaitClose { runCatching { manager.removeUpdates(listener) } }
+  }
+
+  /**
+   * Asks for one live fix, giving up after [LIVE_FIX_TIMEOUT_MS].  /**
    * Asks for one live fix, giving up after [LIVE_FIX_TIMEOUT_MS].
    *
    * Single-shot rather than continuous updates: prayer times do not change as the user walks

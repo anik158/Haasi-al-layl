@@ -58,6 +58,8 @@ import com.example.ui.theme.WarmGoldAccent
 @Composable
 fun PrayerNextHeroCard(
   schedule: DailyPrayerSchedule,
+  /** False while the location is only the Makkah placeholder; see the location chip below. */
+  hasResolvedLocation: Boolean = true,
   currentWeather: CurrentWeather?,
   temperatureFormatted: String,
   language: AppLanguage = AppLanguage.ENGLISH,
@@ -125,7 +127,14 @@ fun PrayerNextHeroCard(
               )
               Spacer(modifier = Modifier.width(6.dp))
               Text(
-                text = "${schedule.city}, ${schedule.country}",
+                // An unresolved location is a prompt, never a city name. The placeholder is
+                // Makkah, and rendering it as fact is how the app came to tell a user in
+                // Helsinki that they were in Saudi Arabia.
+                text = if (hasResolvedLocation) {
+                  "${schedule.city}, ${schedule.country}"
+                } else {
+                  LocalizationManager.getLocationNotSetLabel(language)
+                },
                 style = MaterialTheme.typography.labelMedium,
                 fontWeight = FontWeight.SemiBold,
                 color = DarkForestInk

@@ -5,6 +5,9 @@ import android.location.Geocoder
 import android.util.Log
 import com.example.data.model.CityLocation
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import java.net.HttpURLConnection
 import java.net.URL
@@ -15,7 +18,9 @@ import java.util.Locale
  * Where the app thinks the user is.
  *
  * The ladder, best first:
- *  1. The device's own GPS fix - exact, and the only rung that works with no network
+ *  1. The device's own GPS fix - exact, and the only rung that works with no network.
+ *     [detectFromDevice] is the impatient form, for when something is waiting on an answer;
+ *     [observeDeviceLocation] is the patient one, for when nothing is
  *  2. A name for those coordinates, if there is a network; otherwise the coordinates themselves
  *  3. IP geolocation, which resolves to the ISP's registered hub and can be a long way off
  *  4. Whatever city the user last chose by hand
@@ -62,6 +67,26 @@ object LocationRepository {
       timeZoneId = ZoneId.systemDefault().id
     )
   }
+
+  /**
+   * A [CityLocation] for every fix the device produces, named where a network allows it.
+   *
+   * The patient counterpart to [detectFromDevice]. Rung 1 of the ladder is the only one that
+   * works offline, and offline it can be slow enough that no timeout is the right answer - a
+   * first fix indoors may only arrive when the user next steps outside. Collect this while the
+   * app has no location of its own; stop as soon as it has one.
+   */
+  fun observeDeviceLocation(context: Context): Flow<CityLocation> =
+    DeviceLocationProvider.observeFixes(context).map { fix ->
+      val named = reverseGeocode(context, fix.latitude, fix.longitude)
+      CityLocation(
+        name = named?.first ?: formatCoordinates(fix.latitude, fix.longitude),
+        country = named?.second.orEmpty(),
+        latitude = fix.latitude,
+        longitude = fix.longitude,
+        timeZoneId = ZoneId.systemDefault().id
+      )
+    }.flowOn(Dispatchers.IO)
 
   /** Free-text place search, so the picker is not limited to the presets. Needs a network. */
   suspend fun searchPlaces(query: String): List<GeocodingResult> = withContext(Dispatchers.IO) {

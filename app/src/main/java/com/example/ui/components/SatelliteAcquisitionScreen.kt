@@ -17,6 +17,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -37,34 +40,45 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.data.localization.AppLanguage
 import com.example.data.localization.LocalizationManager
+import com.example.ui.LocatingPhase
 import com.example.ui.theme.GoldAccent
 import kotlin.math.cos
 import kotlin.math.min
 import kotlin.math.sin
 
 /**
- * The first-run wait for a satellite fix.
+ * The screen the app holds while it works out where the user is - and, when that fails, the
+ * screen that says which rung failed and what would fix it.
  *
- * This screen exists because the wait is real and cannot be engineered away. A receiver with no
- * almanac has to read the ephemeris off the satellites themselves at 50 bits per second, which
- * takes 30 to 60 seconds under open sky and may never complete indoors. The choice is between
- * hiding that behind a spinner - where it reads as a hang - and showing it: what the phone is
- * doing, how long it has been doing it, and the way out. This is the second.
+ * Two things this has to get right, both learned the hard way on a device.
  *
- * Drawn on the same night navy as the launch window, so it follows the splash screen rather than
- * flashing parchment in between.
+ * **The wait is shown, not hidden.** A receiver with no almanac reads the ephemeris off the
+ * satellites at 50 bits per second, so 30 to 60 seconds under open sky is normal and indoors it
+ * may never complete. That cannot be engineered away, so the choice is between hiding it behind a
+ * spinner - where it reads as a hang - and showing it. This is the second.
+ *
+ * **A failure is a diagnosis, not a dead end.** Every terminal [LocatingPhase] names the rung
+ * that failed and offers the action that fixes it. The first version collapsed a refused
+ * permission, a switched-off Location toggle and a genuine indoor no-fix into one manual city
+ * picker, which made all three look identical to the app never having tried at all.
+ *
+ * Drawn on the same night navy as the launch window, so it continues the splash screen rather
+ * than flashing parchment in between.
  *
  * @param elapsedSeconds counts up from zero; the honest measure of how long this has taken.
- * @param timeoutSeconds when the attempt gives up and the manual prompts take over.
+ * @param timeoutSeconds when the attempt gives up looking and starts listening in the background.
  */
 @Composable
 fun SatelliteAcquisitionScreen(
+  phase: LocatingPhase,
   elapsedSeconds: Int,
   timeoutSeconds: Int,
   language: AppLanguage,
   onEnterManually: () -> Unit,
-  modifier: Modifier = Modifier,
-  locationServicesOff: Boolean = false
+  onRetry: () -> Unit,
+  onOpenLocationSettings: () -> Unit,
+  onOpenAppSettings: () -> Unit,
+  modifier: Modifier = Modifier
 ) {
   Box(
     modifier = modifier
@@ -80,65 +94,90 @@ fun SatelliteAcquisitionScreen(
       horizontalAlignment = Alignment.CenterHorizontally,
       verticalArrangement = Arrangement.Center
     ) {
-      OrbitAnimation(modifier = Modifier.size(200.dp))
+      // The orbits keep turning through the failure phases too. The app really is still
+      // listening in the background at that point, so a frozen illustration would be a lie.
+      OrbitAnimation(modifier = Modifier.size(180.dp))
 
-      Spacer(modifier = Modifier.height(36.dp))
+      Spacer(modifier = Modifier.height(32.dp))
 
       Text(
-        text = LocalizationManager.getLocatingTitle(language),
+        text = titleFor(phase, language),
         style = MaterialTheme.typography.headlineSmall,
         fontWeight = FontWeight.SemiBold,
         color = StarlightText,
-        textAlign = TextAlign.Center
+        textAlign = TextAlign.Center,
+        modifier = Modifier.testTag("acquisition_title")
       )
 
       Spacer(modifier = Modifier.height(12.dp))
 
       Text(
-        text = LocalizationManager.getLocatingBody(language),
+        text = bodyFor(phase, language),
         style = MaterialTheme.typography.bodyMedium,
         lineHeight = 21.sp,
         color = StarlightText.copy(alpha = 0.78f),
         textAlign = TextAlign.Center
       )
 
-      Spacer(modifier = Modifier.height(28.dp))
+      // The counter belongs only to the phase that is actually measuring something. Showing
+      // "0s / 90s" while the permission dialog was up was the first thing to look broken.
+      if (phase == LocatingPhase.SEARCHING) {
+        Spacer(modifier = Modifier.height(28.dp))
 
-      // The counter. Monospaced digits would jitter less, but the default figures are tabular
-      // enough at this size and the surrounding type stays consistent with the rest of the app.
-      Text(
-        text = "${elapsedSeconds}s / ${timeoutSeconds}s",
-        style = MaterialTheme.typography.titleMedium,
-        fontWeight = FontWeight.Bold,
-        color = GoldAccent,
-        modifier = Modifier.testTag("acquisition_counter")
-      )
+        Text(
+          text = "${elapsedSeconds}s / ${timeoutSeconds}s",
+          style = MaterialTheme.typography.titleMedium,
+          fontWeight = FontWeight.Bold,
+          color = GoldAccent,
+          modifier = Modifier.testTag("acquisition_counter")
+        )
 
-      Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
-      ElapsedTrack(
-        fraction = if (timeoutSeconds <= 0) 0f else {
-          (elapsedSeconds.toFloat() / timeoutSeconds).coerceIn(0f, 1f)
-        },
-        modifier = Modifier.fillMaxWidth()
-      )
+        ElapsedTrack(
+          fraction = if (timeoutSeconds <= 0) 0f else {
+            (elapsedSeconds.toFloat() / timeoutSeconds).coerceIn(0f, 1f)
+          },
+          modifier = Modifier.fillMaxWidth()
+        )
 
-      Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
-      Text(
-        text = if (locationServicesOff) {
-          LocalizationManager.getLocationServicesOffHint(language)
-        } else {
-          LocalizationManager.getLocatingHint(language)
-        },
-        style = MaterialTheme.typography.bodySmall,
-        lineHeight = 18.sp,
-        color = StarlightText.copy(alpha = 0.6f),
-        textAlign = TextAlign.Center
-      )
+        Text(
+          text = LocalizationManager.getLocatingHint(language),
+          style = MaterialTheme.typography.bodySmall,
+          lineHeight = 18.sp,
+          color = StarlightText.copy(alpha = 0.6f),
+          textAlign = TextAlign.Center
+        )
+      }
 
-      Spacer(modifier = Modifier.height(8.dp))
+      // The action that would actually fix this phase, where there is one.
+      primaryActionFor(phase, language)?.let { (label, action) ->
+        Spacer(modifier = Modifier.height(28.dp))
+        Button(
+          onClick = when (action) {
+            PrimaryAction.RETRY -> onRetry
+            PrimaryAction.LOCATION_SETTINGS -> onOpenLocationSettings
+            PrimaryAction.APP_SETTINGS -> onOpenAppSettings
+          },
+          modifier = Modifier
+            .fillMaxWidth()
+            .height(52.dp)
+            .testTag("acquisition_primary_action"),
+          shape = RoundedCornerShape(26.dp),
+          colors = ButtonDefaults.buttonColors(
+            containerColor = GoldAccent,
+            contentColor = NightSky
+          )
+        ) {
+          Text(text = label, fontWeight = FontWeight.Bold)
+        }
+      }
 
+      Spacer(modifier = Modifier.height(4.dp))
+
+      // Always present, in every phase: the wait is never a trap.
       TextButton(
         onClick = onEnterManually,
         modifier = Modifier.testTag("acquisition_skip")
@@ -151,6 +190,40 @@ fun SatelliteAcquisitionScreen(
       }
     }
   }
+}
+
+private enum class PrimaryAction { RETRY, LOCATION_SETTINGS, APP_SETTINGS }
+
+private fun titleFor(phase: LocatingPhase, language: AppLanguage): String = when (phase) {
+  LocatingPhase.REQUESTING_PERMISSION,
+  LocatingPhase.SEARCHING -> LocalizationManager.getLocatingTitle(language)
+  LocatingPhase.LOCATION_SERVICES_OFF -> LocalizationManager.getLocationOffTitle(language)
+  LocatingPhase.PERMISSION_DENIED ->
+    LocalizationManager.getLocationPermissionDeniedTitle(language)
+  LocatingPhase.NO_FIX -> LocalizationManager.getNoFixTitle(language)
+}
+
+private fun bodyFor(phase: LocatingPhase, language: AppLanguage): String = when (phase) {
+  LocatingPhase.REQUESTING_PERMISSION -> LocalizationManager.getLocationRationale(language)
+  LocatingPhase.SEARCHING -> LocalizationManager.getLocatingBody(language)
+  LocatingPhase.LOCATION_SERVICES_OFF -> LocalizationManager.getLocationOffBody(language)
+  LocatingPhase.PERMISSION_DENIED ->
+    LocalizationManager.getLocationPermissionDeniedBody(language)
+  LocatingPhase.NO_FIX -> LocalizationManager.getNoFixBody(language)
+}
+
+private fun primaryActionFor(
+  phase: LocatingPhase,
+  language: AppLanguage
+): Pair<String, PrimaryAction>? = when (phase) {
+  // Nothing to offer: the system dialog is up, or the app is already waiting.
+  LocatingPhase.REQUESTING_PERMISSION, LocatingPhase.SEARCHING -> null
+  LocatingPhase.LOCATION_SERVICES_OFF ->
+    LocalizationManager.getOpenSettingsAction(language) to PrimaryAction.LOCATION_SETTINGS
+  LocatingPhase.PERMISSION_DENIED ->
+    LocalizationManager.getOpenSettingsAction(language) to PrimaryAction.APP_SETTINGS
+  LocatingPhase.NO_FIX ->
+    LocalizationManager.getTryAgainAction(language) to PrimaryAction.RETRY
 }
 
 /**
@@ -220,7 +293,7 @@ private fun OrbitAnimation(modifier: Modifier = Modifier) {
   }
 }
 
-/** One inclined ring plus the satellite riding it, and the trail it has just swept. */
+/** One inclined ring plus the satellite riding it. */
 private fun DrawScope.drawOrbit(
   centre: Offset,
   unit: Float,

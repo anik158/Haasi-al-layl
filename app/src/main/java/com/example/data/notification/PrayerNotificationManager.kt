@@ -35,25 +35,17 @@ object PrayerNotificationManager {
   private const val PREFIX_FORBIDDEN = "haasi_forbidden_alerts"
   private const val PREFIX_TAHAJJUD = "haasi_tahajjud_alerts"
   private const val PRAYER_CHANNEL_VERSION = 2
-  private const val ALARM_CHANNEL_VERSION = 1
   private const val FORBIDDEN_CHANNEL_VERSION = 2
   private const val TAHAJJUD_CHANNEL_VERSION = 1
 
   const val CHANNEL_PRAYER_ID = "${PREFIX_PRAYER}_v$PRAYER_CHANNEL_VERSION"
-
-  /**
-   * The channel used when a full-screen alarm will handle the alert.
-   *
-   * Deliberately silent and vibration-free: [AlarmSoundPlayer] owns the tone in that case, and a
-   * channel that also played it would double it up. A separate channel rather than a new version
-   * of [CHANNEL_PRAYER_ID] because the audible one is still needed - it is the fallback whenever
-   * full-screen intents are not permitted, and it is what the five-minute nudge uses. Replacing
-   * it would have cost every user their per-channel settings for no gain.
-   */
-  const val CHANNEL_ALARM_ID = "${PREFIX_ALARM}_v$ALARM_CHANNEL_VERSION"
   const val CHANNEL_FORBIDDEN_ID = "${PREFIX_FORBIDDEN}_v$FORBIDDEN_CHANNEL_VERSION"
   const val CHANNEL_TAHAJJUD_ID = "${PREFIX_TAHAJJUD}_v$TAHAJJUD_CHANNEL_VERSION"
 
+  // PREFIX_ALARM is retained with no live channel so that ensureChannels' sweep *deletes* the
+  // silent "Prayer Alarm" channel shipped briefly alongside the full-screen alarm. It was a bad
+  // idea: it relied on the alarm screen for all audio, and when Android downgraded the
+  // full-screen intent to a heads-up banner the result was an alert with no sound at all.
   private val CHANNEL_PREFIXES =
     listOf(PREFIX_PRAYER, PREFIX_ALARM, PREFIX_FORBIDDEN, PREFIX_TAHAJJUD)
 
@@ -108,18 +100,6 @@ object PrayerNotificationManager {
         enableVibration(true)
         enableLights(true)
         setSound(sound, audioAttributes)
-      },
-      // Silent by design: the full-screen alarm plays the tone itself. IMPORTANCE_HIGH is still
-      // required - the system only honours a full-screen intent from a high-importance channel.
-      NotificationChannel(
-        CHANNEL_ALARM_ID,
-        "Prayer Alarm",
-        NotificationManager.IMPORTANCE_HIGH
-      ).apply {
-        description = "Full-screen alarm when a prayer time begins"
-        enableVibration(false)
-        enableLights(true)
-        setSound(null, null)
       },
       // Its own channel so a 3am alert can be silenced without losing Fajr.
       NotificationChannel(
@@ -196,16 +176,25 @@ object PrayerNotificationManager {
   }
 
   /**
-   * Posts an alert as a full-screen alarm: a silent notification whose only job is to carry a
-   * full-screen intent, plus [AlarmSoundPlayer] ringing behind the screen it opens.
+   * Posts an alert that is audible on its own **and** carries a full-screen intent.
    *
-   * The notification cannot be dismissed by a swipe and has no timeout, because the ringing has
-   * to be stopped deliberately - an alarm a sleeper can brush away is not an alarm. Its "Stop"
-   * action is there for the case where the full-screen intent is downgraded to a heads-up banner,
-   * which the system does whenever the screen is already on and unlocked.
+   * The ordering of responsibilities here was got wrong once and is worth stating plainly. The
+   * first attempt put the alert on a silent channel and left all the audio to
+   * [AlarmSoundPlayer], started from the receiver. That works only if the alarm screen actually
+   * opens - and Android downgrades a full-screen intent to a heads-up banner whenever the device
+   * is unlocked and in use, while a MediaPlayer started from a `BroadcastReceiver` has no live
+   * component keeping its process alive once `onReceive` returns. Both failed together, and the
+   * alert made no sound at all.
+   *
+   * So the notification carries the sound, exactly as it did before the alarm screen existed -
+   * the system plays it, which needs nothing of this process. The full-screen intent is a
+   * *addition*: when it is honoured, [com.example.PrayerAlarmActivity] opens, cancels this
+   * notification and takes over with a looping tone that rings until it is stopped. When it is
+   * not honoured, the behaviour is exactly the previously working notification.
    */
   private fun showFullScreenAlarm(
     context: Context,
+    channelId: String,
     notificationId: Int,
     title: String,
     body: String,
@@ -229,16 +218,18 @@ object PrayerNotificationManager {
       PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
 
-    val builder = NotificationCompat.Builder(context, CHANNEL_ALARM_ID)
+    val builder = NotificationCompat.Builder(context, channelId)
       .setSmallIcon(R.drawable.ic_notification)
       .setContentTitle(title)
       .setContentText(body)
       .setStyle(NotificationCompat.BigTextStyle().bigText(body))
       .setPriority(NotificationCompat.PRIORITY_MAX)
       .setCategory(NotificationCompat.CATEGORY_ALARM)
-      .setOngoing(true)
-      .setAutoCancel(false)
-      .setSilent(true)
+      .setAutoCancel(true)
+      // Channels own the sound from API 26+; below that the builder is the only path, and
+      // minSdk is 24. Either way the *system* plays it, so it does not depend on this process
+      // surviving the broadcast.
+      .setSound(alertSoundUri(context))
       .setContentIntent(fullScreen)
       .setFullScreenIntent(fullScreen, /* highPriority = */ true)
       // A broadcast, not the activity: when the system downgrades the full-screen intent to a
@@ -264,12 +255,9 @@ object PrayerNotificationManager {
         )
       )
 
-    AlarmSoundPlayer.start(context)
     try {
       NotificationManagerCompat.from(context).notify(notificationId, builder.build())
     } catch (e: SecurityException) {
-      // Without POST_NOTIFICATIONS there is no vehicle for the full-screen intent, so the screen
-      // will not appear - but the tone is already ringing, which is the part that matters most.
       android.util.Log.w(TAG, "notify denied - POST_NOTIFICATIONS not granted", e)
     }
   }
@@ -295,46 +283,17 @@ object PrayerNotificationManager {
     }
 
     // The whole point of a Tahajjud reminder is to wake someone in the last third of the night,
-    // which a row in the notification shade cannot do. Same treatment as a prayer time.
-    if (canUseFullScreenAlarm(context)) {
-      showFullScreenAlarm(
-        context = context,
-        notificationId = AlertIds.TAHAJJUD,
-        title = title,
-        body = message,
-        prayer = null,
-        language = language
-      )
-      return
-    }
-
-    val intent = Intent(context, MainActivity::class.java).apply {
-      flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-    }
-    val pendingIntent = PendingIntent.getActivity(
-      context, 0, intent,
-      PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+    // which a row in the notification shade cannot do. Same treatment as a prayer time, on its
+    // own channel so a 3am alert can still be silenced without losing Fajr.
+    showFullScreenAlarm(
+      context = context,
+      channelId = CHANNEL_TAHAJJUD_ID,
+      notificationId = AlertIds.TAHAJJUD,
+      title = title,
+      body = message,
+      prayer = null,
+      language = language
     )
-
-    val builder = NotificationCompat.Builder(context, CHANNEL_TAHAJJUD_ID)
-      .setSmallIcon(R.drawable.ic_notification)
-      .setContentTitle(title)
-      .setContentText(message)
-      .setStyle(NotificationCompat.BigTextStyle().bigText(message))
-      .setPriority(NotificationCompat.PRIORITY_HIGH)
-      .setCategory(NotificationCompat.CATEGORY_ALARM)
-      // Channels own the sound on API 26+; below that the builder is the only path, and
-      // minSdk is 24.
-      .setSound(alertSoundUri(context))
-      .setAutoCancel(true)
-      .setContentIntent(pendingIntent)
-
-    val notificationManager = NotificationManagerCompat.from(context)
-    try {
-      notificationManager.notify(AlertIds.TAHAJJUD, builder.build())
-    } catch (e: SecurityException) {
-      android.util.Log.w(TAG, "notify denied - POST_NOTIFICATIONS not granted", e)
-    }
   }
 
   /**
@@ -358,12 +317,18 @@ object PrayerNotificationManager {
     val title = PrayerAlertMessages.title(prayer, kind, language, timeFormatted)
     val body = PrayerAlertMessages.body(prayer, kind, language)
 
-    // The prayer time itself is an alarm - a screen that rings until it is stopped. The
-    // five-minute nudge stays an ordinary notification: taking over the display twice for one
-    // prayer would make the reminder something to turn off rather than something to welcome.
-    if (kind == PrayerAlertKind.AT_TIME && canUseFullScreenAlarm(context)) {
+    // The prayer time itself gets the alarm screen; the five-minute nudge stays an ordinary
+    // notification, because taking over the display twice for one prayer would make the reminder
+    // something to switch off rather than something to welcome.
+    //
+    // Note there is no canUseFullScreenAlarm() gate here. Attaching a full-screen intent that
+    // the system declines to honour costs nothing - it simply shows as a heads-up notification,
+    // which is what this is anyway. Gating on it meant a different, quieter code path on exactly
+    // the devices where the alarm most needed to be loud.
+    if (kind == PrayerAlertKind.AT_TIME) {
       showFullScreenAlarm(
         context = context,
+        channelId = CHANNEL_PRAYER_ID,
         notificationId = AlertIds.prayer(prayer, kind),
         title = title,
         body = body,

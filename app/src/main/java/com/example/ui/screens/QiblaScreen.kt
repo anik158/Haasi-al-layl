@@ -61,6 +61,14 @@ import kotlin.math.sin
 @Composable
 fun QiblaScreen(
   currentCity: CityLocation,
+  /**
+   * Whether [currentCity] is the device's own position rather than a fallback.
+   *
+   * A Qibla bearing is a property of where the needle physically is. Computing it from a city the
+   * user merely selected points the arrow from somewhere they are not standing, so when that is
+   * what is happening the screen has to say so instead of implying a precision it lacks.
+   */
+  usesDeviceLocation: Boolean = true,
   compassHeading: Float,
   qiblaBearing: Float,
   distanceToKaabaKm: Int,
@@ -132,7 +140,12 @@ fun QiblaScreen(
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
-              text = "${currentCity.name}, ${currentCity.country}",
+              text = if (usesDeviceLocation) {
+                LocalizationManager.getQiblaFromDeviceLabel(language)
+              } else {
+                LocalizationManager.getQiblaFromCityLabel(language)
+                  .replace("%s", currentCity.displayName)
+              },
               style = MaterialTheme.typography.bodySmall,
               fontWeight = FontWeight.SemiBold,
               color = MaterialTheme.colorScheme.primary

@@ -1029,6 +1029,116 @@ object LocalizationManager {
   }
 
   // ---------------------------------------------------------------------------------------------
+  // Locating diagnoses
+  //
+  // Each of these names the rung that failed and pairs with an action that would fix it. They
+  // exist because the first version collapsed every failure - permission refused, Location
+  // switched off, genuine indoor no-fix - into the same manual city picker, so on the device they
+  // were indistinguishable from each other and from the app simply not trying.
+  // ---------------------------------------------------------------------------------------------
+
+  /** Shown behind the system permission dialog, so the dialog is not context-free. */
+  fun getLocationRationale(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "يحتاج التطبيق إلى الوصول إلى الموقع ليقرأ إحداثياتك من الأقمار الصناعية. لا يترك ذلك هاتفك أبدًا."
+    AppLanguage.BENGALI -> "স্যাটেলাইট থেকে আপনার অবস্থান পড়তে অ্যাপটির লোকেশন অনুমতি প্রয়োজন। এই তথ্য কখনও আপনার ফোন ছেড়ে যায় না।"
+    AppLanguage.SPANISH -> "La app necesita permiso de ubicación para leer tus coordenadas de los satélites. Nunca salen de tu teléfono."
+    AppLanguage.PORTUGUESE -> "A app precisa de permissão de localização para ler as suas coordenadas dos satélites. Nunca saem do seu telefone."
+    AppLanguage.ENGLISH -> "The app needs location access to read your coordinates from the satellites. They never leave your phone."
+  }
+
+  fun getLocationPermissionDeniedTitle(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "لا يمكن الوصول إلى الموقع"
+    AppLanguage.BENGALI -> "লোকেশনের অনুমতি নেই"
+    AppLanguage.SPANISH -> "Sin acceso a la ubicación"
+    AppLanguage.PORTUGUESE -> "Sem acesso à localização"
+    AppLanguage.ENGLISH -> "No location access"
+  }
+
+  fun getLocationPermissionDeniedBody(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "بدون هذا الإذن لا يمكن استخدام قارئ الأقمار الصناعية، وهو الطريقة الوحيدة لمعرفة موقعك دون إنترنت. يمكنك منحه من الإعدادات، أو اختيار مدينتك بنفسك."
+    AppLanguage.BENGALI -> "এই অনুমতি ছাড়া স্যাটেলাইট রিসিভার ব্যবহার করা যায় না — ইন্টারনেট ছাড়া অবস্থান জানার এটিই একমাত্র উপায়। সেটিংস থেকে অনুমতি দিতে পারেন, বা নিজে শহর বেছে নিতে পারেন।"
+    AppLanguage.SPANISH -> "Sin este permiso no se puede usar el receptor de satélites, que es la única forma de saber dónde estás sin internet. Puedes concederlo en los ajustes, o elegir tu ciudad a mano."
+    AppLanguage.PORTUGUESE -> "Sem esta permissão não é possível usar o recetor de satélites, a única forma de saber onde está sem internet. Pode concedê-la nas definições, ou escolher a sua cidade manualmente."
+    AppLanguage.ENGLISH -> "Without it the satellite receiver cannot be used, and that is the only way to know where you are with no internet. You can grant it in settings, or pick your city by hand."
+  }
+
+  fun getLocationOffTitle(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "خدمة الموقع مغلقة"
+    AppLanguage.BENGALI -> "লোকেশন বন্ধ আছে"
+    AppLanguage.SPANISH -> "La ubicación está desactivada"
+    AppLanguage.PORTUGUESE -> "A localização está desativada"
+    AppLanguage.ENGLISH -> "Location is switched off"
+  }
+
+  fun getLocationOffBody(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "مفتاح الموقع في إعدادات الجهاز مغلق، فلا يمكن للتطبيق قراءة الأقمار الصناعية. الانتظار لن يغيّر ذلك."
+    AppLanguage.BENGALI -> "ডিভাইস সেটিংসে লোকেশন সুইচ বন্ধ, তাই অ্যাপ স্যাটেলাইট পড়তে পারছে না। অপেক্ষা করলে এটি ঠিক হবে না।"
+    AppLanguage.SPANISH -> "El interruptor de ubicación del sistema está apagado, así que la app no puede leer los satélites. Esperar no lo cambiará."
+    AppLanguage.PORTUGUESE -> "O interruptor de localização do sistema está desligado, pelo que a app não consegue ler os satélites. Esperar não resolve."
+    AppLanguage.ENGLISH -> "Your device's Location switch is off, so the app cannot read the satellites. Waiting will not change that."
+  }
+
+  fun getOpenSettingsAction(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "فتح الإعدادات"
+    AppLanguage.BENGALI -> "সেটিংস খুলুন"
+    AppLanguage.SPANISH -> "Abrir ajustes"
+    AppLanguage.PORTUGUESE -> "Abrir definições"
+    AppLanguage.ENGLISH -> "Open settings"
+  }
+
+  fun getNoFixTitle(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "لم تصل إشارة بعد"
+    AppLanguage.BENGALI -> "এখনও সংকেত আসেনি"
+    AppLanguage.SPANISH -> "Todavía sin señal"
+    AppLanguage.PORTUGUESE -> "Ainda sem sinal"
+    AppLanguage.ENGLISH -> "No signal yet"
+  }
+
+  /** The honest version: it is still trying, and going outside is what actually fixes this. */
+  fun getNoFixBody(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "لم يصل تحديد الموقع بعد — وهذا شائع داخل المباني. التطبيق سيواصل الاستماع في الخلفية وسيضبط موقعك تلقائيًا بمجرد وصول الإشارة. حتى ذلك الحين يمكنك اختيار مدينتك."
+    AppLanguage.BENGALI -> "এখনও অবস্থান পাওয়া যায়নি — ঘরের ভিতরে এটি স্বাভাবিক। অ্যাপটি পটভূমিতে শুনতে থাকবে এবং সংকেত এলেই নিজে থেকে আপনার অবস্থান ঠিক করে নেবে। ততক্ষণ আপনি শহর বেছে নিতে পারেন।"
+    AppLanguage.SPANISH -> "Aún no hay posición, lo que es normal en interiores. La app seguirá escuchando en segundo plano y fijará tu ubicación en cuanto llegue la señal. Hasta entonces puedes elegir tu ciudad."
+    AppLanguage.PORTUGUESE -> "Ainda não há posição, o que é normal dentro de casa. A app continuará a escutar em segundo plano e definirá a sua localização assim que o sinal chegar. Até lá pode escolher a sua cidade."
+    AppLanguage.ENGLISH -> "No position yet, which is normal indoors. The app will keep listening in the background and set your location by itself as soon as a signal arrives. Until then you can pick your city."
+  }
+
+  fun getTryAgainAction(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "إعادة المحاولة"
+    AppLanguage.BENGALI -> "আবার চেষ্টা করুন"
+    AppLanguage.SPANISH -> "Reintentar"
+    AppLanguage.PORTUGUESE -> "Tentar novamente"
+    AppLanguage.ENGLISH -> "Try again"
+  }
+
+  /** The location chip when the app has no location of its own. Never a city name. */
+  fun getLocationNotSetLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "اضبط موقعك"
+    AppLanguage.BENGALI -> "অবস্থান নির্ধারণ করুন"
+    AppLanguage.SPANISH -> "Define tu ubicación"
+    AppLanguage.PORTUGUESE -> "Defina a sua localização"
+    AppLanguage.ENGLISH -> "Set your location"
+  }
+
+  /** On the Qibla screen: the bearing is measured from the phone, not from the chosen city. */
+  fun getQiblaFromDeviceLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "من موقعك الحالي"
+    AppLanguage.BENGALI -> "আপনার বর্তমান অবস্থান থেকে"
+    AppLanguage.SPANISH -> "Desde tu posición actual"
+    AppLanguage.PORTUGUESE -> "Da sua posição atual"
+    AppLanguage.ENGLISH -> "From your current position"
+  }
+
+  /** And the warning when it is not: a bearing from elsewhere points elsewhere. */
+  fun getQiblaFromCityLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "محسوب من %s — شغّل الموقع للحصول على اتجاه دقيق"
+    AppLanguage.BENGALI -> "%s থেকে গণনা করা — সঠিক দিকের জন্য লোকেশন চালু করুন"
+    AppLanguage.SPANISH -> "Calculado desde %s: activa la ubicación para una dirección exacta"
+    AppLanguage.PORTUGUESE -> "Calculado a partir de %s: ative a localização para uma direção exata"
+    AppLanguage.ENGLISH -> "Measured from %s — turn on location for an exact direction"
+  }
+
+  // ---------------------------------------------------------------------------------------------
   // First-run satellite acquisition
   //
   // The wait is shown rather than hidden, because a cold GPS fix genuinely takes up to a minute
@@ -1068,14 +1178,6 @@ object LocalizationManager {
     AppLanguage.SPANISH -> "Introducir mi ubicación"
     AppLanguage.PORTUGUESE -> "Introduzir a minha localização"
     AppLanguage.ENGLISH -> "Enter my location instead"
-  }
-
-  fun getLocationServicesOffHint(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "خدمة الموقع مغلقة في إعدادات الجهاز."
-    AppLanguage.BENGALI -> "ডিভাইসের সেটিংসে লোকেশন বন্ধ আছে।"
-    AppLanguage.SPANISH -> "La ubicación está desactivada en los ajustes del dispositivo."
-    AppLanguage.PORTUGUESE -> "A localização está desativada nas definições do dispositivo."
-    AppLanguage.ENGLISH -> "Location is switched off in your device settings."
   }
 
   fun getTestAlarmAction(language: AppLanguage): String = when (language) {

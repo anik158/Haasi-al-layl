@@ -78,6 +78,12 @@ fun HomeScreen(
   schedule: DailyPrayerSchedule,
   weatherState: WeatherUiState,
   currentCity: CityLocation,
+  /**
+   * False while [currentCity] is only the Makkah placeholder. The location chip must say so
+   * rather than announcing a city the user is not in - which is exactly what it did, to a user
+   * in Helsinki.
+   */
+  hasResolvedLocation: Boolean = true,
   formatTemperature: (Double) -> String,
   /**
    * Today's verse and narration. Passed in rather than read from a constant here, so the card
@@ -235,6 +241,7 @@ fun HomeScreen(
       item {
         PrayerNextHeroCard(
           schedule = schedule,
+          hasResolvedLocation = hasResolvedLocation,
           currentWeather = currentWeather,
           temperatureFormatted = tempFormatted,
           language = language,

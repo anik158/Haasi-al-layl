@@ -52,6 +52,19 @@ class UserPreferences(context: Context) {
       prefs.edit().putBoolean(KEY_ASKED_LOCATION_PERMISSION, value).commit()
     }
 
+  /**
+   * True once the user has picked a city by hand.
+   *
+   * The distinction matters because the app keeps a GPS listener running while it has no location
+   * of its own, and adopts the first fix that arrives. A city the user chose deliberately must
+   * not be silently overwritten by that - so this is the flag that stops the watch.
+   */
+  var cityChosenManually: Boolean
+    get() = prefs.getBoolean(KEY_CITY_CHOSEN_MANUALLY, false)
+    set(value) {
+      prefs.edit().putBoolean(KEY_CITY_CHOSEN_MANUALLY, value).commit()
+    }
+
   /** An explicit language choice. Null means "follow the location". */
   var manualLanguage: AppLanguage?
     get() = prefs.getString(KEY_MANUAL_LANGUAGE, null)?.let { AppLanguage.fromCode(it) }
@@ -100,6 +113,15 @@ class UserPreferences(context: Context) {
     get() = prefs.getString(KEY_LAST_SCHEDULE_SIGNATURE, "") ?: ""
     set(value) = writeString(KEY_LAST_SCHEDULE_SIGNATURE, value)
 
+  /**
+   * The location the app has actually resolved, or null when it has none.
+   *
+   * Null is meaningful and must stay that way: the UI falls back to Makkah as a *placeholder* so
+   * there is something to render, and code that cannot tell the placeholder from a real answer
+   * will confidently tell a user in Helsinki that they are in Makkah - and derive an Arabic
+   * interface from it. Read [com.example.ui.HaasiAlLaylViewModel.hasResolvedLocation] rather than
+   * inferring anything from the rendered city.
+   */
   var selectedCity: CityLocation?
     get() {
       val name = prefs.getString(KEY_CITY_NAME, null) ?: return null
@@ -143,6 +165,7 @@ class UserPreferences(context: Context) {
     const val KEY_ONBOARDING_COMPLETE = "onboarding_complete"
     const val KEY_ASKED_NOTIF_PERMISSION = "asked_notification_permission"
     const val KEY_ASKED_LOCATION_PERMISSION = "asked_location_permission"
+    const val KEY_CITY_CHOSEN_MANUALLY = "city_chosen_manually"
     const val KEY_MANUAL_LANGUAGE = "manual_language"
     const val KEY_CALCULATION_METHOD = "calculation_method"
     const val KEY_MADHAB = "madhab"
