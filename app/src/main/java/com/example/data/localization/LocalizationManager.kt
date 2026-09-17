@@ -1078,6 +1078,37 @@ object LocalizationManager {
     AppLanguage.ENGLISH -> "Your device's Location switch is off, so the app cannot read the satellites. Waiting will not change that."
   }
 
+  fun getGpsOffTitle(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "الأقمار الصناعية غير مفعّلة"
+    AppLanguage.BENGALI -> "জিপিএস চালু নেই"
+    AppLanguage.SPANISH -> "El GPS no está activado"
+    AppLanguage.PORTUGUESE -> "O GPS não está ativado"
+    AppLanguage.ENGLISH -> "GPS is not switched on"
+  }
+
+  /**
+   * The message for the case that reads as a broken app: Location on, GPS off.
+   *
+   * It opens by acknowledging that location *is* on, because the user has very likely just
+   * turned it on and being told to do it again is what makes software feel stupid.
+   */
+  fun getGpsOffBody(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "خدمة الموقع مفعّلة، لكن جهازك يحدّد الموقع من شبكات الواي فاي وأبراج الاتصال فقط — وهذا لا يعمل بدون إنترنت. اضغط بالأسفل لتفعيل الدقة العالية، وهي التي تشغّل قارئ الأقمار الصناعية."
+    AppLanguage.BENGALI -> "লোকেশন চালু আছে, কিন্তু আপনার ডিভাইস কেবল ওয়াই-ফাই ও মোবাইল টাওয়ার থেকে অবস্থান নির্ণয় করছে — ইন্টারনেট ছাড়া এটি কাজ করে না। নিচে চাপ দিয়ে উচ্চ নির্ভুলতা চালু করুন, এতেই স্যাটেলাইট রিসিভার চালু হয়।"
+    AppLanguage.SPANISH -> "La ubicación está activada, pero tu dispositivo se posiciona solo con Wi-Fi y antenas móviles, y eso no funciona sin internet. Toca abajo para activar la alta precisión, que es lo que enciende el receptor de satélites."
+    AppLanguage.PORTUGUESE -> "A localização está ativada, mas o seu dispositivo posiciona-se apenas por Wi-Fi e antenas móveis, e isso não funciona sem internet. Toque abaixo para ativar a alta precisão, que é o que liga o recetor de satélites."
+    AppLanguage.ENGLISH -> "Location is on, but your device is positioning from Wi-Fi and mobile masts only, and that does not work without internet. Tap below to turn on high accuracy, which is what switches the satellite receiver on."
+  }
+
+  /** The one-tap action. Names the outcome, not the setting, because the setting is per-OEM. */
+  fun getEnablePositioningAction(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "تفعيل الدقة العالية"
+    AppLanguage.BENGALI -> "উচ্চ নির্ভুলতা চালু করুন"
+    AppLanguage.SPANISH -> "Activar alta precisión"
+    AppLanguage.PORTUGUESE -> "Ativar alta precisão"
+    AppLanguage.ENGLISH -> "Turn on high accuracy"
+  }
+
   fun getOpenSettingsAction(language: AppLanguage): String = when (language) {
     AppLanguage.ARABIC -> "فتح الإعدادات"
     AppLanguage.BENGALI -> "সেটিংস খুলুন"
@@ -1196,13 +1227,19 @@ object LocalizationManager {
     AppLanguage.ENGLISH -> "Alert scheduled. Close the app and wait one minute."
   }
 
-  /** Shown on manufacturers whose power management drops alarms by default. */
+  /**
+   * Shown on manufacturers whose power management drops alarms by default.
+   *
+   * Names the exact switches, because none of them can be set from code and vague advice leaves
+   * the user hunting. On ColorOS the decisive one is **Battery > App battery usage > Run in
+   * Background**: the default "Smart background running" is what silences a Fajr alarm.
+   */
   fun getOemBatteryHint(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "على أجهزة أوبو وشاومي وفيفو: فعّل التشغيل التلقائي، وأوقف تحسين وضع السكون، وثبّت التطبيق في قائمة التطبيقات الأخيرة."
-    AppLanguage.BENGALI -> "OPPO/Xiaomi/Vivo ডিভাইসে: অটো-লঞ্চ চালু করুন, Sleep standby optimisation বন্ধ করুন, এবং রিসেন্ট অ্যাপে অ্যাপটি লক করুন।"
-    AppLanguage.SPANISH -> "En OPPO/Xiaomi/Vivo: activa el inicio automático, desactiva la optimización de reposo y bloquea la app en Recientes."
-    AppLanguage.PORTUGUESE -> "Em OPPO/Xiaomi/Vivo: ative o arranque automático, desative a otimização de suspensão e bloqueie a app em Recentes."
-    AppLanguage.ENGLISH -> "On OPPO/Xiaomi/Vivo: enable auto-launch, turn off Sleep standby optimisation, and lock the app in Recents."
+    AppLanguage.ARABIC -> "على أجهزة أوبو وشاومي وفيفو: اختر «التشغيل في الخلفية» بدلًا من «التشغيل الذكي في الخلفية»، وفعّل التشغيل التلقائي في مدير بدء التشغيل، وأوقف تحسين وضع السكون، وثبّت التطبيق في قائمة التطبيقات الأخيرة."
+    AppLanguage.BENGALI -> "OPPO/Xiaomi/Vivo ডিভাইসে: “Smart Background Running”-এর বদলে “Run in Background” বেছে নিন, Startup Manager-এ অটো-লঞ্চ চালু করুন, Sleep standby optimisation বন্ধ করুন, এবং রিসেন্ট অ্যাপে অ্যাপটি লক করুন।"
+    AppLanguage.SPANISH -> "En OPPO/Xiaomi/Vivo: elige «Ejecutar en segundo plano» en lugar de «Ejecución inteligente», activa el inicio automático en el Gestor de inicio, desactiva la optimización de reposo y bloquea la app en Recientes."
+    AppLanguage.PORTUGUESE -> "Em OPPO/Xiaomi/Vivo: escolha «Executar em segundo plano» em vez de «Execução inteligente», ative o arranque automático no Gestor de arranque, desative a otimização de suspensão e bloqueie a app em Recentes."
+    AppLanguage.ENGLISH -> "On OPPO/Xiaomi/Vivo: set Run in Background rather than Smart background running, enable auto-launch in Startup Manager, turn off Sleep standby optimisation, and lock the app in Recents."
   }
 
   fun getFollowUpAlertsLabel(language: AppLanguage): String = when (language) {

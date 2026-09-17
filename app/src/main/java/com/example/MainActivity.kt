@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
@@ -135,23 +136,27 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
     viewModel.onLocationPermissionResult(granted.values.any { it })
   }
 
-  // Asked on the first launch, not deferred to the "detect" button. Deferring it was the bug:
-  // with the permission never requested, the cached-fix read returned null without consulting
-  // the receiver at all, so an offline first run went straight to the manual prompts and the
-  // GPS path - the only one that works with no network - was never even tried.
+  // Asked once on the first launch, and deliberately **not** tied to the blocking ladder any
+  // more. Two reasons. Deferring it to the "detect" button was the original bug - the cached-fix
+  // read returns null before it consults the receiver without this permission, so an offline
+  // first run never tried GPS at all. But gating it on the ladder was the opposite mistake: when
+  // there is a network the app resolves by IP in under a second and shows no ladder, and it still
+  // needs this permission for the Qibla compass and for the background fix that upgrades the IP
+  // estimate to real coordinates.
   var hasLaunchedLocationRequest by rememberSaveable { mutableStateOf(false) }
-  LaunchedEffect(locatingPhase, onboardingState) {
-    val asking = onboardingState == OnboardingState.LOCATING &&
-      locatingPhase == LocatingPhase.REQUESTING_PERMISSION
-    if (asking && !hasLaunchedLocationRequest) {
-      hasLaunchedLocationRequest = true
-      firstRunLocationLauncher.launch(
-        arrayOf(
-          Manifest.permission.ACCESS_FINE_LOCATION,
-          Manifest.permission.ACCESS_COARSE_LOCATION
-        )
-      )
+  LaunchedEffect(Unit) {
+    if (hasLaunchedLocationRequest) return@LaunchedEffect
+    val prefs = UserPreferences(context)
+    if (DeviceLocationProvider.hasPermission(context) || prefs.hasAskedLocationPermission) {
+      return@LaunchedEffect
     }
+    hasLaunchedLocationRequest = true
+    firstRunLocationLauncher.launch(
+      arrayOf(
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.ACCESS_COARSE_LOCATION
+      )
+    )
   }
 
   // The notification prompt waits until the location question has settled, so it does not land
@@ -177,6 +182,35 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
     }
   }
 
+  // The one-tap positioning dialog. An IntentSender can only be launched from an Activity, so
+  // the ViewModel emits the PendingIntent and this consumes it.
+  val locationSettingsResolution by viewModel.locationSettingsResolution
+    .collectAsStateWithLifecycle()
+  val positioningDialogLauncher = rememberLauncherForActivityResult(
+    contract = ActivityResultContracts.StartIntentSenderForResult()
+  ) {
+    // The result code is not trusted: the user may have changed the switches by hand inside the
+    // dialog, or backed out of it. Re-read them instead.
+    viewModel.onReturnedFromLocationSettings()
+  }
+  LaunchedEffect(locationSettingsResolution) {
+    val resolution = locationSettingsResolution ?: return@LaunchedEffect
+    viewModel.clearLocationSettingsResolution()
+    runCatching {
+      positioningDialogLauncher.launch(
+        IntentSenderRequest.Builder(resolution.intentSender).build()
+      )
+    }.onFailure {
+      // Play Services handed back something unlaunchable. The settings screen still works.
+      runCatching {
+        context.startActivity(
+          Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        )
+      }
+    }
+  }
+
   // The "detect" button in the city picker, which means something different from the first-run
   // request: on a grant it starts a detection rather than answering the onboarding handshake.
   val detectLocationLauncher = rememberLauncherForActivityResult(
@@ -194,8 +228,11 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
     onboardingState == OnboardingState.LOCATING
   ) {
     SatelliteAcquisitionScreen(
+      // RESOLVING shows the animation alone. An online first run passes through it in under a
+      // second, and a flash of "turn on location" for someone the network can already place is
+      // exactly the noise this avoids.
       phase = if (onboardingState == OnboardingState.RESOLVING) {
-        LocatingPhase.SEARCHING
+        LocatingPhase.STARTING
       } else {
         locatingPhase
       },
@@ -204,7 +241,11 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
       language = currentLanguage,
       onEnterManually = { viewModel.skipToManualEntry() },
       onRetry = { viewModel.startDetection() },
-      onOpenLocationSettings = {
+      onEnablePositioning = {
+        // Ask Play Services for the one-tap dialog. When it cannot supply one - already
+        // satisfied, or Play Services absent - nothing is emitted, so open the settings screen
+        // as well rather than leaving the button feeling dead.
+        viewModel.requestLocationSettingsResolution()
         runCatching {
           context.startActivity(
             Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)

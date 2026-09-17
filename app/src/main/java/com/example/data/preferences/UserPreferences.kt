@@ -65,6 +65,21 @@ class UserPreferences(context: Context) {
       prefs.edit().putBoolean(KEY_CITY_CHOSEN_MANUALLY, value).commit()
     }
 
+  /**
+   * True when [selectedCity] came off the device's own receiver, rather than from IP geolocation.
+   *
+   * The app settles on an IP estimate immediately when there is a network, because it answers in
+   * under a second and needs no permission - there is no reason to put a waiting screen in front
+   * of anyone who is online. But an IP estimate names the ISP's registered hub and can be 150 km
+   * out, so it is a placeholder for the real thing: this flag is what keeps the background GPS
+   * watch running afterwards, so the estimate is upgraded to exact coordinates when a fix lands.
+   */
+  var locationFromDevice: Boolean
+    get() = prefs.getBoolean(KEY_LOCATION_FROM_DEVICE, false)
+    set(value) {
+      prefs.edit().putBoolean(KEY_LOCATION_FROM_DEVICE, value).commit()
+    }
+
   /** An explicit language choice. Null means "follow the location". */
   var manualLanguage: AppLanguage?
     get() = prefs.getString(KEY_MANUAL_LANGUAGE, null)?.let { AppLanguage.fromCode(it) }
@@ -166,6 +181,7 @@ class UserPreferences(context: Context) {
     const val KEY_ASKED_NOTIF_PERMISSION = "asked_notification_permission"
     const val KEY_ASKED_LOCATION_PERMISSION = "asked_location_permission"
     const val KEY_CITY_CHOSEN_MANUALLY = "city_chosen_manually"
+    const val KEY_LOCATION_FROM_DEVICE = "location_from_device"
     const val KEY_MANUAL_LANGUAGE = "manual_language"
     const val KEY_CALCULATION_METHOD = "calculation_method"
     const val KEY_MADHAB = "madhab"

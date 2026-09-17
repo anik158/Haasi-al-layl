@@ -76,7 +76,7 @@ fun SatelliteAcquisitionScreen(
   language: AppLanguage,
   onEnterManually: () -> Unit,
   onRetry: () -> Unit,
-  onOpenLocationSettings: () -> Unit,
+  onEnablePositioning: () -> Unit,
   onOpenAppSettings: () -> Unit,
   modifier: Modifier = Modifier
 ) {
@@ -97,6 +97,12 @@ fun SatelliteAcquisitionScreen(
       // The orbits keep turning through the failure phases too. The app really is still
       // listening in the background at that point, so a frozen illustration would be a lie.
       OrbitAnimation(modifier = Modifier.size(180.dp))
+
+      // STARTING is the animation and nothing else - a continuation of the launch screen. An
+      // online first run resolves by IP in well under a second, and flashing "turn on location"
+      // at someone whose location the network has already answered is how the previous version
+      // earned the complaint.
+      if (phase == LocatingPhase.STARTING) return@Column
 
       Spacer(modifier = Modifier.height(32.dp))
 
@@ -158,7 +164,7 @@ fun SatelliteAcquisitionScreen(
         Button(
           onClick = when (action) {
             PrimaryAction.RETRY -> onRetry
-            PrimaryAction.LOCATION_SETTINGS -> onOpenLocationSettings
+            PrimaryAction.ENABLE_POSITIONING -> onEnablePositioning
             PrimaryAction.APP_SETTINGS -> onOpenAppSettings
           },
           modifier = Modifier
@@ -192,21 +198,25 @@ fun SatelliteAcquisitionScreen(
   }
 }
 
-private enum class PrimaryAction { RETRY, LOCATION_SETTINGS, APP_SETTINGS }
+private enum class PrimaryAction { RETRY, ENABLE_POSITIONING, APP_SETTINGS }
 
 private fun titleFor(phase: LocatingPhase, language: AppLanguage): String = when (phase) {
+  LocatingPhase.STARTING,
   LocatingPhase.REQUESTING_PERMISSION,
   LocatingPhase.SEARCHING -> LocalizationManager.getLocatingTitle(language)
   LocatingPhase.LOCATION_SERVICES_OFF -> LocalizationManager.getLocationOffTitle(language)
+  LocatingPhase.GPS_PROVIDER_OFF -> LocalizationManager.getGpsOffTitle(language)
   LocatingPhase.PERMISSION_DENIED ->
     LocalizationManager.getLocationPermissionDeniedTitle(language)
   LocatingPhase.NO_FIX -> LocalizationManager.getNoFixTitle(language)
 }
 
 private fun bodyFor(phase: LocatingPhase, language: AppLanguage): String = when (phase) {
+  LocatingPhase.STARTING -> ""
   LocatingPhase.REQUESTING_PERMISSION -> LocalizationManager.getLocationRationale(language)
   LocatingPhase.SEARCHING -> LocalizationManager.getLocatingBody(language)
   LocatingPhase.LOCATION_SERVICES_OFF -> LocalizationManager.getLocationOffBody(language)
+  LocatingPhase.GPS_PROVIDER_OFF -> LocalizationManager.getGpsOffBody(language)
   LocatingPhase.PERMISSION_DENIED ->
     LocalizationManager.getLocationPermissionDeniedBody(language)
   LocatingPhase.NO_FIX -> LocalizationManager.getNoFixBody(language)
@@ -216,10 +226,15 @@ private fun primaryActionFor(
   phase: LocatingPhase,
   language: AppLanguage
 ): Pair<String, PrimaryAction>? = when (phase) {
-  // Nothing to offer: the system dialog is up, or the app is already waiting.
-  LocatingPhase.REQUESTING_PERMISSION, LocatingPhase.SEARCHING -> null
-  LocatingPhase.LOCATION_SERVICES_OFF ->
-    LocalizationManager.getOpenSettingsAction(language) to PrimaryAction.LOCATION_SETTINGS
+  // Nothing to offer: still deciding, the system dialog is up, or the app is already waiting.
+  LocatingPhase.STARTING,
+  LocatingPhase.REQUESTING_PERMISSION,
+  LocatingPhase.SEARCHING -> null
+  // Both of these go through the same one-tap positioning dialog. The master toggle and the GPS
+  // provider are different switches, but the dialog turns on whatever is needed for high
+  // accuracy, so there is no reason to make the user work out which one they are missing.
+  LocatingPhase.LOCATION_SERVICES_OFF, LocatingPhase.GPS_PROVIDER_OFF ->
+    LocalizationManager.getEnablePositioningAction(language) to PrimaryAction.ENABLE_POSITIONING
   LocatingPhase.PERMISSION_DENIED ->
     LocalizationManager.getOpenSettingsAction(language) to PrimaryAction.APP_SETTINGS
   LocatingPhase.NO_FIX ->

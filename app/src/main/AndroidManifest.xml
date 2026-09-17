@@ -25,6 +25,12 @@
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
     <!-- Turning the screen on for a Fajr alarm. -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- So Settings' reliability panel can offer a single "Allow" rather than sending the user to
+         find this app in a list of every installed one. Play restricts this permission to a short
+         list of permitted use cases; "alarms or reminders as the app's core functionality" is one,
+         and is what this app is - it holds USE_EXACT_ALARM for the same reason. OEM power managers
+         that ignore the direct dialog fall back to the full list. -->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 
     <uses-feature android:name="android.hardware.sensor.compass" android:required="false" />
     <uses-feature android:name="android.hardware.sensor.accelerometer" android:required="false" />

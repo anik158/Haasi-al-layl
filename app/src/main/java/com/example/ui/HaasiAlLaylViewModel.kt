@@ -16,6 +16,7 @@ import com.example.data.dua.IslamicContentProvider
 import com.example.data.location.DeviceLocationProvider
 import com.example.data.location.GeocodingResult
 import com.example.data.location.LocationRepository
+import com.example.data.location.LocationSettingsResolver
 import com.example.data.local.HaasiAlLaylDatabase
 import com.example.data.local.PrayerLogEntity
 import com.example.data.local.TasbihEntity
@@ -97,6 +98,9 @@ enum class OnboardingState {
  * a genuine indoor no-fix were indistinguishable from each other on the device.
  */
 enum class LocatingPhase {
+  /** Deciding, for the fraction of a second that takes. Shows the animation and nothing else. */
+  STARTING,
+
   /** The system permission dialog is up. No counter: nothing is being measured yet. */
   REQUESTING_PERMISSION,
 
@@ -105,6 +109,16 @@ enum class LocatingPhase {
 
   /** The system Location toggle is off. No amount of waiting fixes that. */
   LOCATION_SERVICES_OFF,
+
+  /**
+   * Location is on, but the **satellite** receiver is not - the phone is positioning from Wi-Fi
+   * and cell towers only, which offline produces nothing.
+   *
+   * Its own phase because it is the case where "turn on location" is actively misleading advice:
+   * the user has already done that, and what is left to change sits under a per-manufacturer
+   * positioning-mode submenu. Hence the one-tap resolution offered with it.
+   */
+  GPS_PROVIDER_OFF,
 
   /** Permission was refused, so rung 1 is unavailable until the user changes their mind. */
   PERMISSION_DENIED,
@@ -166,7 +180,7 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
   )
   val onboardingState: StateFlow<OnboardingState> = _onboardingState.asStateFlow()
 
-  private val _locatingPhase = MutableStateFlow(LocatingPhase.SEARCHING)
+  private val _locatingPhase = MutableStateFlow(LocatingPhase.STARTING)
   val locatingPhase: StateFlow<LocatingPhase> = _locatingPhase.asStateFlow()
 
   // App Language (Auto location-based by default, can be overridden)
@@ -565,12 +579,25 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
    */
   private fun resolveOnboarding() {
     if (userPrefs.selectedCity != null) return
-    if (!DeviceLocationProvider.hasPermission(getApplication<Application>())) {
-      _onboardingState.value = OnboardingState.LOCATING
-      _locatingPhase.value = LocatingPhase.REQUESTING_PERMISSION
-      return
+    viewModelScope.launch {
+      // When there is a network, the IP rung answers in under a second and needs no permission
+      // at all - so take it and get out of the way. Putting the satellite wait first meant an
+      // online user was shown a "turn on location" screen to solve a problem the network had
+      // already solved; the background watch then upgrades this to real coordinates.
+      val fromIp = if (isNetworkAvailable()) fetchIpLocation() else null
+      if (fromIp != null) {
+        settleOn(fromIp)
+        return@launch
+      }
+      // No network, or the IP rung failed. Now the receiver is the only answer there is, and it
+      // is worth waiting for visibly.
+      if (!DeviceLocationProvider.hasPermission(getApplication<Application>())) {
+        _onboardingState.value = OnboardingState.LOCATING
+        _locatingPhase.value = LocatingPhase.REQUESTING_PERMISSION
+      } else {
+        startDetection()
+      }
     }
-    startDetection()
   }
 
   /**
@@ -601,7 +628,8 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
    * timeout, and a blank screen for that long is the thing being fixed.
    */
   fun startDetection() {
-    if (!DeviceLocationProvider.isLocationEnabled(getApplication<Application>())) {
+    val app = getApplication<Application>()
+    if (!DeviceLocationProvider.isLocationEnabled(app)) {
       // No amount of waiting fixes a system toggle that is off, and quietly falling through to a
       // city picker tells the user nothing about why. Say it, and offer the settings screen.
       Log.i(TAG, "system location is off")
@@ -610,13 +638,22 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
       fallBackWithoutDevice(showPhaseOnFailure = LocatingPhase.LOCATION_SERVICES_OFF)
       return
     }
+    if (!DeviceLocationProvider.isGpsProviderEnabled(app)) {
+      // Location is on and GPS is not. Waiting would burn ninety seconds on a receiver that is
+      // switched off and then report "no signal", which is both true and useless - the user
+      // would reasonably conclude the app is broken, having already turned location on.
+      Log.i(TAG, "location is on but the GPS provider is off")
+      _onboardingState.value = OnboardingState.LOCATING
+      _locatingPhase.value = LocatingPhase.GPS_PROVIDER_OFF
+      fallBackWithoutDevice(showPhaseOnFailure = LocatingPhase.GPS_PROVIDER_OFF)
+      return
+    }
     _onboardingState.value = OnboardingState.LOCATING
     _locatingPhase.value = LocatingPhase.SEARCHING
     startFixTicker()
     fixJob?.cancel()
     fixJob = viewModelScope.launch {
       try {
-        val app = getApplication<Application>()
         val cached = LocationRepository.detectFromDevice(app, allowSlowFix = false)
         if (cached != null) {
           settleOnDeviceFix(cached)
@@ -693,7 +730,11 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
    */
   private fun startBackgroundLocationWatch() {
     if (userPrefs.cityChosenManually) return
-    if (_hasResolvedLocation.value) return
+    // Deliberately NOT gated on hasResolvedLocation. An IP estimate resolves the location well
+    // enough to render, but it names the ISP's hub and can be 150 km out - so the watch keeps
+    // running to upgrade it to real coordinates. It stops only once those have arrived, or once
+    // the user picks a city by hand.
+    if (userPrefs.locationFromDevice) return
     if (locationWatchJob?.isActive == true) return
     if (!DeviceLocationProvider.hasPermission(getApplication<Application>())) return
     locationWatchJob = viewModelScope.launch {
@@ -707,17 +748,65 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
     }
   }
 
+  /**
+   * A [android.app.PendingIntent] for the system positioning dialog, when one is available.
+   *
+   * Emitted rather than acted on, because only an Activity can launch an IntentSender. Null
+   * whenever there is nothing to resolve or Play Services is absent, which the UI answers by
+   * falling back to the settings screen.
+   */
+  private val _locationSettingsResolution = MutableStateFlow<android.app.PendingIntent?>(null)
+  val locationSettingsResolution: StateFlow<android.app.PendingIntent?> =
+    _locationSettingsResolution.asStateFlow()
+
+  /** Asks Play Services for the one-tap dialog. The UI launches whatever comes back. */
+  fun requestLocationSettingsResolution() {
+    viewModelScope.launch {
+      _locationSettingsResolution.value =
+        LocationSettingsResolver.resolutionForHighAccuracy(getApplication<Application>())
+    }
+  }
+
+  /** Consumed by the UI once it has launched, so the same dialog is not shown twice. */
+  fun clearLocationSettingsResolution() {
+    _locationSettingsResolution.value = null
+  }
+
+  /**
+   * Called when the user comes back from the positioning dialog or the settings screen.
+   *
+   * Re-reads the switches rather than trusting the dialog's result code: the user may have
+   * changed things by hand, or changed their mind halfway.
+   */
+  fun onReturnedFromLocationSettings() {
+    if (userPrefs.selectedCity != null && userPrefs.locationFromDevice) return
+    val app = getApplication<Application>()
+    if (DeviceLocationProvider.hasPermission(app) &&
+      DeviceLocationProvider.isLocationEnabled(app) &&
+      DeviceLocationProvider.isGpsProviderEnabled(app)
+    ) {
+      startDetection()
+    }
+  }
+
   private fun stopBackgroundLocationWatch() {
     locationWatchJob?.cancel()
     locationWatchJob = null
   }
 
-  /** Accepts a detected location as the answer, and stands everything else down. */
+  /**
+   * Accepts an **IP** estimate as the working answer.
+   *
+   * Good enough to stop blocking on - the app is usable, prayer times are within a few minutes -
+   * but not good enough to be final, so the background watch is left running to replace it with
+   * real coordinates, and [UserPreferences.locationFromDevice] stays false to say so.
+   */
   private fun settleOn(city: CityLocation) {
+    userPrefs.locationFromDevice = false
     applyCity(city)
     userPrefs.isOnboardingComplete = true
     _onboardingState.value = OnboardingState.NOT_NEEDED
-    stopBackgroundLocationWatch()
+    startBackgroundLocationWatch()
   }
 
   /**
@@ -752,7 +841,9 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
     }
   }
 
+  /** Accepts real receiver coordinates: the top of the ladder, and the end of the search. */
   private fun settleOnDeviceFix(city: CityLocation) {
+    userPrefs.locationFromDevice = true
     rememberDeviceLocation(city)
     applyCity(city)
     userPrefs.isOnboardingComplete = true

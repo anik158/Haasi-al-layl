@@ -451,12 +451,28 @@ fun SettingsSheet(
               ok = batteryUnrestricted,
               fixLabel = LocalizationManager.getReliabilityFixAction(language),
               onFix = {
-                // The list, not the direct request: the direct one is Play-policy restricted.
-                runCatching {
+                // The direct request, which is a single "Allow" instead of finding this app in a
+                // list of every installed app. Play restricts ACTION_REQUEST_IGNORE_BATTERY_-
+                // OPTIMIZATIONS to a short list of permitted use cases, of which "alarms and
+                // reminders as core functionality" is one - and that is literally what this app
+                // is; it holds USE_EXACT_ALARM for the same reason.
+                //
+                // Falls back to the full list if the direct dialog is refused by the OEM, which
+                // some heavily skinned ROMs do.
+                val direct = runCatching {
                   context.startActivity(
-                    Intent(android.provider.Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+                    Intent(android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
+                      .setData(android.net.Uri.fromParts("package", context.packageName, null))
                       .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                   )
+                }
+                if (direct.isFailure) {
+                  runCatching {
+                    context.startActivity(
+                      Intent(android.provider.Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    )
+                  }
                 }
               }
             )

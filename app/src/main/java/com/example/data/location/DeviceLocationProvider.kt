@@ -84,6 +84,22 @@ object DeviceLocationProvider {
   }
 
   /**
+   * Whether the **satellite** receiver specifically is switched on.
+   *
+   * Distinct from [isLocationEnabled], and the distinction matters more than it looks. On ColorOS
+   * the master Location toggle can be on while the GPS provider is off, so the phone positions
+   * from Wi-Fi and cell towers alone. Online that is merely imprecise; offline it produces no fix
+   * at all - while looking, to the user, exactly like location being enabled. "Turn on location"
+   * is unhelpful advice to someone who has already done it.
+   */
+  fun isGpsProviderEnabled(context: Context): Boolean {
+    val manager = context.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
+      ?: return false
+    return runCatching { manager.isProviderEnabled(LocationManager.GPS_PROVIDER) }
+      .getOrDefault(false)
+  }
+
+  /**
    * The best fix already on the device, without waking any radio. Instant, and usually enough:
    * a phone that has been outdoors at all today has a usable fix sitting here.
    */

@@ -122,7 +122,12 @@ dependencies {
   implementation(libs.logging.interceptor)
   implementation(libs.moshi.kotlin)
   implementation(libs.okhttp)
-  // implementation(libs.play.services.location)
+  // Used for exactly one thing: SettingsClient.checkLocationSettings, which produces the
+  // one-tap system dialog that turns on high-accuracy positioning (GPS included) without
+  // sending the user into Settings to hunt for it. The *fused provider* is still deliberately
+  // unused - it answers from Wi-Fi and cell towers, which needs connectivity and would defeat
+  // the whole offline premise. Fixes keep coming from the platform LocationManager.
+  implementation(libs.play.services.location)
   implementation(libs.retrofit)
   testImplementation(libs.androidx.compose.ui.test.junit4)
   testImplementation(libs.androidx.core)
