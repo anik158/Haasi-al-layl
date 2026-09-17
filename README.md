@@ -73,9 +73,14 @@ of the night, each with its own opt-in notification channel.
 The app asks as little as possible, and asks it **once per installation**:
 
 - **Location** is resolved down a ladder, best first: the device's own GPS fix, then IP
-  geolocation, then whatever city was last chosen by hand.
-- **Language** is derived from the resolved country. No prompts are shown at all when detection
-  succeeds; the language prompt and city picker appear only when it cannot.
+  geolocation, then whatever city was chosen by hand.
+- **Location permission is requested on the first launch**, before anything else, and the first run
+  waits on the answer behind a screen that shows what it is doing. This is not politeness deferred
+  — without the permission the cached-fix read returns null *before it consults the receiver*, so
+  an app that waits for you to find a "Detect" button has not tried the GPS rung at all.
+- **Language** is derived from the resolved country — and until a location is actually resolved, it
+  follows your **device's** language rather than a default city's. No prompts are shown at all when
+  detection succeeds; the language prompt and city picker appear only when the whole ladder fails.
 - Every choice — language, city, calculation method, madhab — is written to `SharedPreferences`, so
   it survives process death, restarts and reboots until the app is uninstalled.
 
@@ -94,21 +99,42 @@ location simply reads **`60.17°N, 24.94°E`**, and the name is filled in on the
 connectivity, without touching the coordinates.
 
 Two honest limits. Normally the phone downloads satellite orbit data over the internet (A-GPS) to
-get a fix in seconds; without that it must read the same data off the satellites themselves, which
-takes tens of seconds to a few minutes and needs a view of the sky. And indoors a fix often never
-arrives at all. So the last good fix is cached and preferred on launch, and a live fix is requested
-only when you tap **Detect** — where a spinner runs, because it can take twenty seconds.
+get a fix in seconds; without that it must read the same data off the satellites themselves at 50
+bits per second, which takes 30 to 60 seconds with a view of the sky. And indoors a fix often never
+arrives at all.
+
+Neither limit can be engineered away, so the app is built around them rather than pretending
+otherwise:
+
+- **The wait is shown, not hidden.** A cached fix is preferred and instant. When there is none, a
+  screen with three orbiting satellites and a **second counter** holds the first run for up to 90
+  seconds — enough for a genuine cold fix, where the usual 20-second timeout gives up mid-download.
+  There is always a way out of it.
+- **Giving up looking is not giving up.** Past 90 seconds the app stops *blocking* on the fix and
+  keeps a listener running instead, for as long as it has no location of its own. A first fix
+  indoors arrives when you next step outside, not on a timer — so stepping outside is enough, and
+  the app sets your location by itself when it happens. A city you pick by hand stands that down,
+  so a deliberate choice is never silently overwritten.
+- **A failure says which rung failed.** Location switched off, permission refused, and a genuine
+  indoor no-fix each get their own message and the action that fixes it — rather than all three
+  quietly becoming the same city picker.
 
 **Testing it offline:** get one fix outdoors first (tap Detect with Location on), then turn data
-off entirely. The app will keep using those coordinates, prayer times stay exact, and the location
-will show as coordinates rather than a name until connectivity returns. Starting from a fresh
-install with no network *and* no cached fix is the one case that falls through to the manual city
-picker — there is nothing to compute from until a fix exists.
+off entirely. The app keeps using those coordinates, prayer times stay exact, and the location
+shows as coordinates rather than a name until connectivity returns. A fresh install with no network
+*and* no cached fix is the hard case: the counter will run out, and the app will then wait — take
+the phone outside and it resolves itself without you doing anything.
 
 > IP geolocation remains as a fallback, and it is the *rough* one — it reports where your ISP
 > registered the address block, which is frequently a regional hub. It placed a Helsinki user in
 > Turku, 150 km away, which shifts prayer times by 8 to 11 minutes. GPS exists precisely to avoid
 > that; if both are unavailable, set the city by hand.
+>
+> It is never used to point the **Qibla compass**. Prayer times may reasonably follow a city you
+> chose — checking Makkah's times from Dhaka is a fair thing to want — but a bearing is a property
+> of where the phone physically is, so the compass uses the device's own coordinates and says so.
+> When it has to fall back to a selected city, it tells you that instead of implying a precision it
+> does not have.
 
 **Finding a city by hand.** The picker is not limited to the built-in presets: typing searches
 Open-Meteo's geocoding service — the same family as the weather API — so Faridpur, or any town in

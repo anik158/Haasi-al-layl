@@ -54,8 +54,15 @@ object DeviceLocationProvider {
    */
   const val COLD_FIX_TIMEOUT_MS = 90_000L
 
-  /** [observeFixes] wants the first fix, not a stream of refinements. */
-  private const val WATCH_MIN_TIME_MS = 60_000L
+  /**
+   * Zero, deliberately, even though [observeFixes] only wants one fix.
+   *
+   * A non-zero `minTime` lets the provider power the receiver down between updates, and a
+   * duty-cycled receiver is the last thing you want while *acquiring* a first fix - that is
+   * precisely the case this watch exists for. The cost is bounded by cancelling the watch the
+   * moment a fix arrives, not by asking for fewer of them.
+   */
+  private const val WATCH_MIN_TIME_MS = 0L
   private const val WATCH_MIN_DISTANCE_M = 0f
 
   fun hasPermission(context: Context): Boolean =
@@ -112,10 +119,9 @@ object DeviceLocationProvider {
    * minutes later. A timeout cannot help with that; staying subscribed can.
    *
    * The caller is expected to collect this only while it genuinely has no location of its own,
-   * and to stop as soon as it has one. A listener left running is a real battery cost.
-   *
-   * `minTimeMs` is set to a minute rather than zero: the first fix is the one that matters and
-   * anything after it is a refinement, so there is no reason to ask the receiver for a stream.
+   * and to stop as soon as it has one. A listener left running is a real battery cost, and that
+   * - rather than throttling the updates - is how the cost is kept bounded; see
+   * [WATCH_MIN_TIME_MS].
    */
   @Suppress("MissingPermission")
   fun observeFixes(context: Context): Flow<Location> = callbackFlow {

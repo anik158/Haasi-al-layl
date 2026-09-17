@@ -445,6 +445,7 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
   private var fixJob: Job? = null
   private var fixTickerJob: Job? = null
   private var locationWatchJob: Job? = null
+  private var qiblaFixJob: Job? = null
 
   private val _placeResults = MutableStateFlow<List<GeocodingResult>>(emptyList())
   val placeResults: StateFlow<List<GeocodingResult>> = _placeResults.asStateFlow()
@@ -738,7 +739,11 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
    */
   fun refreshDeviceLocationForQibla() {
     if (!DeviceLocationProvider.hasPermission(getApplication<Application>())) return
-    viewModelScope.launch {
+    // One at a time. This waits up to ninety seconds, and the screen it serves is a tab the user
+    // can leave and re-enter freely - without the guard, a few taps would stack up several
+    // concurrent fix requests all waiting on the same receiver.
+    if (qiblaFixJob?.isActive == true) return
+    qiblaFixJob = viewModelScope.launch {
       LocationRepository.detectFromDevice(
         getApplication<Application>(),
         allowSlowFix = true,

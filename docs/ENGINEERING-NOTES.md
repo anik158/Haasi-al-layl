@@ -13,8 +13,15 @@ Last updated: 17 September 2026.
 - **There is no Gradle wrapper in this repo.** `gradlew` and `gradle-wrapper.jar` are absent; only
   `gradle-wrapper.properties` is checked in. CI provisions Gradle 9.3.1 explicitly. Locally you
   need Gradle 9.3.1 installed, or you must generate a wrapper yourself.
-- **There is no local Gradle on the dev machine used for most of this work**, so CI has been the
-  only compile check. Treat every push as unverified until the Actions run is green.
+- **There is no local Gradle, Android SDK or Kotlin compiler on the dev machine**, so nothing
+  can be compiled locally: CI is the *only* compiler this project has. Treat every push as
+  unverified until the Actions run is green, and note that a green run is also the only way an
+  APK exists to install.
+- **`gh` is installed** (`C:\Program Files\GitHub CLI\gh.exe`, not on PATH in every shell). The
+  fast loop after a push is `gh run watch <id> --exit-status`, then
+  `gh run view <id> --log-failed` on a failure. The repository is private, so the browser cannot
+  read the Actions page without auth; use `gh`.
+- **CI only builds on pushes to `build-apk-release`.** `main` alone produces no APK. Push both.
 - `debug.keystore` is gitignored but the debug build type is configured to sign with it. CI
   generates one with `keytool`; locally you must too, or `assembleDebug` fails.
 - `google-services.json` is absent and that is fine — `missingGoogleServicesStrategy = WARN`.
@@ -104,6 +111,52 @@ that goes quiet after four seconds cannot wake anyone for Fajr.
 
 ### Location
 
+#### The placeholder city is not an answer, and three bugs came from forgetting it
+
+`UserPreferences.selectedCity` is **null** when the app has no location, and the ViewModel falls
+back to `PRESET_CITIES[0]` - Makkah - so there is something to render. Nothing could tell that
+placeholder from a resolved location, and it was consequently believed three times over: the
+location chip announced "Makkah, Saudi Arabia" to a user in Helsinki, the interface language was
+derived from that country so every first-run screen came up in Arabic, and the Qibla compass
+measured its bearing *from* it.
+
+- **Read `hasResolvedLocation`, never infer from the rendered city.** It is the only thing that
+  distinguishes the two.
+- **Language falls back to the device locale** until a location is genuinely known.
+  `AppLanguage.fromCode` already yields English for anything unrecognised, so
+  `fromCode(Locale.getDefault().language)` is the whole rule - and a far better guess than a
+  placeholder's country.
+- **"Has been onboarded" and "has a location" are different flags.** They were one, and dismissing
+  the welcome dialog set it, so an installation that never resolved a location believed it had
+  one: permanently on Makkah, with the ladder never re-run on any later launch.
+  `isOnboardingComplete` now records only that the user has been *asked*; the ladder runs whenever
+  `selectedCity == null`, on every launch.
+
+#### The Qibla compass measures from the device, not from the selected city
+
+`qiblaOrigin` is `_deviceLocation ?: _selectedCity`. Prayer times legitimately follow a chosen
+city - checking Makkah's times from Dhaka is a reasonable thing to want - but a bearing is a
+property of where the needle physically is, so a chosen city points the arrow from somewhere the
+user is not standing. `_deviceLocation` is populated **only** from real receiver coordinates,
+never from IP geolocation, which names the ISP's hub and can be 150 km out. When the fallback is
+in use, `qiblaUsesDeviceLocation` is false and the screen says so.
+
+#### A first fix indoors is not on a timer
+
+Ninety seconds is still a timeout, and a cold fix indoors with no network does not arrive on one -
+it arrives when the user next steps outside. So the app stops *blocking* on the fix without giving
+up on it: `LocationRepository.observeDeviceLocation` runs for as long as there is no location, and
+the first fix to land is adopted. Two things keep that honest:
+
+- `userPrefs.cityChosenManually` stands the watch down, so a deliberate choice is never silently
+  overwritten by a fix arriving later.
+- `WATCH_MIN_TIME_MS` is **zero**. A non-zero `minTime` lets the provider duty-cycle the receiver,
+  which is the opposite of what acquiring a first fix needs. The battery cost is bounded by
+  cancelling on the first fix, not by asking for fewer.
+
+The watch only runs while the ViewModel is alive. Acquiring location with the app closed would
+need background location permission, which is not worth the Play review burden here.
+
 - **Coordinates and the city name are separate problems.** GPS gives coordinates with no network;
   only the *name* needs a lookup. Offline the location renders as `23.81°N, 90.41°E` and the times
   are still exact. `applyCity` re-attempts the naming for any coordinates-only city, so a fix taken
@@ -186,6 +239,11 @@ Worth reading before assuming a report is a device problem.
 | **Offline first run ignored GPS entirely and asked for a language and a city** | The whole GPS ladder was in place and correct, but `ACCESS_FINE_LOCATION` was only requested when the user tapped Detect. `lastKnownFix` opens with `if (!hasPermission(context)) return null`, so on a fresh install the cached read returned null *without consulting the receiver*, and with no network there was no IP rung either — straight to the manual dialog. Read as "GPS does not work"; it had never been asked to |
 | **Weather stayed on Makkah until a manual refresh** | `refreshWeather()` was called once in the ViewModel's `init`, against the city restored from disk — Makkah on a fresh install — and `applyCity` never re-ran it. Detection landed a moment later and moved the city, the header, and the prayer times, but not the forecast. A city collector owns it now |
 | **"Ayah of the day" never changed** | `IslamicContentProvider.DAILY_INSPIRATION` was a single constant. One value cannot be "of the day"; it is now a pool selected by epoch day |
+| **First-run screens rendered in Arabic** | Language was derived from `_selectedCity.country`, and on a fresh install that is the Makkah placeholder. The screens explaining the location permission were therefore in Arabic for a user whose location was not yet known |
+| **A user who dismissed the welcome dialog was stuck on Makkah forever** | Dismissing it set `isOnboardingComplete`, which also gated the GPS ladder - so no later launch retried, anywhere, ever. The ladder is gated on `selectedCity == null` now |
+| **The Qibla needle pointed from Makkah to Makkah** | Bearing and distance were derived from `_selectedCity`, i.e. the placeholder: a bearing of nothing, 0 km away. They come from `qiblaOrigin` now |
+| **The full-screen alarm made no sound at all** | Self-inflicted, and worth the detail. The alert went on a *silent* channel with all audio left to a `MediaPlayer` started from the receiver. Android downgrades a full-screen intent to a heads-up banner whenever the device is unlocked and in use, so the screen often never opened - and a `MediaPlayer` started from a `BroadcastReceiver` has no live component keeping its process alive once `onReceive` returns. Both failed together. The notification carries the sound again; the full-screen intent is purely additive |
+| **`Missing '}'` and `Unclosed comment` from a scripted edit** | An insertion appended its own anchor twice, leaving a stray `/**` *inside* a KDoc. **Kotlin block comments nest**, unlike C, so the second opener swallowed the rest of the file. A bracket-balance check that resolves each `/*` to the first following `*/` cannot see this - it has to track depth |
 
 ### The meta-lesson
 
@@ -217,21 +275,33 @@ repo should assert its match count.
 
 ### The first-run state machine
 
-`OnboardingState` is the contract between the ViewModel's ladder and what MainActivity puts on
-screen. Read them together or neither makes sense.
+`OnboardingState` says what is on screen; `LocatingPhase` carries the detail behind
+`LOCATING`. Read them together or neither makes sense.
 
-| State | What is on screen | Leaves when |
+| State | What is on screen |
+| --- | --- |
+| `RESOLVING` | the acquisition screen; resolves within a frame |
+| `LOCATING` | the acquisition screen, rendering the current `LocatingPhase` |
+| `REQUIRED` | `WelcomeDialog` - language, then the city picker |
+| `NOT_NEEDED` | the app |
+
+| Phase | Shows | Offers |
 | --- | --- | --- |
-| `RESOLVING` | the acquisition screen | `init` decides, within a frame — except when location is off, where it covers the IP lookup too |
-| `NEEDS_LOCATION_PERMISSION` | the acquisition screen, under the system dialog | the user answers, via `onLocationPermissionResult` |
-| `ACQUIRING_FIX` | the acquisition screen, counter running | a fix lands, the 90s budget expires, or the user taps the escape |
-| `REQUIRED` | `WelcomeDialog` — language, then the city picker | the user dismisses it |
-| `NOT_NEEDED` | the app | never; also the initial state for a returning user |
+| `REQUESTING_PERMISSION` | why location is needed, **no counter** | nothing; the system dialog is up |
+| `SEARCHING` | the counter, the elapsed bar, the indoor hint | nothing; it is working |
+| `LOCATION_SERVICES_OFF` | that the system toggle is off | `ACTION_LOCATION_SOURCE_SETTINGS` |
+| `PERMISSION_DENIED` | that rung 1 is unavailable and why it matters | app details settings |
+| `NO_FIX` | that it is still listening in the background | Try again |
 
-Two things are easy to break here. The **notification** prompt is gated on `NOT_NEEDED`, so it
-cannot land on top of the acquisition screen or the welcome dialog — two system dialogs racing into
-one frame means one is dropped. And the cached-fix attempt lives *inside* `ACQUIRING_FIX` rather
-than before it, because it reverse-geocodes and can spend eight seconds on an HTTP timeout.
+**Every terminal phase is a diagnosis.** The first version collapsed a refused permission, a
+switched-off Location toggle and a genuine indoor no-fix into the same manual city picker, which
+made all three indistinguishable from the app never having tried - which is exactly how it was
+reported. Each phase now names the rung that failed and offers the action that fixes it.
+
+Two things that are easy to break here. The **counter belongs only to `SEARCHING`** - showing
+"0s / 90s" behind the permission dialog was the first thing that looked broken on the device. And
+the **notification prompt is gated on `NOT_NEEDED`**, so it cannot land on top of the acquisition
+screen or the welcome dialog; two system dialogs racing into one frame means one is dropped.
 
 ## Device reality (OPPO / ColorOS, the main test device)
 
