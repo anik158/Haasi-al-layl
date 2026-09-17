@@ -127,6 +127,19 @@ enum class LocatingPhase {
   NO_FIX
 }
 
+/**
+ * How to get the user to the switch that turns the satellite receiver on.
+ *
+ * [Dialog] is the one-tap system dialog from Play Services, which switches on whatever high
+ * accuracy needs without any per-manufacturer settings hunt. [SettingsScreen] is the fallback for
+ * devices without Play Services - and the two are kept distinct precisely so the UI never does
+ * both, which is what a nullable PendingIntent led to.
+ */
+sealed interface PositioningRequest {
+  data class Dialog(val pendingIntent: android.app.PendingIntent) : PositioningRequest
+  object SettingsScreen : PositioningRequest
+}
+
 class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(application) {
 
   private val database = HaasiAlLaylDatabase.getDatabase(application)
@@ -749,27 +762,38 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
   }
 
   /**
-   * A [android.app.PendingIntent] for the system positioning dialog, when one is available.
+   * How the UI should get the user to a positioning switch, once asked.
    *
-   * Emitted rather than acted on, because only an Activity can launch an IntentSender. Null
-   * whenever there is nothing to resolve or Play Services is absent, which the UI answers by
-   * falling back to the settings screen.
+   * Three outcomes rather than a nullable PendingIntent, because "not asked yet" and "asked, and
+   * Play Services cannot help" need different responses and a null cannot tell them apart. The
+   * first version conflated them and consequently opened the settings screen *and* then threw the
+   * dialog on top of it.
    */
-  private val _locationSettingsResolution = MutableStateFlow<android.app.PendingIntent?>(null)
-  val locationSettingsResolution: StateFlow<android.app.PendingIntent?> =
-    _locationSettingsResolution.asStateFlow()
+  private val _positioningRequest = MutableStateFlow<PositioningRequest?>(null)
+  val positioningRequest: StateFlow<PositioningRequest?> = _positioningRequest.asStateFlow()
 
-  /** Asks Play Services for the one-tap dialog. The UI launches whatever comes back. */
-  fun requestLocationSettingsResolution() {
+  /**
+   * Works out the best available route to the positioning switches.
+   *
+   * Emitted rather than acted on, because only an Activity can launch an IntentSender.
+   */
+  fun requestPositioningFix() {
     viewModelScope.launch {
-      _locationSettingsResolution.value =
+      val resolution =
         LocationSettingsResolver.resolutionForHighAccuracy(getApplication<Application>())
+      _positioningRequest.value = if (resolution != null) {
+        PositioningRequest.Dialog(resolution)
+      } else {
+        // Either the settings are already satisfied or Play Services is unavailable. The user is
+        // looking at a screen that says positioning is off, so send them somewhere either way.
+        PositioningRequest.SettingsScreen
+      }
     }
   }
 
-  /** Consumed by the UI once it has launched, so the same dialog is not shown twice. */
-  fun clearLocationSettingsResolution() {
-    _locationSettingsResolution.value = null
+  /** Consumed by the UI once it has acted, so the same request is not handled twice. */
+  fun clearPositioningRequest() {
+    _positioningRequest.value = null
   }
 
   /**

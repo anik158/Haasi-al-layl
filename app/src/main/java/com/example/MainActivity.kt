@@ -58,6 +58,7 @@ import com.example.ui.HaasiAlLaylViewModel
 import com.example.ui.components.CitySelectionSheet
 import com.example.ui.LocatingPhase
 import com.example.ui.OnboardingState
+import com.example.ui.PositioningRequest
 import com.example.ui.components.SatelliteAcquisitionScreen
 import com.example.ui.components.WelcomeDialog
 import com.example.ui.screens.DuaScreen
@@ -182,10 +183,10 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
     }
   }
 
-  // The one-tap positioning dialog. An IntentSender can only be launched from an Activity, so
-  // the ViewModel emits the PendingIntent and this consumes it.
-  val locationSettingsResolution by viewModel.locationSettingsResolution
-    .collectAsStateWithLifecycle()
+  // Getting the user to a positioning switch: exactly one of the dialog or the settings screen,
+  // never both. An IntentSender can only be launched from an Activity, so the ViewModel decides
+  // which route is available and this carries it out.
+  val positioningRequest by viewModel.positioningRequest.collectAsStateWithLifecycle()
   val positioningDialogLauncher = rememberLauncherForActivityResult(
     contract = ActivityResultContracts.StartIntentSenderForResult()
   ) {
@@ -193,20 +194,32 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
     // dialog, or backed out of it. Re-read them instead.
     viewModel.onReturnedFromLocationSettings()
   }
-  LaunchedEffect(locationSettingsResolution) {
-    val resolution = locationSettingsResolution ?: return@LaunchedEffect
-    viewModel.clearLocationSettingsResolution()
+  val openLocationSettings = {
     runCatching {
-      positioningDialogLauncher.launch(
-        IntentSenderRequest.Builder(resolution.intentSender).build()
+      context.startActivity(
+        Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+          .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
       )
-    }.onFailure {
-      // Play Services handed back something unlaunchable. The settings screen still works.
-      runCatching {
-        context.startActivity(
-          Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        )
+    }
+    Unit
+  }
+  LaunchedEffect(positioningRequest) {
+    when (val request = positioningRequest) {
+      null -> Unit
+      is PositioningRequest.SettingsScreen -> {
+        viewModel.clearPositioningRequest()
+        openLocationSettings()
+      }
+      is PositioningRequest.Dialog -> {
+        viewModel.clearPositioningRequest()
+        runCatching {
+          positioningDialogLauncher.launch(
+            IntentSenderRequest.Builder(request.pendingIntent.intentSender).build()
+          )
+        }.onFailure {
+          // Play Services handed back something unlaunchable. The settings screen still works.
+          openLocationSettings()
+        }
       }
     }
   }
@@ -241,18 +254,10 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
       language = currentLanguage,
       onEnterManually = { viewModel.skipToManualEntry() },
       onRetry = { viewModel.startDetection() },
-      onEnablePositioning = {
-        // Ask Play Services for the one-tap dialog. When it cannot supply one - already
-        // satisfied, or Play Services absent - nothing is emitted, so open the settings screen
-        // as well rather than leaving the button feeling dead.
-        viewModel.requestLocationSettingsResolution()
-        runCatching {
-          context.startActivity(
-            Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-              .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-          )
-        }
-      },
+      // One route or the other, decided in the ViewModel and carried out above. This used to
+      // fire the dialog request *and* open the settings screen unconditionally, so a device that
+      // could offer the dialog got the settings screen with the dialog thrown on top of it.
+      onEnablePositioning = { viewModel.requestPositioningFix() },
       onOpenAppSettings = {
         runCatching {
           context.startActivity(
