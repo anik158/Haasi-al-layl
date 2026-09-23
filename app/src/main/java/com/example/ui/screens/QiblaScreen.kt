@@ -49,6 +49,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.data.localization.AppLanguage
@@ -120,12 +121,14 @@ fun QiblaScreen(
       horizontalArrangement = Arrangement.SpaceBetween,
       verticalAlignment = Alignment.CenterVertically
     ) {
-      Column {
+      Column(modifier = Modifier.weight(1f)) {
         Text(
           text = LocalizationManager.getQiblaTitle(language),
           style = MaterialTheme.typography.headlineSmall,
           fontWeight = FontWeight.ExtraBold,
-          color = MaterialTheme.colorScheme.onBackground
+          color = MaterialTheme.colorScheme.onBackground,
+          maxLines = 1,
+          overflow = TextOverflow.Ellipsis
         )
         Surface(
           modifier = Modifier.padding(top = 2.dp),
@@ -148,11 +151,15 @@ fun QiblaScreen(
               },
               style = MaterialTheme.typography.bodySmall,
               fontWeight = FontWeight.SemiBold,
-              color = MaterialTheme.colorScheme.primary
+              color = MaterialTheme.colorScheme.primary,
+              maxLines = 3,
+              overflow = TextOverflow.Ellipsis
             )
           }
         }
       }
+
+      Spacer(modifier = Modifier.width(8.dp))
 
       Surface(
         shape = RoundedCornerShape(10.dp),
@@ -163,7 +170,10 @@ fun QiblaScreen(
           style = MaterialTheme.typography.labelMedium,
           fontWeight = FontWeight.Bold,
           color = MaterialTheme.colorScheme.primary,
-          modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
+          modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+          // The chip is the fixed thing in this row; it states a bearing and must never wrap.
+          maxLines = 2,
+          textAlign = TextAlign.Center
         )
       }
     }

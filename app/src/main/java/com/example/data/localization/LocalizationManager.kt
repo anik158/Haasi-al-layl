@@ -515,12 +515,38 @@ object LocalizationManager {
     AppLanguage.ENGLISH -> "Align device until needle points straight up"
   }
 
+  /**
+   * The destination of the bearing, shown as "278 deg to the Kaaba".
+   *
+   * Deliberately short, and worded so the Kaaba reads as where the arrow *points* rather than
+   * where it is measured from - "278 Towards Kaaba, Makkah" beside a compass was read on a device
+   * as the app computing the direction from Makkah. The origin is stated separately, under the
+   * title. Short also keeps the chip from wrapping in the row it shares with that title.
+   */
   fun getTowardsKaabaLabel(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "نحو الكعبة المشرفة (مكة المكرمة)"
-    AppLanguage.BENGALI -> "পবিত্র কাবা শরিফ, মক্কার দিকে"
-    AppLanguage.SPANISH -> "Hacia la Kaaba (La Meca)"
-    AppLanguage.PORTUGUESE -> "Em direção à Caaba (Meca)"
-    AppLanguage.ENGLISH -> "Towards Kaaba, Makkah"
+    AppLanguage.ARABIC -> "نحو الكعبة"
+    AppLanguage.BENGALI -> "কাবার দিকে"
+    AppLanguage.SPANISH -> "hacia la Kaaba"
+    AppLanguage.PORTUGUESE -> "para a Caaba"
+    AppLanguage.ENGLISH -> "to the Kaaba"
+  }
+
+  /** The badge on the prayer that is in progress. Short in every language, by necessity. */
+  fun getNowBadge(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "الآن"
+    AppLanguage.BENGALI -> "এখন"
+    AppLanguage.SPANISH -> "AHORA"
+    AppLanguage.PORTUGUESE -> "AGORA"
+    AppLanguage.ENGLISH -> "NOW"
+  }
+
+  /** The badge on the prayer that comes next. */
+  fun getNextBadge(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "التالي"
+    AppLanguage.BENGALI -> "পরবর্তী"
+    AppLanguage.SPANISH -> "SIGUE"
+    AppLanguage.PORTUGUESE -> "SEGUE"
+    AppLanguage.ENGLISH -> "NEXT"
   }
 
   fun getDistanceToKaabaLabel(language: AppLanguage): String = when (language) {

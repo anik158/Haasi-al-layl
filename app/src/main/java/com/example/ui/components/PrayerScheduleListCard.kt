@@ -42,6 +42,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.data.localization.AppLanguage
@@ -206,11 +207,17 @@ private fun PrayerRowItem(
     // Name & Arabic
     Column(modifier = Modifier.weight(1f)) {
       Row(verticalAlignment = Alignment.CenterVertically) {
+        // weight(fill = false) lets the name take only what it needs and give way when the badge
+        // beside it would otherwise be crushed. Without it the badge is what yields, and a badge
+        // that yields wraps its own letters.
         Text(
           text = LocalizationManager.getPrayerDisplayName(item.prayer, language),
           style = MaterialTheme.typography.bodyLarge,
           fontWeight = if (item.isNext || item.isCurrent) FontWeight.Bold else FontWeight.Medium,
-          color = DarkForestInk
+          color = DarkForestInk,
+          maxLines = 1,
+          overflow = TextOverflow.Ellipsis,
+          modifier = Modifier.weight(1f, fill = false)
         )
         if (item.isCurrent) {
           Spacer(modifier = Modifier.width(6.dp))
@@ -220,11 +227,13 @@ private fun PrayerRowItem(
             modifier = Modifier.padding(2.dp)
           ) {
             Text(
-              text = "NOW",
+              text = LocalizationManager.getNowBadge(language),
               style = MaterialTheme.typography.labelSmall,
               color = Color.White,
               modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-              fontWeight = FontWeight.Bold
+              fontWeight = FontWeight.Bold,
+              maxLines = 1,
+              softWrap = false
             )
           }
         } else if (item.isNext) {
@@ -235,11 +244,13 @@ private fun PrayerRowItem(
             modifier = Modifier.padding(2.dp)
           ) {
             Text(
-              text = "NEXT",
+              text = LocalizationManager.getNextBadge(language),
               style = MaterialTheme.typography.labelSmall,
               color = DarkForestInk,
               modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-              fontWeight = FontWeight.Bold
+              fontWeight = FontWeight.Bold,
+              maxLines = 1,
+              softWrap = false
             )
           }
         }

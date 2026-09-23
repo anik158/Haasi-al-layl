@@ -39,6 +39,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.data.localization.AppLanguage
@@ -82,7 +83,11 @@ fun WeatherHomeScreenCard(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
       ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        // Same rule as the prayer badges: the title yields, the status pill does not.
+        Row(
+          verticalAlignment = Alignment.CenterVertically,
+          modifier = Modifier.weight(1f, fill = false)
+        ) {
           Box(
             modifier = Modifier
               .size(32.dp)
@@ -103,7 +108,9 @@ fun WeatherHomeScreenCard(
             text = LocalizationManager.getWeatherCardTitle(language),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
-            color = DarkForestInk
+            color = DarkForestInk,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
           )
         }
 
@@ -117,7 +124,9 @@ fun WeatherHomeScreenCard(
             style = MaterialTheme.typography.labelSmall,
             fontWeight = FontWeight.Bold,
             color = if (isError) Color(0xFFD32F2F) else DarkForestInk,
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
+            maxLines = 1,
+            softWrap = false
           )
         }
       }

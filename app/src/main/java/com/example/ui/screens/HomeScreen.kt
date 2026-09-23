@@ -43,6 +43,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.data.dua.DailyInspiration
@@ -142,11 +143,16 @@ fun HomeScreen(
         )
         Spacer(modifier = Modifier.width(10.dp))
         Column {
+          // One line, always. At a large system font scale this wrapped to two and pushed the
+          // tagline out of the header entirely; an ellipsis is the lesser evil for a name that
+          // no longer fits, and the font-scale ceiling in HaasiTheme makes that rare.
           Text(
             text = LocalizationManager.getAppName(language),
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.ExtraBold,
-            color = DarkForestInk
+            color = DarkForestInk,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
           )
           Text(
             text = LocalizationManager.getAppSubtitle(language),

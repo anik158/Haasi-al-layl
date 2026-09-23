@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The launch screen's mark, separate from the launcher icon on purpose.
+
+  An adaptive launcher icon has to keep its artwork inside a safe zone - ic_launcher_foreground
+  sits at 69dp on a 108dp canvas - because the system may mask it to a circle, a squircle or a
+  rounded square. The splash screen does no masking, so reusing that drawable spent a third of
+  the canvas on padding that protects against nothing and left the mark looking small.
+
+  This fills the canvas instead. Same artwork, larger on screen, and the launcher icon keeps its
+  safe zone untouched.
+-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:width="102dp"
+        android:height="102dp"
+        android:drawable="@drawable/ic_haasi_logo"
+        android:gravity="center" />
+</layer-list>
