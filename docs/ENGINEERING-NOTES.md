@@ -186,6 +186,49 @@ useless, and reasonably read as the app being broken.
 - The dialog's result code is ignored; `onReturnedFromLocationSettings` re-reads the switches,
   because the user may have changed them by hand or backed out.
 
+#### A stored location is a claim with an expiry date
+
+The first location an installation resolved used to be the last one it ever had: `resolveOnboarding`
+returns immediately when a city is stored, and the background watch only runs while one is
+missing. Someone who set the app up in Dhaka and then moved kept Dhaka's prayer times indefinitely,
+with nothing on screen suggesting anything was wrong.
+
+`refreshLocationIfMoved` runs on every launch and is deliberately cheap: `lastKnownFix` reads the
+fix the system already holds, waking no radio and needing no network, so it works offline exactly
+as well as online.
+
+- **`MOVED_THRESHOLD_KM = 25`.** Prayer times move with longitude at roughly four minutes per
+  degree, so 25 km is about a minute of drift — the point where a different answer justifies
+  re-arming ~30 alarms. Anything much smaller re-arms the schedule for someone crossing their own
+  city.
+- **A timezone change is its own move, and a bigger one.** `timeZoneId` is captured from
+  `ZoneId.systemDefault()` at fix time and then frozen, so flying to another country computed every
+  prayer time in the zone left behind. Checked separately from distance, because the phone updates
+  its own zone and the stored city does not.
+- **`locationUpdatedAt` is stamped in `applyCity`**, the one place a location becomes real, so
+  staleness cannot drift out of sync with the value it describes.
+- A city the user picked by hand is never overridden — they may be checking another city's times
+  on purpose.
+
+#### "No signal" was three different failures wearing one label
+
+A receiver that is switched off, one that hears nothing, and one that hears six satellites but is
+still reading their orbit data are indistinguishable from outside. That is why the earliest offline
+failures were reported as the app being broken: it had nothing else it could say.
+
+`GnssDiagnostics` wraps `GnssStatus` and `SatelliteSignalDialog` renders it — satellites in view,
+satellites *used in the fix*, and C/N0 per satellite, with a plain-language verdict for each of the
+three cases. Two things about it that are easy to undo by accident:
+
+- **It must drive the GPS engine itself.** `GnssStatus` only reports while something is asking for
+  a position, so the dialog also calls `requestLocationUpdates`. Without that it would sit at zero
+  satellites beside a perfectly healthy receiver — precisely the confusion it exists to end.
+- **The bars scale against a fixed 45 dB-Hz**, not against the strongest signal present. A display
+  that renormalises to its own maximum draws a full-height bar for a hopeless signal.
+
+Being purely observational, it is safe to run only while its dialog is open, and it deliberately
+influences nothing.
+
 #### A first fix indoors is not on a timer
 
 Ninety seconds is still a timeout, and a cold fix indoors with no network does not arrive on one -
@@ -289,6 +332,9 @@ Worth reading before assuming a report is a device problem.
 | **The Qibla needle pointed from Makkah to Makkah** | Bearing and distance were derived from `_selectedCity`, i.e. the placeholder: a bearing of nothing, 0 km away. They come from `qiblaOrigin` now |
 | **The full-screen alarm made no sound at all** | Self-inflicted, and worth the detail. The alert went on a *silent* channel with all audio left to a `MediaPlayer` started from the receiver. Android downgrades a full-screen intent to a heads-up banner whenever the device is unlocked and in use, so the screen often never opened - and a `MediaPlayer` started from a `BroadcastReceiver` has no live component keeping its process alive once `onReceive` returns. Both failed together. The notification carries the sound again; the full-screen intent is purely additive |
 | **An online first run was asked to turn on location** | The ladder ran GPS-first unconditionally, so a user with a working network was shown a permission prompt and a satellite wait to answer a question IP geolocation could have settled in under a second. Network first now, with the background watch upgrading the estimate |
+| **A stored location was never re-checked** | `resolveOnboarding` returns early when a city exists and the watch only runs when one is missing, so the first fix an installation took was permanent. Moving cities kept the old prayer times forever, offline or on |
+| **Prayer times stayed in the timezone you left** | `timeZoneId` was captured at fix time and frozen, while the phone updates its own zone on arrival |
+| **Badges wrapped their own letters** | A `Row` child without `weight` gets the leftover space, and `Text` wraps rather than pushing back — so the badge, not its sibling, was what yielded |
 | **"Turn on location" when location was already on** | `isLocationEnabled` reports the master toggle only. ColorOS can have it on with the GPS provider off, which offline yields no fix at all - so the app waited 90s on a switched-off receiver and said "no signal" |
 | **`Missing '}'` and `Unclosed comment` from a scripted edit** | An insertion appended its own anchor twice, leaving a stray `/**` *inside* a KDoc. **Kotlin block comments nest**, unlike C, so the second opener swallowed the rest of the file. A bracket-balance check that resolves each `/*` to the first following `*/` cannot see this - it has to track depth |
 
@@ -351,6 +397,46 @@ Two things that are easy to break here. The **counter belongs only to `SEARCHING
 "0s / 90s" behind the permission dialog was the first thing that looked broken on the device. And
 the **notification prompt is gated on `NOT_NEEDED`**, so it cannot land on top of the acquisition
 screen or the welcome dialog; two system dialogs racing into one frame means one is dropped.
+
+## UI rules that were learned the hard way
+
+### A badge in a Row must never be the thing that yields
+
+Compose gives a `Row` child that has no `weight` whatever space is left, and a `Text` with too
+little space wraps rather than pushes back. So a badge beside an unweighted sibling wraps *its own
+letters*: "NOW" rendered as `NO`/`W` in English and letter-by-letter vertically in Bengali, "LIVE"
+as `LIV`/`E`. In the Qibla header the title `Column` had no weight, took the whole row, and crushed
+the bearing chip into a sliver of wrapped characters that read on screen as a tall empty gap.
+
+The rule, wherever a badge shares a row:
+
+- the badge gets `maxLines = 1, softWrap = false`
+- the flexible sibling gets `Modifier.weight(1f, fill = false)` and an ellipsis
+
+**Bengali did not cause this.** Longer strings simply hit the squeeze at a smaller font scale than
+English does, which is why it looked like a Bengali bug and was not.
+
+### `MAX_FONT_SCALE = 1.3`
+
+Android allows a system font scale of 2.0 and beyond, and this app's compact chrome cannot absorb
+it — at 2.0 the header wrapped to two lines and pushed out its own tagline. `HaasiTheme` caps the
+scale at 1.3 through `LocalDensity`. Not 1.0: that would discard accessibility rather than bound
+it. Body text is unaffected in practice because it wraps freely; the cap exists for the chrome.
+
+### The splash mark is not the launcher icon
+
+`ic_launcher_foreground` keeps its artwork at 69dp on a 108dp canvas because an adaptive launcher
+icon may be masked to a circle or a squircle. The splash screen masks nothing, so pointing
+`windowSplashScreenAnimatedIcon` at it spent a third of the canvas protecting against nothing and
+made the mark look small. `ic_splash_logo` fills the canvas; the launcher icon keeps its safe zone.
+
+### The Qibla chip states a destination, not an origin
+
+"278° Towards Kaaba, Makkah" beside a compass was read on a device as the app computing the bearing
+*from* Makkah. It was not — 277.6° and 5,171 km are exactly right from 23.75°N, 90.40°E — but the
+wording invited it. It reads "278° to the Kaaba" now, with the origin stated separately underneath.
+Worth remembering the general shape: a label that names a place next to a number will be read as
+that number's subject.
 
 ## Device reality (OPPO / ColorOS, the main test device)
 

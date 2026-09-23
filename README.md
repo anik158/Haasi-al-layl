@@ -127,6 +127,11 @@ otherwise:
   indoor no-fix each get their own message and the action that fixes it — rather than all three
   quietly becoming the same city picker.
 
+**If you move.** The app re-checks on every launch, using the fix your phone already holds — no
+network, no radio wake. Past about 25 km it adopts the new position and re-arms the prayer alarms;
+it also notices when your phone's timezone has changed, which matters more to prayer times than
+distance does. A city you picked by hand is left alone, since you may be checking it deliberately.
+
 **Testing it offline:** get one fix outdoors first (tap Detect with Location on), then turn data
 off entirely. The app keeps using those coordinates, prayer times stay exact, and the location
 shows as coordinates rather than a name until connectivity returns. A fresh install with no network
@@ -138,6 +143,12 @@ the phone outside and it resolves itself without you doing anything.
 > Turku, 150 km away, which shifts prayer times by 8 to 11 minutes. GPS exists precisely to avoid
 > that; if both are unavailable, set the city by hand.
 >
+**When it will not work, and how to tell.** Settings has a **Check satellite signal** readout: how
+many satellites your phone can hear, how many it is actually using, and how strong each one is. It
+separates the three failures that otherwise look identical — a receiver that is switched off, one
+that can hear nothing through a roof, and one that hears plenty but is still reading orbit data and
+simply needs another minute. Walk towards a window with it open and watch the count climb.
+
 > It is never used to point the **Qibla compass**. Prayer times may reasonably follow a city you
 > chose — checking Makkah's times from Dhaka is a fair thing to want — but a bearing is a property
 > of where the phone physically is, so the compass uses the device's own coordinates and says so.
