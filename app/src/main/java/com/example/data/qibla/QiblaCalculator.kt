@@ -30,6 +30,27 @@ object QiblaCalculator {
   /**
    * Calculates great circle distance to the Kaaba in kilometers.
    */
+  /**
+   * Great-circle distance between any two points, in kilometres.
+   *
+   * Extracted from the Kaaba-specific helper because "has the user moved far enough to matter?"
+   * is the same question with different endpoints, and a second copy of the haversine would be
+   * a second thing to get wrong.
+   */
+  fun distanceKm(
+    lat1: Double,
+    lon1: Double,
+    lat2: Double,
+    lon2: Double
+  ): Double {
+    val dLat = Math.toRadians(lat2 - lat1)
+    val dLon = Math.toRadians(lon2 - lon1)
+    val a = kotlin.math.sin(dLat / 2) * kotlin.math.sin(dLat / 2) +
+      kotlin.math.cos(Math.toRadians(lat1)) * kotlin.math.cos(Math.toRadians(lat2)) *
+      kotlin.math.sin(dLon / 2) * kotlin.math.sin(dLon / 2)
+    return EARTH_RADIUS_KM * 2 * kotlin.math.atan2(kotlin.math.sqrt(a), kotlin.math.sqrt(1 - a))
+  }
+
   fun calculateDistanceToKaabaKm(userLat: Double, userLng: Double): Int {
     val dLat = Math.toRadians(KAABA_LATITUDE - userLat)
     val dLon = Math.toRadians(KAABA_LONGITUDE - userLng)

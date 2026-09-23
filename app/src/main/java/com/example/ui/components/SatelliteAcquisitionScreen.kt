@@ -30,9 +30,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -42,7 +41,6 @@ import com.example.data.localization.AppLanguage
 import com.example.data.localization.LocalizationManager
 import com.example.ui.LocatingPhase
 import com.example.ui.theme.GoldAccent
-import kotlin.math.cos
 import kotlin.math.min
 import kotlin.math.sin
 
@@ -94,9 +92,13 @@ fun SatelliteAcquisitionScreen(
       horizontalAlignment = Alignment.CenterHorizontally,
       verticalArrangement = Arrangement.Center
     ) {
-      // The orbits keep turning through the failure phases too. The app really is still
+      // The animation keeps running through the failure phases too. The app really is still
       // listening in the background at that point, so a frozen illustration would be a lie.
-      OrbitAnimation(modifier = Modifier.size(180.dp))
+      SignalSearchAnimation(
+        modifier = Modifier
+          .fillMaxWidth()
+          .height(190.dp)
+      )
 
       // STARTING is the animation and nothing else - a continuation of the launch screen. An
       // online first run resolves by IP in well under a second, and flashing "turn on location"
@@ -242,127 +244,230 @@ private fun primaryActionFor(
 }
 
 /**
- * Three satellites on inclined orbits around a glowing earth.
+ * A satellite passing overhead, beaming down to a house on the ground.
  *
- * Each orbit is an ellipse rotated into its own plane and swept at its own rate, which is what
- * keeps the whole thing from reading as one spinning wheel. Everything is one [Canvas] rather
- * than nested rotating layouts - there is no layout work to do here, only drawing, and a single
- * draw pass is what makes a 60fps animation free.
+ * This replaced three abstract orbits around a glowing sphere. That picture was pleasant and told
+ * the user nothing: on a device it read as a loading spinner with extra steps, or as an atom. The
+ * thing being waited for is a *signal reaching where you are*, so the picture is a satellite, a
+ * beam, and a house - which needs no caption to be understood.
+ *
+ * The beam pulses from satellite to roof rather than glowing steadily, because the wait is an
+ * attempt being repeated, not a process filling up. Stars drift at a different rate again so the
+ * whole frame never looks like one rotating object.
+ *
+ * All one [Canvas]: there is no layout work here, only drawing, and a single draw pass is what
+ * makes a 60fps animation cost nothing.
  */
 @Composable
-private fun OrbitAnimation(modifier: Modifier = Modifier) {
-  val transition = rememberInfiniteTransition(label = "orbits")
+private fun SignalSearchAnimation(modifier: Modifier = Modifier) {
+  val transition = rememberInfiniteTransition(label = "signal")
 
-  val sweeps = ORBITS.mapIndexed { index, orbit ->
-    transition.animateFloat(
-      initialValue = 0f,
-      targetValue = 360f,
-      animationSpec = infiniteRepeatable(
-        animation = tween(orbit.periodMillis, easing = LinearEasing),
-        repeatMode = RepeatMode.Restart
-      ),
-      label = "sweep$index"
-    )
-  }
-
-  // Not a rotation: the globe breathes, so the centre is alive even at the instant every
-  // satellite happens to be behind it.
-  val pulse = transition.animateFloat(
-    initialValue = 0.94f,
-    targetValue = 1.06f,
+  // The satellite tracks across the sky and starts again, the way a real pass does.
+  val pass = transition.animateFloat(
+    initialValue = 0f,
+    targetValue = 1f,
     animationSpec = infiniteRepeatable(
-      animation = tween(2200, easing = LinearEasing),
+      animation = tween(9000, easing = LinearEasing),
+      repeatMode = RepeatMode.Restart
+    ),
+    label = "pass"
+  )
+
+  // The beam: one pulse travelling down, repeatedly. Faster than the pass, and not a divisor of
+  // it, so the two never settle into a visible rhythm.
+  val beam = transition.animateFloat(
+    initialValue = 0f,
+    targetValue = 1f,
+    animationSpec = infiniteRepeatable(
+      animation = tween(1700, easing = LinearEasing),
+      repeatMode = RepeatMode.Restart
+    ),
+    label = "beam"
+  )
+
+  val twinkle = transition.animateFloat(
+    initialValue = 0.25f,
+    targetValue = 0.9f,
+    animationSpec = infiniteRepeatable(
+      animation = tween(2600, easing = LinearEasing),
       repeatMode = RepeatMode.Reverse
     ),
-    label = "pulse"
+    label = "twinkle"
   )
 
   Canvas(modifier = modifier) {
-    val centre = Offset(size.width / 2f, size.height / 2f)
-    val unit = min(size.width, size.height) / 2f
+    val w = size.width
+    val h = size.height
+    val groundY = h * 0.84f
 
-    // Orbits first, so the globe and its glow sit on top of the far side of each ring.
-    ORBITS.forEachIndexed { index, orbit ->
-      drawOrbit(centre, unit, orbit, sweeps[index].value)
-    }
+    drawStars(w, h, twinkle.value)
 
-    val globeRadius = unit * 0.22f * pulse.value
-    drawCircle(
-      brush = Brush.radialGradient(
-        colors = listOf(GlobeGlow.copy(alpha = 0.55f), Color.Transparent),
-        center = centre,
-        radius = globeRadius * 2.6f
-      ),
-      radius = globeRadius * 2.6f,
-      center = centre
+    // The satellite arcs from left to right, dipping at the edges so the path reads as an orbit
+    // seen from below rather than a straight line.
+    val t = pass.value
+    val satX = w * (0.08f + 0.84f * t)
+    val arc = sin(Math.PI * t).toFloat()
+    val satY = h * (0.34f - 0.16f * arc)
+
+    val houseX = w * 0.5f
+    val roofPeakY = groundY - h * 0.17f
+
+    drawBeam(
+      from = Offset(satX, satY),
+      to = Offset(houseX, roofPeakY),
+      progress = beam.value
     )
+
+    drawGround(w, h, groundY)
+    drawHouse(houseX, groundY, h)
+    drawSatellite(Offset(satX, satY), min(w, h))
+  }
+}
+
+/** A faint starfield, so the sky is a sky and not an empty rectangle. */
+private fun DrawScope.drawStars(w: Float, h: Float, alpha: Float) {
+  STAR_POSITIONS.forEachIndexed { index, (fx, fy) ->
+    // Alternating the alpha means half the stars brighten while the other half dim, which reads
+    // as twinkling rather than as the whole sky pulsing.
+    val a = if (index % 2 == 0) alpha else (1.15f - alpha)
     drawCircle(
-      brush = Brush.radialGradient(
-        colors = listOf(GlobeHighlight, GlobeCore),
-        center = Offset(centre.x - globeRadius * 0.35f, centre.y - globeRadius * 0.35f),
-        radius = globeRadius * 1.6f
-      ),
-      radius = globeRadius,
-      center = centre
+      color = StarlightText.copy(alpha = (a * 0.5f).coerceIn(0f, 1f)),
+      radius = if (index % 3 == 0) 1.6f else 1.1f,
+      center = Offset(w * fx, h * fy)
     )
   }
 }
 
-/** One inclined ring plus the satellite riding it. */
-private fun DrawScope.drawOrbit(
-  centre: Offset,
-  unit: Float,
-  orbit: Orbit,
-  sweepDegrees: Float
-) {
-  val semiMajor = unit * orbit.radiusFraction
-  val semiMinor = semiMajor * orbit.flattening
+/**
+ * The signal itself: a bright head travelling from satellite to roof, with a fading tail.
+ *
+ * Drawn as a short run of dots rather than a gradient line because a gradient reads as a static
+ * beam, and the point is that something is being *sent* and may or may not arrive.
+ */
+private fun DrawScope.drawBeam(from: Offset, to: Offset, progress: Float) {
+  // The faint guide line the pulse travels along.
+  drawLine(
+    color = GoldAccent.copy(alpha = 0.16f),
+    start = from,
+    end = to,
+    strokeWidth = 1.5f
+  )
 
-  rotate(degrees = orbit.inclinationDegrees, pivot = centre) {
-    drawOval(
-      color = OrbitLine,
-      topLeft = Offset(centre.x - semiMajor, centre.y - semiMinor),
-      size = Size(semiMajor * 2f, semiMinor * 2f),
-      style = Stroke(width = 1.2f)
+  val head = progress
+  repeat(BEAM_TAIL) { i ->
+    val p = head - i * 0.055f
+    if (p < 0f || p > 1f) return@repeat
+    val point = Offset(
+      from.x + (to.x - from.x) * p,
+      from.y + (to.y - from.y) * p
     )
-
-    // The satellite's own position on the un-rotated ellipse; the enclosing rotate() carries it
-    // into the orbital plane, so the dot always sits exactly on the line drawn above.
-    val radians = Math.toRadians(sweepDegrees.toDouble())
-    val position = Offset(
-      centre.x + semiMajor * cos(radians).toFloat(),
-      centre.y + semiMinor * sin(radians).toFloat()
-    )
-
+    val fade = (1f - i / BEAM_TAIL.toFloat()).coerceIn(0f, 1f)
     drawCircle(
-      brush = Brush.radialGradient(
-        colors = listOf(GoldAccent.copy(alpha = 0.45f), Color.Transparent),
-        center = position,
-        radius = unit * 0.1f
-      ),
-      radius = unit * 0.1f,
-      center = position
+      color = GoldAccent.copy(alpha = 0.75f * fade),
+      radius = (3.2f * fade).coerceAtLeast(1f),
+      center = point
     )
-    drawCircle(color = SatelliteBody, radius = unit * 0.028f, center = position)
   }
 }
 
-private data class Orbit(
-  /** Semi-major axis as a fraction of the canvas radius. */
-  val radiusFraction: Float,
-  /** Semi-minor over semi-major: how edge-on the ring is seen. */
-  val flattening: Float,
-  /** How far the orbital plane is tilted in the picture. */
-  val inclinationDegrees: Float,
-  /** One full revolution. Deliberately coprime-ish, so the three never lock into step. */
-  val periodMillis: Int
+/** The horizon, as a soft band rather than a hard line. */
+private fun DrawScope.drawGround(w: Float, h: Float, groundY: Float) {
+  drawRect(
+    brush = Brush.verticalGradient(
+      colors = listOf(GroundNear.copy(alpha = 0f), GroundNear),
+      startY = groundY - h * 0.06f,
+      endY = h
+    ),
+    topLeft = Offset(0f, groundY - h * 0.06f),
+    size = Size(w, h - groundY + h * 0.06f)
+  )
+  drawLine(
+    color = StarlightText.copy(alpha = 0.22f),
+    start = Offset(0f, groundY),
+    end = Offset(w, groundY),
+    strokeWidth = 1.2f
+  )
+}
+
+/** A house: the "you are here" of the picture, and why the beam has somewhere to land. */
+private fun DrawScope.drawHouse(centreX: Float, groundY: Float, h: Float) {
+  val bodyW = h * 0.20f
+  val bodyH = h * 0.12f
+  val roofH = h * 0.075f
+  val left = centreX - bodyW / 2f
+  val bodyTop = groundY - bodyH
+
+  drawRect(
+    color = HouseWall,
+    topLeft = Offset(left, bodyTop),
+    size = Size(bodyW, bodyH)
+  )
+
+  val roof = Path().apply {
+    moveTo(left - bodyW * 0.12f, bodyTop)
+    lineTo(centreX, bodyTop - roofH)
+    lineTo(left + bodyW + bodyW * 0.12f, bodyTop)
+    close()
+  }
+  drawPath(roof, color = HouseRoof)
+
+  // A lit window, so the house reads as somebody's home rather than a shape.
+  val winSize = bodyW * 0.26f
+  drawRect(
+    color = GoldAccent.copy(alpha = 0.85f),
+    topLeft = Offset(centreX - winSize / 2f, bodyTop + bodyH * 0.22f),
+    size = Size(winSize, winSize)
+  )
+}
+
+/** The satellite: a body, two panels, and a dish facing down. */
+private fun DrawScope.drawSatellite(centre: Offset, unit: Float) {
+  val body = unit * 0.055f
+  val panel = unit * 0.075f
+  val panelH = unit * 0.032f
+
+  drawRect(
+    color = SatellitePanel,
+    topLeft = Offset(centre.x - body / 2f - panel, centre.y - panelH / 2f),
+    size = Size(panel, panelH)
+  )
+  drawRect(
+    color = SatellitePanel,
+    topLeft = Offset(centre.x + body / 2f, centre.y - panelH / 2f),
+    size = Size(panel, panelH)
+  )
+  drawRect(
+    color = SatelliteBody,
+    topLeft = Offset(centre.x - body / 2f, centre.y - body / 2f),
+    size = Size(body, body)
+  )
+  // The dish, pointing at the house below.
+  drawCircle(
+    color = SatelliteBody,
+    radius = body * 0.34f,
+    center = Offset(centre.x, centre.y + body * 0.62f)
+  )
+  // A halo, so the satellite stays legible against the starfield.
+  drawCircle(
+    brush = Brush.radialGradient(
+      colors = listOf(GoldAccent.copy(alpha = 0.30f), Color.Transparent),
+      center = centre,
+      radius = unit * 0.11f
+    ),
+    radius = unit * 0.11f,
+    center = centre
+  )
+}
+
+/** Fixed positions, so the sky does not reshuffle itself on every recomposition. */
+private val STAR_POSITIONS = listOf(
+  0.08f to 0.12f, 0.19f to 0.28f, 0.31f to 0.08f, 0.44f to 0.20f,
+  0.57f to 0.10f, 0.68f to 0.26f, 0.79f to 0.14f, 0.91f to 0.30f,
+  0.13f to 0.42f, 0.86f to 0.46f, 0.26f to 0.52f, 0.73f to 0.55f
 )
 
-private val ORBITS = listOf(
-  Orbit(radiusFraction = 0.94f, flattening = 0.34f, inclinationDegrees = -18f, periodMillis = 5200),
-  Orbit(radiusFraction = 0.74f, flattening = 0.28f, inclinationDegrees = 62f, periodMillis = 3900),
-  Orbit(radiusFraction = 0.56f, flattening = 0.42f, inclinationDegrees = 128f, periodMillis = 6700)
-)
+/** How many trailing dots follow the head of the beam. */
+private const val BEAM_TAIL = 7
 
 /** The elapsed bar. Not a progress bar: it measures patience spent, not work completed. */
 @Composable
@@ -388,8 +493,10 @@ private fun ElapsedTrack(fraction: Float, modifier: Modifier = Modifier) {
 // cutting to a different background.
 private val NightSky = Color(0xFF090F28)
 private val StarlightText = Color(0xFFEAEFF7)
-private val OrbitLine = Color(0x33A8C3E8)
 private val SatelliteBody = Color(0xFFF6E7C1)
-private val GlobeCore = Color(0xFF1B3A5C)
-private val GlobeHighlight = Color(0xFF4E86B8)
-private val GlobeGlow = Color(0xFF2E6FA8)
+private val SatellitePanel = Color(0xFF4E86B8)
+// The ground reads as a dark silhouette against the night sky rather than as lit terrain: it is
+// scenery, and anything brighter competes with the beam, which is the thing to watch.
+private val GroundNear = Color(0xFF0B1330)
+private val HouseWall = Color(0xFF1B2A52)
+private val HouseRoof = Color(0xFF2C4172)

@@ -1237,6 +1237,121 @@ object LocalizationManager {
     AppLanguage.ENGLISH -> "Enter my location instead"
   }
 
+  // ---------------------------------------------------------------------------------------------
+  // Satellite signal diagnostics
+  //
+  // Exists to turn "no signal" - which covered a switched-off receiver, a receiver that hears
+  // nothing, and a receiver mid-download of orbit data - into three distinguishable answers.
+  // ---------------------------------------------------------------------------------------------
+
+  fun getSatelliteSignalTitle(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "إشارة الأقمار الصناعية"
+    AppLanguage.BENGALI -> "স্যাটেলাইট সংকেত"
+    AppLanguage.SPANISH -> "Señal de satélite"
+    AppLanguage.PORTUGUESE -> "Sinal de satélite"
+    AppLanguage.ENGLISH -> "Satellite signal"
+  }
+
+  fun getSatelliteSignalAction(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "فحص إشارة الأقمار الصناعية"
+    AppLanguage.BENGALI -> "স্যাটেলাইট সংকেত পরীক্ষা করুন"
+    AppLanguage.SPANISH -> "Comprobar señal de satélite"
+    AppLanguage.PORTUGUESE -> "Verificar sinal de satélite"
+    AppLanguage.ENGLISH -> "Check satellite signal"
+  }
+
+  fun getSignalPermissionRow(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "إذن الموقع"
+    AppLanguage.BENGALI -> "লোকেশন অনুমতি"
+    AppLanguage.SPANISH -> "Permiso de ubicación"
+    AppLanguage.PORTUGUESE -> "Permissão de localização"
+    AppLanguage.ENGLISH -> "Location permission"
+  }
+
+  fun getSignalLocationRow(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "خدمة الموقع مفعّلة"
+    AppLanguage.BENGALI -> "লোকেশন চালু"
+    AppLanguage.SPANISH -> "Ubicación activada"
+    AppLanguage.PORTUGUESE -> "Localização ativada"
+    AppLanguage.ENGLISH -> "Location switched on"
+  }
+
+  fun getSignalGpsRow(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "قارئ الأقمار الصناعية (GPS) مفعّل"
+    AppLanguage.BENGALI -> "জিপিএস রিসিভার চালু"
+    AppLanguage.SPANISH -> "Receptor GPS activado"
+    AppLanguage.PORTUGUESE -> "Recetor GPS ativado"
+    AppLanguage.ENGLISH -> "GPS receiver on"
+  }
+
+  fun getSignalNotListening(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "لا يمكن الاستماع للأقمار الصناعية حتى تُفعَّل العناصر المعلَّمة بالأحمر أعلاه."
+    AppLanguage.BENGALI -> "উপরে লাল চিহ্নিত বিষয়গুলো চালু না হওয়া পর্যন্ত স্যাটেলাইট শোনা যাবে না।"
+    AppLanguage.SPANISH -> "No se puede escuchar a los satélites hasta que se active lo marcado en rojo arriba."
+    AppLanguage.PORTUGUESE -> "Não é possível ouvir os satélites até ativar o que está a vermelho acima."
+    AppLanguage.ENGLISH -> "Cannot listen for satellites until the items marked red above are switched on."
+  }
+
+  fun getSignalVisibleLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "أقمار ضمن المدى"
+    AppLanguage.BENGALI -> "দৃশ্যমান স্যাটেলাইট"
+    AppLanguage.SPANISH -> "Satélites a la vista"
+    AppLanguage.PORTUGUESE -> "Satélites à vista"
+    AppLanguage.ENGLISH -> "Satellites in view"
+  }
+
+  fun getSignalUsedLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "مستخدمة في تحديد الموقع"
+    AppLanguage.BENGALI -> "অবস্থান নির্ণয়ে ব্যবহৃত"
+    AppLanguage.SPANISH -> "Usados para la posición"
+    AppLanguage.PORTUGUESE -> "Usados para a posição"
+    AppLanguage.ENGLISH -> "Used for the fix"
+  }
+
+  fun getSignalStrongestLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "أقوى إشارة"
+    AppLanguage.BENGALI -> "সবচেয়ে শক্তিশালী সংকেত"
+    AppLanguage.SPANISH -> "Señal más fuerte"
+    AppLanguage.PORTUGUESE -> "Sinal mais forte"
+    AppLanguage.ENGLISH -> "Strongest signal"
+  }
+
+  /** Four or more satellites in the solution: a position is seconds away. */
+  fun getSignalVerdictFixing(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "الاستقبال ممتاز. يجري تحديد موقعك الآن."
+    AppLanguage.BENGALI -> "সংকেত চমৎকার। এখনই আপনার অবস্থান নির্ণয় হচ্ছে।"
+    AppLanguage.SPANISH -> "Recepción excelente. Se está calculando tu posición ahora."
+    AppLanguage.PORTUGUESE -> "Receção excelente. A sua posição está a ser calculada agora."
+    AppLanguage.ENGLISH -> "Reception is good. Your position is being worked out right now."
+  }
+
+  /** Heard, but not yet enough of them - almost always the orbit-data download. */
+  fun getSignalVerdictAcquiring(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "الأقمار مسموعة، والهاتف لا يزال يقرأ بيانات مداراتها. هذه أبطأ خطوة؛ امنحه دقيقة تحت سماء مفتوحة."
+    AppLanguage.BENGALI -> "স্যাটেলাইট শোনা যাচ্ছে, ফোন এখনও তাদের কক্ষপথের তথ্য পড়ছে। এটিই সবচেয়ে ধীর ধাপ — খোলা আকাশের নিচে এক মিনিট সময় দিন।"
+    AppLanguage.SPANISH -> "Se oyen satélites; el teléfono aún está leyendo sus datos orbitales. Ese es el paso lento: dale un minuto a cielo abierto."
+    AppLanguage.PORTUGUESE -> "Ouvem-se satélites; o telefone ainda está a ler os dados orbitais. Esse é o passo lento: dê-lhe um minuto a céu aberto."
+    AppLanguage.ENGLISH -> "Satellites are being heard, and the phone is still reading their orbit data. That is the slow step — give it a minute under open sky."
+  }
+
+  /** Detected but too weak to use: a roof, in other words. */
+  fun getSignalVerdictWeak(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "الإشارات ضعيفة جدًا للاستخدام — عادةً بسبب سقف أو جدار. الاقتراب من نافذة أو الخروج يغيّر ذلك خلال ثوانٍ."
+    AppLanguage.BENGALI -> "সংকেত ব্যবহারের জন্য খুব দুর্বল — সাধারণত ছাদ বা দেয়ালের কারণে। জানালার কাছে গেলে বা বাইরে বেরোলে কয়েক সেকেন্ডেই বদলে যায়।"
+    AppLanguage.SPANISH -> "Las señales son demasiado débiles para usarlas, normalmente por un techo o una pared. Acercarse a una ventana o salir lo cambia en segundos."
+    AppLanguage.PORTUGUESE -> "Os sinais são demasiado fracos para usar, normalmente por causa de um teto ou parede. Aproximar-se de uma janela ou sair muda isso em segundos."
+    AppLanguage.ENGLISH -> "Signals are too weak to use — usually a roof or a wall. Moving near a window or stepping outside changes this within seconds."
+  }
+
+  /** Nothing at all. */
+  fun getSignalVerdictNothing(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "لا تُسمع أي أقمار بعد. هذا متوقع داخل المباني؛ يحتاج القارئ إلى رؤية السماء."
+    AppLanguage.BENGALI -> "এখনও কোনো স্যাটেলাইট শোনা যাচ্ছে না। ঘরের ভিতরে এটি স্বাভাবিক — রিসিভারের আকাশ দেখা দরকার।"
+    AppLanguage.SPANISH -> "Todavía no se oye ningún satélite. Es lo normal en interiores: el receptor necesita ver el cielo."
+    AppLanguage.PORTUGUESE -> "Ainda não se ouve nenhum satélite. É normal dentro de casa: o recetor precisa de ver o céu."
+    AppLanguage.ENGLISH -> "No satellites heard yet. That is expected indoors — the receiver needs a view of the sky."
+  }
+
   fun getTestAlarmAction(language: AppLanguage): String = when (language) {
     AppLanguage.ARABIC -> "تجربة تنبيه بعد دقيقة"
     AppLanguage.BENGALI -> "১ মিনিট পর পরীক্ষামূলক অ্যালার্ম"

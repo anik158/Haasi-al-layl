@@ -115,6 +115,14 @@ fun SettingsSheet(
   }
 
   var testSentMessage by remember { mutableStateOf<String?>(null) }
+  var showSatelliteSignal by remember { mutableStateOf(false) }
+
+  if (showSatelliteSignal) {
+    SatelliteSignalDialog(
+      language = language,
+      onDismiss = { showSatelliteSignal = false }
+    )
+  }
 
   // Permission launcher for Android 13+ (Tiramisu)
   val permissionLauncher = rememberLauncherForActivityResult(
@@ -483,6 +491,26 @@ fun SettingsSheet(
                 text = LocalizationManager.getOemBatteryHint(language),
                 fontSize = 11.sp,
                 color = DarkForestInk.copy(alpha = 0.75f)
+              )
+            }
+
+            // The satellite readout sits with the alarm test for the same reason: both turn a
+            // vague "it did not work" into something specific enough to act on.
+            Spacer(modifier = Modifier.height(10.dp))
+            Surface(
+              onClick = { showSatelliteSignal = true },
+              shape = RoundedCornerShape(14.dp),
+              color = Color.White,
+              border = androidx.compose.foundation.BorderStroke(1.dp, OutlineDarkBorder),
+              modifier = Modifier.fillMaxWidth().testTag("btn_satellite_signal")
+            ) {
+              Text(
+                text = LocalizationManager.getSatelliteSignalAction(language),
+                fontWeight = FontWeight.Bold,
+                fontSize = 13.sp,
+                color = DarkForestInk,
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp)
               )
             }
 

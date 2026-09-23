@@ -80,6 +80,19 @@ class UserPreferences(context: Context) {
       prefs.edit().putBoolean(KEY_LOCATION_FROM_DEVICE, value).commit()
     }
 
+  /**
+   * When the stored location was last confirmed, as epoch millis. Zero means never.
+   *
+   * Used to decide when a fix is old enough to be worth re-establishing even though the user
+   * appears not to have moved - a fix from three months ago in the same city is still evidence,
+   * but weak evidence.
+   */
+  var locationUpdatedAt: Long
+    get() = prefs.getLong(KEY_LOCATION_UPDATED_AT, 0L)
+    set(value) {
+      prefs.edit().putLong(KEY_LOCATION_UPDATED_AT, value).commit()
+    }
+
   /** An explicit language choice. Null means "follow the location". */
   var manualLanguage: AppLanguage?
     get() = prefs.getString(KEY_MANUAL_LANGUAGE, null)?.let { AppLanguage.fromCode(it) }
@@ -182,6 +195,7 @@ class UserPreferences(context: Context) {
     const val KEY_ASKED_LOCATION_PERMISSION = "asked_location_permission"
     const val KEY_CITY_CHOSEN_MANUALLY = "city_chosen_manually"
     const val KEY_LOCATION_FROM_DEVICE = "location_from_device"
+    const val KEY_LOCATION_UPDATED_AT = "location_updated_at"
     const val KEY_MANUAL_LANGUAGE = "manual_language"
     const val KEY_CALCULATION_METHOD = "calculation_method"
     const val KEY_MADHAB = "madhab"

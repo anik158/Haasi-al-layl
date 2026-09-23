@@ -488,6 +488,7 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
     // Covers the launch where onboarding has already been dismissed once: the ladder is not
     // shown, but the app still has no location and should still be listening for one.
     if (userPrefs.selectedCity == null) startBackgroundLocationWatch()
+    refreshLocationIfMoved()
     nameCurrentCityIfNeeded()
     startSecondTicker()
     seedTasbih()
@@ -819,6 +820,76 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
   }
 
   /**
+   * Re-checks a stored location on launch, in case the user is no longer where it was taken.
+   *
+   * Nothing did this before, and the gap was total: `resolveOnboarding` returns immediately when
+   * a city is stored and the background watch only runs while one is missing, so the very first
+   * location an installation resolved was the last one it ever had. Someone who set the app up in
+   * Dhaka and then moved kept Dhaka's prayer times indefinitely - with no network, no prompt and
+   * nothing on screen suggesting anything was wrong.
+   *
+   * Cheap enough to run on every launch: `lastKnownFix` reads the fix the system already has,
+   * waking no radio and needing no network, so the offline case is covered as well as the online
+   * one. If it is far from where the app thinks it is, that is adopted; if there is no cached fix
+   * at all but the stored one has gone stale, the watch is restarted so the next real fix lands.
+   *
+   * A city the user chose by hand is never overridden - they may well be checking another city's
+   * times deliberately.
+   */
+  private fun refreshLocationIfMoved() {
+    val stored = userPrefs.selectedCity ?: return
+    if (userPrefs.cityChosenManually) return
+    val app = getApplication<Application>()
+    if (!DeviceLocationProvider.hasPermission(app)) return
+
+    // A timezone change is its own kind of move, and a bigger one for prayer times than distance.
+    // The zone is captured from the system at fix time and then frozen, so flying to another
+    // country left every time computed in the zone left behind.
+    val systemZone = java.time.ZoneId.systemDefault().id
+    if (userPrefs.locationFromDevice && stored.timeZoneId != systemZone) {
+      Log.i(TAG, "system timezone changed: ${stored.timeZoneId} -> $systemZone")
+      applyCity(stored.copy(timeZoneId = systemZone))
+    }
+
+    viewModelScope.launch {
+      val fix = withContext(Dispatchers.IO) { DeviceLocationProvider.lastKnownFix(app) }
+      if (fix == null) {
+        // Nothing cached to compare against. If what we hold is old, start listening so the next
+        // fix - whenever the user next has a view of the sky - corrects it.
+        if (isLocationStale()) startBackgroundLocationWatch()
+        return@launch
+      }
+      val current = _selectedCity.value
+      val movedKm = QiblaCalculator.distanceKm(
+        current.latitude, current.longitude, fix.latitude, fix.longitude
+      )
+      if (movedKm >= MOVED_THRESHOLD_KM) {
+        Log.i(TAG, "moved %.0f km since the stored fix; adopting the new one".format(movedKm))
+        val named = LocationRepository.reverseGeocode(app, fix.latitude, fix.longitude)
+        settleOnDeviceFix(
+          CityLocation(
+            name = named?.first ?: LocationRepository.formatCoordinates(fix.latitude, fix.longitude),
+            country = named?.second.orEmpty(),
+            latitude = fix.latitude,
+            longitude = fix.longitude,
+            timeZoneId = systemZone
+          )
+        )
+      } else if (isLocationStale()) {
+        // Same place, but the fix on file is ancient - refresh the timestamp by adopting the
+        // cached one, so staleness does not accumulate forever in one spot.
+        userPrefs.locationUpdatedAt = System.currentTimeMillis()
+      }
+    }
+  }
+
+  private fun isLocationStale(): Boolean {
+    val updatedAt = userPrefs.locationUpdatedAt
+    if (updatedAt == 0L) return true
+    return System.currentTimeMillis() - updatedAt >= STALE_LOCATION_MILLIS
+  }
+
+  /**
    * Accepts an **IP** estimate as the working answer.
    *
    * Good enough to stop blocking on - the app is usable, prayer times are within a few minutes -
@@ -1038,8 +1109,10 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
     _selectedCity.value = city
     userPrefs.selectedCity = city
     // Writing the city is what turns the Makkah placeholder into a real answer, so this is the
-    // one place that may set the flag.
+    // one place that may set the flag - and the one place that can honestly say the location was
+    // confirmed just now, which is what the staleness check reads.
     _hasResolvedLocation.value = true
+    userPrefs.locationUpdatedAt = System.currentTimeMillis()
     rescheduleAlarms()
     // A fix taken offline arrives named after its own coordinates. Try to name it here rather
     // than only for the city restored at startup, so a detection that lands while the network
@@ -1190,6 +1263,19 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
   }
   private companion object {
     const val TAG = "HaasiAlLaylViewModel"
+
+    /**
+     * How far the user has to have moved before the stored location is replaced.
+     *
+     * Prayer times move with longitude at roughly four minutes per degree, so 25 km - about a
+     * quarter of a degree at these latitudes - is a minute or so of drift: the point where a
+     * different answer is worth the cost of re-arming every alarm. Smaller thresholds would
+     * re-arm the schedule for someone crossing their own city.
+     */
+    const val MOVED_THRESHOLD_KM = 25.0
+
+    /** After this long without confirmation, a stored fix is worth re-establishing. */
+    const val STALE_LOCATION_MILLIS = 7L * 24 * 60 * 60 * 1000
 
     /**
      * Consumer magnetometers are good to roughly 5-10 degrees. The old 4-degree gate was
