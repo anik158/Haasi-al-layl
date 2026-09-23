@@ -25,9 +25,12 @@ Last updated: 17 September 2026.
 - `debug.keystore` is gitignored but the debug build type is configured to sign with it. CI
   generates one with `keytool`; locally you must too, or `assembleDebug` fails.
 - `google-services.json` is absent and that is fine — `missingGoogleServicesStrategy = WARN`.
-- **`assets/hisn_al_muslim.json` is referenced but not in the repo.** `loadHisnAlMuslimData()`
-  swallows the resulting `FileNotFoundException`, so a clean checkout silently ships the 14
-  built-in duas from `DuaData.kt` rather than the full Hisn al-Muslim set.
+- **`assets/hisn_al_muslim.json` is referenced but not in the repo**, so a clean checkout ships
+  the 14 built-in duas from `DuaData.kt` rather than the full Hisn al-Muslim set - which reaches a
+  device as "not all duas are available". `loadHisnAlMuslimData()` used to swallow the
+  `FileNotFoundException` in a bare `printStackTrace()` on a background thread, indistinguishable
+  from nothing; it now logs the miss by name. The expected JSON shape, and why the contents are
+  not generated, are in `app/src/main/assets/README.md`.
 
 ### CI traps already hit
 

@@ -551,9 +551,19 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
             )
           }
         }
+        Log.i(TAG, "loaded ${items.size} Hisn al-Muslim supplications")
         _hisnDuas.value = items
+      } catch (e: java.io.FileNotFoundException) {
+        // The asset is not in the repository. This is the normal state of a clean checkout, and
+        // it is why the Du'a screen shows 14 supplications rather than the full collection -
+        // reported from a device as "not all duas are available", which is exactly right.
+        //
+        // Logged at warning rather than swallowed: a printStackTrace on a background thread is
+        // indistinguishable from nothing, and this silently changed what the app shipped.
+        // See docs/ENGINEERING-NOTES.md and app/src/main/assets/README.md.
+        Log.w(TAG, "assets/hisn_al_muslim.json is missing; only the built-in supplications will show")
       } catch (e: Exception) {
-        e.printStackTrace()
+        Log.e(TAG, "could not parse assets/hisn_al_muslim.json", e)
       }
     }
   }
