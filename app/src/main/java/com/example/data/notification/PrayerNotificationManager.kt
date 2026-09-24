@@ -34,9 +34,11 @@ object PrayerNotificationManager {
   private const val PREFIX_ALARM = "haasi_prayer_alarm"
   private const val PREFIX_FORBIDDEN = "haasi_forbidden_alerts"
   private const val PREFIX_TAHAJJUD = "haasi_tahajjud_alerts"
-  private const val PRAYER_CHANNEL_VERSION = 2
-  private const val FORBIDDEN_CHANNEL_VERSION = 2
-  private const val TAHAJJUD_CHANNEL_VERSION = 1
+  // v3/v3/v2: the tone changed to the forest birdsong recording, and the stored URI moved from
+  // the numeric resource id to the resource name - both frozen channel attributes.
+  private const val PRAYER_CHANNEL_VERSION = 3
+  private const val FORBIDDEN_CHANNEL_VERSION = 3
+  private const val TAHAJJUD_CHANNEL_VERSION = 2
 
   const val CHANNEL_PRAYER_ID = "${PREFIX_PRAYER}_v$PRAYER_CHANNEL_VERSION"
   const val CHANNEL_FORBIDDEN_ID = "${PREFIX_FORBIDDEN}_v$FORBIDDEN_CHANNEL_VERSION"
@@ -59,9 +61,15 @@ object PrayerNotificationManager {
   private const val NOTIF_ID_FORBIDDEN_START = 2000
   private const val NOTIF_ID_FORBIDDEN_END = 2100
 
-  /** The alert tone. USAGE_ALARM routes it to the alarm stream, which survives silent mode. */
-  private fun alertSoundUri(context: Context) =
-    android.net.Uri.parse("android.resource://${context.packageName}/${R.raw.haasi_alert}")
+  /**
+   * The alert tone. USAGE_ALARM routes it to the alarm stream, which survives silent mode.
+   *
+   * Addressed by resource *name*, not `R.raw.haasi_alert`. A channel stores this URI permanently,
+   * and numeric resource ids are reassigned when resources are added or renamed - so the numeric
+   * form would one day point a live channel at the wrong file, or at nothing, with no error.
+   */
+  fun alertSoundUri(context: Context): android.net.Uri =
+    android.net.Uri.parse("android.resource://${context.packageName}/raw/haasi_alert")
 
   /**
    * Creates the current channels and deletes superseded ones. Idempotent, and safe to call on

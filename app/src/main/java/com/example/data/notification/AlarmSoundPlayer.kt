@@ -3,7 +3,6 @@ package com.example.data.notification
 import android.content.Context
 import android.media.AudioAttributes
 import android.media.MediaPlayer
-import android.net.Uri
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
@@ -11,7 +10,6 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
 import android.util.Log
-import com.example.R
 
 /**
  * The ringing part of an alarm: a looping tone and a repeating vibration that keep going until
@@ -96,10 +94,9 @@ object AlarmSoundPlayer {
           .setUsage(AudioAttributes.USAGE_ALARM)
           .build()
       )
-      setDataSource(
-        context,
-        Uri.parse("android.resource://${context.packageName}/${R.raw.haasi_alert}")
-      )
+      // Same URI the channels play, so the full-screen alarm and the notification cannot drift
+      // onto different tones.
+      setDataSource(context, PrayerNotificationManager.alertSoundUri(context))
       isLooping = true
       // Deliberately not raising the user's alarm volume: an alarm app that overrides the
       // volume the user chose is worse than one that is occasionally too quiet.

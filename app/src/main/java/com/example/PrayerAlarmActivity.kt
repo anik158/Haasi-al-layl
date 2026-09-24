@@ -79,9 +79,10 @@ class PrayerAlarmActivity : ComponentActivity() {
     if (content.notificationId != 0) {
       NotificationManagerCompat.from(this).cancel(content.notificationId)
     }
-    // Ordinarily already ringing - PrayerNotificationManager starts the tone as it posts, so it
-    // sounds even when the system downgrades the full-screen intent to a banner. This call is
-    // the idempotent safety net for the path where that did not happen.
+    // The notification's channel plays the tone once as it posts; nothing else starts the
+    // looping player, so this is where the alarm screen's continuous ring begins. If the system
+    // downgrades the full-screen intent to a banner this activity never opens, and the channel's
+    // one-shot tone is the only sound.
     AlarmSoundPlayer.start(this)
   }
 
