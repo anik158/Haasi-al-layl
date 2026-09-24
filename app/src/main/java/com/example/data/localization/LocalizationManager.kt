@@ -87,6 +87,24 @@ object LocalizationManager {
     }
 
   /** A literal gloss of the name, distinct from [getAppSubtitle]. Shown in the About dialog. */
+  /** Accessibility label for the icon-only location button in the header. */
+  fun getChangeLocationLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "تغيير الموقع"
+    AppLanguage.BENGALI -> "অবস্থান পরিবর্তন করুন"
+    AppLanguage.SPANISH -> "Cambiar ubicación"
+    AppLanguage.PORTUGUESE -> "Alterar localização"
+    AppLanguage.ENGLISH -> "Change location"
+  }
+
+  /** Accessibility label for the settings button in the header. */
+  fun getSettingsButtonLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "الإعدادات والتنبيهات"
+    AppLanguage.BENGALI -> "সেটিংস ও বিজ্ঞপ্তি"
+    AppLanguage.SPANISH -> "Ajustes y avisos"
+    AppLanguage.PORTUGUESE -> "Definições e avisos"
+    AppLanguage.ENGLISH -> "Settings and notifications"
+  }
+
   fun getAppTagline(language: AppLanguage): String = when (language) {
     AppLanguage.ARABIC -> "“الذي يرتشف الليل”"
     AppLanguage.BENGALI -> "“যে রাত চুমুক দিয়ে পান করে”"

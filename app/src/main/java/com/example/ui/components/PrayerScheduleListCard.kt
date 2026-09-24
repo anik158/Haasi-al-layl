@@ -206,48 +206,43 @@ private fun PrayerRowItem(
 
     // Name & Arabic
     Column(modifier = Modifier.weight(1f)) {
+      // The name has its line to itself. With the NOW/NEXT badge beside it, one of the two had to
+      // yield: either the badge wrapped its own letters, or the name ellipsized - "আসর" collapsed
+      // to "..." next to "পরবর্তী". Moving the badge down removes the contest instead of choosing
+      // a loser.
+      Text(
+        text = LocalizationManager.getPrayerDisplayName(item.prayer, language),
+        style = MaterialTheme.typography.bodyLarge,
+        fontWeight = if (item.isNext || item.isCurrent) FontWeight.Bold else FontWeight.Medium,
+        color = DarkForestInk,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis
+      )
       Row(verticalAlignment = Alignment.CenterVertically) {
-        // weight(fill = false) lets the name take only what it needs and give way when the badge
-        // beside it would otherwise be crushed. Without it the badge is what yields, and a badge
-        // that yields wraps its own letters.
         Text(
-          text = LocalizationManager.getPrayerDisplayName(item.prayer, language),
-          style = MaterialTheme.typography.bodyLarge,
-          fontWeight = if (item.isNext || item.isCurrent) FontWeight.Bold else FontWeight.Medium,
-          color = DarkForestInk,
+          text = item.prayer.arabicName,
+          style = MaterialTheme.typography.bodySmall,
+          color = DarkForestInk.copy(alpha = 0.65f),
           maxLines = 1,
           overflow = TextOverflow.Ellipsis,
           modifier = Modifier.weight(1f, fill = false)
         )
-        if (item.isCurrent) {
+        val badge = when {
+          item.isCurrent -> LocalizationManager.getNowBadge(language) to DarkForestInk
+          item.isNext -> LocalizationManager.getNextBadge(language) to GoldAccent
+          else -> null
+        }
+        if (badge != null) {
           Spacer(modifier = Modifier.width(6.dp))
           Surface(
             shape = RoundedCornerShape(6.dp),
-            color = DarkForestInk,
-            modifier = Modifier.padding(2.dp)
+            color = badge.second
           ) {
             Text(
-              text = LocalizationManager.getNowBadge(language),
+              text = badge.first,
               style = MaterialTheme.typography.labelSmall,
-              color = Color.White,
-              modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-              fontWeight = FontWeight.Bold,
-              maxLines = 1,
-              softWrap = false
-            )
-          }
-        } else if (item.isNext) {
-          Spacer(modifier = Modifier.width(6.dp))
-          Surface(
-            shape = RoundedCornerShape(6.dp),
-            color = GoldAccent,
-            modifier = Modifier.padding(2.dp)
-          ) {
-            Text(
-              text = LocalizationManager.getNextBadge(language),
-              style = MaterialTheme.typography.labelSmall,
-              color = DarkForestInk,
-              modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+              color = if (item.isCurrent) Color.White else DarkForestInk,
+              modifier = Modifier.padding(horizontal = 6.dp, vertical = 1.dp),
               fontWeight = FontWeight.Bold,
               maxLines = 1,
               softWrap = false
@@ -255,11 +250,6 @@ private fun PrayerRowItem(
           }
         }
       }
-      Text(
-        text = item.prayer.arabicName,
-        style = MaterialTheme.typography.bodySmall,
-        color = DarkForestInk.copy(alpha = 0.65f)
-      )
     }
 
     // Time

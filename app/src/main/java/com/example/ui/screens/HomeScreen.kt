@@ -177,22 +177,17 @@ fun HomeScreen(
           border = androidx.compose.foundation.BorderStroke(1.dp, OutlineDarkBorder),
           modifier = Modifier.testTag("top_city_chip")
         ) {
-          Row(
+          // Icon only, sized to match the settings button beside it. The text label cost ~60dp
+          // of the header, which is what truncated the app name in the longer languages.
+          Box(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
-            verticalAlignment = Alignment.CenterVertically
+            contentAlignment = Alignment.Center
           ) {
             Icon(
               Icons.Default.LocationOn,
-              contentDescription = null,
-              modifier = Modifier.size(13.dp),
+              contentDescription = LocalizationManager.getChangeLocationLabel(language),
+              modifier = Modifier.size(15.dp),
               tint = DarkForestInk
-            )
-            Spacer(modifier = Modifier.width(3.dp))
-            Text(
-              text = "Change City",
-              fontWeight = FontWeight.SemiBold,
-              fontSize = 11.sp,
-              color = DarkForestInk
             )
           }
         }
@@ -214,7 +209,7 @@ fun HomeScreen(
           ) {
             Icon(
               imageVector = if (schedule.activeForbiddenTime != null) Icons.Default.NotificationsActive else Icons.Default.Settings,
-              contentDescription = "Settings & Notifications",
+              contentDescription = LocalizationManager.getSettingsButtonLabel(language),
               modifier = Modifier.size(15.dp),
               tint = if (schedule.activeForbiddenTime != null) Color(0xFFE65100) else DarkForestInk
             )

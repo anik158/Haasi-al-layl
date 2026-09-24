@@ -4,6 +4,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.Density
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.CompositionLocalProvider
@@ -56,16 +57,39 @@ private val HaasiBrandColorScheme =
  */
 private const val MAX_FONT_SCALE = 1.3f
 
+/** The width the type scale was designed at - a typical modern phone. */
+private const val REFERENCE_WIDTH_DP = 393f
+
+/** How far text may shrink on the narrowest phones; below this it stops reading comfortably. */
+private const val MIN_WIDTH_FACTOR = 0.85f
+
+/**
+ * Scales text with the screen's width, so compact chrome fits the phone it is on.
+ *
+ * At or above [REFERENCE_WIDTH_DP] this is 1.0 - it never enlarges, because the layouts are
+ * phone-first and a tablet does not need bigger chrome. Below it text shrinks in proportion, down
+ * to [MIN_WIDTH_FACTOR]: a 360dp phone gets about 0.92, a 320dp phone the 0.85 floor.
+ *
+ * This is the general answer to text that is fine at 393dp and truncates at 360dp. It is
+ * applied as a font scale, so only `sp` sizes change; `dp` spacing and touch targets do not.
+ */
+fun responsiveFontFactor(screenWidthDp: Int): Float =
+  (screenWidthDp / REFERENCE_WIDTH_DP).coerceIn(MIN_WIDTH_FACTOR, 1f)
+
 @Composable
 fun HaasiTheme(
   content: @Composable () -> Unit,
 ) {
   val density = LocalDensity.current
-  val cappedDensity = remember(density.density, density.fontScale) {
-    if (density.fontScale <= MAX_FONT_SCALE) {
+  val screenWidthDp = LocalConfiguration.current.screenWidthDp
+  val cappedDensity = remember(density.density, density.fontScale, screenWidthDp) {
+    // The user's own scale, capped, then fitted to the screen. Order matters: the cap bounds
+    // what the layouts must absorb, and the width factor then fits that to this phone.
+    val scale = minOf(density.fontScale, MAX_FONT_SCALE) * responsiveFontFactor(screenWidthDp)
+    if (scale == density.fontScale) {
       density
     } else {
-      Density(density = density.density, fontScale = MAX_FONT_SCALE)
+      Density(density = density.density, fontScale = scale)
     }
   }
 
