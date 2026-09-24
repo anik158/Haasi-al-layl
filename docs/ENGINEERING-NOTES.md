@@ -25,15 +25,13 @@ Last updated: 25 September 2026.
 - `debug.keystore` is gitignored but the debug build type is configured to sign with it. CI
   generates one with `keytool`; locally you must too, or `assembleDebug` fails.
 - `google-services.json` is absent and that is fine — `missingGoogleServicesStrategy = WARN`.
-- **Hisn al-Muslim's text is not in the repo, and must not be generated or scraped.** The loader
-  reads one file per language from `app/src/main/assets/hisn/` (`ar`, `en`, `bn`, `es`, `pt`
-  `.json`); a clean checkout has none, so it ships the 14 built-in duas from `DuaData.kt` and the
-  Hisn filter stays hidden. The collection has fixed wording and fixed hadith references, so it
-  cannot be written from memory; its translations are copyrighted - sunnah.com's terms forbid
-  reproducing whole collections, and hisnulmuslim.org is all-rights-reserved with no Portuguese.
-  Files must come from a source that permits app use. Format and rationale:
-  `app/src/main/assets/hisn/README.md`. Ids are `hisn_<ID>` from the entry's own `ID` - never its
-  position, which silently orphans bookmarks when chapters reorder.
+- **Hisn al-Muslim's assets are generated - edit `tools/hisn/`, then run `python3 tools/hisn/build.py`.**
+  The Arabic, counts and references are vendored from asellam/HisnElMuslim (MIT, notice shipped as
+  `assets/hisn/LICENSE-HisnElMuslim.md`) in `tools/hisn/source/`; never write them from memory. The
+  four translations in `tools/hisn/translations/` are our own, made from that Arabic - never copy
+  sunnah.com (terms forbid whole collections) or hisnulmuslim.org (all rights reserved). They are
+  machine-assisted and unreviewed. Ids are assigned 1..302 in the upstream file's order and become
+  `hisn_<ID>` bookmark keys: never reorder the source or insert into its middle.
 
 ### CI traps already hit
 
@@ -367,7 +365,7 @@ repo should assert its match count.
   `PrayerLogToggleTest`, `PrayerAlertPlannerTest`, `AlertIdsTest` with pinned literals,
   `QiblaCalculatorTest`, and a DST test. Robolectric and Roborazzi are already configured at
   `sdk = [36]`. **CI runs only `assembleDebug`, so test code is not even compiled there.**
-- **The Hisn al-Muslim asset** is missing (see above).
+- **The Hisn al-Muslim translations are unreviewed** (see above) - a scholar's pass is still owed.
 - **Prayer log has no city dimension** — `PrayerLogEntity` is keyed on date alone, so completions
   carry across cities. Deliberate: "did I pray Fajr" is a fact about the worshipper. Adding it needs
   a schema bump.

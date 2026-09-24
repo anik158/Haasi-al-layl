@@ -1,0 +1,452 @@
+{
+ "chapters": {
+  "0": "Invocaciones al despertar del sueño",
+  "1": "Súplica al vestirse",
+  "2": "Súplica al vestir ropa nueva",
+  "3": "Súplica por quien viste ropa nueva",
+  "4": "Qué decir al quitarse la ropa",
+  "5": "Súplica al entrar al baño",
+  "6": "Súplica al salir del baño",
+  "7": "Mención antes de la ablución",
+  "8": "Mención al terminar la ablución",
+  "9": "Mención al salir de casa",
+  "10": "Mención al entrar en casa",
+  "11": "Súplica al dirigirse a la mezquita",
+  "12": "Súplica al entrar en la mezquita",
+  "13": "Súplica al salir de la mezquita",
+  "14": "Invocaciones del llamado a la oración (adhán)",
+  "15": "Súplica de apertura de la oración",
+  "16": "Súplica de la inclinación (ruku')",
+  "17": "Súplica al levantarse de la inclinación",
+  "18": "Súplica de la prosternación (sujud)",
+  "19": "Súplica al sentarse entre las dos prosternaciones",
+  "20": "Súplica de la prosternación de la recitación",
+  "21": "El tashahhud",
+  "22": "La oración por el Profeta, la paz y las bendiciones de Allah sean con él, después del tashahhud",
+  "23": "Súplica después del último tashahhud y antes del saludo final",
+  "24": "Invocaciones después del saludo final de la oración",
+  "25": "Súplica de la oración de istikhara",
+  "26": "Invocaciones de la mañana",
+  "27": "Invocaciones de la tarde",
+  "28": "Invocaciones antes de dormir"
+ },
+ "entries": {
+  "1": {
+   "text": "Alabado sea Allah, que nos dio la vida después de habernos dado la muerte, y hacia Él es la resurrección."
+  },
+  "2": {
+   "text": "Alabado sea Allah, que me dio salud en mi cuerpo, me devolvió mi alma y me permitió recordarlo."
+  },
+  "3": {
+   "text": "(No hay divinidad verdadera excepto Allah, único, sin asociado. Suyo es el dominio y Suya es la alabanza, y Él es capaz de todas las cosas. Gloria a Allah, alabado sea Allah, no hay divinidad verdadera excepto Allah, Allah es el más grande, y no hay poder ni fuerza sino en Allah, el Altísimo, el Grandioso. ¡Señor mío, perdóname!). O si invoca, le será respondido; y si hace la ablución y ora, su oración será aceptada."
+  },
+  "4": {
+   "text": "{Ciertamente, en la creación de los cielos y la tierra, y en la alternancia de la noche y el día, hay signos para quienes tienen entendimiento (190) quienes recuerdan a Allah de pie, sentados y recostados de lado, y reflexionan sobre la creación de los cielos y la tierra: '¡Señor nuestro! No has creado esto en vano. ¡Gloria a Ti! Presérvanos del castigo del Fuego. (191) ¡Señor nuestro! A quien Tú hagas entrar en el Fuego, en verdad lo habrás humillado, y los injustos no tendrán quien los auxilie. (192) ¡Señor nuestro! En verdad hemos oído a quien llamaba a la fe, diciendo: Creed en vuestro Señor, y hemos creído. ¡Señor nuestro! Perdónanos, pues, nuestros pecados, borra nuestras malas acciones y haznos morir junto con los justos. (193) ¡Señor nuestro! Concédenos lo que nos prometiste por medio de Tus mensajeros, y no nos humilles el Día de la Resurrección; en verdad, Tú no faltas a la promesa. (194) Su Señor les respondió: No dejaré que se pierda la obra de ninguno de vosotros que obre, sea varón o hembra; los unos procedéis de los otros. A quienes emigraron, fueron expulsados de sus hogares, sufrieron daño por Mi causa, combatieron y fueron muertos, en verdad les borraré sus malas acciones y les haré entrar en jardines por donde corren los ríos, como recompensa de parte de Allah; y junto a Allah está la mejor recompensa. (195) Que no te engañe el ir y venir por la tierra de quienes no creen. (196) Es un breve disfrute; luego su morada será el Infierno, ¡y qué mal lecho! (197) En cambio, quienes temieron a su Señor tendrán jardines por donde corren los ríos, en los que permanecerán eternamente, como hospedaje de parte de Allah; y lo que hay junto a Allah es mejor para los justos. (198) Y, en verdad, entre la Gente del Libro hay quienes creen en Allah, en lo que os fue revelado a vosotros y en lo que les fue revelado a ellos, humillándose ante Allah, sin vender los signos de Allah por poco precio. Esos tendrán su recompensa junto a su Señor; en verdad, Allah es rápido en ajustar cuentas. (199) ¡Oh, los que creéis! Sed pacientes, superaos en paciencia, permaneced firmes y unidos, y temed a Allah, para que alcancéis el éxito. (200)}\nSura Aal 'Imran, 190-200"
+  },
+  "5": {
+   "text": "Alabado sea Allah, que me vistió con esto (esta prenda) y me lo concedió sin poder ni fuerza de mi parte."
+  },
+  "6": {
+   "text": "¡Oh Allah! A Ti sea la alabanza; Tú me has vestido con ella. Te pido su bien y el bien de aquello para lo que fue hecha, y me refugio en Ti de su mal y del mal de aquello para lo que fue hecha."
+  },
+  "7": {
+   "text": "Viste algo nuevo, vive siendo alabado y muere como mártir."
+  },
+  "8": {
+   "text": "Que la gastes, y que Allah, Elevado sea, te la reemplace."
+  },
+  "9": {
+   "text": "En el nombre de Allah."
+  },
+  "10": {
+   "text": "[En el nombre de Allah]. ¡Oh Allah! Me refugio en Ti de la impureza y de los seres malignos."
+  },
+  "11": {
+   "text": "¡Tu perdón!"
+  },
+  "12": {
+   "text": "En el nombre de Allah."
+  },
+  "13": {
+   "text": "Doy testimonio de que no hay divinidad verdadera excepto Allah, único, sin asociado, y doy testimonio de que Muhammad es Su siervo y Su Mensajero."
+  },
+  "14": {
+   "text": "¡Oh Allah! Hazme de los que se arrepienten con frecuencia y hazme de los que se purifican."
+  },
+  "15": {
+   "text": "¡Gloria a Ti, oh Allah, y alabado seas! Doy testimonio de que no hay divinidad verdadera excepto Tú. Te pido perdón y a Ti me vuelvo arrepentido."
+  },
+  "16": {
+   "text": "¡Oh Allah! Me refugio en Ti de extraviarme o ser extraviado, de resbalar (en el error) o ser hecho resbalar, de oprimir o ser oprimido, de actuar con ignorancia o de que se actúe con ignorancia hacia mí."
+  },
+  "17": {
+   "text": "En el nombre de Allah, me encomiendo a Allah, y no hay poder ni fuerza sino en Allah."
+  },
+  "18": {
+   "text": "En el nombre de Allah entramos, y en el nombre de Allah salimos, y en Allah, nuestro Señor, nos encomendamos. Luego que salude a su familia."
+  },
+  "19": {
+   "text": "¡Oh Allah! Pon luz en mi corazón, luz en mi lengua, luz en mi oído, luz en mi vista, luz por encima de mí, luz por debajo de mí, luz a mi derecha, luz a mi izquierda, luz delante de mí y luz detrás de mí. Pon luz en mi alma, y concédeme luz en abundancia; engrandece para mí la luz, hazme tener luz y hazme luz. ¡Oh Allah! Dame luz, y pon luz en mis nervios, luz en mi carne, luz en mi sangre, luz en mi cabello y luz en mi piel."
+  },
+  "20": {
+   "text": "¡Oh Allah! Pon para mí luz en mi tumba... y luz en mis huesos."
+  },
+  "21": {
+   "text": "Y auméntame luz, y auméntame luz, y auméntame luz."
+  },
+  "22": {
+   "text": "Y concédeme luz sobre luz."
+  },
+  "23": {
+   "text": "Me refugio en Allah, el Grandioso, en Su noble rostro y en Su poder eterno, del demonio maldito."
+  },
+  "24": {
+   "text": "En el nombre de Allah, y las bendiciones* y la paz sean sobre el Mensajero de Allah.** ¡Oh Allah! Ábreme las puertas de Tu misericordia.***"
+  },
+  "25": {
+   "text": "En el nombre de Allah, y las bendiciones y la paz sean sobre el Mensajero de Allah. ¡Oh Allah! Te pido de Tu favor. ¡Oh Allah! Presérvame del demonio maldito."
+  },
+  "26": {
+   "text": "Repite lo mismo que dice el almuecín, excepto en (Venid a la oración) y (Venid al éxito), donde dice: (No hay poder ni fuerza sino en Allah)."
+  },
+  "27": {
+   "text": "Y yo doy testimonio de que no hay divinidad verdadera excepto Allah, único, sin asociado, y de que Muhammad es Su siervo y Su Mensajero. Acepto a Allah como Señor, a Muhammad como Mensajero y al Islam como religión."
+  },
+  "28": {
+   "text": "Invoca las bendiciones sobre el Profeta, la paz y las bendiciones de Allah sean con él, después de terminar de responder al almuecín."
+  },
+  "29": {
+   "text": "¡Oh Allah, Señor de esta llamada perfecta y de la oración que se establece! Concede a Muhammad al-Wasila (el rango sublime) y al-Fadila (la excelencia), y elévalo a la posición loable que le prometiste. [En verdad, Tú no faltas a la promesa]."
+  },
+  "30": {
+   "text": "Suplica para sí mismo entre el adhán y la iqama, pues en ese momento la súplica no es rechazada."
+  },
+  "31": {
+   "text": "¡Oh Allah! Aleja entre mí y mis pecados como alejaste entre el oriente y el occidente. ¡Oh Allah! Purifícame de mis pecados como se purifica la prenda blanca de la suciedad. ¡Oh Allah! Lávame de mis pecados con agua, nieve y granizo."
+  },
+  "32": {
+   "text": "¡Gloria a Ti, oh Allah, y alabado seas! Bendito es Tu nombre, exaltada es Tu majestad, y no hay divinidad verdadera fuera de Ti."
+  },
+  "33": {
+   "text": "He dirigido mi rostro, como buscador sincero de la verdad, hacia Quien creó los cielos y la tierra, y no soy de los idólatras. En verdad, mi oración, mis actos de adoración, mi vida y mi muerte son para Allah, Señor de los mundos, que no tiene asociado; con esto se me ha ordenado, y soy de los musulmanes. ¡Oh Allah! Tú eres el Soberano, no hay divinidad verdadera excepto Tú; Tú eres mi Señor y yo soy Tu siervo; me he perjudicado a mí mismo, y reconozco mi pecado; perdóname, pues, todos mis pecados, pues nadie perdona los pecados sino Tú. Y guíame hacia los mejores modales, pues nadie guía hacia los mejores sino Tú; y aparta de mí los peores, pues nadie los aparta de mí sino Tú. Aquí estoy a Tu servicio, dispuesto y dichoso de complacerte; todo el bien está en Tus manos, y el mal no se remonta a Ti; yo existo por Ti y hacia Ti he de volver; bendito eres y exaltado; Te pido perdón y a Ti me vuelvo arrepentido."
+  },
+  "34": {
+   "text": "¡Oh Allah, Señor de Yibril (Gabriel), Mikail (Miguel) e Israfil, Creador de los cielos y la tierra, Conocedor de lo oculto y lo manifiesto! Tú juzgas entre Tus siervos en aquello sobre lo que discrepaban. Guíame, con Tu permiso, hacia la verdad en lo que fue motivo de discrepancia, pues, en verdad, Tú guías a quien quieres hacia un camino recto."
+  },
+  "35": {
+   "text": "Allah es el más grande, sumamente grande; Allah es el más grande, sumamente grande; Allah es el más grande, sumamente grande. Alabado sea Allah abundantemente; alabado sea Allah abundantemente; alabado sea Allah abundantemente. Y gloria a Allah de mañana y de tarde (tres veces). Me refugio en Allah del demonio maldito: de su soplo, de su susurro y de su instigación."
+  },
+  "36": {
+   "text": "¡Oh Allah! A Ti sea la alabanza; Tú eres la luz de los cielos y la tierra y de quien en ellos hay. Y a Ti sea la alabanza; Tú eres el sustentador de los cielos y la tierra y de quien en ellos hay. Y a Ti sea la alabanza; Tú eres el Señor de los cielos y la tierra y de quien en ellos hay. Y a Ti sea la alabanza; Tuyo es el dominio de los cielos y la tierra y de quien en ellos hay. Y a Ti sea la alabanza; Tú eres el Soberano de los cielos y la tierra. Y a Ti sea la alabanza; Tú eres la Verdad, Tu promesa es verdadera, Tu palabra es verdadera, Tu encuentro es verdadero, el Paraíso es verdadero, el Fuego es verdadero, los profetas son verdaderos, Muhammad, la paz y las bendiciones de Allah sean con él, es verdadero, y la Hora es verdadera. ¡Oh Allah! A Ti me someto, en Ti me encomiendo, en Ti creo, a Ti me vuelvo arrepentido, por Ti disputo y a Ti someto mi juicio. Perdóname, pues, lo que adelanté y lo que aplacé, lo que oculté y lo que manifesté. Tú eres el que adelanta y Tú eres el que aplaza; no hay divinidad verdadera excepto Tú. Tú eres mi Dios; no hay divinidad verdadera excepto Tú."
+  },
+  "37": {
+   "text": "Gloria a mi Señor, el Grandioso."
+  },
+  "38": {
+   "text": "¡Gloria a Ti, oh Allah, Señor nuestro, y alabado seas! ¡Oh Allah, perdóname!"
+  },
+  "39": {
+   "text": "Glorificadísimo, Santísimo, Señor de los ángeles y del espíritu."
+  },
+  "40": {
+   "text": "¡Oh Allah! Ante Ti me he inclinado, en Ti creo, a Ti me someto; se han humillado ante Ti mi oído, mi vista, mi cerebro, mis huesos y mis nervios, y lo que sostienen mis pies."
+  },
+  "41": {
+   "text": "Gloria al Poseedor del poder absoluto, del dominio, de la grandeza y de la majestad."
+  },
+  "42": {
+   "text": "Allah escucha a quien Lo alaba."
+  },
+  "43": {
+   "text": "¡Señor nuestro! A Ti sea la alabanza, una alabanza abundante, buena y bendita."
+  },
+  "44": {
+   "text": "Que colme los cielos, que colme la tierra y lo que hay entre ambos, y que colme lo que quieras después de eso. Oh Tú, digno de alabanza y gloria; es lo más digno que puede decir el siervo, y todos somos siervos Tuyos. ¡Oh Allah! Nadie puede impedir lo que Tú concedes, y nadie puede conceder lo que Tú impides, y de nada le sirve al poderoso su poder frente a Ti."
+  },
+  "45": {
+   "text": "Gloria a mi Señor, el Altísimo."
+  },
+  "46": {
+   "text": "¡Gloria a Ti, oh Allah, Señor nuestro, y alabado seas! ¡Oh Allah, perdóname!"
+  },
+  "47": {
+   "text": "Glorificadísimo, Santísimo, Señor de los ángeles y del espíritu."
+  },
+  "48": {
+   "text": "¡Oh Allah! Ante Ti me he prosternado, en Ti creo, a Ti me someto; mi rostro se ha prosternado ante Quien lo creó, le dio forma, y le abrió el oído y la vista. Bendito es Allah, el mejor de los creadores."
+  },
+  "49": {
+   "text": "Gloria al Poseedor del poder absoluto, del dominio, de la grandeza y de la majestad."
+  },
+  "50": {
+   "text": "¡Oh Allah! Perdona todo mi pecado, el pequeño y el grande, el primero y el último, el manifiesto y el oculto."
+  },
+  "51": {
+   "text": "¡Oh Allah! Me refugio en Tu complacencia de Tu enojo, y en Tu perdón de Tu castigo, y me refugio en Ti de Ti mismo. No puedo enumerar Tus alabanzas; Tú eres tal como Te has alabado a Ti mismo."
+  },
+  "52": {
+   "text": "¡Señor mío, perdóname! ¡Señor mío, perdóname!"
+  },
+  "53": {
+   "text": "¡Oh Allah! Perdóname, ten misericordia de mí, guíame, repara mis carencias, dame salud, provéeme y elévame."
+  },
+  "54": {
+   "text": "Mi rostro se ha prosternado ante Quien lo creó, y le abrió el oído y la vista con Su poder y Su fuerza. {Bendito sea, pues, Allah, el mejor de los creadores}."
+  },
+  "55": {
+   "text": "¡Oh Allah! Escríbeme por ella una recompensa junto a Ti, quita por ella una carga de mí, hazla para mí un tesoro guardado junto a Ti, y acéptala de mí como la aceptaste de Tu siervo David."
+  },
+  "56": {
+   "text": "Los saludos son para Allah, así como las oraciones y las cosas buenas. La paz sea sobre ti, oh Profeta, y la misericordia de Allah y Sus bendiciones. La paz sea sobre nosotros y sobre los siervos justos de Allah. Doy testimonio de que no hay divinidad verdadera excepto Allah, y doy testimonio de que Muhammad es Su siervo y Su Mensajero."
+  },
+  "57": {
+   "text": "¡Oh Allah! Bendice a Muhammad y a la familia de Muhammad, como bendijiste a Ibrahim y a la familia de Ibrahim; en verdad, Tú eres digno de alabanza, glorioso. ¡Oh Allah! Concede bendiciones a Muhammad y a la familia de Muhammad, como concediste bendiciones a Ibrahim y a la familia de Ibrahim; en verdad, Tú eres digno de alabanza, glorioso."
+  },
+  "58": {
+   "text": "¡Oh Allah! Bendice a Muhammad, a sus esposas y a su descendencia, como bendijiste a la familia de Ibrahim, y concede bendiciones a Muhammad, a sus esposas y a su descendencia, como concediste bendiciones a la familia de Ibrahim; en verdad, Tú eres digno de alabanza, glorioso."
+  },
+  "59": {
+   "text": "¡Oh Allah! Me refugio en Ti del castigo de la tumba, del castigo del Infierno, de la prueba de la vida y de la muerte, y del mal de la prueba del Mesías Impostor (el Dayyal)."
+  },
+  "60": {
+   "text": "¡Oh Allah! Me refugio en Ti del castigo de la tumba, me refugio en Ti de la prueba del Mesías Impostor, y me refugio en Ti de la prueba de la vida y de la muerte. ¡Oh Allah! Me refugio en Ti del pecado y de la deuda."
+  },
+  "61": {
+   "text": "¡Oh Allah! En verdad me he perjudicado mucho a mí mismo, y nadie perdona los pecados sino Tú; perdóname, pues, con un perdón que provenga de Ti y ten misericordia de mí; en verdad, Tú eres el Perdonador, el Misericordioso."
+  },
+  "62": {
+   "text": "¡Oh Allah! Perdóname lo que adelanté y lo que aplacé, lo que oculté y lo que manifesté, lo que hice con exceso, y lo que Tú conoces mejor que yo. Tú eres el que adelanta y Tú eres el que aplaza; no hay divinidad verdadera excepto Tú."
+  },
+  "63": {
+   "text": "¡Oh Allah! Ayúdame a recordarte, a agradecerte y a adorarte de la mejor manera."
+  },
+  "64": {
+   "text": "¡Oh Allah! Me refugio en Ti de la avaricia, me refugio en Ti de la cobardía, me refugio en Ti de ser devuelto a la edad más decrépita, y me refugio en Ti de la prueba de esta vida y del castigo de la tumba."
+  },
+  "65": {
+   "text": "¡Oh Allah! Te pido el Paraíso y me refugio en Ti del Fuego."
+  },
+  "66": {
+   "text": "¡Oh Allah! Por Tu conocimiento de lo oculto y Tu poder sobre la creación, dame vida mientras sepas que la vida es mejor para mí, y hazme morir cuando sepas que la muerte es mejor para mí. ¡Oh Allah! Te pido Tu temor en lo oculto y en lo manifiesto; te pido la palabra de verdad en la satisfacción y en la ira; te pido la moderación en la riqueza y en la pobreza; te pido un deleite que no se agote; te pido un consuelo del corazón que no cese; te pido la satisfacción después del decreto; te pido la frescura de la vida después de la muerte; te pido el placer de contemplar Tu rostro y el anhelo de encontrarme contigo, sin un daño que perjudique ni una prueba que desvíe. ¡Oh Allah! Adórnanos con el adorno de la fe y haznos guías bien guiados."
+  },
+  "67": {
+   "text": "¡Oh Allah! Te pido, oh Allah, por ser Tú el Único, el Uno, el Absoluto, que no engendró ni fue engendrado, y a quien nadie es semejante, que perdones mis pecados; en verdad, Tú eres el Perdonador, el Misericordioso."
+  },
+  "68": {
+   "text": "¡Oh Allah! Te pido, pues a Ti pertenece toda la alabanza, no hay divinidad verdadera excepto Tú, único, sin asociado, el Munificente, oh Originador de los cielos y la tierra, oh Poseedor de la majestad y la generosidad, oh Viviente, oh Sustentador; te pido el Paraíso y me refugio en Ti del Fuego."
+  },
+  "69": {
+   "text": "¡Oh Allah! Te pido, pues doy testimonio de que Tú eres Allah, no hay divinidad verdadera excepto Tú, el Uno, el Absoluto, que no engendró ni fue engendrado, y a quien nadie es semejante."
+  },
+  "70": {
+   "text": "Pido perdón a Allah (tres veces). ¡Oh Allah! Tú eres la Paz, y de Ti procede la paz; bendito eres, oh Poseedor de la majestad y la generosidad."
+  },
+  "71": {
+   "text": "No hay divinidad verdadera excepto Allah, único, sin asociado; Suyo es el dominio y Suya es la alabanza, y Él es capaz de todas las cosas. ¡Oh Allah! Nadie puede impedir lo que Tú concedes, y nadie puede conceder lo que Tú impides, y de nada le sirve al poderoso su poder frente a Ti."
+  },
+  "72": {
+   "text": "No hay divinidad verdadera excepto Allah, único, sin asociado; Suyo es el dominio y Suya es la alabanza, y Él es capaz de todas las cosas. No hay poder ni fuerza sino en Allah; no hay divinidad verdadera excepto Allah, y no adoramos sino a Él; Suya es la gracia, Suyo es el favor, y Suya es la hermosa alabanza; no hay divinidad verdadera excepto Allah, siéndole sinceros en la religión, aunque les disguste a los incrédulos."
+  },
+  "73": {
+   "text": "Gloria a Allah, alabado sea Allah, y Allah es el más grande (treinta y tres veces).\nNo hay divinidad verdadera excepto Allah, único, sin asociado; Suyo es el dominio y Suya es la alabanza, y Él es capaz de todas las cosas (una vez)."
+  },
+  "74": {
+   "text": "En el nombre de Allah, el Compasivo, el Misericordioso.\n{Di: \"Él es Allah, Uno. Allah, el Absoluto. No engendró ni fue engendrado. Y no hay nadie que sea semejante a Él.\"}\n\nEn el nombre de Allah, el Compasivo, el Misericordioso.\n{Di: \"Me refugio en el Señor del alba, del mal de lo que ha creado, del mal de la oscuridad cuando se extiende, del mal de las que soplan sobre los nudos, y del mal del envidioso cuando envidia.\"}\n\nEn el nombre de Allah, el Compasivo, el Misericordioso.\n{Di: \"Me refugio en el Señor de los hombres, el Soberano de los hombres, el Dios de los hombres, del mal del susurrador que se esconde, que susurra en los pechos de los hombres, ya sea de los genios o de los hombres.\"}"
+  },
+  "75": {
+   "text": "Me refugio en Allah del demonio maldito.\n{Allah, no hay divinidad verdadera excepto Él, el Viviente, el Sustentador de toda la existencia. No Le alcanza ni la somnolencia ni el sueño. Suyo es cuanto hay en los cielos y cuanto hay en la tierra. ¿Quién podrá interceder ante Él sino con Su permiso? Conoce lo que hay ante ellos y lo que hay detrás de ellos, y ellos no abarcan nada de Su conocimiento excepto lo que Él quiere. Su Trono (Kursi) abarca los cielos y la tierra, y no Le resulta pesado cuidar de ambos; y Él es el Altísimo, el Grandioso.}"
+  },
+  "76": {
+   "text": "No hay divinidad verdadera excepto Allah, único, sin asociado; Suyo es el dominio y Suya es la alabanza; Él da la vida y da la muerte, y Él es capaz de todas las cosas.\n(Después de la oración del Magrib y del Fayr)"
+  },
+  "77": {
+   "text": "¡Oh Allah! Te pido conocimiento provechoso, sustento bueno y obras aceptadas.\n(Después del saludo final de la oración del Fajr)"
+  },
+  "78": {
+   "text": "Yabir ibn Abdullah, que Allah esté complacido con ambos, dijo: 'El Mensajero de Allah, la paz y las bendiciones de Allah sean con él, nos enseñaba la istikhara en todos los asuntos, tal como nos enseñaba una sura del Corán. Decía: Cuando alguno de vosotros se proponga un asunto, que rece dos rakaas voluntarias, fuera de la oración obligatoria, y luego diga: (¡Oh Allah! Te pido que elijas por mí con Tu conocimiento, y te pido poder con Tu poder, y te pido de Tu inmenso favor, pues Tú tienes poder y yo no lo tengo, y Tú sabes y yo no sé, y Tú eres el Conocedor de lo oculto. ¡Oh Allah! Si sabes que este asunto —y menciona su necesidad— es bueno para mí en mi religión, en mi sustento y en el desenlace de mi asunto —o dijo: en lo inmediato y en lo futuro—, decrétalo para mí, facilítamelo y luego bendícemelo en ello; y si sabes que este asunto es malo para mí en mi religión, en mi sustento y en el desenlace de mi asunto —o dijo: en lo inmediato y en lo futuro—, apártalo de mí y apártame de él, y decreta para mí el bien donde quiera que esté, y hazme estar satisfecho con ello).'"
+  },
+  "79": {
+   "text": "Alabado sea Allah, único, y las oraciones y la paz sean sobre aquel después del cual no hay profeta."
+  },
+  "80": {
+   "text": "Me refugio en Allah del demonio maldito.\n{Allah, no hay divinidad verdadera excepto Él, el Viviente, el Sustentador de toda la existencia. No Le alcanza ni la somnolencia ni el sueño. Suyo es cuanto hay en los cielos y cuanto hay en la tierra. ¿Quién podrá interceder ante Él sino con Su permiso? Conoce lo que hay ante ellos y lo que hay detrás de ellos, y ellos no abarcan nada de Su conocimiento excepto lo que Él quiere. Su Trono (Kursi) abarca los cielos y la tierra, y no Le resulta pesado cuidar de ambos; y Él es el Altísimo, el Grandioso.}"
+  },
+  "81": {
+   "text": "En el nombre de Allah, el Compasivo, el Misericordioso.\n{Di: \"Él es Allah, Uno. Allah, el Absoluto. No engendró ni fue engendrado. Y no hay nadie que sea semejante a Él.\"}\n\nEn el nombre de Allah, el Compasivo, el Misericordioso.\n{Di: \"Me refugio en el Señor del alba, del mal de lo que ha creado, del mal de la oscuridad cuando se extiende, del mal de las que soplan sobre los nudos, y del mal del envidioso cuando envidia.\"}\n\nEn el nombre de Allah, el Compasivo, el Misericordioso.\n{Di: \"Me refugio en el Señor de los hombres, el Soberano de los hombres, el Dios de los hombres, del mal del susurrador que se esconde, que susurra en los pechos de los hombres, ya sea de los genios o de los hombres.\"}"
+  },
+  "82": {
+   "text": "Hemos amanecido, y con nosotros ha amanecido el dominio de Allah; alabado sea Allah. No hay divinidad verdadera excepto Allah, único, sin asociado; Suyo es el dominio y Suya es la alabanza, y Él es capaz de todas las cosas. ¡Señor mío! Te pido el bien de este día y el bien de lo que le sigue, y me refugio en Ti del mal de este día y del mal de lo que le sigue. ¡Señor mío! Me refugio en Ti de la pereza y de la vejez indigna. ¡Señor mío! Me refugio en Ti de un castigo en el Fuego y de un castigo en la tumba."
+  },
+  "83": {
+   "text": "¡Oh Allah! Por Ti hemos amanecido, por Ti anochecemos, por Ti vivimos, por Ti morimos, y hacia Ti es la resurrección."
+  },
+  "84": {
+   "text": "¡Oh Allah! Tú eres mi Señor, no hay divinidad verdadera excepto Tú; Tú me creaste y yo soy Tu siervo, y estoy en Tu pacto y Tu promesa en la medida de lo que pueda. Me refugio en Ti del mal de lo que he hecho; reconozco ante Ti Tu favor sobre mí, y reconozco mi pecado; perdóname, pues, ya que nadie perdona los pecados sino Tú."
+  },
+  "85": {
+   "text": "¡Oh Allah! He amanecido poniéndote por testigo a Ti, y poniendo por testigos a los portadores de Tu Trono, a Tus ángeles y a toda Tu creación, de que Tú eres Allah, no hay divinidad verdadera excepto Tú, único, sin asociado, y de que Muhammad es Tu siervo y Tu Mensajero."
+  },
+  "86": {
+   "text": "¡Oh Allah! Cualquier bendición que haya amanecido en mí o en alguna de Tus criaturas proviene únicamente de Ti, sin asociado; a Ti, pues, sea la alabanza y a Ti el agradecimiento."
+  },
+  "87": {
+   "text": "¡Oh Allah! Dame salud en mi cuerpo. ¡Oh Allah! Dame salud en mi oído. ¡Oh Allah! Dame salud en mi vista. No hay divinidad verdadera excepto Tú. ¡Oh Allah! Me refugio en Ti de la incredulidad y de la pobreza, y me refugio en Ti del castigo de la tumba. No hay divinidad verdadera excepto Tú."
+  },
+  "88": {
+   "text": "Allah me basta; no hay divinidad verdadera excepto Él; en Él me encomiendo, y Él es el Señor del Trono inmenso."
+  },
+  "89": {
+   "text": "¡Oh Allah! Te pido el perdón y el bienestar en esta vida y en la otra. ¡Oh Allah! Te pido el perdón y el bienestar en mi religión, en mi vida mundanal, en mi familia y en mis bienes. ¡Oh Allah! Cubre mis defectos y tranquiliza mis temores. ¡Oh Allah! Protégeme por delante de mí, por detrás de mí, por mi derecha, por mi izquierda y por encima de mí, y me refugio en Tu grandeza de ser sorprendido desde debajo de mí."
+  },
+  "90": {
+   "text": "¡Oh Allah, Conocedor de lo oculto y lo manifiesto, Creador de los cielos y la tierra, Señor de todas las cosas y su Soberano! Doy testimonio de que no hay divinidad verdadera excepto Tú. Me refugio en Ti del mal de mi propia alma, del mal del demonio y de su incitación a la idolatría, y de cometer un mal contra mí mismo o de causarlo a un musulmán."
+  },
+  "91": {
+   "text": "En el nombre de Allah, con cuyo nombre nada puede causar daño ni en la tierra ni en el cielo; y Él es el Oyente, el Conocedor."
+  },
+  "92": {
+   "text": "Acepto a Allah como Señor, al Islam como religión, y a Muhammad, la paz y las bendiciones de Allah sean con él, como profeta."
+  },
+  "93": {
+   "text": "¡Oh Viviente, oh Sustentador! Por Tu misericordia imploro auxilio; arregla para mí todos mis asuntos, y no me dejes a mí mismo ni el parpadeo de un ojo."
+  },
+  "94": {
+   "text": "Hemos amanecido, y con nosotros ha amanecido el dominio de Allah, Señor de los mundos. ¡Oh Allah! Te pido el bien de este día: su apertura, su auxilio, su luz, su bendición y su guía, y me refugio en Ti del mal que hay en él y del mal de lo que le sigue."
+  },
+  "95": {
+   "text": "Hemos amanecido sobre la naturaleza pura del Islam, sobre la palabra de la sinceridad, sobre la religión de nuestro Profeta Muhammad, la paz y las bendiciones de Allah sean con él, y sobre la creencia de nuestro padre Ibrahim, buscador sincero de la verdad y musulmán, y que no era de los idólatras."
+  },
+  "96": {
+   "text": "Gloria a Allah y alabado sea."
+  },
+  "97": {
+   "text": "No hay divinidad verdadera excepto Allah, único, sin asociado; Suyo es el dominio y Suya es la alabanza, y Él es capaz de todas las cosas."
+  },
+  "98": {
+   "text": "No hay divinidad verdadera excepto Allah, único, sin asociado; Suyo es el dominio y Suya es la alabanza, y Él es capaz de todas las cosas."
+  },
+  "99": {
+   "text": "Gloria a Allah y alabado sea, tantas veces como el número de Sus criaturas, como Su propia complacencia, como el peso de Su Trono y como la tinta de Sus palabras."
+  },
+  "100": {
+   "text": "¡Oh Allah! Te pido conocimiento provechoso, sustento bueno y obras aceptadas."
+  },
+  "101": {
+   "text": "Pido perdón a Allah y a Él me vuelvo arrepentido."
+  },
+  "102": {
+   "text": "¡Oh Allah! Bendice y da la paz a nuestro Profeta Muhammad."
+  },
+  "103": {
+   "text": "Alabado sea Allah, único, y las oraciones y la paz sean sobre aquel después del cual no hay profeta."
+  },
+  "104": {
+   "text": "Me refugio en Allah del demonio maldito.\n{Allah, no hay divinidad verdadera excepto Él, el Viviente, el Sustentador de toda la existencia. No Le alcanza ni la somnolencia ni el sueño. Suyo es cuanto hay en los cielos y cuanto hay en la tierra. ¿Quién podrá interceder ante Él sino con Su permiso? Conoce lo que hay ante ellos y lo que hay detrás de ellos, y ellos no abarcan nada de Su conocimiento excepto lo que Él quiere. Su Trono (Kursi) abarca los cielos y la tierra, y no Le resulta pesado cuidar de ambos; y Él es el Altísimo, el Grandioso.}"
+  },
+  "105": {
+   "text": "En el nombre de Allah, el Compasivo, el Misericordioso.\n{Di: \"Él es Allah, Uno. Allah, el Absoluto. No engendró ni fue engendrado. Y no hay nadie que sea semejante a Él.\"}\n\nEn el nombre de Allah, el Compasivo, el Misericordioso.\n{Di: \"Me refugio en el Señor del alba, del mal de lo que ha creado, del mal de la oscuridad cuando se extiende, del mal de las que soplan sobre los nudos, y del mal del envidioso cuando envidia.\"}\n\nEn el nombre de Allah, el Compasivo, el Misericordioso.\n{Di: \"Me refugio en el Señor de los hombres, el Soberano de los hombres, el Dios de los hombres, del mal del susurrador que se esconde, que susurra en los pechos de los hombres, ya sea de los genios o de los hombres.\"}"
+  },
+  "106": {
+   "text": "Hemos anochecido, y con nosotros ha anochecido el dominio de Allah; alabado sea Allah. No hay divinidad verdadera excepto Allah, único, sin asociado; Suyo es el dominio y Suya es la alabanza, y Él es capaz de todas las cosas. ¡Señor mío! Te pido el bien de esta noche y el bien de lo que le sigue, y me refugio en Ti del mal de esta noche y del mal de lo que le sigue. ¡Señor mío! Me refugio en Ti de la pereza y de la vejez indigna. ¡Señor mío! Me refugio en Ti de un castigo en el Fuego y de un castigo en la tumba."
+  },
+  "107": {
+   "text": "¡Oh Allah! Por Ti anochecemos, por Ti amanecemos, por Ti vivimos, por Ti morimos, y hacia Ti es el retorno final."
+  },
+  "108": {
+   "text": "¡Oh Allah! Tú eres mi Señor, no hay divinidad verdadera excepto Tú; Tú me creaste y yo soy Tu siervo, y estoy en Tu pacto y Tu promesa en la medida de lo que pueda. Me refugio en Ti del mal de lo que he hecho; reconozco ante Ti Tu favor sobre mí, y reconozco mi pecado; perdóname, pues, ya que nadie perdona los pecados sino Tú."
+  },
+  "109": {
+   "text": "¡Oh Allah! He anochecido poniéndote por testigo a Ti, y poniendo por testigos a los portadores de Tu Trono, a Tus ángeles y a toda Tu creación, de que Tú eres Allah, no hay divinidad verdadera excepto Tú, único, sin asociado, y de que Muhammad es Tu siervo y Tu Mensajero."
+  },
+  "110": {
+   "text": "¡Oh Allah! Cualquier bendición que haya anochecido en mí o en alguna de Tus criaturas proviene únicamente de Ti, sin asociado; a Ti, pues, sea la alabanza y a Ti el agradecimiento."
+  },
+  "111": {
+   "text": "¡Oh Allah! Dame salud en mi cuerpo. ¡Oh Allah! Dame salud en mi oído. ¡Oh Allah! Dame salud en mi vista. No hay divinidad verdadera excepto Tú. ¡Oh Allah! Me refugio en Ti de la incredulidad y de la pobreza, y me refugio en Ti del castigo de la tumba. No hay divinidad verdadera excepto Tú."
+  },
+  "112": {
+   "text": "Allah me basta; no hay divinidad verdadera excepto Él; en Él me encomiendo, y Él es el Señor del Trono inmenso."
+  },
+  "113": {
+   "text": "¡Oh Allah! Te pido el perdón y el bienestar en esta vida y en la otra. ¡Oh Allah! Te pido el perdón y el bienestar en mi religión, en mi vida mundanal, en mi familia y en mis bienes. ¡Oh Allah! Cubre mis defectos y tranquiliza mis temores. ¡Oh Allah! Protégeme por delante de mí, por detrás de mí, por mi derecha, por mi izquierda y por encima de mí, y me refugio en Tu grandeza de ser sorprendido desde debajo de mí."
+  },
+  "114": {
+   "text": "¡Oh Allah, Conocedor de lo oculto y lo manifiesto, Creador de los cielos y la tierra, Señor de todas las cosas y su Soberano! Doy testimonio de que no hay divinidad verdadera excepto Tú. Me refugio en Ti del mal de mi propia alma, del mal del demonio y de su incitación a la idolatría, y de cometer un mal contra mí mismo o de causarlo a un musulmán."
+  },
+  "115": {
+   "text": "En el nombre de Allah, con cuyo nombre nada puede causar daño ni en la tierra ni en el cielo; y Él es el Oyente, el Conocedor."
+  },
+  "116": {
+   "text": "Acepto a Allah como Señor, al Islam como religión, y a Muhammad, la paz y las bendiciones de Allah sean con él, como profeta."
+  },
+  "117": {
+   "text": "¡Oh Viviente, oh Sustentador! Por Tu misericordia imploro auxilio; arregla para mí todos mis asuntos, y no me dejes a mí mismo ni el parpadeo de un ojo."
+  },
+  "118": {
+   "text": "Hemos anochecido, y con nosotros ha anochecido el dominio de Allah, Señor de los mundos. ¡Oh Allah! Te pido el bien de esta noche: su apertura, su auxilio, su luz, su bendición y su guía, y me refugio en Ti del mal que hay en ella y del mal de lo que le sigue."
+  },
+  "119": {
+   "text": "Hemos anochecido sobre la naturaleza pura del Islam, sobre la palabra de la sinceridad, sobre la religión de nuestro Profeta Muhammad, la paz y las bendiciones de Allah sean con él, y sobre la creencia de nuestro padre Ibrahim, buscador sincero de la verdad y musulmán, y que no era de los idólatras."
+  },
+  "120": {
+   "text": "Gloria a Allah y alabado sea."
+  },
+  "121": {
+   "text": "No hay divinidad verdadera excepto Allah, único, sin asociado; Suyo es el dominio y Suya es la alabanza, y Él es capaz de todas las cosas."
+  },
+  "122": {
+   "text": "Pido perdón a Allah y a Él me vuelvo arrepentido."
+  },
+  "123": {
+   "text": "Me refugio en las palabras perfectas de Allah del mal de lo que Él ha creado."
+  },
+  "124": {
+   "text": "¡Oh Allah! Bendice y da la paz a nuestro Profeta Muhammad."
+  },
+  "125": {
+   "text": "Junta las palmas de sus manos, luego sopla en ellas, y recita en ellas:\n\nEn el nombre de Allah, el Compasivo, el Misericordioso.\n{Di: \"Él es Allah, Uno. Allah, el Absoluto. No engendró ni fue engendrado. Y no hay nadie que sea semejante a Él.\"}\n\nEn el nombre de Allah, el Compasivo, el Misericordioso.\n{Di: \"Me refugio en el Señor del alba, del mal de lo que ha creado, del mal de la oscuridad cuando se extiende, del mal de las que soplan sobre los nudos, y del mal del envidioso cuando envidia.\"}\n\nEn el nombre de Allah, el Compasivo, el Misericordioso.\n{Di: \"Me refugio en el Señor de los hombres, el Soberano de los hombres, el Dios de los hombres, del mal del susurrador que se esconde, que susurra en los pechos de los hombres, ya sea de los genios o de los hombres.\"}\n\nLuego se pasa las manos por todo el cuerpo que pueda alcanzar, empezando por la cabeza, el rostro y la parte delantera de su cuerpo."
+  },
+  "126": {
+   "text": "Me refugio en Allah del demonio maldito.\n{Allah, no hay divinidad verdadera excepto Él, el Viviente, el Sustentador de toda la existencia. No Le alcanza ni la somnolencia ni el sueño. Suyo es cuanto hay en los cielos y cuanto hay en la tierra. ¿Quién podrá interceder ante Él sino con Su permiso? Conoce lo que hay ante ellos y lo que hay detrás de ellos, y ellos no abarcan nada de Su conocimiento excepto lo que Él quiere. Su Trono (Kursi) abarca los cielos y la tierra, y no Le resulta pesado cuidar de ambos; y Él es el Altísimo, el Grandioso.}"
+  },
+  "127": {
+   "text": "Me refugio en Allah del demonio maldito.\n{El Mensajero cree en lo que le fue revelado de su Señor, y también los creyentes; todos creen en Allah, en Sus ángeles, en Sus libros y en Sus mensajeros, sin hacer distinción entre ninguno de Sus mensajeros. Y dicen: 'Hemos oído y obedecido; Tu perdón, Señor nuestro, y hacia Ti es el retorno final.' Allah no impone a un alma sino lo que puede soportar; a su favor será lo que haya ganado, y en su contra lo que haya cometido. ¡Señor nuestro! No nos tomes en cuenta si olvidamos o erramos. ¡Señor nuestro! No nos impongas una carga pesada como la impusiste a quienes nos precedieron. ¡Señor nuestro! No nos cargues con lo que no podemos soportar; perdónanos, absuélvenos y ten misericordia de nosotros; Tú eres nuestro Protector; auxílianos, pues, contra el pueblo incrédulo.}"
+  },
+  "128": {
+   "text": "En Tu nombre, Señor mío, he puesto mi costado, y con Tu ayuda lo levanto. Si retienes mi alma, ten misericordia de ella; y si la dejas ir, protégela con aquello con lo que proteges a Tus siervos justos."
+  },
+  "129": {
+   "text": "¡Oh Allah! Tú has creado mi alma y Tú la haces morir; Tuya es su muerte y su vida. Si la mantienes con vida, protégela, y si la haces morir, perdónala. ¡Oh Allah! Te pido el bienestar."
+  },
+  "130": {
+   "text": "¡Oh Allah! Presérvame de Tu castigo el día en que resucites a Tus siervos."
+  },
+  "131": {
+   "text": "En Tu nombre, oh Allah, muero y vivo."
+  },
+  "132": {
+   "text": "Gloria a Allah."
+  },
+  "133": {
+   "text": "Alabado sea Allah."
+  },
+  "134": {
+   "text": "Allah es el más grande."
+  },
+  "135": {
+   "text": "¡Oh Allah, Señor de los siete cielos y Señor de la tierra, Señor del Trono inmenso, Señor nuestro y Señor de todas las cosas, que hace germinar el grano y el hueso del dátil, y que reveló la Torá, el Evangelio y el Corán (al-Furqan)! Me refugio en Ti del mal de todo aquello cuya frente Tú sujetas. ¡Oh Allah! Tú eres el Primero, y nada hay antes de Ti; Tú eres el Último, y nada hay después de Ti; Tú eres el Manifiesto, y nada hay por encima de Ti; Tú eres el Oculto, y nada hay más próximo que Tú. Salda por nosotros la deuda y líbranos de la pobreza."
+  },
+  "136": {
+   "text": "Alabado sea Allah, que nos alimentó, nos dio de beber, nos bastó y nos dio cobijo; ¡cuántos hay que no tienen quien les baste ni quien les dé cobijo!"
+  },
+  "137": {
+   "text": "¡Oh Allah, Conocedor de lo oculto y lo manifiesto, Creador de los cielos y la tierra, Señor de todas las cosas y su Soberano! Doy testimonio de que no hay divinidad verdadera excepto Tú. Me refugio en Ti del mal de mi propia alma, del mal del demonio y de su incitación a la idolatría, y de cometer un mal contra mí mismo o de causarlo a un musulmán."
+  },
+  "138": {
+   "text": "Recita {Alif, Lam, Mim. La revelación...} (sura As-Sayda)\ny {Bendito sea Aquel en cuya mano está el dominio...} (sura Al-Mulk)"
+  },
+  "139": {
+   "text": "¡Oh Allah! Te he sometido mi alma, te he confiado mi asunto, he dirigido mi rostro hacia Ti, y he recostado mi espalda en Ti, por temor y por anhelo hacia Ti; no hay refugio ni salvación de Ti excepto en Ti. Creo en Tu Libro que revelaste y en Tu Profeta que enviaste."
+  }
+ }
+}

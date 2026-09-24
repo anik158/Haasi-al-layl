@@ -1,31 +1,31 @@
-# `assets/hisn/` — Hisn al-Muslim data (not in this repository)
+# `assets/hisn/` — Hisn al-Muslim data (generated)
 
 `HaasiAlLaylViewModel.loadHisnAlMuslimData()` loads the *Hisn al-Muslim* (Fortress of the Muslim)
-collection from this directory, one JSON file per language. **None are checked in**, so a clean
-checkout shows the 14 built-in supplications from `DuaData.kt` and the Hisn entry in the Duas filter
-menu stays hidden. Dropping files in here is all it takes to switch it on — no code change.
+collection from this directory, one JSON file per language. **Do not edit these files by hand** —
+they are written by `python3 tools/hisn/build.py` from:
+
+| Source | What | Licence |
+| --- | --- | --- |
+| `tools/hisn/source/hisn.json` | Arabic text, repeat counts, hadith references — 133 chapters, 302 supplications | MIT, © 2021 Abdellah SELLAM ([asellam/HisnElMuslim](https://github.com/asellam/HisnElMuslim)); notice shipped here as `LICENSE-HisnElMuslim.md` |
+| `tools/hisn/translations/<lang>.*.json` | Chapter titles and translations (en also transliteration) | The project's own translations of the Arabic above |
 
 | File | Language | Role |
 | --- | --- | --- |
 | `ar.json` | Arabic | Defines the chapters and supplications, and the Arabic text |
-| `en.json` | English | Chapter titles, transliteration, translation — and the definition if `ar.json` is absent |
-| `bn.json` | Bengali | Chapter titles and translation |
-| `es.json` | Spanish | Chapter titles and translation |
-| `pt.json` | Portuguese | Chapter titles and translation |
+| `en.json` | English | Chapter titles, transliteration, translation |
+| `bn.json` / `es.json` / `pt.json` | Bengali / Spanish / Portuguese | Chapter titles and translation |
 
-Any subset works. A missing language falls back to English field by field.
+A missing language or field falls back to English.
 
-## Why the text is not generated or scraped
+## Rules
 
-Hisn al-Muslim is a published collection by Saʿīd al-Qaḥṭānī with fixed wording and fixed hadith
-references. A supplication with an invented word, or a correct one attributed to the wrong hadith,
-is worse than an absent one — so it cannot be written from memory.
-
-It also cannot be copied from a website that has not licensed it. The translations are modern
-copyrighted works: sunnah.com's terms prohibit reproducing whole collections, and hisnulmuslim.org
-is marked *All Rights Reserved* (and offers no Portuguese). Obtain the files from a source that
-permits app use — hisnmuslim.com-style exports, or a publisher's written permission — and keep that
-permission on record.
+- **The Arabic and references are never written from memory.** Fix them in `tools/hisn/source/`
+  (ideally upstream too) and rebuild.
+- **Translations are made from the Arabic, never copied** from a published translation —
+  sunnah.com's terms forbid reproducing whole collections and hisnulmuslim.org is all rights
+  reserved. The current ones are machine-assisted and **not yet reviewed by a scholar**.
+- **IDs are 1..N in the upstream file's order** and become `hisn_<ID>` bookmark keys. Never reorder
+  the source or insert into its middle; only append.
 
 ## Shape
 

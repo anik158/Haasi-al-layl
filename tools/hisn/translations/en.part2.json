@@ -1,0 +1,762 @@
+{
+ "chapters": {
+  "29": "The supplication when turning over at night",
+  "30": "The supplication for fright in sleep, and for one afflicted with fear",
+  "31": "What one who sees a dream or a nightmare should do",
+  "32": "The supplication of Qunut in Witr",
+  "33": "The remembrance after the taslim of Witr",
+  "34": "The supplication for anxiety and grief",
+  "35": "The supplication for distress",
+  "36": "The supplication upon meeting the enemy or one in authority",
+  "37": "The supplication of one who fears the injustice of a ruler",
+  "38": "The supplication against the enemy",
+  "39": "What one who fears a people says",
+  "40": "The supplication of one afflicted by doubt in faith",
+  "41": "The supplication for repaying debt",
+  "42": "The supplication for whispers during prayer and recitation",
+  "43": "The supplication of one who finds a matter difficult",
+  "44": "What one who commits a sin says and does",
+  "45": "Ways of driving away Satan and his whispers",
+  "46": "The supplication for when something displeasing happens, or when one is overcome in a matter",
+  "47": "Congratulating the one blessed with a child, and his reply",
+  "48": "What children are protected with",
+  "49": "The supplication for the sick person when visiting him",
+  "50": "The merit of visiting the sick",
+  "51": "The supplication of the sick person who has despaired of his life",
+  "52": "Prompting the dying person",
+  "53": "The supplication of one afflicted by a calamity",
+  "54": "The supplication when closing the eyes of the deceased",
+  "55": "The supplication for the deceased in the funeral prayer",
+  "56": "The supplication for a young child in the funeral prayer for him",
+  "57": "The supplication of condolence",
+  "58": "The supplication when placing the deceased in the grave",
+  "59": "The supplication after burying the deceased",
+  "60": "The supplication for visiting graves",
+  "61": "The supplication for the wind",
+  "62": "The supplication for thunder",
+  "63": "Some of the supplications for seeking rain",
+  "64": "The supplication when it rains",
+  "65": "The remembrance after rain falls",
+  "66": "Some of the supplications for seeking clear skies",
+  "67": "The supplication upon seeing the crescent moon",
+  "68": "The supplication when the fasting person breaks his fast",
+  "69": "The supplication before eating",
+  "70": "The supplication upon finishing eating",
+  "71": "The guest's supplication for the host",
+  "72": "The supplication for one who gives you a drink, or when you intend to do so",
+  "73": "The supplication when breaking the fast at the home of a family",
+  "74": "What the fasting person says when food is presented and he does not break his fast",
+  "75": "What the fasting person says if someone reviles him",
+  "76": "The supplication upon seeing the first fruits",
+  "77": "The supplication for sneezing",
+  "78": "What is said to the disbeliever if he sneezes and praises Allah",
+  "79": "The supplication for one who marries",
+  "80": "The supplication for one who marries or buys an animal",
+  "81": "The supplication before intimacy with one's wife",
+  "82": "The supplication for anger",
+  "83": "The supplication of one who sees a person afflicted",
+  "84": "What is said in a gathering",
+  "85": "The expiation for a gathering",
+  "86": "The reply to one who says 'May Allah forgive you'",
+  "87": "The supplication for one who does you a kindness",
+  "88": "What Allah protects one with from the Dajjal",
+  "89": "The reply to one who says 'I love you for the sake of Allah'",
+  "90": "The supplication for one who offers you his wealth",
+  "91": "The supplication for one who lent, upon repayment",
+  "92": "The supplication for fear of associating partners with Allah",
+  "93": "The reply to one who says 'May Allah bless you'",
+  "94": "The supplication for disliking bad omens",
+  "95": "The supplication for riding",
+  "96": "The supplication for travel",
+  "97": "The supplication for entering a village or town",
+  "98": "The supplication for entering the marketplace",
+  "99": "The supplication when the mount stumbles",
+  "100": "The traveler's supplication for the one staying behind",
+  "101": "The supplication of the one staying behind for the traveler",
+  "102": "Saying Allahu Akbar and Subhan Allah while traveling",
+  "103": "The traveler's supplication at dawn",
+  "104": "The supplication when stopping at a place while traveling or otherwise",
+  "105": "The remembrance for returning from travel",
+  "106": "What one who receives welcome or unwelcome news says",
+  "107": "The merit of sending blessings upon the Prophet, peace and blessings be upon him",
+  "108": "Spreading the greeting of peace",
+  "109": "How to return the greeting to a disbeliever when he greets with peace",
+  "110": "The supplication when a rooster crows or a donkey brays",
+  "111": "The supplication upon hearing dogs bark at night",
+  "112": "The supplication for one whom you have reviled",
+  "113": "What a Muslim says when he praises another Muslim",
+  "114": "What a Muslim says when he is praised",
+  "115": "How the pilgrim in ihram recites the Talbiyah in Hajj or Umrah",
+  "116": "Saying Allahu Akbar upon reaching the Black Corner",
+  "117": "The supplication between the Yemeni Corner and the Black Stone",
+  "118": "The supplication while standing at Safa and Marwah",
+  "119": "The supplication on the Day of 'Arafah",
+  "120": "The remembrance at al-Mash'ar al-Haram",
+  "121": "Saying Allahu Akbar with every stone thrown at the Jamarat",
+  "122": "What is said in astonishment or at pleasing news",
+  "123": "What one who receives pleasing news does",
+  "124": "What one who feels pain in his body says",
+  "125": "The supplication of one who fears he might harm something with his eye",
+  "126": "What is said at moments of fright",
+  "127": "What is said at slaughter or sacrifice",
+  "128": "What is said to repel the guile of rebellious devils",
+  "129": "Seeking forgiveness and repentance",
+  "130": "The merit of saying Subhan Allah, Alhamdulillah, La ilaha illallah, and Allahu Akbar",
+  "131": "How the Prophet, peace and blessings be upon him, used to say Subhan Allah",
+  "132": "Some kinds of goodness and comprehensive manners"
+ },
+ "entries": {
+  "140": {
+   "text": "There is no god but Allah, the One, the Subjugator, Lord of the heavens and the earth and what is between them, the Mighty, the Ever-Forgiving.",
+   "translit": "La ilaha illallahul-Wahidul-Qahhar, Rabbus-samawati wal-ardi wa ma baynahumal-'Azizul-Ghaffar."
+  },
+  "141": {
+   "text": "I seek refuge in the perfect words of Allah from His anger and His punishment, and from the evil of His servants, and from the incitements of the devils and their presence.",
+   "translit": "A'udhu bikalimatillahit-tammati min ghadabihi wa 'iqabihi, wa sharri 'ibadihi, wa min hamazatish-shayatini wa an yahdurun."
+  },
+  "142": {
+   "text": "He spits lightly to his left.",
+   "translit": "Yanfuthu 'an yasarihi."
+  },
+  "143": {
+   "text": "He seeks refuge in Allah from Satan and from the evil of what he saw.",
+   "translit": "Yasta'idhu billahi minash-shaytani wa min sharri ma ra'a."
+  },
+  "144": {
+   "text": "He does not tell it to anyone.",
+   "translit": "La yuhaddithu biha ahadan."
+  },
+  "145": {
+   "text": "He turns over from the side he was lying on.",
+   "translit": "Yatahawwalu 'an janbihil-ladhi kana 'alayh."
+  },
+  "146": {
+   "text": "He gets up and prays if he wishes to do so.",
+   "translit": "Yaqumu yusalli in arada dhalik."
+  },
+  "147": {
+   "text": "O Allah, guide me among those You have guided, grant me well-being among those You have granted well-being, take me as a friend among those You have taken as friends, bless for me what You have given, and protect me from the evil You have decreed. Indeed, You decree and none decrees over You; whoever You befriend is not humiliated, [and whoever You take as an enemy is not honored]. Blessed are You, our Lord, and Exalted.",
+   "translit": "Allahummahdini fiman hadayt, wa 'afini fiman 'afayt, wa tawallani fiman tawallayt, wa barik li fima a'tayt, wa qini sharra ma qadayt, fa innaka taqdi wa la yuqda 'alayk, innahu la yadhillu man walayt, [wa la ya'izzu man 'adayt], tabarakta rabbana wa ta'alayt."
+  },
+  "148": {
+   "text": "O Allah, I seek refuge in Your pleasure from Your displeasure, and in Your pardon from Your punishment, and I seek refuge in You from You. I cannot enumerate praise of You; You are as You have praised Yourself.",
+   "translit": "Allahumma inni a'udhu biridaka min sakhatik, wa bimu'afatika min 'uqubatik, wa a'udhu bika mink, la uhsi thana'an 'alayk, anta kama athnayta 'ala nafsik."
+  },
+  "149": {
+   "text": "O Allah, You alone we worship, and to You we pray and prostrate, and to You we hasten and strive; we hope for Your mercy and fear Your punishment, for indeed Your punishment overtakes the disbelievers. O Allah, we seek Your help, and we seek Your forgiveness, and we praise You for all good, and we are not ungrateful to You, and we believe in You, and we submit to You, and we disown whoever disbelieves in You.",
+   "translit": "Allahumma iyyaka na'budu, wa laka nusalli wa nasjud, wa ilayka nas'a wa nahfid, narju rahmataka wa nakhsha 'adhabak, inna 'adhabaka bil-kafirina mulhaq. Allahumma inna nasta'inuka, wa nastaghfiruka, wa nuthni 'alaykal-khayr, wa la nakfuruk, wa nu'minu bik, wa nakhda'u lak, wa nakhla'u man yakfuruk."
+  },
+  "150": {
+   "text": "Glory be to the King, the Most Holy. And the third time he says it aloud, raising his voice, saying: [Lord of the angels and the Spirit].",
+   "translit": "Subhanal-Malikil-Quddus. Wath-thalithatu yajharu biha wa yamuddu biha sawtahu yaqulu: [Rabbil-mala'ikati war-ruh]."
+  },
+  "151": {
+   "text": "O Allah, I am Your servant, son of Your male servant, son of Your female servant; my forelock is in Your hand, Your judgment over me proceeds, Your decree concerning me is just. I ask You by every name belonging to You, by which You have named Yourself, or which You revealed in Your Book, or taught to any of Your creation, or which You have kept to Yourself in the knowledge of the unseen with You, that You make the Qur'an the spring of my heart, the light of my chest, the departure of my grief, and the going away of my anxiety.",
+   "translit": "Allahumma inni 'abduka, ibnu 'abdika, ibnu amatik, nasiyati biyadik, madin fiyya hukmuk, 'adlun fiyya qada'uk, as'aluka bikulli ismin huwa lak, sammayta bihi nafsak, aw anzaltahu fi kitabik, aw 'allamtahu ahadan min khalqik, awista'tharta bihi fi 'ilmil-ghaybi 'indak, an taj'alal-Qur'ana rabi'a qalbi, wa nura sadri, wa jala'a huzni, wa dhahaba hammi."
+  },
+  "152": {
+   "text": "O Allah, I seek refuge in You from anxiety and grief, from incapacity and laziness, from miserliness and cowardice, from being overcome by debt and being overpowered by men.",
+   "translit": "Allahumma inni a'udhu bika minal-hammi wal-hazan, wal-'ajzi wal-kasal, wal-bukhli wal-jubn, wa dala'id-dayni wa ghalabatir-rijal."
+  },
+  "153": {
+   "text": "There is no god but Allah, the Mighty, the Forbearing. There is no god but Allah, Lord of the Mighty Throne. There is no god but Allah, Lord of the heavens and Lord of the earth and Lord of the Noble Throne.",
+   "translit": "La ilaha illallahul-'Azimul-Halim, la ilaha illallahu Rabbul-'Arshil-'Azim, la ilaha illallahu Rabbus-samawati wa Rabbul-ardi wa Rabbul-'Arshil-Karim."
+  },
+  "154": {
+   "text": "O Allah, it is Your mercy I hope for, so do not leave me to myself for even the blink of an eye, and set right all my affairs; there is no god but You.",
+   "translit": "Allahumma rahmataka arju fala takilni ila nafsi tarfata 'ayn, wa aslih li sha'ni kullahu, la ilaha illa ant."
+  },
+  "155": {
+   "text": "There is no god but You, glory be to You; indeed, I was among the wrongdoers.",
+   "translit": "La ilaha illa anta subhanaka inni kuntu minaz-zalimin."
+  },
+  "156": {
+   "text": "Allah, Allah is my Lord; I associate nothing with Him.",
+   "translit": "Allahu Allahu Rabbi la ushriku bihi shay'a."
+  },
+  "157": {
+   "text": "O Allah, we place You before their throats, and we seek refuge in You from their evils.",
+   "translit": "Allahumma inna naj'aluka fi nuhurihim, wa na'udhu bika min shururihim."
+  },
+  "158": {
+   "text": "O Allah, You are my support, and You are my helper; by You I move about, by You I attack, and by You I fight.",
+   "translit": "Allahumma anta 'adudi, wa anta nasiri, bika ajul, wa bika asul, wa bika uqatil."
+  },
+  "159": {
+   "text": "Allah is sufficient for us, and He is the best Disposer of affairs.",
+   "translit": "Hasbunallahu wa ni'mal-Wakil."
+  },
+  "160": {
+   "text": "O Allah, Lord of the seven heavens, and Lord of the Mighty Throne, be a protector for me from so-and-so son of so-and-so, and his factions among Your creatures, lest any of them wrong me or transgress against me. Mighty is Your protection, and exalted is Your praise, and there is no god but You.",
+   "translit": "Allahumma Rabbas-samawatis-sab', wa Rabbal-'Arshil-'Azim, kun li jaran min fulanibni fulan, wa ahzabihi min khala'iqik, an yafruta 'alayya ahadun minhum aw yatgha, 'azza jaruka, wa jalla thana'uka, wa la ilaha illa ant."
+  },
+  "161": {
+   "text": "Allah is the Greatest. Allah is mightier than all of His creation. Allah is mightier than what I fear and am wary of. I seek refuge in Allah, besides Whom there is no god, Who holds the seven heavens from falling upon the earth except by His permission, from the evil of Your servant so-and-so, and his soldiers, his followers, and his partisans among the jinn and mankind. O Allah, be a protector for me from their evil; exalted is Your praise, mighty is Your protection, blessed is Your name, and there is no god besides You.",
+   "translit": "Allahu Akbar, Allahu a'azzu min khalqihi jami'a, Allahu a'azzu mimma akhafu wa ahdhar, a'udhu billahil-ladhi la ilaha illa huw, al-mumsikis-samawatis-sab'i an yaqa'na 'alal-ardi illa bi-idhnih, min sharri 'abdika fulan, wa junudihi wa atba'ihi wa ashya'ih, minal-jinni wal-ins, Allahumma kun li jaran min sharrihim, jalla thana'uka wa 'azza jaruk, wa tabaraka ismuk, wa la ilaha ghayruk."
+  },
+  "162": {
+   "text": "O Allah, Revealer of the Book, swift in reckoning, defeat the confederates. O Allah, defeat them and shake them.",
+   "translit": "Allahumma munzilal-Kitab, sari'al-hisab, ihzimil-ahzab, Allahummah-zimhum wa zalzilhum."
+  },
+  "163": {
+   "text": "O Allah, suffice me against them in whatever way You will.",
+   "translit": "Allahummak-finihim bima shi't."
+  },
+  "164": {
+   "text": "He seeks refuge in Allah.",
+   "translit": "Yasta'idhu billah."
+  },
+  "165": {
+   "text": "He stops thinking about what he doubted.",
+   "translit": "Yantahi 'amma shakka fih."
+  },
+  "166": {
+   "text": "He says: I believe in Allah and His messengers.",
+   "translit": "Yaqulu: Amantu billahi wa rusulih."
+  },
+  "167": {
+   "text": "He recites the saying of the Most High: {He is the First and the Last, the Manifest and the Hidden, and He is Knowing of all things.}",
+   "translit": "Yaqra'u qawlahu ta'ala: {Huwal-Awwalu wal-Akhiru waz-Zahiru wal-Batinu wa Huwa bikulli shay'in 'Alim}."
+  },
+  "168": {
+   "text": "O Allah, suffice me with what You have made lawful, away from what You have made unlawful, and enrich me by Your bounty so that I need no one but You.",
+   "translit": "Allahummak-fini bihalalika 'an haramik, wa aghnini bifadlika 'amman siwak."
+  },
+  "169": {
+   "text": "O Allah, I seek refuge in You from anxiety and grief, from incapacity and laziness, from miserliness and cowardice, from being overcome by debt and being overpowered by men.",
+   "translit": "Allahumma inni a'udhu bika minal-hammi wal-hazan, wal-'ajzi wal-kasal, wal-bukhli wal-jubn, wa dala'id-dayni wa ghalabatir-rijal."
+  },
+  "170": {
+   "text": "He says: (I seek refuge in Allah from the accursed Satan), and spits lightly to his left.",
+   "translit": "Yaqulu: (A'udhu billahi minash-shaytanir-rajim), wa yatful 'ala yasarih."
+  },
+  "171": {
+   "text": "O Allah, there is no ease except in what You make easy, and You make the difficult easy, if You will.",
+   "translit": "Allahumma la sahla illa ma ja'altahu sahla, wa anta taj'alul-hazna idha shi'ta sahla."
+  },
+  "172": {
+   "text": "There is no servant who commits a sin, then performs purification well, then stands and prays two rak'ahs, then seeks Allah's forgiveness, except that Allah forgives him.",
+   "translit": "Ma min 'abdin yudhnibu dhanban fa yuhsinut-tuhur, thumma yaqumu fa yusalli rak'atayn, thumma yastaghfirullaha illa ghafarallahu lah."
+  },
+  "173": {
+   "text": "Seeking refuge in Allah from him.",
+   "translit": "Al-isti'adhatu billahi minh."
+  },
+  "174": {
+   "text": "The call to prayer (adhan).",
+   "translit": "Al-adhan."
+  },
+  "175": {
+   "text": "Remembrances and recitation of the Qur'an.",
+   "translit": "Al-adhkaru wa qira'atul-Qur'an."
+  },
+  "176": {
+   "text": "It is the decree of Allah, and what He willed, He did.",
+   "translit": "Qadarullah, wa ma sha'a fa'al."
+  },
+  "177": {
+   "text": "(May Allah bless for you the one given to you, and may you give thanks to the Giver, and may he reach his full maturity, and may you be granted his righteousness.) And the one congratulated replies, saying: (May Allah bless you and bless upon you, and may Allah reward you well, and grant you the like of him, and make abundant your reward.)",
+   "translit": "(Barakallahu laka fil-mawhubi lak, wa shakartal-Wahib, wa balagha ashuddah, wa ruziqta birrah). Wa yaruddu 'alayhil-muhanna'u fa yaqul: (Barakallahu laka wa baraka 'alayk, wa jazakallahu khayra, wa razaqakallahu mithlah, wa ajzala thawabak)."
+  },
+  "178": {
+   "text": "The Messenger of Allah, peace and blessings be upon him, used to protect al-Hasan and al-Husayn, saying: (I seek refuge for you both in the perfect words of Allah from every devil and every poisonous creature, and from every harmful evil eye.)",
+   "translit": "Kana Rasulullahi sallallahu 'alayhi wa sallama yu'awwidhul-Hasana wal-Husayn: (U'idhukuma bikalimatillahit-tammati min kulli shaytanin wa hammah, wa min kulli 'aynin lammah)."
+  },
+  "179": {
+   "text": "No harm, it is a purification, if Allah wills.",
+   "translit": "La ba's, tahurun in sha' Allah."
+  },
+  "180": {
+   "text": "I ask Allah the Mighty, Lord of the Mighty Throne, to heal you.",
+   "translit": "As'alullahal-'Azima Rabbal-'Arshil-'Azimi an yashfiyak."
+  },
+  "181": {
+   "text": "He, peace and blessings be upon him, said: (When a man visits his Muslim brother, he walks amid the fruits of Paradise until he sits; and when he sits, mercy envelops him. If it was morning, seventy thousand angels send blessings upon him until evening, and if it was evening, seventy thousand angels send blessings upon him until morning.)",
+   "translit": "Qala sallallahu 'alayhi wa sallam: (Idha 'adar-rajulu akhahul-Muslima masha fi khirafatil-jannati hatta yajlis, fa idha jalasa ghamarat-hur-rahmah, fa in kana ghudwatan sallat 'alayhi sab'una alfa malakin hatta yumsi, wa in kana masa'an sallat 'alayhi sab'una alfa malakin hatta yusbih)."
+  },
+  "182": {
+   "text": "O Allah, forgive me, have mercy on me, and join me with the Highest Companion.",
+   "translit": "Allahummagh-fir li warhamni wa alhiqni bir-rafiqil-a'la."
+  },
+  "183": {
+   "text": "At his death, the Prophet, peace and blessings be upon him, began dipping his hands in water and wiping his face with them, saying: There is no god but Allah; death indeed has agonies.",
+   "translit": "Ja'alan-nabiyyu sallallahu 'alayhi wa sallama 'inda mawtihi yudkhilu yadayhi fil-ma'i fa yamsahu bihima wajhahu wa yaqul: La ilaha illallah, inna lil-mawti lasakarat."
+  },
+  "184": {
+   "text": "There is no god but Allah, and Allah is the Greatest. There is no god but Allah alone. There is no god but Allah alone, He has no partner. There is no god but Allah; His is the dominion and His is the praise. There is no god but Allah, and there is no power and no strength except with Allah.",
+   "translit": "La ilaha illallahu wallahu Akbar, la ilaha illallahu wahdah, la ilaha illallahu wahdahu la sharika lah, la ilaha illallahu lahul-mulku wa lahul-hamd, la ilaha illallahu wa la hawla wa la quwwata illa billah."
+  },
+  "185": {
+   "text": "Whoever's last words are (There is no god but Allah) will enter Paradise.",
+   "translit": "Man kana akhiru kalamihi (La ilaha illallah) dakhalal-jannah."
+  },
+  "186": {
+   "text": "Indeed we belong to Allah, and indeed to Him we return. O Allah, reward me in my calamity and replace it for me with something better.",
+   "translit": "Inna lillahi wa inna ilayhi raji'un, Allahumma'jurni fi musibati wa akhlif li khayran minha."
+  },
+  "187": {
+   "text": "O Allah, forgive so-and-so — by his name — and raise his rank among the rightly guided, and take his place among his descendants who remain, and forgive us and him, O Lord of the worlds, and make spacious his grave and illuminate it for him.",
+   "translit": "Allahummagh-fir lifulan — bismih — warfa' darajatahu fil-mahdiyyin, wakhluf-hu fi 'aqibihi fil-ghabirin, waghfir lana wa lahu ya Rabbal-'alamin, wafsah lahu fi qabrihi wa nawwir lahu fih."
+  },
+  "188": {
+   "text": "O Allah, forgive him and have mercy on him, grant him well-being and pardon him, honor his reception, and make spacious his entrance; wash him with water, snow, and hail, and cleanse him of sins as a white garment is cleansed of dirt; give him in exchange a home better than his home, a family better than his family, and a spouse better than his spouse; admit him into Paradise, and protect him from the punishment of the grave [and the punishment of the Fire].",
+   "translit": "Allahummagh-fir lahu warhamh, wa 'afihi wa'fu 'anh, wa akrim nuzulah, wa wassi' mudkhalah, waghsilhu bilma'i wath-thalji wal-barad, wa naqqihi minal-khataya kama naqqaytath-thawbal-abyada minad-danas, wa abdilhu daran khayran min darih, wa ahlan khayran min ahlih, wa zawjan khayran min zawjih, wa adkhilhul-jannah, wa a'idh-hu min 'adhabil-qabri [wa 'adhabin-nar]."
+  },
+  "189": {
+   "text": "O Allah, forgive our living and our dead, those present among us and those absent, our young and our old, our males and our females. O Allah, whomever of us You keep alive, keep him alive upon Islam, and whomever of us You cause to die, let him die upon faith. O Allah, do not deprive us of his reward, and do not let us go astray after him.",
+   "translit": "Allahummagh-fir lihayyina, wa mayyitina, wa shahidina, wa gha'ibina, wa saghirina wa kabirina, wa dhakarina wa unthana. Allahumma man ahyaytahu minna fa ahyihi 'alal-Islam, wa man tawaffaytahu minna fa tawaffahu 'alal-iman, Allahumma la tahrimna ajrahu wa la tudillana ba'dah."
+  },
+  "190": {
+   "text": "O Allah, so-and-so son of so-and-so is under Your protection and the bond of Your safeguard, so protect him from the trial of the grave and the punishment of the Fire; You are worthy of fulfilling trust and of truth, so forgive him and have mercy on him, indeed You are the Ever-Forgiving, the Merciful.",
+   "translit": "Allahumma inna fulana bna fulanin fi dhimmatik, wa hablijiwarik, faqihi min fitnatil-qabri wa 'adhabin-nar, wa anta ahlul-wafa'i wal-haqq, faghfir lahu warhamhu innaka antal-Ghafurur-Rahim."
+  },
+  "191": {
+   "text": "O Allah, Your servant, the son of Your female servant, is in need of Your mercy, and You have no need to punish him. If he was righteous, increase his good deeds, and if he was a wrongdoer, overlook his sins.",
+   "translit": "Allahumma 'abduka wabnu amatika ihtaja ila rahmatik, wa anta ghaniyyun 'an 'adhabih, in kana muhsinan fazid fi hasanatih, wa in kana musi'an fatajawaz 'anh."
+  },
+  "192": {
+   "text": "O Allah, protect him from the punishment of the grave.",
+   "translit": "Allahumma a'idh-hu min 'adhabil-qabr."
+  },
+  "193": {
+   "text": "And if he says: (O Allah, make him a forerunner, a treasure, and an accepted intercessor for his parents. O Allah, make heavy through him their scales, magnify through him their rewards, join him with the righteous believers, place him in the care of Ibrahim, and protect him by Your mercy from the punishment of the blazing Fire; give him in exchange a home better than his home, and a family better than his family. O Allah, forgive our forebears and our little ones who went ahead of us, and those who preceded us in faith), it is good.",
+   "translit": "Wa in qala: (Allahummaj-'alhu faratan wa dhukhran liwalidayh, wa shafi'an mujaba. Allahumma thaqqil bihi mawazinahuma wa a'zim bihi ujurahuma wa alhiqhu bisalihil-mu'minin, waj'alhu fi kafalati Ibrahim, wa qihi birahmatika 'adhabal-jahim, wa abdilhu daran khayran min darih, wa ahlan khayran min ahlih, Allahummagh-fir li-aslafina wa afratina, wa man sabaqana bil-iman) fahasan."
+  },
+  "194": {
+   "text": "O Allah, make him for us a forerunner, a predecessor, and a reward.",
+   "translit": "Allahummaj-'alhu lana faratan, wa salafan, wa ajra."
+  },
+  "195": {
+   "text": "To Allah belongs what He has taken, and to Him belongs what He has given, and everything with Him has an appointed term... so let her be patient and seek reward.",
+   "translit": "Inna lillahi ma akhadh, wa lahu ma a'ta, wa kullu shay'in 'indahu bi-ajalin musamma... faltasbir waltahtasib."
+  },
+  "196": {
+   "text": "And if he says: (May Allah magnify your reward, console you well, and forgive your deceased), it is good.",
+   "translit": "Wa in qala: (A'zamallahu ajrak, wa ahsana 'aza'ak, wa ghafara limayyitik) fahasan."
+  },
+  "197": {
+   "text": "In the name of Allah, and upon the way (sunnah) of the Messenger of Allah.",
+   "translit": "Bismillahi wa 'ala sunnati Rasulillah."
+  },
+  "198": {
+   "text": "O Allah, forgive him. O Allah, make him firm.",
+   "translit": "Allahummagh-fir lah, Allahumma thabbit-hu."
+  },
+  "199": {
+   "text": "Peace be upon you, inhabitants of these abodes, of the believers and Muslims; and we, if Allah wills, will join you [and may Allah have mercy on those of us who went before and those who come after]. I ask Allah for well-being for us and for you.",
+   "translit": "As-salamu 'alaykum ahlad-diyar, minal-mu'minina wal-muslimin, wa inna in sha' Allahu bikum lahiqun [wa yarhamullahul-mustaqdimina minna wal-musta'khirin] as'alullaha lana wa lakumul-'afiyah."
+  },
+  "200": {
+   "text": "O Allah, I ask You for its good, and I seek refuge in You from its evil.",
+   "translit": "Allahumma inni as'aluka khayraha, wa a'udhu bika min sharriha."
+  },
+  "201": {
+   "text": "O Allah, I ask You for its good, the good of what is in it, and the good of what it was sent with, and I seek refuge in You from its evil, the evil of what is in it, and the evil of what it was sent with.",
+   "translit": "Allahumma inni as'aluka khayraha, wa khayra ma fiha, wa khayra ma ursilat bih, wa a'udhu bika min sharriha, wa sharri ma fiha, wa sharri ma ursilat bih."
+  },
+  "202": {
+   "text": "Glory be to Him Whom the thunder glorifies with praise, and the angels out of fear of Him.",
+   "translit": "Subhanal-ladhi yusabbihur-ra'du bihamdihi wal-mala'ikatu min khifatih."
+  },
+  "203": {
+   "text": "O Allah, send down upon us a rain that relieves, wholesome and fruitful, beneficial not harmful, hastened not delayed.",
+   "translit": "Allahummasqina ghaythan mughithan mari'an mari'a, nafi'an ghayra darr, 'ajilan ghayra ajil."
+  },
+  "204": {
+   "text": "O Allah, send us rain; O Allah, send us rain; O Allah, send us rain.",
+   "translit": "Allahumma aghithna, Allahumma aghithna, Allahumma aghithna."
+  },
+  "205": {
+   "text": "O Allah, give drink to Your servants and Your livestock, spread Your mercy, and revive Your dead land.",
+   "translit": "Allahummasqi 'ibadak, wa baha'imak, wanshur rahmatak, wa ahyi baladakal-mayyit."
+  },
+  "206": {
+   "text": "O Allah, (make it) a beneficial rain-cloud.",
+   "translit": "Allahumma sayyiban nafi'a."
+  },
+  "207": {
+   "text": "We have been given rain by the bounty and mercy of Allah.",
+   "translit": "Mutirna bifadlillahi wa rahmatih."
+  },
+  "208": {
+   "text": "O Allah, around us and not upon us. O Allah, upon the hills, the small mounds, the beds of the valleys, and the places where trees grow.",
+   "translit": "Allahumma hawalayna wa la 'alayna, Allahumma 'alal-akami waz-zirab, wa butunil-awdiyah, wa manabitish-shajar."
+  },
+  "209": {
+   "text": "Allah is the Greatest. O Allah, bring it upon us with security and faith, safety and Islam, and success in what our Lord loves and is pleased with. Our Lord and your Lord is Allah.",
+   "translit": "Allahu Akbar. Allahumma ahillahu 'alayna bil-amni wal-iman, was-salamati wal-Islam, wat-tawfiqi lima tuhibbu Rabbana wa tarda. Rabbuna wa Rabbukallah."
+  },
+  "210": {
+   "text": "The thirst has gone, the veins are moistened, and the reward is confirmed, if Allah wills.",
+   "translit": "Dhahabaz-zama'u wabtallatil-'uruq, wa thabatal-ajru in sha' Allah."
+  },
+  "211": {
+   "text": "O Allah, I ask You, by Your mercy which encompasses all things, to forgive me.",
+   "translit": "Allahumma inni as'aluka birahmatikal-lati wasi'at kulla shay'in an taghfira li."
+  },
+  "212": {
+   "text": "When one of you eats food, let him say: (In the name of Allah). And if he forgets at its beginning, let him say: (In the name of Allah at its beginning and its end).",
+   "translit": "Idha akala ahadukum ta'aman falyaqul: (Bismillah), fa in nasiya fi awwalihi falyaqul: (Bismillahi fi awwalihi wa akhirih)."
+  },
+  "213": {
+   "text": "Whoever Allah feeds with food, let him say: (O Allah, bless it for us and feed us with something better than it), and whoever Allah gives to drink milk, let him say: (O Allah, bless it for us and give us more of it).",
+   "translit": "Man at'amahullahut-ta'ama falyaqul: (Allahumma barik lana fihi wa at'imna khayran minh), wa man saqahullahu labanan falyaqul: (Allahumma barik lana fihi wa zidna minh)."
+  },
+  "214": {
+   "text": "Praise be to Allah Who fed me this, and provided it for me, without any power or strength from me.",
+   "translit": "Alhamdu lillahil-ladhi at'amani hadha, wa razaqanihi, min ghayri hawlin minni wa la quwwah."
+  },
+  "215": {
+   "text": "Praise be to Allah, abundant, good, and blessed praise, not [dispensed with nor] abandoned, nor can it ever be dispensed with, our Lord.",
+   "translit": "Alhamdu lillahi hamdan kathiran tayyiban mubarakan fih, ghayra [makfiyyin wa la] muwadda', wa la mustaghnan 'anhu Rabbana."
+  },
+  "216": {
+   "text": "O Allah, bless for them what You have provided them, and forgive them and have mercy on them.",
+   "translit": "Allahumma barik lahum fima razaqtahum, waghfir lahum warhamhum."
+  },
+  "217": {
+   "text": "O Allah, feed the one who has fed me, and give drink to the one who has given me drink.",
+   "translit": "Allahumma at'im man at'amani wasqi man saqani."
+  },
+  "218": {
+   "text": "May the fasting break their fast with you, may the righteous eat your food, and may the angels send blessings upon you.",
+   "translit": "Aftara 'indakumus-sa'imun, wa akala ta'amakumul-abrar, wa sallat 'alaykumul-mala'ikah."
+  },
+  "219": {
+   "text": "(If one of you is invited, let him accept; if he is fasting let him supplicate, and if he is not fasting let him eat.)\nThe meaning of \"let him supplicate\" is: let him pray for good.",
+   "translit": "(Idha du'iya ahadukum falyujib, fa in kana sa'iman falyusalli, wa in kana muftiran falyat'am). Wa ma'na falyusalli ay: falyad'u."
+  },
+  "220": {
+   "text": "I am fasting, I am fasting.",
+   "translit": "Inni sa'im, inni sa'im."
+  },
+  "221": {
+   "text": "O Allah, bless for us our fruit, bless for us our city, bless for us our sa' (measure), and bless for us our mudd (measure).",
+   "translit": "Allahumma barik lana fi thamarina, wa barik lana fi madinatina, wa barik lana fi sa'ina, wa barik lana fi muddina."
+  },
+  "222": {
+   "text": "When one of you sneezes, let him say: (Praise be to Allah), and let his brother or companion say to him: (May Allah have mercy on you). And when he says to him: (May Allah have mercy on you), let him say: (May Allah guide you and set right your condition).",
+   "translit": "Idha 'atasa ahadukum falyaqul: (Alhamdu lillah), wal-yaqul lahu akhuhu aw sahibuh: (Yarhamukallah), fa idha qala lahu: (Yarhamukallah), falyaqul: (Yahdikumullahu wa yuslihu balakum)."
+  },
+  "223": {
+   "text": "May Allah guide you and set right your condition.",
+   "translit": "Yahdikumullahu wa yuslihu balakum."
+  },
+  "224": {
+   "text": "May Allah bless for you, and bless upon you, and join the two of you together in good.",
+   "translit": "Barakallahu lak, wa baraka 'alayk, wa jama'a baynakuma fi khayr."
+  },
+  "225": {
+   "text": "When one of you marries a woman, or buys a servant, let him say: (O Allah, I ask You for her good and the good of the nature You formed her upon, and I seek refuge in You from her evil and the evil of the nature You formed her upon). And when he buys a camel, let him take hold of the top of its hump and say the like of that.",
+   "translit": "Idha tazawwaja ahadukumumra'atan, aw idhash-tara khadiman falyaqul: (Allahumma inni as'aluka khayraha wa khayra ma jabaltaha 'alayh, wa a'udhu bika min sharriha wa sharri ma jabaltaha 'alayh), wa idhash-tara ba'iran falya'khudh bidhirwati sanamihi walyaqul mithla dhalik."
+  },
+  "226": {
+   "text": "In the name of Allah. O Allah, keep Satan away from us, and keep Satan away from what You provide us.",
+   "translit": "Bismillah, Allahumma jannibnash-shaytana wa jannibish-shaytana ma razaqtana."
+  },
+  "227": {
+   "text": "I seek refuge in Allah from the accursed Satan.",
+   "translit": "A'udhu billahi minash-shaytanir-rajim."
+  },
+  "228": {
+   "text": "Praise be to Allah Who has spared me from that with which He has afflicted you, and favored me greatly over many of those He created.",
+   "translit": "Alhamdu lillahil-ladhi 'afani mimma-btalaka bihi wa faddalani 'ala kathirin mimman khalaqa tafdila."
+  },
+  "229": {
+   "text": "On the authority of Ibn 'Umar, who said: It used to be counted for the Messenger of Allah, peace and blessings be upon him, in a single gathering, before he would rise, a hundred times: (My Lord, forgive me and accept my repentance, indeed You are the Ever-Accepting of repentance, the Ever-Forgiving).",
+   "translit": "'Anibni 'Umara qal: Kana yu'addu li-Rasulillahi sallallahu 'alayhi wa sallama fil-majlisil-wahidi mi'atu marratin min qabli an yaqum: (Rabbigh-fir li wa tub 'alayya innaka antat-Tawwabul-Ghafur)."
+  },
+  "230": {
+   "text": "Glory be to You, O Allah, and by Your praise; I bear witness that there is no god but You. I seek Your forgiveness and turn to You in repentance.",
+   "translit": "Subhanakallahumma wa bihamdik, ashhadu an la ilaha illa ant, astaghfiruka wa atubu ilayk."
+  },
+  "231": {
+   "text": "And for you (too).",
+   "translit": "Wa lak."
+  },
+  "232": {
+   "text": "May Allah reward you with good.",
+   "translit": "Jazakallahu khayra."
+  },
+  "233": {
+   "text": "Whoever memorizes ten verses from the beginning of Surat al-Kahf will be protected from the Dajjal.",
+   "translit": "Man hafiza 'ashra ayatin min awwali Surati'l-Kahfi 'usima minad-Dajjal."
+  },
+  "234": {
+   "text": "And seeking refuge in Allah from his trial after the final tashahhud in every prayer.",
+   "translit": "Wal-isti'adhatu billahi min fitnatihi 'aqibat-tashahhudil-akhiri min kulli salah."
+  },
+  "235": {
+   "text": "May He for Whose sake you love me, love you.",
+   "translit": "Ahabbakal-ladhi ahbabtani lah."
+  },
+  "236": {
+   "text": "May Allah bless for you your family and your wealth.",
+   "translit": "Barakallahu laka fi ahlika wa malik."
+  },
+  "237": {
+   "text": "May Allah bless for you your family and your wealth; indeed the reward for a loan is praise and repayment.",
+   "translit": "Barakallahu laka fi ahlika wa malik, innama jaza'us-salafil-hamdu wal-ada'."
+  },
+  "238": {
+   "text": "O Allah, I seek refuge in You from associating partners with You knowingly, and I seek Your forgiveness for what I do not know.",
+   "translit": "Allahumma inni a'udhu bika an ushrika bika wa ana a'lam, wa astaghfiruka lima la a'lam."
+  },
+  "239": {
+   "text": "And may Allah bless you too.",
+   "translit": "Wa fika barakallah."
+  },
+  "240": {
+   "text": "O Allah, there is no omen except Your omen, no good except Your good, and no god besides You.",
+   "translit": "Allahumma la tayra illa tayruk, wa la khayra illa khayruk, wa la ilaha ghayruk."
+  },
+  "241": {
+   "text": "In the name of Allah, and praise be to Allah. {Glory be to Him Who has subjected this to us, and we could not have done it ourselves. And indeed, to our Lord we are returning.} Praise be to Allah, praise be to Allah, praise be to Allah. Allah is the Greatest, Allah is the Greatest, Allah is the Greatest. Glory be to You, O Allah, indeed I have wronged myself, so forgive me, for none forgives sins except You.",
+   "translit": "Bismillah, walhamdu lillah, {Subhanal-ladhi sakhkhara lana hadha wa ma kunna lahu muqrinin, wa inna ila Rabbina lamunqalibun}, alhamdu lillah, alhamdu lillah, alhamdu lillah, Allahu Akbar, Allahu Akbar, Allahu Akbar, Subhanakallahumma inni zalamtu nafsi faghfir li, fa innahu la yaghfirudh-dhunuba illa ant."
+  },
+  "242": {
+   "text": "Allah is the Greatest, Allah is the Greatest, Allah is the Greatest. {Glory be to Him Who has subjected this to us, and we could not have done it ourselves. And indeed, to our Lord we are returning.} O Allah, we ask You on this journey of ours for righteousness and piety, and for deeds that please You. O Allah, make easy for us this journey of ours, and fold up for us its distance. O Allah, You are the Companion on the journey and the Guardian of the family. O Allah, I seek refuge in You from the hardship of travel, the distressing sight, and an evil return in wealth and family. And when he returned, he would say these words and add to them: (Returning, repenting, worshipping, and to our Lord giving praise).",
+   "translit": "Allahu Akbar, Allahu Akbar, Allahu Akbar, {Subhanal-ladhi sakhkhara lana hadha wa ma kunna lahu muqrinin, wa inna ila Rabbina lamunqalibun}, Allahumma inna nas'aluka fi safarina hadhal-birra wat-taqwa, wa minal-'amali ma tarda, Allahumma hawwin 'alayna safarana hadha watwi 'anna bu'dah, Allahumma antas-sahibu fis-safar, wal-khalifatu fil-ahl, Allahumma inni a'udhu bika min wa'tha'is-safar, wa ka'abatil-manzar, wa su'il-munqalabi fil-mali wal-ahl. Wa idha raja'a qalahunna wa zada fihinna: (Ayibun, ta'ibun, 'abidun, li-Rabbina hamidun)."
+  },
+  "243": {
+   "text": "O Allah, Lord of the seven heavens and what they shade, Lord of the seven earths and what they carry, Lord of the devils and what they lead astray, Lord of the winds and what they scatter, I ask You for the good of this village, the good of its people, and the good of what is in it, and I seek refuge in You from its evil, the evil of its people, and the evil of what is in it.",
+   "translit": "Allahumma Rabbas-samawatis-sab'i wa ma azlaln, wa Rabbal-aradinas-sab'i wa ma aqlaln, wa Rabbash-shayatini wa ma adlaln, wa Rabbar-riyahi wa ma dharayn, as'aluka khayra hadhihil-qaryati wa khayra ahliha, wa khayra ma fiha, wa a'udhu bika min sharriha, wa sharri ahliha, wa sharri ma fiha."
+  },
+  "244": {
+   "text": "There is no god but Allah alone, He has no partner; His is the dominion and His is the praise; He gives life and causes death, and He is Living and does not die; in His hand is all good, and He has power over all things.",
+   "translit": "La ilaha illallahu wahdahu la sharika lah, lahul-mulku wa lahul-hamd, yuhyi wa yumit wa huwa hayyun la yamut, biyadihil-khayr wa huwa 'ala kulli shay'in qadir."
+  },
+  "245": {
+   "text": "In the name of Allah.",
+   "translit": "Bismillah."
+  },
+  "246": {
+   "text": "I entrust you to Allah, Whose trusts are never lost.",
+   "translit": "Astawdi'ukumullahal-ladhi la tadi'u wada'i'uh."
+  },
+  "247": {
+   "text": "I entrust to Allah your religion, your trust, and the final outcome of your deeds.",
+   "translit": "Astawdi'ullaha dinak, wa amanatak, wa khawatima 'amalik."
+  },
+  "248": {
+   "text": "May Allah provide you with piety, forgive your sin, and make good easy for you wherever you are.",
+   "translit": "Zawwadakallahut-taqwa, wa ghafara dhanbak, wa yassara lakal-khayra haythu ma kunt."
+  },
+  "249": {
+   "text": "Jabir, may Allah be pleased with him, said: (When we ascended we would say Allahu Akbar, and when we descended we would say Subhan Allah).",
+   "translit": "Qala Jabirun radiyallahu 'anh: (Kunna idha sa'idna kabbarna, wa idha nazalna sabbahna)."
+  },
+  "250": {
+   "text": "Let a hearer hear, by the praise of Allah and His good trial upon us. Our Lord, accompany us and bestow favor upon us, seeking refuge in Allah from the Fire.",
+   "translit": "Sami'a sami'un bihamdillahi wa husni bala'ihi 'alayna. Rabbana sahibna, wa afdil 'alayna 'a'idhan billahi minan-nar."
+  },
+  "251": {
+   "text": "I seek refuge in the perfect words of Allah from the evil of what He has created.",
+   "translit": "A'udhu bikalimatillahit-tammati min sharri ma khalaq."
+  },
+  "252": {
+   "text": "He would say Allahu Akbar three times upon every elevated place, then say: There is no god but Allah alone, He has no partner; His is the dominion and His is the praise, and He has power over all things. Returning, repenting, worshipping, and to our Lord giving praise. Allah has fulfilled His promise, given victory to His servant, and defeated the confederates alone.",
+   "translit": "Yukabbiru 'ala kulli sharafin thalatha takbiratin thumma yaqul: La ilaha illallahu wahdahu la sharika lah, lahul-mulk, wa lahul-hamdu wa huwa 'ala kulli shay'in qadir, ayibun, ta'ibun, 'abidun, li-Rabbina hamidun, sadaqallahu wa'dah, wa nasara 'abdah, wa hazamal-ahzaba wahdah."
+  },
+  "253": {
+   "text": "When something pleasing came to him, peace and blessings be upon him, he would say: (Praise be to Allah, by Whose favor good deeds are completed). And when something displeasing came to him, he would say: (Praise be to Allah in every circumstance).",
+   "translit": "Kana sallallahu 'alayhi wa sallama idha atahul-amru yasurruhu qal: (Alhamdu lillahil-ladhi bini'matihi tatimmus-salihat), wa idha atahul-amru yakrahuhu qal: (Alhamdu lillahi 'ala kulli hal)."
+  },
+  "254": {
+   "text": "He, peace and blessings be upon him, said: (Whoever sends one blessing upon me, Allah sends ten blessings upon him for it).",
+   "translit": "Qala sallallahu 'alayhi wa sallam: (Man salla 'alayya salatan salla Allahu 'alayhi biha 'ashra)."
+  },
+  "255": {
+   "text": "And he said, peace and blessings be upon him: (Do not make my grave a place of festive gathering, and send blessings upon me, for your blessings reach me wherever you are).",
+   "translit": "Wa qala sallallahu 'alayhi wa sallam: (La taj'alu qabri 'idan wa sallu 'alayya, fa inna salatakum tablughuni haythu kuntum)."
+  },
+  "256": {
+   "text": "And he said, peace and blessings be upon him: (The miser is the one in whose presence I am mentioned and he does not send blessings upon me).",
+   "translit": "Wa qala sallallahu 'alayhi wa sallam: (Al-bakhilu man dhukirtu 'indahu falam yusalli 'alayya)."
+  },
+  "257": {
+   "text": "And he said, peace and blessings be upon him: (Indeed Allah has angels who travel throughout the earth conveying to me the greetings of peace from my nation).",
+   "translit": "Wa qala sallallahu 'alayhi wa sallam: (Inna lillahi mala'ikatan sayyahina fil-ardi yuballighuni min ummati as-salam)."
+  },
+  "258": {
+   "text": "And he said, peace and blessings be upon him: (There is no one who greets me with peace except that Allah returns my soul to me so that I may return his greeting of peace).",
+   "translit": "Wa qala sallallahu 'alayhi wa sallam: (Ma min ahadin yusallimu 'alayya illa raddallahu 'alayya ruhi hatta arudda 'alayhis-salam)."
+  },
+  "259": {
+   "text": "The Messenger of Allah, peace and blessings be upon him, said: (You will not enter Paradise until you believe, and you will not believe until you love one another. Shall I not guide you to something which, if you do it, you will love one another? Spread the greeting of peace among yourselves).",
+   "translit": "Qala Rasulullahi sallallahu 'alayhi wa sallam: (La tadkhulul-jannata hatta tu'minu, wa la tu'minu hatta tahabbu, awala adullukum 'ala shay'in idha fa'altumuhu tahababtum? Afshus-salama baynakum)."
+  },
+  "260": {
+   "text": "Three things, whoever combines them has combined [complete] faith: (being fair against oneself, giving the greeting of peace to all people, and spending in charity even in times of scarcity).",
+   "translit": "Thalathun man jama'ahunna faqad jama'al-iman: (Al-insafu min nafsik, wa badhlus-salami lil-'alam, wal-infaqu minal-iqtar)."
+  },
+  "261": {
+   "text": "On the authority of 'Abdullah ibn 'Umar, may Allah be pleased with them both: A man asked the Prophet, peace and blessings be upon him: Which aspect of Islam is best? He said: (That you feed others food, and that you greet with peace whoever you know and whoever you do not know).",
+   "translit": "Wa 'an 'Abdillahi bni 'Umara radiyallahu 'anhuma: anna rajulan sa'alan-nabiyya sallallahu 'alayhi wa sallam: Ayyul-Islami khayr? Qal: (Tut'imut-ta'am, wa taqra'us-salama 'ala man 'arafta wa man lam ta'rif)."
+  },
+  "262": {
+   "text": "When the People of the Book greet you with peace, say: (And upon you).",
+   "translit": "Idha sallama 'alaykum ahlul-kitabi faqulu: (Wa 'alaykum)."
+  },
+  "263": {
+   "text": "When you hear the crowing of roosters, ask Allah of His bounty, for they have seen an angel. And when you hear the braying of a donkey, seek refuge in Allah from Satan, for it has seen a devil.",
+   "translit": "Idha sami'tum siyahad-dikati fas'alullaha min fadlih, fa innaha ra'at malaka. Wa idha sami'tum nahiqal-himari fata'awwadhu billahi minash-shaytan, fa innahu ra'a shaytana."
+  },
+  "264": {
+   "text": "When you hear the barking of dogs and the braying of donkeys at night, seek refuge in Allah from them, for they see what you do not see.",
+   "translit": "Idha sami'tum nubahal-kilabi wa nahiqal-hamiri billayli fata'awwadhu billahi minhum, fa innahunna yarayna ma la tarawn."
+  },
+  "265": {
+   "text": "He, peace and blessings be upon him, said: (O Allah, whichever believer I have reviled, make that a means of nearness for him to You on the Day of Resurrection).",
+   "translit": "Qala sallallahu 'alayhi wa sallam: (Allahumma fa ayyuma mu'minin sababtuhu faj'al dhalika lahu qurbatan ilayka yawmal-qiyamah)."
+  },
+  "266": {
+   "text": "He, peace and blessings be upon him, said: (If one of you must inevitably praise his companion, let him say: I consider so-and-so to be such, and Allah is his reckoner, and I do not claim purity for anyone before Allah — I consider him, if he knows that of him, to be such and such).",
+   "translit": "Qala sallallahu 'alayhi wa sallam: (Idha kana ahadukum madihan sahibahu la mahalah, falyaqul: Ahsabu fulanan wallahu hasibuh, wa la uzakki 'alallahi ahada, ahsibuhu — in kana ya'lamu dhaka — kadha wa kadha)."
+  },
+  "267": {
+   "text": "O Allah, do not hold me to account for what they say, and forgive me what they do not know, [and make me better than what they think].",
+   "translit": "Allahumma la tu'akhidhni bima yaquloon, waghfir li ma la ya'lamun, [waj'alni khayran mimma yazunnun]."
+  },
+  "268": {
+   "text": "Here I am, O Allah, here I am. Here I am, You have no partner, here I am. Indeed all praise, grace, and dominion belong to You. You have no partner.",
+   "translit": "Labbaykallahumma labbayk, labbayka la sharika laka labbayk, innal-hamda, wan-ni'mata, laka wal-mulk, la sharika lak."
+  },
+  "269": {
+   "text": "The Prophet, peace and blessings be upon him, circled the House upon a camel; every time he came to the corner, he pointed toward it with something he had and said Allahu Akbar.",
+   "translit": "Tafan-nabiyyu sallallahu 'alayhi wa sallama bil-bayti 'ala ba'irin kullama ata ar-rukna ashara ilayhi bishay'in 'indahu wa kabbar."
+  },
+  "270": {
+   "text": "{Our Lord, give us good in this world and good in the Hereafter, and protect us from the punishment of the Fire.}",
+   "translit": "{Rabbana atina fid-dunya hasanatan wa fil-akhirati hasanatan wa qina 'adhaban-nar}."
+  },
+  "271": {
+   "text": "When he, peace and blessings be upon him, drew near to Safa, he recited: {Indeed, Safa and Marwah are among the symbols of Allah}, (I begin with what Allah began with). So he began with Safa, and climbed upon it until he saw the House; then he faced the qiblah, declared Allah's oneness and His greatness, and said: (There is no god but Allah alone, He has no partner; His is the dominion and His is the praise, and He has power over all things. There is no god but Allah alone; He fulfilled His promise, gave victory to His servant, and defeated the confederates alone.) Then he supplicated in between that. He said the like of this three times (the hadith). And in it: (He did the same on Marwah as he did on Safa).",
+   "translit": "Lamma dana sallallahu 'alayhi wa sallama minas-Safa qara'a {Innas-Safa wal-Marwata min sha'a'irillah}, (Abda'u bima bada'allahu bih), fabada'a bis-Safa fa raqiya 'alayhi hatta ra'al-bayta fastaqbalal-qiblata fa wahhadallaha wa kabbarahu wa qal: (La ilaha illallahu wahdahu la sharika lah, lahul-mulku wa lahul-hamdu wa huwa 'ala kulli shay'in qadir, la ilaha illallahu wahdah, anjaza wa'dah, wa nasara 'abdah, wa hazamal-ahzaba wahdah), thumma da'a bayna dhalik. Qala mithla hadha thalatha marratin (al-hadith). Wa fihi: (Fafa'ala 'alal-Marwati kama fa'ala 'alas-Safa)."
+  },
+  "272": {
+   "text": "The best supplication is the supplication of the Day of 'Arafah, and the best of what I and the prophets before me have said is: There is no god but Allah alone, He has no partner; His is the dominion and His is the praise, and He has power over all things.",
+   "translit": "Khayrud-du'a'i du'a'u yawmi 'Arafah, wa khayru ma qultu ana wan-nabiyyuna min qabli: La ilaha illallahu wahdahu la sharika lah, lahul-mulku wa lahul-hamdu wa huwa 'ala kulli shay'in qadir."
+  },
+  "273": {
+   "text": "He, peace and blessings be upon him, rode al-Qaswa until he reached al-Mash'ar al-Haram; he faced the qiblah, (supplicated to Him, glorified Him, declared His oneness, and affirmed His unity), and he continued standing until it grew very bright, then he departed before the sun rose.",
+   "translit": "Rakiba sallallahu 'alayhi wa sallamal-Qaswa'a hatta atal-Mash'aral-Haram, fastaqbalal-qiblata (fada'ahu, wa kabbarahu, wa hallalahu, wa wahhadahu) falam yazal waqifan hatta asfara jiddan, fadafa'a qabla an tatlu'ash-shams."
+  },
+  "274": {
+   "text": "He would say Allahu Akbar every time he threw a stone at the three Jamarat, then advance and stand supplicating facing the qiblah, raising his hands, after the first and second pillar. As for Jamrat al-'Aqabah, he would throw at it, saying Allahu Akbar with each stone, then leave without stopping there.",
+   "translit": "Yukabbiru kullama rama bihasatin 'indal-jimaris-thalath, thumma yataqaddamu, wa yaqifu yad'u mustaqbilal-qiblah, rafi'an yadayhi ba'dal-jamratil-ula wath-thaniyah. Amma jamratul-'aqabati fa yarmiha wa yukabbiru 'inda kulli hasatin wa yansarifu wa la yaqifu 'indaha."
+  },
+  "275": {
+   "text": "Glory be to Allah.",
+   "translit": "Subhanallah."
+  },
+  "276": {
+   "text": "Allah is the Greatest.",
+   "translit": "Allahu Akbar."
+  },
+  "277": {
+   "text": "The Prophet, peace and blessings be upon him, whenever something pleasing came to him or he was made glad by it, would fall down prostrating in gratitude to Allah, Blessed and Exalted.",
+   "translit": "Kanan-nabiyyu sallallahu 'alayhi wa sallama idha atahu amrun yasurruhu aw yusarru bihi kharra sajidan shukran lillahi tabaraka wa ta'ala."
+  },
+  "278": {
+   "text": "Place your hand upon the part of your body that hurts and say: (In the name of Allah) three times. Then say seven times: (I seek refuge in Allah and His power from the evil of what I feel and am wary of).",
+   "translit": "Da' yadaka 'alal-ladhi ta'allama min jasadika wa qul: (Bismillah) thalathan. Wa qul sab'a marratin: (A'udhu billahi wa qudratihi min sharri ma ajidu wa uhadhir)."
+  },
+  "279": {
+   "text": "When one of you sees something in his brother, or in himself, or in his wealth that pleases him, [let him supplicate for blessing upon it], for indeed the evil eye is real.",
+   "translit": "Idha ra'a ahadukum min akhihi, aw min nafsih, aw min malihi ma yu'jibuhu [falyad'u lahu bil-barakah] fa innal-'ayna haqq."
+  },
+  "280": {
+   "text": "There is no god but Allah.",
+   "translit": "La ilaha illallah."
+  },
+  "281": {
+   "text": "In the name of Allah, and Allah is the Greatest. [O Allah, from You and for You.] O Allah, accept this from me.",
+   "translit": "Bismillahi wallahu Akbar, [Allahumma minka wa lak], Allahumma taqabbal minni."
+  },
+  "282": {
+   "text": "I seek refuge in the perfect words of Allah, which neither the righteous nor the sinful can pass beyond, from the evil of what He has created, made, and brought forth, and from the evil of what descends from the sky, and the evil of what ascends into it, and the evil of what He has scattered in the earth, and the evil of what comes out of it, and from the evil of the trials of night and day, and from the evil of every visitor by night, except a visitor who comes with good, O Most Merciful.",
+   "translit": "A'udhu bikalimatillahit-tammatil-lati la yujawizuhunna barrun wa la fajirun min sharri ma khalaq, wa bara'a wa dhara'a, wa min sharri ma yanzilu minas-sama', wa min sharri ma ya'ruju fiha, wa min sharri ma dhara'a fil-ard, wa min sharri ma yakhruju minha, wa min sharri fitanil-layli wan-nahar, wa min sharri kulli tariqin illa tariqan yatruqu bikhayrin ya Rahman."
+  },
+  "283": {
+   "text": "The Messenger of Allah, peace and blessings be upon him, said: (By Allah, I seek Allah's forgiveness and turn to Him in repentance more than seventy times a day).",
+   "translit": "Qala Rasulullahi sallallahu 'alayhi wa sallam: (Wallahi inni la-astaghfirullaha wa atubu ilayhi fil-yawmi akthara min sab'ina marrah)."
+  },
+  "284": {
+   "text": "And he said, peace and blessings be upon him: (O people, repent to Allah, for I repent to Him a hundred times a day).",
+   "translit": "Wa qala sallallahu 'alayhi wa sallam: (Ya ayyuhan-nasu tubu ilallahi fa inni atubu fil-yawmi ilayhi mi'ata marrah)."
+  },
+  "285": {
+   "text": "And he said, peace and blessings be upon him: (Whoever says: I seek the forgiveness of Allah the Mighty, besides Whom there is no god, the Ever-Living, the Sustainer, and I turn to Him in repentance — Allah will forgive him even if he had fled from the battle line).",
+   "translit": "Wa qala sallallahu 'alayhi wa sallam: (Man qala Astaghfirullahal-'Azimal-ladhi la ilaha illa Huwal-Hayyul-Qayyumu wa atubu ilayh, ghafarallahu lahu wa in kana farra minaz-zahf)."
+  },
+  "286": {
+   "text": "And he said, peace and blessings be upon him: (The Lord is nearest to the servant during the last part of the night; so if you can be among those who remember Allah at that hour, then be so).",
+   "translit": "Wa qala sallallahu 'alayhi wa sallam: (Aqrabu ma yakunur-rabbu minal-'abdi fi jawfil-laylil-akhir, fa in istata'ta an takuna mimman yadhkurullaha fi tilkas-sa'ati fakun)."
+  },
+  "287": {
+   "text": "And he said, peace and blessings be upon him: (The servant is nearest to his Lord while he is prostrating, so make abundant supplication).",
+   "translit": "Wa qala sallallahu 'alayhi wa sallam: (Aqrabu ma yakunul-'abdu min Rabbihi wa huwa sajidun fa akthirud-du'a')."
+  },
+  "288": {
+   "text": "And he said, peace and blessings be upon him: (Indeed a veil comes over my heart, and I seek Allah's forgiveness a hundred times a day).",
+   "translit": "Wa qala sallallahu 'alayhi wa sallam: (Innahu layughanu 'ala qalbi wa inni la-astaghfirullaha fil-yawmi mi'ata marrah)."
+  },
+  "289": {
+   "text": "He, peace and blessings be upon him, said: (Whoever says: Glory be to Allah and by His praise, a hundred times in a day, his sins are wiped away even if they were like the foam of the sea).",
+   "translit": "Qala sallallahu 'alayhi wa sallam: (Man qala: Subhanallahi wa bihamdihi fi yawmin mi'ata marratin huttat khatayahu wa law kanat mithla zabadil-bahr)."
+  },
+  "290": {
+   "text": "And he said, peace and blessings be upon him: (Whoever says: There is no god but Allah alone, He has no partner; His is the dominion and His is the praise, and He has power over all things — ten times, it is as if he freed four slaves from the descendants of Isma'il).",
+   "translit": "Wa qala sallallahu 'alayhi wa sallam: (Man qala La ilaha illallahu wahdahu la sharika lah, lahul-mulk, wa lahul-hamd, wa huwa 'ala kulli shay'in qadir, 'ashra mirar, kana kaman a'taqa arba'ata anfusin min waladi Isma'il)."
+  },
+  "291": {
+   "text": "And he said, peace and blessings be upon him: (Two phrases, light on the tongue, heavy on the scale, beloved to the Most Merciful: Glory be to Allah and by His praise, glory be to Allah the Mighty).",
+   "translit": "Wa qala sallallahu 'alayhi wa sallam: (Kalimatani khafifatani 'alal-lisan, thaqilatani fil-mizan, habibatani ilar-Rahman: Subhanallahi wa bihamdih, Subhanallahil-'Azim)."
+  },
+  "292": {
+   "text": "And he said, peace and blessings be upon him: (That I say: Glory be to Allah, and praise be to Allah, and there is no god but Allah, and Allah is the Greatest — is dearer to me than everything the sun rises upon).",
+   "translit": "Wa qala sallallahu 'alayhi wa sallam: (La-an aqula Subhanallah, wal-hamdu lillah, wa la ilaha illallah, wallahu akbar, ahabbu ilayya mimma tala'at 'alayhish-shams)."
+  },
+  "293": {
+   "text": "And he said, peace and blessings be upon him: (Is any of you unable to earn a thousand good deeds every day?) So one of those sitting with him asked: How can one of us earn a thousand good deeds? He said: (He says Subhan Allah a hundred times, and a thousand good deeds are written for him, or a thousand of his sins are wiped away).",
+   "translit": "Wa qala sallallahu 'alayhi wa sallam: (Ayajizu ahadukum an yaksiba kulla yawmin alfa hasanah?) Fa sa'alahu sa'ilun min julasa'ih: Kayfa yaksibu ahaduna alfa hasanah? Qal: (Yusabbihu mi'ata tasbihatin, fayuktabu lahu alfu hasanatin aw yuhattu 'anhu alfu khati'ah)."
+  },
+  "294": {
+   "text": "Whoever says: Glory be to Allah the Mighty and by His praise, a palm tree is planted for him in Paradise.",
+   "translit": "Man qala: Subhanallahil-'Azimi wa bihamdihi ghurisat lahu nakhlatun fil-jannah."
+  },
+  "295": {
+   "text": "And he said, peace and blessings be upon him: (O 'Abdullah ibn Qays, shall I not guide you to a treasure from the treasures of Paradise?) I said: Yes indeed, O Messenger of Allah. He said: (Say: There is no power and no strength except with Allah).",
+   "translit": "Wa qala sallallahu 'alayhi wa sallam: (Ya 'Abdallahibna Qaysin ala adulluka 'ala kanzin min kunuzil-jannah?) Faqultu: Bala ya Rasulallah, qal: (Qul: La hawla wa la quwwata illa billah)."
+  },
+  "296": {
+   "text": "And he said, peace and blessings be upon him: (The speech most beloved to Allah is four: Glory be to Allah, and praise be to Allah, and there is no god but Allah, and Allah is the Greatest; it does not matter which of them you begin with).",
+   "translit": "Wa qala sallallahu 'alayhi wa sallam: (Ahabbul-kalami ilallahi arba': Subhanallah, wal-hamdu lillah, wa la ilaha illallah, wallahu akbar, la yadurruka bi-ayyihinna bada't)."
+  },
+  "297": {
+   "text": "A bedouin came to the Messenger of Allah, peace and blessings be upon him, and said: Teach me words to say. He said: (Say: There is no god but Allah alone, He has no partner; Allah is the Greatest, greatly, and praise be to Allah abundantly; glory be to Allah, Lord of the worlds; there is no power and no strength except with Allah, the Mighty, the Wise.) He said: These are for my Lord, so what is for me? He said: (Say: O Allah, forgive me, have mercy on me, guide me, and provide for me).",
+   "translit": "Ja'a a'rabiyyun ila Rasulillahi sallallahu 'alayhi wa sallama faqal: 'Allimni kalaman aquluh, qal: (Qul: La ilaha illallahu wahdahu la sharika lah, Allahu akbaru kabira, wal-hamdu lillahi kathira, Subhanallahi Rabbil-'alamin, la hawla wa la quwwata illa billahil-'Azizil-Hakim). Qal: Fa ha'ula'i li-Rabbi fama li? Qal: (Qul: Allahummagh-fir li, warhamni, wahdini, warzuqni)."
+  },
+  "298": {
+   "text": "When a man embraced Islam, the Prophet, peace and blessings be upon him, would teach him the prayer, then command him to supplicate with these words: (O Allah, forgive me, have mercy on me, guide me, grant me well-being, and provide for me).",
+   "translit": "Kanar-rajulu idha aslama 'allamahun-nabiyyu sallallahu 'alayhi wa sallamas-salah, thumma amarahu an yad'u bihaula'il-kalimat: (Allahummagh-fir li, warhamni, wahdini, wa 'afini warzuqni)."
+  },
+  "299": {
+   "text": "Indeed the best supplication is: Praise be to Allah, and the best remembrance is: There is no god but Allah.",
+   "translit": "Inna afdalad-du'a': Alhamdu lillah, wa afdaladh-dhikr: La ilaha illallah."
+  },
+  "300": {
+   "text": "The lasting righteous deeds are: Glory be to Allah, praise be to Allah, there is no god but Allah, Allah is the Greatest, and there is no power and no strength except with Allah.",
+   "translit": "Al-baqiyatus-salihat: Subhanallah, wal-hamdu lillah, wa la ilaha illallah, wallahu akbar, wa la hawla wa la quwwata illa billah."
+  },
+  "301": {
+   "text": "On the authority of 'Abdullah ibn 'Amr, may Allah be pleased with them both, who said: (I saw the Prophet, peace and blessings be upon him, counting the tasbih on his right hand).",
+   "translit": "'An 'Abdillahi bni 'Amrin radiyallahu 'anhuma qal: (Ra'aytun-nabiyya sallallahu 'alayhi wa sallama ya'qidut-tasbiha biyaminih)."
+  },
+  "302": {
+   "text": "When the darkness of night falls — or when evening comes upon you — keep your children close, for the devils spread about at that time. Then, when an hour of the night has passed, let them go, and close the doors and mention the name of Allah, for Satan does not open a closed door; tie shut your waterskins and mention the name of Allah; cover your vessels and mention the name of Allah, even if only by placing something across them; and extinguish your lamps.\nAnd may Allah send blessings, peace, and grace upon our Prophet Muhammad, and upon his family and all his companions.",
+   "translit": "Idha kana junhul-layli — aw amsaytum — fakuffu sibyanakum; fa innash-shayatina tantashiru hina'idhin, fa idha dhahaba sa'atun minal-layli fakhalluhum, wa aghliqul-abwaba wadhkuru ismallah, fa innash-shaytana la yaftahu baban mughlaqa, wa awku qirabakum wadhkuru ismallah, wa khammiru aniyatakum wadhkuru ismallah, wa law an ta'ridu 'alayha shay'a, wa atfi'u masabihakum. Wa sallallahu wa sallama wa baraka 'ala nabiyyina Muhammadin wa 'ala alihi wa ashabihi ajma'in."
+  }
+ }
+}

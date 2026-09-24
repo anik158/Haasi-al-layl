@@ -1,0 +1,599 @@
+{
+ "chapters": {
+  "29": "Súplica al voltearse (dar vueltas) durante la noche",
+  "30": "Súplica ante el sobresalto en el sueño y de quien es afligido por el desasosiego",
+  "31": "Lo que hace quien tiene un sueño (bueno) o una pesadilla",
+  "32": "Súplica del qunut del witr",
+  "33": "El recuerdo tras el saludo final (taslim) del witr",
+  "34": "Súplica ante la angustia y la tristeza",
+  "35": "Súplica ante la aflicción",
+  "36": "Súplica al encontrarse con el enemigo o con el gobernante",
+  "37": "Súplica de quien teme la injusticia del gobernante",
+  "38": "Súplica contra el enemigo",
+  "39": "Lo que dice quien teme a un pueblo",
+  "40": "Súplica de quien es afectado por la duda en la fe",
+  "41": "Súplica para el pago de la deuda",
+  "42": "Súplica ante los susurros [del demonio] en la oración y la recitación",
+  "43": "Súplica de quien encuentra difícil un asunto",
+  "44": "Lo que dice y hace quien comete un pecado",
+  "45": "Súplica para alejar al demonio y sus susurros",
+  "46": "Súplica cuando ocurre algo que no agrada o se es vencido en un asunto",
+  "47": "Felicitación a quien le nace un hijo, y su respuesta",
+  "48": "Con qué se protege a los hijos",
+  "49": "Súplica por el enfermo al visitarlo",
+  "50": "El mérito de visitar al enfermo",
+  "51": "Súplica del enfermo que ha perdido la esperanza de vivir",
+  "52": "Instruir al moribundo [a pronunciar el testimonio de fe]",
+  "53": "Súplica de quien es afligido por una calamidad",
+  "54": "Súplica al cerrar los ojos del difunto",
+  "55": "Súplica por el difunto en la oración fúnebre",
+  "56": "Súplica por el niño [que precede a sus padres al Paraíso] en la oración fúnebre",
+  "57": "Súplica de condolencia",
+  "58": "Súplica al depositar al difunto en la tumba",
+  "59": "Súplica después de enterrar al difunto",
+  "60": "Súplica al visitar las tumbas",
+  "61": "Súplica ante el viento",
+  "62": "Súplica ante el trueno",
+  "63": "De las súplicas para pedir la lluvia",
+  "64": "Súplica cuando cae la lluvia",
+  "65": "El recuerdo después de que cae la lluvia",
+  "66": "De las súplicas para pedir que despeje (el cese de la lluvia)",
+  "67": "Súplica al ver la luna nueva",
+  "68": "Súplica al romper el ayuno",
+  "69": "Súplica antes de comer",
+  "70": "Súplica al terminar de comer",
+  "71": "Súplica del invitado por el anfitrión",
+  "72": "Súplica por quien le da de beber, o cuando desea hacerlo",
+  "73": "Súplica al romper el ayuno en casa de una familia",
+  "74": "Súplica del ayunante cuando se presenta la comida y no rompe el ayuno",
+  "75": "Lo que dice el ayunante si alguien lo insulta",
+  "76": "Súplica al ver los primeros frutos",
+  "77": "Súplica del estornudo",
+  "78": "Lo que se dice al incrédulo cuando estornuda y alaba a Allah",
+  "79": "Súplica por quien se casa",
+  "80": "Súplica de quien se casa y de quien compra un animal",
+  "81": "Súplica antes de tener relaciones con la esposa",
+  "82": "Súplica ante la ira",
+  "83": "Súplica de quien ve a alguien afligido (por una prueba)",
+  "84": "Lo que se dice en la reunión",
+  "85": "La expiación de la reunión",
+  "86": "Respuesta a quien dice: Que Allah te perdone",
+  "87": "Súplica por quien te hace un favor",
+  "88": "Con qué protege Allah del Anticristo (Dajjal)",
+  "89": "Respuesta a quien dice: En verdad te amo por Allah",
+  "90": "Súplica por quien te ofrece sus bienes",
+  "91": "Súplica por quien prestó, al momento de devolverle",
+  "92": "Súplica ante el temor de caer en la idolatría (shirk)",
+  "93": "Respuesta a quien dice: Que Allah te bendiga",
+  "94": "Súplica contra la aversión del agüero (creer en malos presagios)",
+  "95": "Súplica al montar (un vehículo o animal)",
+  "96": "Súplica del viaje",
+  "97": "Súplica al entrar en un pueblo o una ciudad",
+  "98": "Súplica al entrar al mercado",
+  "99": "Súplica cuando tropieza la cabalgadura",
+  "100": "Súplica del viajero por quien se queda",
+  "101": "Súplica de quien se queda por el viajero",
+  "102": "El decir Allahu Akbar y Subhan Allah durante el trayecto del viaje",
+  "103": "Súplica del viajero al llegar el alba (as-sahar)",
+  "104": "Súplica al detenerse en un lugar, en viaje o fuera de él",
+  "105": "El recuerdo al regresar del viaje",
+  "106": "Lo que dice quien recibe algo que le alegra o le disgusta",
+  "107": "El mérito de invocar bendiciones sobre el Profeta ﷺ",
+  "108": "Difundir el saludo (saludar profusamente)",
+  "109": "Cómo responder el saludo al incrédulo cuando saluda",
+  "110": "Súplica al oír el canto del gallo y el rebuzno del asno",
+  "111": "Súplica al oír ladrar a los perros de noche",
+  "112": "Súplica por quien has insultado",
+  "113": "Lo que dice el musulmán cuando elogia a otro musulmán",
+  "114": "Lo que dice el musulmán cuando es elogiado (declarado puro)",
+  "115": "Cómo pronuncia el talbiyah quien está en ihram para el Hach o la Umrah",
+  "116": "Decir Allahu Akbar al llegar a la Piedra Negra",
+  "117": "Súplica entre la esquina yemení y la Piedra Negra",
+  "118": "Súplica al detenerse en Safa y Marwa",
+  "119": "Súplica del día de Arafah",
+  "120": "El recuerdo en Al-Mash'ar Al-Haram",
+  "121": "Decir Allahu Akbar al lanzar cada piedrecilla en el apedreamiento (rami al-jimar)",
+  "122": "Expresión de asombro y ante algo agradable",
+  "123": "Lo que hace quien recibe algo que le alegra",
+  "124": "Lo que dice quien siente un dolor en su cuerpo",
+  "125": "Súplica de quien teme causar daño a algo con su mirada (mal de ojo)",
+  "126": "Lo que se dice ante el sobresalto",
+  "127": "Lo que se dice al degollar o al sacrificar",
+  "128": "Lo que se dice para repeler la trampa de los demonios rebeldes",
+  "129": "El pedir perdón y el arrepentimiento",
+  "130": "El mérito de la glorificación, la alabanza, el testimonio de unicidad y la proclamación de la grandeza (de Allah)",
+  "131": "Cómo glorificaba a Allah el Profeta ﷺ",
+  "132": "De los tipos de bien y las normas de comportamiento generales"
+ },
+ "entries": {
+  "140": {
+   "text": "No hay más dios que Allah, el Único, el Dominante, Señor de los cielos y la tierra y lo que hay entre ellos, el Poderoso, el Perdonador."
+  },
+  "141": {
+   "text": "Me refugio en las palabras perfectas de Allah de Su ira y Su castigo, del mal de Sus siervos, de las incitaciones de los demonios y de que se presenten ante mí."
+  },
+  "142": {
+   "text": "Que sople (escupa suavemente) hacia su izquierda"
+  },
+  "143": {
+   "text": "Que se refugie en Allah del demonio y del mal de lo que vio"
+  },
+  "144": {
+   "text": "Que no se lo cuente a nadie"
+  },
+  "145": {
+   "text": "Que se cambie de lado, del costado en que estaba"
+  },
+  "146": {
+   "text": "Que se levante a orar si así lo desea"
+  },
+  "147": {
+   "text": "¡Oh Allah! Guíame entre quienes has guiado, presérvame (dame bienestar) entre quienes has preservado, ampárame entre quienes has amparado, bendíceme en lo que me has dado, y protégeme del mal que has decretado, pues Tú decretas y no se decreta sobre Ti; no es humillado quien Tú tomas por aliado [y no es honrado quien Tú tomas por enemigo], bendito eres, Señor nuestro, y ensalzado."
+  },
+  "148": {
+   "text": "¡Oh Allah! Me refugio en Tu complacencia de Tu ira, y en Tu perdón de Tu castigo, y me refugio en Ti de Ti mismo; no puedo enumerar alabanzas hacia Ti, Tú eres tal como Te has alabado a Ti mismo."
+  },
+  "149": {
+   "text": "¡Oh Allah! Solo a Ti adoramos, para Ti oramos y nos postramos, hacia Ti nos esforzamos y nos apresuramos, esperamos Tu misericordia y tememos Tu castigo; en verdad, Tu castigo alcanzará a los incrédulos. ¡Oh Allah! En verdad te pedimos ayuda, te pedimos perdón, te alabamos con el bien, no te negamos, creemos en Ti, nos sometemos a Ti y repudiamos a quien Te niega."
+  },
+  "150": {
+   "text": "Glorificado sea el Rey, el Santísimo (tres veces). En la tercera, la pronuncia en voz alta y prolonga su voz diciendo: [Señor de los ángeles y del espíritu]."
+  },
+  "151": {
+   "text": "¡Oh Allah! En verdad, yo soy Tu siervo, hijo de Tu siervo, hijo de Tu sierva; mi copete está en Tu mano, Tu juicio sobre mí se cumple, Tu decreto sobre mí es justo. Te pido por cada nombre que es Tuyo, con el que Te has nombrado a Ti mismo, o que has hecho descender en Tu Libro, o que has enseñado a alguno de Tus criaturas, o que has reservado para Ti en el conocimiento de lo oculto, que hagas del Corán la primavera de mi corazón, la luz de mi pecho, la desaparición de mi tristeza y la ida de mi angustia."
+  },
+  "152": {
+   "text": "¡Oh Allah! Me refugio en Ti de la angustia y la tristeza, de la incapacidad y la pereza, de la avaricia y la cobardía, del peso de la deuda y del sometimiento de los hombres."
+  },
+  "153": {
+   "text": "No hay más dios que Allah, el Grandioso, el Indulgente. No hay más dios que Allah, Señor del Trono Inmenso. No hay más dios que Allah, Señor de los cielos y Señor de la tierra y Señor del noble Trono."
+  },
+  "154": {
+   "text": "¡Oh Allah! Anhelo Tu misericordia, así que no me confíes a mí mismo ni el abrir y cerrar de un ojo, y enmienda todo mi asunto; no hay más dios que Tú."
+  },
+  "155": {
+   "text": "No hay más dios que Tú, ¡Gloria a Ti!, en verdad he sido de los injustos."
+  },
+  "156": {
+   "text": "Allah, Allah es mi Señor, no Le asocio nada."
+  },
+  "157": {
+   "text": "¡Oh Allah! Te ponemos frente a sus gargantas, y nos refugiamos en Ti de sus males."
+  },
+  "158": {
+   "text": "¡Oh Allah! Tú eres mi fuerza (apoyo) y Tú eres mi auxiliador; contigo me muevo, contigo ataco, y contigo combato."
+  },
+  "159": {
+   "text": "Allah nos basta y Él es el mejor protector."
+  },
+  "160": {
+   "text": "¡Oh Allah! Señor de los siete cielos, y Señor del Trono Inmenso, sé para mí protector de fulano hijo de fulano, y de sus partidarios entre Tus criaturas, de que alguno de ellos se exceda conmigo o se rebele; poderoso es a quien Tú proteges, y sublime es Tu alabanza, y no hay más dios que Tú."
+  },
+  "161": {
+   "text": "Allah es el más Grande. Allah es más poderoso que toda Su creación. Allah es más poderoso que aquello que temo y de lo que me cuido. Me refugio en Allah, no hay más dios que Él, Quien sostiene los siete cielos para que no caigan sobre la tierra sino con Su permiso, del mal de Tu siervo fulano, y de sus soldados, sus seguidores y sus partidarios, entre los yinn y los hombres. ¡Oh Allah! Sé para mí protector de su mal; sublime es Tu alabanza, poderoso es a quien Tú proteges, bendito es Tu nombre, y no hay más dios que Tú."
+  },
+  "162": {
+   "text": "¡Oh Allah! Revelador del Libro, rápido en ajustar cuentas, derrota a los aliados (coaligados). ¡Oh Allah! Derrótalos y hazlos temblar."
+  },
+  "163": {
+   "text": "¡Oh Allah! Bástame contra ellos como Tú quieras."
+  },
+  "164": {
+   "text": "Que se refugie en Allah"
+  },
+  "165": {
+   "text": "Que desista de aquello sobre lo que dudó"
+  },
+  "166": {
+   "text": "Que diga: Creo en Allah y en Sus mensajeros"
+  },
+  "167": {
+   "text": "Que recite Su dicho, Enaltecido sea: {Él es el Primero y el Último, el Manifiesto y el Oculto, y Él tiene conocimiento de todas las cosas}"
+  },
+  "168": {
+   "text": "¡Oh Allah! Bástame con lo lícito en lugar de lo ilícito, y hazme prescindir, con Tu favor, de todo lo que no seas Tú."
+  },
+  "169": {
+   "text": "¡Oh Allah! Me refugio en Ti de la angustia y la tristeza, de la incapacidad y la pereza, de la avaricia y la cobardía, del peso de la deuda y del sometimiento de los hombres."
+  },
+  "170": {
+   "text": "Que diga: (Me refugio en Allah del demonio maldito), y que escupa suavemente hacia su izquierda."
+  },
+  "171": {
+   "text": "¡Oh Allah! No hay nada fácil salvo lo que Tú haces fácil, y Tú, si quieres, haces fácil lo difícil."
+  },
+  "172": {
+   "text": "No hay siervo que cometa un pecado, y luego realice bien la purificación, y después se levante y ore dos rakaas, y luego pida perdón a Allah, sin que Allah le perdone."
+  },
+  "173": {
+   "text": "Refugiarse en Allah de él"
+  },
+  "174": {
+   "text": "El llamado a la oración (adhan)"
+  },
+  "175": {
+   "text": "Los recuerdos (adhkar) y la recitación del Corán"
+  },
+  "176": {
+   "text": "Es el decreto de Allah, y lo que Él quiso, lo hizo."
+  },
+  "177": {
+   "text": "(Que Allah te bendiga en lo que te ha sido concedido, que agradezcas al Dador, que llegue a su plena madurez y que se te conceda su bondad). Y el felicitado responde diciendo: (Que Allah te bendiga y te colme de bendiciones, que Allah te recompense con el bien, que Allah te conceda algo semejante, y que aumente tu recompensa)."
+  },
+  "178": {
+   "text": "El Mensajero de Allah, la paz y las bendiciones de Allah sean con él, protegía a Al-Hasan y Al-Husáin diciendo: (Os protejo a ambos con las palabras perfectas de Allah de todo demonio y de toda criatura dañina, y de todo mal de ojo)."
+  },
+  "179": {
+   "text": "No hay mal, es una purificación, si Allah quiere."
+  },
+  "180": {
+   "text": "Pido a Allah el Grandioso, Señor del Trono Inmenso, que te cure."
+  },
+  "181": {
+   "text": "Dijo, la paz y las bendiciones de Allah sean con él: (Cuando un hombre visita a su hermano musulmán, camina en los frutos del Paraíso hasta que se sienta; y cuando se sienta, la misericordia lo envuelve; si es por la mañana, setenta mil ángeles piden bendiciones por él hasta el anochecer, y si es por la tarde, setenta mil ángeles piden bendiciones por él hasta el amanecer)."
+  },
+  "182": {
+   "text": "¡Oh Allah! Perdóname, ten misericordia de mí, y reúneme con el Compañero Supremo."
+  },
+  "183": {
+   "text": "El Profeta, la paz y las bendiciones de Allah sean con él, en su agonía, comenzó a introducir sus manos en el agua y a pasárselas por el rostro, diciendo: No hay más dios que Allah, en verdad la muerte tiene agonías."
+  },
+  "184": {
+   "text": "No hay más dios que Allah y Allah es el más Grande. No hay más dios que Allah, Único. No hay más dios que Allah, Único, sin asociado. No hay más dios que Allah, a Él pertenece el dominio y a Él la alabanza. No hay más dios que Allah, y no hay poder ni fuerza sino en Allah."
+  },
+  "185": {
+   "text": "Quien tenga como últimas palabras (No hay más dios que Allah), entrará al Paraíso."
+  },
+  "186": {
+   "text": "En verdad, pertenecemos a Allah y a Él hemos de volver. ¡Oh Allah! Recompénsame en mi calamidad y dame a cambio algo mejor que ella."
+  },
+  "187": {
+   "text": "¡Oh Allah! Perdona a fulano —mencionando su nombre—, eleva su grado entre los bien guiados, sé Tú quien vele por sus descendientes que quedan, perdónanos a nosotros y a él, oh Señor de los mundos, ensancha su tumba e ilumínasela."
+  },
+  "188": {
+   "text": "¡Oh Allah! Perdónalo, ten misericordia de él, presérvalo, discúlpalo, hónralo en su morada, ensancha su entrada, lávalo con agua, nieve y granizo, purifícalo de los pecados como se purifica la tela blanca de la suciedad, dale a cambio una morada mejor que su morada, una familia mejor que su familia, un cónyuge mejor que su cónyuge, hazlo entrar al Paraíso, y presérvalo del castigo de la tumba [y del castigo del Fuego]."
+  },
+  "189": {
+   "text": "¡Oh Allah! Perdona a nuestro vivo y a nuestro muerto, al presente y al ausente, al pequeño y al grande, al varón y a la mujer de entre nosotros. ¡Oh Allah! A quien de nosotros mantengas con vida, hazlo vivir en el Islam, y a quien de nosotros hagas morir, hazlo morir en la fe. ¡Oh Allah! No nos prives de su recompensa ni nos extravíes después de él."
+  },
+  "190": {
+   "text": "¡Oh Allah! En verdad, fulano hijo de fulano está bajo Tu protección y en el vínculo de Tu amparo; protégelo de la prueba de la tumba y del castigo del Fuego, pues Tú eres digno de fidelidad y de la verdad; perdónalo y ten misericordia de él, pues en verdad Tú eres el Perdonador, el Misericordioso."
+  },
+  "191": {
+   "text": "¡Oh Allah! Tu siervo, hijo de Tu sierva, necesita de Tu misericordia, y Tú no necesitas castigarlo; si fue bienhechor, aumenta sus buenas obras, y si fue malhechor, pásale por alto sus faltas."
+  },
+  "192": {
+   "text": "¡Oh Allah! Presérvalo del castigo de la tumba."
+  },
+  "193": {
+   "text": "Y si dice: (¡Oh Allah! Hazlo precursor y provisión guardada para sus padres, e intercesor cuya súplica sea aceptada. ¡Oh Allah! Con él, haz pesar más sus balanzas, engrandece sus recompensas, y únelo a los creyentes justos; ponlo bajo el cuidado de Abraham, y presérvalo, con Tu misericordia, del castigo del Infierno; dale a cambio una morada mejor que su morada, y una familia mejor que su familia. ¡Oh Allah! Perdona a nuestros antepasados y a nuestros niños [precursores], y a quienes nos precedieron en la fe), es bueno."
+  },
+  "194": {
+   "text": "¡Oh Allah! Hazlo para nosotros precursor, antecesor y recompensa."
+  },
+  "195": {
+   "text": "En verdad, a Allah pertenece lo que toma y a Él pertenece lo que da, y todo tiene ante Él un plazo fijado... así que ten paciencia y busca la recompensa."
+  },
+  "196": {
+   "text": "Y si dice: (Que Allah engrandezca tu recompensa, mejore tu consuelo y perdone a tu difunto), es bueno."
+  },
+  "197": {
+   "text": "En el nombre de Allah y siguiendo la tradición (sunnah) del Mensajero de Allah."
+  },
+  "198": {
+   "text": "¡Oh Allah! Perdónalo. ¡Oh Allah! Afírmalo."
+  },
+  "199": {
+   "text": "La paz sea sobre vosotros, habitantes de estas moradas, de entre los creyentes y los musulmanes; y en verdad nosotros, si Allah quiere, os alcanzaremos. [Que Allah tenga misericordia de los que de nosotros se adelantaron y de los que se retrasaron]. Pido a Allah el bienestar para nosotros y para vosotros."
+  },
+  "200": {
+   "text": "¡Oh Allah! Te pido su bien, y me refugio en Ti de su mal."
+  },
+  "201": {
+   "text": "¡Oh Allah! Te pido su bien, el bien de lo que hay en ella, y el bien de aquello con que ha sido enviada, y me refugio en Ti de su mal, del mal de lo que hay en ella, y del mal de aquello con que ha sido enviada."
+  },
+  "202": {
+   "text": "Glorificado sea Aquel a quien el trueno glorifica con Su alabanza, y los ángeles por temor a Él."
+  },
+  "203": {
+   "text": "¡Oh Allah! Danos de beber una lluvia auxiliadora, saludable, fértil, provechosa y no dañina, inmediata y no tardía."
+  },
+  "204": {
+   "text": "¡Oh Allah! Socórrenos con la lluvia. ¡Oh Allah! Socórrenos con la lluvia. ¡Oh Allah! Socórrenos con la lluvia."
+  },
+  "205": {
+   "text": "¡Oh Allah! Da de beber a Tus siervos y a Tus animales, extiende Tu misericordia, y da vida a Tu tierra muerta."
+  },
+  "206": {
+   "text": "¡Oh Allah! [Haz que sea] una lluvia provechosa."
+  },
+  "207": {
+   "text": "Se nos ha hecho llover por el favor de Allah y Su misericordia."
+  },
+  "208": {
+   "text": "¡Oh Allah! Que caiga a nuestro alrededor y no sobre nosotros. ¡Oh Allah! Sobre las colinas, las pequeñas elevaciones, el interior de los valles y los lugares donde crecen los árboles."
+  },
+  "209": {
+   "text": "Allah es el más Grande. ¡Oh Allah! Hazla aparecer sobre nosotros con seguridad y fe, con bienestar e Islam, y con éxito hacia lo que Tú amas y con lo que Te complaces, Señor nuestro. Nuestro Señor y tu Señor es Allah."
+  },
+  "210": {
+   "text": "Se fue la sed, se humedecieron las venas, y quedó firme la recompensa, si Allah quiere."
+  },
+  "211": {
+   "text": "¡Oh Allah! Te pido, por Tu misericordia que todo lo abarca, que me perdones."
+  },
+  "212": {
+   "text": "Cuando alguno de vosotros vaya a comer, que diga: (En el nombre de Allah); y si lo olvida al principio, que diga: (En el nombre de Allah, al principio y al final)."
+  },
+  "213": {
+   "text": "A quien Allah le dé de comer, que diga: (¡Oh Allah! Bendícenos en ello y danos de comer algo mejor que ello); y a quien Allah le dé de beber leche, que diga: (¡Oh Allah! Bendícenos en ella y auméntanosla)."
+  },
+  "214": {
+   "text": "Alabado sea Allah, Quien me dio esto de comer y me lo proveyó, sin poder ni fuerza de mi parte."
+  },
+  "215": {
+   "text": "Alabado sea Allah con una alabanza abundante, buena y bendita en ella, [ni con suficiencia ni] despedida, ni de la que se pueda prescindir, Señor nuestro."
+  },
+  "216": {
+   "text": "¡Oh Allah! Bendíceles en lo que les has provisto, perdónalos y ten misericordia de ellos."
+  },
+  "217": {
+   "text": "¡Oh Allah! Da de comer a quien me dio de comer, y da de beber a quien me dio de beber."
+  },
+  "218": {
+   "text": "Que rompan el ayuno en vuestra casa los ayunantes, que coman vuestra comida los piadosos, y que los ángeles pidan bendiciones por vosotros."
+  },
+  "219": {
+   "text": "(Cuando alguno de vosotros sea invitado, que responda; si está ayunando, que ore [suplique], y si no está ayunando, que coma).\nEl significado de «que ore» es: que suplique."
+  },
+  "220": {
+   "text": "En verdad estoy ayunando, en verdad estoy ayunando."
+  },
+  "221": {
+   "text": "¡Oh Allah! Bendícenos en nuestros frutos, bendícenos en nuestra ciudad, bendícenos en nuestro sa' (medida), y bendícenos en nuestro mudd (medida)."
+  },
+  "222": {
+   "text": "Cuando alguno de vosotros estornude, que diga: (Alabado sea Allah), y que le diga su hermano o compañero: (Que Allah tenga misericordia de ti); y cuando le diga: (Que Allah tenga misericordia de ti), que responda: (Que Allah os guíe y componga vuestro estado)."
+  },
+  "223": {
+   "text": "Que Allah os guíe y componga vuestro estado."
+  },
+  "224": {
+   "text": "Que Allah te bendiga, te colme de bendiciones, y os una a ambos en el bien."
+  },
+  "225": {
+   "text": "Cuando alguno de vosotros se case con una mujer, o cuando compre un sirviente, que diga: (¡Oh Allah! Te pido su bien y el bien de aquello sobre lo que la creaste, y me refugio en Ti de su mal y del mal de aquello sobre lo que la creaste); y cuando compre un camello, que tome la cima de su joroba y diga lo mismo."
+  },
+  "226": {
+   "text": "En el nombre de Allah. ¡Oh Allah! Aléjanos del demonio y aleja al demonio de lo que nos concedas."
+  },
+  "227": {
+   "text": "Me refugio en Allah del demonio maldito."
+  },
+  "228": {
+   "text": "Alabado sea Allah, Quien me ha preservado de aquello con lo que te ha probado a ti, y me ha preferido sobre muchos de los que ha creado, con una notable preferencia."
+  },
+  "229": {
+   "text": "De Ibn Umar, que dijo: Se contaba que el Mensajero de Allah, la paz y las bendiciones de Allah sean con él, decía en una sola reunión, antes de levantarse, cien veces: (Señor mío, perdóname y acepta mi arrepentimiento, pues en verdad Tú eres el Indulgente, el Perdonador)."
+  },
+  "230": {
+   "text": "¡Gloria a Ti, oh Allah, y alabado seas! Atestiguo que no hay más dios que Tú; Te pido perdón y a Ti me arrepiento."
+  },
+  "231": {
+   "text": "Y a ti también."
+  },
+  "232": {
+   "text": "Que Allah te recompense con el bien."
+  },
+  "233": {
+   "text": "Quien memorice los diez primeros versículos de la sura Al-Kahf, será protegido del Anticristo (Dajjal)."
+  },
+  "234": {
+   "text": "Y refugiarse en Allah de su prueba (fitna) tras el último tashahhud de cada oración."
+  },
+  "235": {
+   "text": "Que te ame Aquel por Quien me amaste."
+  },
+  "236": {
+   "text": "Que Allah te bendiga en tu familia y en tus bienes."
+  },
+  "237": {
+   "text": "Que Allah te bendiga en tu familia y en tus bienes; en verdad, la recompensa del préstamo es la alabanza y el pago (devolución)."
+  },
+  "238": {
+   "text": "¡Oh Allah! Me refugio en Ti de asociarte algo a sabiendas, y Te pido perdón por lo que no sé."
+  },
+  "239": {
+   "text": "Y que Allah te bendiga a ti también."
+  },
+  "240": {
+   "text": "¡Oh Allah! No hay presagio sino el Tuyo, no hay bien sino el Tuyo, y no hay más dios que Tú."
+  },
+  "241": {
+   "text": "En el nombre de Allah. Alabado sea Allah. {Glorificado sea Quien sometió esto a nuestro servicio, pues nosotros no hubiéramos podido dominarlo (13) y en verdad hacia nuestro Señor hemos de retornar (14)}. Alabado sea Allah, alabado sea Allah, alabado sea Allah. Allah es el más Grande, Allah es el más Grande, Allah es el más Grande. ¡Gloria a Ti, oh Allah! En verdad me he oprimido a mí mismo, así que perdóname, pues nadie perdona los pecados sino Tú."
+  },
+  "242": {
+   "text": "Allah es el más Grande, Allah es el más Grande, Allah es el más Grande. {Glorificado sea Quien sometió esto a nuestro servicio, pues nosotros no hubiéramos podido dominarlo (13) y en verdad hacia nuestro Señor hemos de retornar (14)}. ¡Oh Allah! En verdad Te pedimos en este viaje nuestro la virtud y el temor de Ti (taqwa), y de las obras aquello con lo que Te complazcas. ¡Oh Allah! Facilítanos este viaje nuestro y acórtanos su distancia. ¡Oh Allah! Tú eres el Compañero en el viaje y el Sucesor en la familia. ¡Oh Allah! Me refugio en Ti de las penurias del viaje, de la tristeza de lo que se ve, y del mal retorno en los bienes y en la familia. Y al regresar, decía lo mismo y añadía: (Regresamos, arrepentidos, adoradores, alabando a nuestro Señor)."
+  },
+  "243": {
+   "text": "¡Oh Allah! Señor de los siete cielos y de lo que cubren, Señor de las siete tierras y de lo que sostienen, Señor de los demonios y de a quienes extravían, y Señor de los vientos y de lo que dispersan; Te pido el bien de este pueblo, el bien de sus habitantes, y el bien de lo que hay en él, y me refugio en Ti de su mal, del mal de sus habitantes, y del mal de lo que hay en él."
+  },
+  "244": {
+   "text": "No hay más dios que Allah, Único, sin asociado; a Él pertenece el dominio y a Él la alabanza; Él da la vida y da la muerte, y Él está vivo, no muere; en Su mano está el bien, y Él es Poderoso sobre todas las cosas."
+  },
+  "245": {
+   "text": "En el nombre de Allah."
+  },
+  "246": {
+   "text": "Os encomiendo a Allah, Cuyos depósitos (encomiendas) no se pierden."
+  },
+  "247": {
+   "text": "Encomiendo a Allah tu religión, tu confianza, y el final de tus obras."
+  },
+  "248": {
+   "text": "Que Allah te provea del temor de Él, perdone tu pecado, y te facilite el bien dondequiera que estés."
+  },
+  "249": {
+   "text": "Dijo Yabir, que Allah esté complacido con él: (Cuando subíamos, decíamos Allahu Akbar, y cuando descendíamos, decíamos Subhan Allah)."
+  },
+  "250": {
+   "text": "Que oiga quien oiga, con la alabanza de Allah y Su buena prueba sobre nosotros. Señor nuestro, acompáñanos y favorécenos, buscando refugio en Allah del Fuego."
+  },
+  "251": {
+   "text": "Me refugio en las palabras perfectas de Allah del mal de lo que Él ha creado."
+  },
+  "252": {
+   "text": "Decía Allahu Akbar tres veces al llegar a cada elevación del terreno, y luego decía: No hay más dios que Allah, Único, sin asociado; a Él pertenece el dominio y a Él la alabanza, y Él es Poderoso sobre todas las cosas. Regresamos, arrepentidos, adoradores, alabando a nuestro Señor. Allah cumplió Su promesa, socorrió a Su siervo, y derrotó Él solo a los coaligados."
+  },
+  "253": {
+   "text": "Él, la paz y las bendiciones de Allah sean con él, cuando le llegaba algo que le alegraba, decía: (Alabado sea Allah, por cuya gracia se completan las buenas obras); y cuando le llegaba algo que le disgustaba, decía: (Alabado sea Allah en toda circunstancia)."
+  },
+  "254": {
+   "text": "Dijo, la paz y las bendiciones de Allah sean con él: (Quien invoque una bendición sobre mí, Allah invocará por ello diez bendiciones sobre él)."
+  },
+  "255": {
+   "text": "Y dijo, la paz y las bendiciones de Allah sean con él: (No hagáis de mi tumba un lugar de celebración, e invocad bendiciones sobre mí, pues en verdad vuestras bendiciones me llegan dondequiera que estéis)."
+  },
+  "256": {
+   "text": "Y dijo, la paz y las bendiciones de Allah sean con él: (El avaro es aquel ante quien se me menciona y no invoca bendiciones sobre mí)."
+  },
+  "257": {
+   "text": "Y dijo, la paz y las bendiciones de Allah sean con él: (En verdad, Allah tiene ángeles que recorren la tierra, transmitiéndome el saludo de mi comunidad)."
+  },
+  "258": {
+   "text": "Y dijo, la paz y las bendiciones de Allah sean con él: (No hay nadie que me salude sin que Allah me devuelva mi espíritu, hasta que le devuelva el saludo)."
+  },
+  "259": {
+   "text": "Dijo el Mensajero de Allah, la paz y las bendiciones de Allah sean con él: (No entraréis al Paraíso hasta que creáis, y no creeréis hasta que os améis unos a otros. ¿Queréis que os indique algo que, si lo hacéis, os haréis amar unos a otros? Difundid el saludo entre vosotros)."
+  },
+  "260": {
+   "text": "Tres cosas que quien las reúna, habrá reunido la fe: (Ser justo contigo mismo, dar el saludo a todo el mundo, y dar caridad aun en la escasez)."
+  },
+  "261": {
+   "text": "De Abdullah ibn Umar, que Allah esté complacido con ambos: que un hombre preguntó al Profeta, la paz y las bendiciones de Allah sean con él: ¿Qué del Islam es mejor? Dijo: (Que des de comer, y que saludes tanto a quien conoces como a quien no conoces)."
+  },
+  "262": {
+   "text": "Cuando la Gente del Libro os salude, decid: (Y sobre vosotros)."
+  },
+  "263": {
+   "text": "Cuando oigáis el canto de los gallos, pedid a Allah de Su favor, pues en verdad han visto a un ángel; y cuando oigáis el rebuzno del asno, refugiaos en Allah del demonio, pues en verdad ha visto a un demonio."
+  },
+  "264": {
+   "text": "Cuando oigáis ladrar a los perros y rebuznar a los asnos de noche, refugiaos en Allah de ellos, pues en verdad ven lo que vosotros no veis."
+  },
+  "265": {
+   "text": "Dijo, la paz y las bendiciones de Allah sean con él: (¡Oh Allah! A cualquier creyente al que haya insultado, haz de ello para él un acercamiento a Ti el Día del Juicio)."
+  },
+  "266": {
+   "text": "Dijo, la paz y las bendiciones de Allah sean con él: (Si alguno de vosotros ha de elogiar a su compañero sin remedio, que diga: Considero a fulano —y Allah es quien le pide cuentas—, y no declaro puro a nadie ante Allah; lo considero —si lo sabe— de tal y tal manera)."
+  },
+  "267": {
+   "text": "¡Oh Allah! No me tomes en cuenta por lo que dicen, perdóname por lo que no saben, [y hazme mejor de lo que piensan]."
+  },
+  "268": {
+   "text": "Aquí estoy, oh Allah, aquí estoy. Aquí estoy, no tienes asociado, aquí estoy. En verdad, la alabanza, la gracia y el dominio Te pertenecen; no tienes asociado."
+  },
+  "269": {
+   "text": "El Profeta, la paz y las bendiciones de Allah sean con él, dio las vueltas (tawaf) alrededor de la Kaaba montado en un camello; cada vez que llegaba a la esquina, señalaba hacia ella con algo que tenía a mano y decía Allahu Akbar."
+  },
+  "270": {
+   "text": "{Señor nuestro, danos bien en esta vida y bien en la otra, y presérvanos del castigo del Fuego} (201)"
+  },
+  "271": {
+   "text": "Cuando, la paz y las bendiciones de Allah sean con él, se acercó a Safa, recitó: {En verdad, Safa y Marwa son de los ritos de Allah} (Comienzo con lo que Allah comenzó). Comenzó, pues, por Safa, y subió a él hasta que vio la Kaaba; entonces se orientó hacia la qibla, proclamó la unicidad de Allah, dijo Allahu Akbar, y dijo: (No hay más dios que Allah, Único, sin asociado; a Él pertenece el dominio y a Él la alabanza, y Él es Poderoso sobre todas las cosas. No hay más dios que Allah, Único; cumplió Su promesa, socorrió a Su siervo, y derrotó Él solo a los coaligados). Luego suplicó entre eso. Dijo lo mismo tres veces (el hadiz). Y en él: (Hizo en Marwa lo mismo que hizo en Safa)."
+  },
+  "272": {
+   "text": "La mejor súplica es la súplica del día de Arafah, y lo mejor que he dicho yo y los profetas anteriores a mí es: No hay más dios que Allah, Único, sin asociado; a Él pertenece el dominio y a Él la alabanza, y Él es Poderoso sobre todas las cosas."
+  },
+  "273": {
+   "text": "Montó, la paz y las bendiciones de Allah sean con él, su camella Al-Qaswa hasta llegar a Al-Mash'ar Al-Haram; se orientó hacia la qibla (le suplicó, dijo Allahu Akbar, dijo la ilaha illa Allah, y proclamó Su unicidad), y permaneció de pie hasta que amaneció por completo, y partió antes de que saliera el sol."
+  },
+  "274": {
+   "text": "Decía Allahu Akbar cada vez que lanzaba una piedrecilla en los tres lugares de lapidación; luego avanzaba y se detenía a suplicar orientado hacia la qibla, levantando las manos, después de la primera y la segunda jamra. En cuanto a la jamra de Al-Aqaba, la lapidaba diciendo Allahu Akbar con cada piedrecilla, y se retiraba sin detenerse junto a ella."
+  },
+  "275": {
+   "text": "Glorificado sea Allah."
+  },
+  "276": {
+   "text": "Allah es el más Grande."
+  },
+  "277": {
+   "text": "El Profeta, la paz y las bendiciones de Allah sean con él, cuando le llegaba algo que le alegraba, o se alegraba con ello, se postraba en agradecimiento a Allah, Bendito y Excelso."
+  },
+  "278": {
+   "text": "Pon tu mano sobre la parte de tu cuerpo que te duele, y di: (En el nombre de Allah) tres veces. Y di siete veces: (Me refugio en Allah y en Su poder del mal de lo que siento y de lo que temo)."
+  },
+  "279": {
+   "text": "Cuando alguno de vosotros vea en su hermano, en sí mismo, o en sus bienes, algo que le agrade, [que suplique por él pidiendo bendición], pues en verdad el mal de ojo es una realidad."
+  },
+  "280": {
+   "text": "No hay más dios que Allah."
+  },
+  "281": {
+   "text": "En el nombre de Allah, y Allah es el más Grande. [¡Oh Allah! De Ti y para Ti]. ¡Oh Allah! Acéptalo de mí."
+  },
+  "282": {
+   "text": "Me refugio en las palabras perfectas de Allah, que ningún justo ni pecador puede sobrepasar, del mal de lo que Él ha creado, formado y originado, del mal de lo que desciende del cielo, del mal de lo que asciende a él, del mal de lo que Él ha originado en la tierra, del mal de lo que sale de ella, del mal de las pruebas de la noche y del día, y del mal de todo visitante nocturno, salvo un visitante que venga con un bien, oh Clemente."
+  },
+  "283": {
+   "text": "Dijo el Mensajero de Allah, la paz y las bendiciones de Allah sean con él: (¡Por Allah! En verdad pido perdón a Allah y me arrepiento ante Él más de setenta veces al día)."
+  },
+  "284": {
+   "text": "Y dijo, la paz y las bendiciones de Allah sean con él: (¡Oh gente! Arrepentíos ante Allah, pues en verdad yo me arrepiento ante Él cien veces al día)."
+  },
+  "285": {
+   "text": "Y dijo, la paz y las bendiciones de Allah sean con él: (Quien diga: Pido perdón a Allah, el Grandioso, no hay más dios que Él, el Viviente, el Sustentador; y me arrepiento ante Él, Allah lo perdonará aunque haya huido del combate)."
+  },
+  "286": {
+   "text": "Y dijo, la paz y las bendiciones de Allah sean con él: (El Señor está más cerca del siervo en la última parte de la noche; así que, si puedes ser de quienes recuerdan a Allah en esa hora, hazlo)."
+  },
+  "287": {
+   "text": "Y dijo, la paz y las bendiciones de Allah sean con él: (El siervo está más cerca de su Señor cuando está postrado, así que suplicad mucho)."
+  },
+  "288": {
+   "text": "Y dijo, la paz y las bendiciones de Allah sean con él: (En verdad, se cubre [un velo] sobre mi corazón, y en verdad pido perdón a Allah cien veces al día)."
+  },
+  "289": {
+   "text": "Dijo, la paz y las bendiciones de Allah sean con él: (Quien diga: Glorificado sea Allah y alabado sea, cien veces en un día, se le borrarán sus faltas aunque sean como la espuma del mar)."
+  },
+  "290": {
+   "text": "Y dijo, la paz y las bendiciones de Allah sean con él: (Quien diga: No hay más dios que Allah, Único, sin asociado; a Él pertenece el dominio y a Él la alabanza, y Él es Poderoso sobre todas las cosas, diez veces, será como quien liberó a cuatro personas de la descendencia de Ismael)."
+  },
+  "291": {
+   "text": "Y dijo, la paz y las bendiciones de Allah sean con él: (Dos palabras ligeras en la lengua, pesadas en la balanza, y amadas por el Clementísimo: Glorificado sea Allah y alabado sea, glorificado sea Allah el Grandioso)."
+  },
+  "292": {
+   "text": "Y dijo, la paz y las bendiciones de Allah sean con él: (Que yo diga: Glorificado sea Allah, alabado sea Allah, no hay más dios que Allah, y Allah es el más Grande, me es más querido que aquello sobre lo que ha salido el sol)."
+  },
+  "293": {
+   "text": "Y dijo, la paz y las bendiciones de Allah sean con él: (¿Acaso es incapaz alguno de vosotros de obtener cada día mil buenas obras?) Le preguntó uno de los presentes: ¿Cómo puede alguno de nosotros obtener mil buenas obras? Dijo: (Que glorifique a Allah cien veces, y se le escribirán mil buenas obras, o se le borrarán mil faltas)."
+  },
+  "294": {
+   "text": "Quien diga: Glorificado sea Allah el Grandioso y alabado sea, se le plantará una palmera en el Paraíso."
+  },
+  "295": {
+   "text": "Y dijo, la paz y las bendiciones de Allah sean con él: (¡Oh Abdullah ibn Qais! ¿Quieres que te indique un tesoro de los tesoros del Paraíso?) Dije: Sí, oh Mensajero de Allah. Dijo: (Di: No hay poder ni fuerza sino en Allah)."
+  },
+  "296": {
+   "text": "Y dijo, la paz y las bendiciones de Allah sean con él: (Las palabras más queridas por Allah son cuatro: Glorificado sea Allah, alabado sea Allah, no hay más dios que Allah, y Allah es el más Grande; no importa con cuál de ellas comiences)."
+  },
+  "297": {
+   "text": "Vino un beduino al Mensajero de Allah, la paz y las bendiciones de Allah sean con él, y dijo: Enséñame unas palabras que pueda decir. Dijo: (Di: No hay más dios que Allah, Único, sin asociado; Allah es el más Grande, sumamente grande; y alabado sea Allah abundantemente; glorificado sea Allah, Señor de los mundos; no hay poder ni fuerza sino en Allah, el Poderoso, el Sabio). Dijo: Estas son para mi Señor, ¿y qué hay para mí? Dijo: (Di: ¡Oh Allah! Perdóname, ten misericordia de mí, guíame y provéeme)."
+  },
+  "298": {
+   "text": "Cuando un hombre se convertía al Islam, el Profeta, la paz y las bendiciones de Allah sean con él, le enseñaba la oración, y luego le ordenaba que suplicara con estas palabras: (¡Oh Allah! Perdóname, ten misericordia de mí, guíame, presérvame y provéeme)."
+  },
+  "299": {
+   "text": "En verdad, la mejor súplica es: Alabado sea Allah; y el mejor recuerdo es: No hay más dios que Allah."
+  },
+  "300": {
+   "text": "Las buenas obras perdurables son: Glorificado sea Allah, alabado sea Allah, no hay más dios que Allah, Allah es el más Grande, y no hay poder ni fuerza sino en Allah."
+  },
+  "301": {
+   "text": "De Abdullah ibn Amr, que Allah esté complacido con ambos, que dijo: (Vi al Profeta, la paz y las bendiciones de Allah sean con él, contar la glorificación con su mano derecha)."
+  },
+  "302": {
+   "text": "Cuando caiga la oscuridad de la noche —o al llegar la tarde—, retened a vuestros niños [en casa], pues en verdad los demonios se dispersan en ese momento; y cuando haya pasado una hora de la noche, dejadlos ir. Cerrad las puertas y mencionad el nombre de Allah, pues en verdad el demonio no abre una puerta cerrada; atad vuestros odres y mencionad el nombre de Allah; cubrid vuestros recipientes y mencionad el nombre de Allah, aunque sea colocando algo sobre ellos; y apagad vuestras lámparas.\nQue las bendiciones, la paz y la gracia de Allah sean sobre nuestro Profeta Muhammad, sobre su familia y sobre todos sus compañeros."
+  }
+ }
+}
