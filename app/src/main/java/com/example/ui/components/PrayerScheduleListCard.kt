@@ -290,7 +290,7 @@ private fun PrayerRowItem(
   }
 }
 
-private fun getPrayerIcon(name: PrayerName): ImageVector {
+internal fun getPrayerIcon(name: PrayerName): ImageVector {
   return when (name) {
     PrayerName.IMSAK -> Icons.Outlined.NightsStay
     PrayerName.FAJR -> Icons.Outlined.WbTwilight

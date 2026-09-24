@@ -107,6 +107,7 @@ fun HomeScreen(
   var showMadhabDialog by remember { mutableStateOf(false) }
   var showNotificationSheet by remember { mutableStateOf(false) }
   var showAboutDialog by remember { mutableStateOf(false) }
+  var showScheduleDialog by remember { mutableStateOf(false) }
 
   val currentWeather: CurrentWeather? = when (weatherState) {
     is WeatherUiState.Success -> weatherState.data.current
@@ -248,7 +249,8 @@ fun HomeScreen(
           temperatureFormatted = tempFormatted,
           language = language,
           onLocationClick = onLocationClick,
-          onWeatherClick = onNavigateToWeather
+          onWeatherClick = onNavigateToWeather,
+          onCardClick = { showScheduleDialog = true }
         )
 
       }
@@ -336,6 +338,14 @@ fun HomeScreen(
   }
 
   // About Ḥaasi al-Layl (The Night Sipper) Meaning & Brand Logo Dialog
+  if (showScheduleDialog) {
+    com.example.ui.components.TodayScheduleDialog(
+      schedule = schedule,
+      language = language,
+      onDismiss = { showScheduleDialog = false }
+    )
+  }
+
   if (showAboutDialog) {
     AboutHaasiDialog(
       language = language,

@@ -25,6 +25,7 @@ import androidx.compose.material.icons.outlined.Cloud
 import androidx.compose.material.icons.outlined.Grain
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -55,6 +56,9 @@ import com.example.ui.theme.OutlineDarkBorder
 import com.example.ui.theme.WarmBeigeBackground
 import com.example.ui.theme.WarmGoldAccent
 
+// Card(onClick) has been experimental on some Material 3 releases; the opt-in is harmless where it
+// is not.
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PrayerNextHeroCard(
   schedule: DailyPrayerSchedule,
@@ -64,7 +68,9 @@ fun PrayerNextHeroCard(
   temperatureFormatted: String,
   language: AppLanguage = AppLanguage.ENGLISH,
   onLocationClick: () -> Unit,
-  onWeatherClick: () -> Unit
+  onWeatherClick: () -> Unit,
+  /** Opens today's full schedule. The location and weather chips inside keep their own taps. */
+  onCardClick: () -> Unit = {}
 ) {
   val next = schedule.nextPrayer
   val animatedProgress by animateFloatAsState(
@@ -76,6 +82,7 @@ fun PrayerNextHeroCard(
   val banglaDate = if (isBanglaRegion) BanglaDateHelper.getBanglaDate(schedule.date) else null
 
   Card(
+    onClick = onCardClick,
     modifier = Modifier
       .fillMaxWidth()
       .testTag("hero_prayer_card"),
