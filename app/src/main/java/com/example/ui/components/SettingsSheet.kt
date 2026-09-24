@@ -129,9 +129,9 @@ fun SettingsSheet(
     contract = ActivityResultContracts.RequestPermission()
   ) { isGranted ->
     if (isGranted) {
-      testSentMessage = "Notification permission granted!"
+      testSentMessage = LocalizationManager.getNotificationPermissionGranted(language)
     } else {
-      testSentMessage = "Please enable notifications in system settings."
+      testSentMessage = LocalizationManager.getEnableNotificationsInSettings(language)
     }
   }
 
@@ -198,7 +198,7 @@ fun SettingsSheet(
             }
           }
           IconButton(onClick = onDismiss) {
-            Icon(Icons.Default.Close, contentDescription = "Close", tint = DarkForestInk)
+            Icon(Icons.Default.Close, contentDescription = LocalizationManager.getCloseLabel(language), tint = DarkForestInk)
           }
         }
       }
@@ -259,7 +259,7 @@ fun SettingsSheet(
                   border = androidx.compose.foundation.BorderStroke(1.dp, if (isSelected) Color(0xFF0F3E2F) else OutlineDarkBorder),
                 ) {
                   Text(
-                    text = "${lang.flag} ${lang.displayName}",
+                    text = "${lang.flag} ${lang.nativeName}",
                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                     fontSize = 12.sp,
                     color = if (isSelected) Color.White else DarkForestInk,
@@ -746,7 +746,7 @@ fun SettingsSheet(
                     border = androidx.compose.foundation.BorderStroke(0.5.dp, Color(0xFFFFB74D))
                   ) {
                     Text(
-                      text = "Sunnah/Nafl",
+                      text = LocalizationManager.getSunnahNaflLabel(language),
                       fontSize = 10.sp,
                       fontWeight = FontWeight.Bold,
                       color = Color(0xFFE65100),
@@ -797,7 +797,7 @@ fun SettingsSheet(
       if (forbiddenWindows.isEmpty()) {
         item {
           Text(
-            text = "Loading today's celestial times...",
+            text = LocalizationManager.getLoadingCelestialTimes(language),
             fontSize = 13.sp,
             color = DarkForestInk.copy(alpha = 0.6f)
           )
@@ -860,7 +860,7 @@ fun SettingsSheet(
                     color = Color(0xFFE65100)
                   ) {
                     Text(
-                      text = "ACTIVE NOW",
+                      text = LocalizationManager.getActiveNowBadge(language),
                       color = Color.White,
                       fontWeight = FontWeight.Bold,
                       fontSize = 10.sp,

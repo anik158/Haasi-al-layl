@@ -153,7 +153,7 @@ fun WeatherScreen(
         ) {
           Icon(
             Icons.Default.Refresh,
-            contentDescription = "Refresh weather",
+            contentDescription = LocalizationManager.getRefreshWeatherLabel(language),
             tint = MaterialTheme.colorScheme.primary
           )
         }
@@ -297,11 +297,8 @@ private fun WeatherSuccessContent(
               color = Color.White
             )
 
-            val highLowLabel = if (language == AppLanguage.BENGALI) {
+            val highLowLabel =
               "${LocalizationManager.getFeelsLikeLabel(language)} ${formatTemperature(cur.feelsLikeC)}  •  ${LocalizationManager.getHighShort(language)}: ${formatTemperature(cur.highC)}  •  ${LocalizationManager.getLowShort(language)}: ${formatTemperature(cur.lowC)}"
-            } else {
-              "${LocalizationManager.getFeelsLikeLabel(language)} ${formatTemperature(cur.feelsLikeC)}  •  ${LocalizationManager.getHighShort(language)}: ${formatTemperature(cur.highC)}  •  ${LocalizationManager.getLowShort(language)}: ${formatTemperature(cur.lowC)}"
-            }
 
             Text(
               text = highLowLabel,
@@ -502,7 +499,7 @@ private fun HourlyWeatherItem(
       horizontalAlignment = Alignment.CenterHorizontally
     ) {
       Text(
-        text = if (language == com.example.data.localization.AppLanguage.BENGALI) hour.timeFormatted.replace("AM", "পূর্বাহ্ণ").replace("PM", "অপরাহ্ণ").replace("0", "০").replace("1", "১").replace("2", "২").replace("3", "৩").replace("4", "৪").replace("5", "৫").replace("6", "৬").replace("7", "৭").replace("8", "৮").replace("9", "৯") else if (language == com.example.data.localization.AppLanguage.ARABIC) hour.timeFormatted.replace("AM", "ص").replace("PM", "م").replace("0", "٠").replace("1", "١").replace("2", "٢").replace("3", "٣").replace("4", "٤").replace("5", "٥").replace("6", "٦").replace("7", "٧").replace("8", "٨").replace("9", "٩") else hour.timeFormatted,
+        text = LocalizationManager.localizeTimeText(hour.timeFormatted, language),
         style = MaterialTheme.typography.labelSmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant
       )

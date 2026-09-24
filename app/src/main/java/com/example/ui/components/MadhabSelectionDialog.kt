@@ -158,7 +158,7 @@ fun MadhabSelectionDialog(
                   ) {
                     Icon(
                       imageVector = Icons.Default.Check,
-                      contentDescription = "Selected",
+                      contentDescription = LocalizationManager.getSelectedLabel(language),
                       tint = Color.White,
                       modifier = Modifier.size(16.dp)
                     )
@@ -209,7 +209,7 @@ fun MadhabSelectionDialog(
         onClick = onDismiss,
         modifier = Modifier.testTag("madhab_dialog_close")
       ) {
-        Text("Close", color = DarkForestInk, fontWeight = FontWeight.Bold)
+        Text(LocalizationManager.getCloseLabel(language), color = DarkForestInk, fontWeight = FontWeight.Bold)
       }
     }
   )

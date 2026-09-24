@@ -36,6 +36,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.data.localization.AppLanguage
+import com.example.data.localization.LocalizationManager
 import com.example.data.model.DailyPrayerSchedule
 import com.example.ui.theme.DarkForestInk
 import com.example.ui.theme.LinenBorderLight
@@ -94,7 +95,7 @@ fun ForbiddenPrayerTimesBanner(
               color = Color(0xFFE65100)
             ) {
               Text(
-                text = "PROHIBITED NOW",
+                text = LocalizationManager.getProhibitedNowBadge(language),
                 color = Color.White,
                 fontWeight = FontWeight.ExtraBold,
                 fontSize = 10.sp,
@@ -103,7 +104,11 @@ fun ForbiddenPrayerTimesBanner(
             }
             Spacer(modifier = Modifier.width(6.dp))
             Text(
-              text = activeWindow.formattedRange,
+              text = LocalizationManager.formatTimeRange(
+                activeWindow.startTime,
+                activeWindow.endTime,
+                language
+              ),
               fontWeight = FontWeight.Bold,
               fontSize = 12.sp,
               color = Color(0xFFBF360C)
@@ -120,7 +125,11 @@ fun ForbiddenPrayerTimesBanner(
           )
 
           Text(
-            text = "Voluntary (Nafl) prayers prohibited until ${activeWindow.endTime} (${activeWindow.minutesRemaining(currentTime)}m left)",
+            text = LocalizationManager.getNaflProhibitedUntil(
+              LocalizationManager.formatTime(activeWindow.endTime, language),
+              activeWindow.minutesRemaining(currentTime),
+              language
+            ),
             fontSize = 11.sp,
             color = DarkForestInk.copy(alpha = 0.8f)
           )
@@ -128,7 +137,7 @@ fun ForbiddenPrayerTimesBanner(
 
         Icon(
           Icons.Default.ChevronRight,
-          contentDescription = "Details",
+          contentDescription = LocalizationManager.getDetailsLabel(language),
           tint = DarkForestInk.copy(alpha = 0.5f),
           modifier = Modifier.size(20.dp)
         )
@@ -175,13 +184,15 @@ fun ForbiddenPrayerTimesBanner(
 
           Column {
             Text(
-              text = "Prayer Permitted • Next Prohibited Window:",
+              text = LocalizationManager.getPrayerPermittedNextProhibited(language),
               fontSize = 11.sp,
               color = DarkForestInk.copy(alpha = 0.65f),
               fontWeight = FontWeight.Medium
             )
             Text(
-              text = "${nextWindow.getLocalizedTitle(language)} (${nextWindow.formattedRange})",
+              text = "${nextWindow.getLocalizedTitle(language)} (" +
+                LocalizationManager.formatTimeRange(nextWindow.startTime, nextWindow.endTime, language) +
+                ")",
               fontSize = 12.sp,
               fontWeight = FontWeight.Bold,
               color = DarkForestInk
@@ -206,7 +217,7 @@ fun ForbiddenPrayerTimesBanner(
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
-              text = "Alerts",
+              text = LocalizationManager.getAlertsChipLabel(language),
               fontSize = 11.sp,
               fontWeight = FontWeight.Bold,
               color = Color(0xFF15803D)

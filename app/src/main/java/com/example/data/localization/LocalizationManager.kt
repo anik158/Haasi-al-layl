@@ -550,6 +550,199 @@ object LocalizationManager {
   }
 
   /** The badge on the prayer that is in progress. Short in every language, by necessity. */
+  /** Shown during the last third of the night. The hadith of the divine descent (Bukhari 1145). */
+  fun getSelectLocationTitle(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "اختر الموقع"
+    AppLanguage.BENGALI -> "অবস্থান নির্বাচন করুন"
+    AppLanguage.SPANISH -> "Seleccionar ubicación"
+    AppLanguage.PORTUGUESE -> "Selecionar localização"
+    AppLanguage.ENGLISH -> "Select location"
+  }
+
+  fun getSelectLocationSubtitle(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "لحساب مواقيت الصلاة والطقس لمنطقتك"
+    AppLanguage.BENGALI -> "আপনার এলাকার নামাজের সময় ও আবহাওয়া নির্ণয়ের জন্য"
+    AppLanguage.SPANISH -> "Calcula los horarios de oración y el tiempo de tu zona"
+    AppLanguage.PORTUGUESE -> "Calcula os horários de oração e o tempo da sua zona"
+    AppLanguage.ENGLISH -> "Calculates prayer times and weather for your area"
+  }
+
+  fun getSearchCityPlaceholder(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "ابحث عن مدينة أو دولة..."
+    AppLanguage.BENGALI -> "শহর বা দেশ খুঁজুন..."
+    AppLanguage.SPANISH -> "Buscar ciudad o país..."
+    AppLanguage.PORTUGUESE -> "Procurar cidade ou país..."
+    AppLanguage.ENGLISH -> "Search city or country..."
+  }
+
+  /** Accessibility label for a search field icon. */
+  fun getSearchLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "بحث"
+    AppLanguage.BENGALI -> "খুঁজুন"
+    AppLanguage.SPANISH -> "Buscar"
+    AppLanguage.PORTUGUESE -> "Procurar"
+    AppLanguage.ENGLISH -> "Search"
+  }
+
+  /** Accessibility label for a selected-item checkmark. */
+  fun getSelectedLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "محدد"
+    AppLanguage.BENGALI -> "নির্বাচিত"
+    AppLanguage.SPANISH -> "Seleccionado"
+    AppLanguage.PORTUGUESE -> "Selecionado"
+    AppLanguage.ENGLISH -> "Selected"
+  }
+
+  fun getNotificationPermissionGranted(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "تم منح إذن التنبيهات"
+    AppLanguage.BENGALI -> "বিজ্ঞপ্তির অনুমতি দেওয়া হয়েছে"
+    AppLanguage.SPANISH -> "Permiso de notificaciones concedido"
+    AppLanguage.PORTUGUESE -> "Permissão de notificações concedida"
+    AppLanguage.ENGLISH -> "Notification permission granted"
+  }
+
+  fun getEnableNotificationsInSettings(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "يرجى تفعيل التنبيهات من إعدادات النظام"
+    AppLanguage.BENGALI -> "অনুগ্রহ করে সিস্টেম সেটিংসে বিজ্ঞপ্তি চালু করুন"
+    AppLanguage.SPANISH -> "Activa las notificaciones en los ajustes del sistema"
+    AppLanguage.PORTUGUESE -> "Ative as notificações nas definições do sistema"
+    AppLanguage.ENGLISH -> "Please enable notifications in system settings"
+  }
+
+  fun getSunnahNaflLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "سنة / نافلة"
+    AppLanguage.BENGALI -> "সুন্নাত / নফল"
+    AppLanguage.SPANISH -> "Sunna / nafl"
+    AppLanguage.PORTUGUESE -> "Suna / nafl"
+    AppLanguage.ENGLISH -> "Sunnah / nafl"
+  }
+
+  fun getLoadingCelestialTimes(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "جارٍ تحميل أوقات اليوم الفلكية..."
+    AppLanguage.BENGALI -> "আজকের জ্যোতির্বিদ্যাগত সময় লোড হচ্ছে..."
+    AppLanguage.SPANISH -> "Cargando los horarios astronómicos de hoy..."
+    AppLanguage.PORTUGUESE -> "A carregar os horários astronómicos de hoje..."
+    AppLanguage.ENGLISH -> "Loading today's celestial times..."
+  }
+
+  fun getActiveNowBadge(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "نشط الآن"
+    AppLanguage.BENGALI -> "এখন চলছে"
+    AppLanguage.SPANISH -> "ACTIVO AHORA"
+    AppLanguage.PORTUGUESE -> "ATIVO AGORA"
+    AppLanguage.ENGLISH -> "ACTIVE NOW"
+  }
+
+  /** Accessibility label for a filter menu icon. */
+  fun getFilterLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "تصفية"
+    AppLanguage.BENGALI -> "ফিল্টার"
+    AppLanguage.SPANISH -> "Filtrar"
+    AppLanguage.PORTUGUESE -> "Filtrar"
+    AppLanguage.ENGLISH -> "Filter"
+  }
+
+  fun getAddBookmarkLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "إضافة إلى المحفوظات"
+    AppLanguage.BENGALI -> "বুকমার্ক করুন"
+    AppLanguage.SPANISH -> "Guardar en favoritos"
+    AppLanguage.PORTUGUESE -> "Adicionar aos favoritos"
+    AppLanguage.ENGLISH -> "Bookmark"
+  }
+
+  fun getRemoveBookmarkLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "إزالة من المحفوظات"
+    AppLanguage.BENGALI -> "বুকমার্ক সরান"
+    AppLanguage.SPANISH -> "Quitar de favoritos"
+    AppLanguage.PORTUGUESE -> "Remover dos favoritos"
+    AppLanguage.ENGLISH -> "Remove bookmark"
+  }
+
+  fun getRefreshWeatherLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "تحديث الطقس"
+    AppLanguage.BENGALI -> "আবহাওয়া হালনাগাদ করুন"
+    AppLanguage.SPANISH -> "Actualizar el tiempo"
+    AppLanguage.PORTUGUESE -> "Atualizar o tempo"
+    AppLanguage.ENGLISH -> "Refresh weather"
+  }
+
+  /** Accessibility label for the brand logo. */
+  fun getAppLogoDescription(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "شعار ${getAppName(language)}"
+    AppLanguage.BENGALI -> "${getAppName(language)} লোগো"
+    AppLanguage.SPANISH -> "Logotipo de ${getAppName(language)}"
+    AppLanguage.PORTUGUESE -> "Logótipo de ${getAppName(language)}"
+    AppLanguage.ENGLISH -> "${getAppName(language)} logo"
+  }
+
+  fun getNarratedBy(narrator: String, source: String, language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "— رواه $narrator ($source)"
+    AppLanguage.BENGALI -> "— বর্ণনাকারী: $narrator ($source)"
+    AppLanguage.SPANISH -> "— Narrado por $narrator ($source)"
+    AppLanguage.PORTUGUESE -> "— Narrado por $narrator ($source)"
+    AppLanguage.ENGLISH -> "— Narrated by $narrator ($source)"
+  }
+
+  fun getTahajjudBannerMessage(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "لقد نزل الله سبحانه وتعالى إلى السماء الدنيا، فاسألوا ما شئتم."
+    AppLanguage.BENGALI -> "আল্লাহ সুবহানাহু ওয়া তায়ালা প্রথম আসমানে নেমে এসেছেন, আপনার যা খুশি চাইতে পারেন।"
+    AppLanguage.SPANISH -> "Allah, glorificado y exaltado sea, ha descendido al cielo más cercano: pide lo que desees."
+    AppLanguage.PORTUGUESE -> "Allah, glorificado e exaltado seja, desceu ao céu mais próximo: peça o que desejar."
+    AppLanguage.ENGLISH -> "Allah, glorified and exalted, has descended to the nearest heaven: ask for whatever you wish."
+  }
+
+  /** Stands in for the prayer name before a schedule has resolved. */
+  fun getPrayerPlaceholder(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "الصلاة"
+    AppLanguage.BENGALI -> "নামাজ"
+    AppLanguage.SPANISH -> "Oración"
+    AppLanguage.PORTUGUESE -> "Oração"
+    AppLanguage.ENGLISH -> "Prayer"
+  }
+
+  fun getProhibitedNowBadge(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "وقت نهي الآن"
+    AppLanguage.BENGALI -> "এখন নিষিদ্ধ"
+    AppLanguage.SPANISH -> "PROHIBIDO AHORA"
+    AppLanguage.PORTUGUESE -> "PROIBIDO AGORA"
+    AppLanguage.ENGLISH -> "PROHIBITED NOW"
+  }
+
+  fun getNaflProhibitedUntil(endTime: String, minutesLeft: Long, language: AppLanguage): String {
+    val m = localizeDigits(minutesLeft.toString(), language)
+    return when (language) {
+      AppLanguage.ARABIC -> "تُكره صلاة النافلة حتى $endTime (متبقٍّ $m دقيقة)"
+      AppLanguage.BENGALI -> "$endTime পর্যন্ত নফল নামাজ নিষিদ্ধ ($m মিনিট বাকি)"
+      AppLanguage.SPANISH -> "Oraciones voluntarias (nafl) prohibidas hasta las $endTime (quedan $m min)"
+      AppLanguage.PORTUGUESE -> "Orações voluntárias (nafl) proibidas até às $endTime (faltam $m min)"
+      AppLanguage.ENGLISH -> "Voluntary (nafl) prayers prohibited until $endTime ($m min left)"
+    }
+  }
+
+  fun getPrayerPermittedNextProhibited(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "الصلاة جائزة • وقت النهي القادم:"
+    AppLanguage.BENGALI -> "নামাজ আদায় বৈধ • পরবর্তী নিষিদ্ধ সময়:"
+    AppLanguage.SPANISH -> "Oración permitida • Próximo periodo prohibido:"
+    AppLanguage.PORTUGUESE -> "Oração permitida • Próximo período proibido:"
+    AppLanguage.ENGLISH -> "Prayer permitted • Next prohibited window:"
+  }
+
+  fun getAlertsChipLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "التنبيهات"
+    AppLanguage.BENGALI -> "সতর্কতা"
+    AppLanguage.SPANISH -> "Avisos"
+    AppLanguage.PORTUGUESE -> "Avisos"
+    AppLanguage.ENGLISH -> "Alerts"
+  }
+
+  fun getDetailsLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "التفاصيل"
+    AppLanguage.BENGALI -> "বিস্তারিত"
+    AppLanguage.SPANISH -> "Detalles"
+    AppLanguage.PORTUGUESE -> "Detalhes"
+    AppLanguage.ENGLISH -> "Details"
+  }
+
   fun getNowBadge(language: AppLanguage): String = when (language) {
     AppLanguage.ARABIC -> "الآن"
     AppLanguage.BENGALI -> "এখন"
@@ -1810,17 +2003,38 @@ object LocalizationManager {
     }
   }
 
-  fun formatTime(time: java.time.LocalTime, language: AppLanguage): String {
-    val formatter = java.time.format.DateTimeFormatter.ofPattern("hh:mm a")
-    var formatted = time.format(formatter)
-    
-    if (language == AppLanguage.BENGALI) {
-      formatted = formatted.replace("AM", "পূর্বাহ্ণ").replace("PM", "অপরাহ্ণ")
-      formatted = formatted.replace("0", "০").replace("1", "১").replace("2", "২").replace("3", "৩").replace("4", "৪").replace("5", "৫").replace("6", "৬").replace("7", "৭").replace("8", "৮").replace("9", "৯")
-    } else if (language == AppLanguage.ARABIC) {
-      formatted = formatted.replace("AM", "ص").replace("PM", "م")
-      formatted = formatted.replace("0", "٠").replace("1", "١").replace("2", "٢").replace("3", "٣").replace("4", "٤").replace("5", "٥").replace("6", "٦").replace("7", "٧").replace("8", "٨").replace("9", "٩")
+  /** Native digits for Bengali and Arabic; everything else keeps Latin digits. */
+  fun localizeDigits(text: String, language: AppLanguage): String {
+    val digits = when (language) {
+      AppLanguage.BENGALI -> "০১২৩৪৫৬৭৮৯"
+      AppLanguage.ARABIC -> "٠١٢٣٤٥٦٧٨٩"
+      else -> return text
     }
-    return formatted
+    return buildString(text.length) {
+      text.forEach { c -> append(if (c in '0'..'9') digits[c - '0'] else c) }
+    }
   }
+
+  fun formatTime(time: java.time.LocalTime, language: AppLanguage): String {
+    // Locale.ENGLISH pins the AM/PM marker. With the device default, a phone set to another
+    // locale could already emit a localized marker, and the replacements would silently miss it.
+    val formatter = java.time.format.DateTimeFormatter.ofPattern("hh:mm a", java.util.Locale.ENGLISH)
+    return localizeTimeText(time.format(formatter), language)
+  }
+
+  /** Localizes an already-formatted English "hh:mm AM" string - period marker and digits. */
+  fun localizeTimeText(formatted: String, language: AppLanguage): String {
+    val withPeriod = when (language) {
+      AppLanguage.BENGALI -> formatted.replace("AM", "পূর্বাহ্ণ").replace("PM", "অপরাহ্ণ")
+      AppLanguage.ARABIC -> formatted.replace("AM", "ص").replace("PM", "م")
+      else -> formatted
+    }
+    return localizeDigits(withPeriod, language)
+  }
+
+  fun formatTimeRange(
+    start: java.time.LocalTime,
+    end: java.time.LocalTime,
+    language: AppLanguage
+  ): String = "${formatTime(start, language)} – ${formatTime(end, language)}"
 }

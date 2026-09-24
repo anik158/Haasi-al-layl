@@ -205,7 +205,7 @@ fun PrayerNextHeroCard(
               )
               Spacer(modifier = Modifier.width(6.dp))
               Text(
-                text = HijriDateHelper.getTodayHijriFormatted(schedule.date),
+                text = HijriDateHelper.getTodayHijriFormatted(schedule.date, language),
                 style = MaterialTheme.typography.labelMedium,
                 fontWeight = FontWeight.Bold,
                 color = DarkForestInk
@@ -238,7 +238,7 @@ fun PrayerNextHeroCard(
             verticalAlignment = Alignment.CenterVertically
           ) {
             Text(
-              text = HijriDateHelper.getGregorianFormatted(schedule.date),
+              text = HijriDateHelper.getGregorianFormatted(schedule.date, language),
               style = MaterialTheme.typography.bodySmall,
               fontSize = 11.sp,
               color = DarkForestInk.copy(alpha = 0.7f)
@@ -276,7 +276,7 @@ fun PrayerNextHeroCard(
             Row(verticalAlignment = Alignment.CenterVertically) {
               val prayerNameDisplay = next?.let {
                 LocalizationManager.getPrayerDisplayName(it.prayer, language)
-              } ?: "Prayer"
+              } ?: LocalizationManager.getPrayerPlaceholder(language)
               Text(
                 text = prayerNameDisplay,
                 style = MaterialTheme.typography.headlineMedium,

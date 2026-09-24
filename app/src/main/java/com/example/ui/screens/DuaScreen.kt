@@ -128,7 +128,7 @@ fun DuaScreen(
       value = searchQuery,
       onValueChange = { searchQuery = it },
       placeholder = { Text(LocalizationManager.getSearchDuaPlaceholder(language)) },
-      leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
+      leadingIcon = { Icon(Icons.Default.Search, contentDescription = LocalizationManager.getSearchLabel(language)) },
       singleLine = true,
       shape = RoundedCornerShape(14.dp),
       modifier = Modifier
@@ -160,7 +160,7 @@ fun DuaScreen(
 
       Box {
         IconButton(onClick = { expanded = true }) {
-          Icon(Icons.Default.FilterList, contentDescription = "Filter")
+          Icon(Icons.Default.FilterList, contentDescription = LocalizationManager.getFilterLabel(language))
         }
         DropdownMenu(
           expanded = expanded,
@@ -307,7 +307,7 @@ private fun DuaCardItem(
         ) {
           Icon(
             imageVector = if (isBookmarked) Icons.Default.Bookmark else Icons.Outlined.BookmarkBorder,
-            contentDescription = if (isBookmarked) "Remove bookmark" else "Bookmark dua",
+            contentDescription = if (isBookmarked) LocalizationManager.getRemoveBookmarkLabel(language) else LocalizationManager.getAddBookmarkLabel(language),
             tint = if (isBookmarked) WarmGoldAccent else MaterialTheme.colorScheme.outline
           )
         }

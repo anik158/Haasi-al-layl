@@ -139,6 +139,7 @@ fun HomeScreen(
       ) {
         HaasiBrandLogo(
           size = 40.dp,
+          language = language,
           onClick = { showAboutDialog = true }
         )
         Spacer(modifier = Modifier.width(10.dp))
@@ -263,9 +264,7 @@ fun HomeScreen(
               Icon(Icons.Filled.NotificationsActive, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimaryContainer)
               Spacer(modifier = Modifier.width(16.dp))
               Text(
-                text = if (language == com.example.data.localization.AppLanguage.BENGALI) "আল্লাহ সুবহানাহু ওয়া তায়ালা প্রথম আসমানে নেমে এসেছেন, আপনার যা খুশি চাইতে পারেন।"
-                       else if (language == com.example.data.localization.AppLanguage.ARABIC) "لقد نزل الله سبحانه وتعالى إلى السماء الدنيا، فاسألوا ما شئتم."
-                       else "Allah swt has come down to 1st heaven, ask whatever you want.",
+                text = LocalizationManager.getTahajjudBannerMessage(language),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                 fontWeight = androidx.compose.ui.text.font.FontWeight.Bold

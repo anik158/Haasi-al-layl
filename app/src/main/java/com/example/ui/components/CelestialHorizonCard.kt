@@ -553,7 +553,7 @@ fun CelestialHorizonCard(
             color = DarkForestInk
           )
           IconButton(onClick = { showDetailsDialog = false }) {
-            Icon(Icons.Default.Close, contentDescription = "Close", tint = DarkForestInk)
+            Icon(Icons.Default.Close, contentDescription = LocalizationManager.getCloseLabel(language), tint = DarkForestInk)
           }
         }
       },

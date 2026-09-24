@@ -158,7 +158,7 @@ fun DailyInspirationCard(
       )
 
       Text(
-        text = "— Narrated by ${inspiration.hadithNarrator} (${inspiration.hadithSource})",
+        text = LocalizationManager.getNarratedBy(inspiration.hadithNarrator, inspiration.hadithSource, language),
         style = MaterialTheme.typography.labelSmall,
         fontWeight = FontWeight.SemiBold,
         color = DarkForestInk.copy(alpha = 0.7f),

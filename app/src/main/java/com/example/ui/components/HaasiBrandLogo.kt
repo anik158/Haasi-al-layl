@@ -60,6 +60,7 @@ import com.example.ui.theme.WarmBeigeBackground
 fun HaasiBrandLogo(
   modifier: Modifier = Modifier,
   size: Dp = 40.dp,
+  language: AppLanguage = AppLanguage.ENGLISH,
   onClick: (() -> Unit)? = null
 ) {
   val clickModifier = if (onClick != null) {
@@ -96,7 +97,7 @@ fun HaasiBrandLogo(
   ) {
     Icon(
       painter = painterResource(id = R.drawable.ic_haasi_logo),
-      contentDescription = "Ḥaasi al-Layl Logo",
+      contentDescription = LocalizationManager.getAppLogoDescription(language),
       tint = Color.Unspecified,
       modifier = Modifier
         .size(size * 0.86f)
@@ -134,7 +135,7 @@ fun AboutHaasiDialog(
           }
         }
 
-        HaasiBrandLogo(size = 72.dp)
+        HaasiBrandLogo(size = 72.dp, language = language)
 
         Spacer(modifier = Modifier.height(12.dp))
 

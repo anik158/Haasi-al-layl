@@ -89,13 +89,13 @@ fun CitySelectionSheet(
         .padding(horizontal = 20.dp, vertical = 8.dp)
     ) {
       Text(
-        text = "Select Location",
+        text = LocalizationManager.getSelectLocationTitle(language),
         style = MaterialTheme.typography.titleLarge,
         fontWeight = FontWeight.Bold,
         color = MaterialTheme.colorScheme.primary
       )
       Text(
-        text = "Calculates prayer times and weather for your area",
+        text = LocalizationManager.getSelectLocationSubtitle(language),
         style = MaterialTheme.typography.bodySmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant
       )
@@ -105,8 +105,8 @@ fun CitySelectionSheet(
       OutlinedTextField(
         value = searchQuery,
         onValueChange = { searchQuery = it },
-        placeholder = { Text("Search city or country...") },
-        leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
+        placeholder = { Text(LocalizationManager.getSearchCityPlaceholder(language)) },
+        leadingIcon = { Icon(Icons.Default.Search, contentDescription = LocalizationManager.getSearchLabel(language)) },
         singleLine = true,
         modifier = Modifier
           .fillMaxWidth()
@@ -247,7 +247,7 @@ fun CitySelectionSheet(
               if (isSelected) {
                 Icon(
                   Icons.Default.Check,
-                  contentDescription = "Selected",
+                  contentDescription = LocalizationManager.getSelectedLabel(language),
                   tint = MaterialTheme.colorScheme.primary
                 )
               }
