@@ -1,0 +1,164 @@
+package com.example.data.dua
+
+import com.example.data.localization.AppLanguage
+import org.json.JSONArray
+import org.json.JSONObject
+
+/** One chapter of Hisn al-Muslim, e.g. "When waking up". */
+data class HisnChapter(
+  val number: Int,
+  val titles: Map<AppLanguage, String>
+) {
+  fun title(language: AppLanguage): String =
+    titles[language]?.takeIf { it.isNotBlank() }
+      ?: titles[AppLanguage.ENGLISH]?.takeIf { it.isNotBlank() }
+      ?: titles.values.firstOrNull { it.isNotBlank() }
+      ?: ""
+}
+
+data class HisnCollection(
+  val chapters: List<HisnChapter>,
+  val duas: List<DuaItem>
+) {
+  val isEmpty: Boolean get() = duas.isEmpty()
+
+  companion object {
+    val EMPTY = HisnCollection(emptyList(), emptyList())
+  }
+}
+
+/**
+ * Reads the Hisn al-Muslim collection from one JSON file per language.
+ *
+ * The text is not in this repository. Hisn al-Muslim is a published collection with fixed wording
+ * and fixed hadith references, and the translations of it are copyrighted works: it cannot be
+ * written from memory, and it cannot be copied off a website that has not licensed it. The files
+ * go in `assets/hisn/` from a source that permits it - see the README beside them.
+ *
+ * Each file holds the shape hisnmuslim.com-style exports use. The root key is ignored, so any
+ * language's export works as-is:
+ *
+ * ```
+ * { "<any key>": [ { "TITLE": "...", "TEXT": [ { "ID": 1, "ARABIC_TEXT": "...",
+ *     "LANGUAGE_ARABIC_TRANSLATED_TEXT": "...", "TRANSLATED_TEXT": "...", "REPEAT": 1,
+ *     "REFERENCE": "..." } ] } ] }
+ * ```
+ *
+ * The Arabic file, or the English one if there is no Arabic, defines which chapters and
+ * supplications exist; every other language only overlays chapter titles and translations onto
+ * them, matched by chapter position and by supplication `ID`. So a language can be missing or
+ * partial, and each missing field falls back to English.
+ */
+object HisnParser {
+
+  /** Parses whatever language files are present. Anything unusable yields an empty collection. */
+  fun parse(files: Map<AppLanguage, String>): HisnCollection {
+    val parsed = files.mapNotNull { (language, json) ->
+      runCatching { language to parseFile(json) }.getOrNull()
+    }.toMap()
+
+    val base = parsed[AppLanguage.ARABIC] ?: parsed[AppLanguage.ENGLISH] ?: return HisnCollection.EMPTY
+
+    val chapters = base.mapIndexed { index, baseChapter ->
+      val number = index + 1
+      HisnChapter(
+        number = number,
+        titles = parsed.mapNotNull { (language, languageChapters) ->
+          languageChapters.getOrNull(index)?.title?.takeIf { it.isNotBlank() }?.let { language to it }
+        }.toMap().ifEmpty { mapOf(AppLanguage.ENGLISH to baseChapter.title) }
+      )
+    }
+
+    // Supplications keyed by their own ID, across every language, so overlays line up even if a
+    // translation's chapters are split or ordered slightly differently.
+    val byLanguageAndId = parsed.mapValues { (_, languageChapters) ->
+      languageChapters.flatMap { it.entries }.associateBy { it.id }
+    }
+
+    val seen = HashSet<String>()
+    val duas = base.flatMapIndexed { index, baseChapter ->
+      val chapter = chapters[index]
+      baseChapter.entries.mapNotNull { entry ->
+        // Ids come from the entry's own ID, never its position: a positional id changes when
+        // chapters are reordered, which would silently orphan every bookmark.
+        val id = "hisn_${entry.id}"
+        if (!seen.add(id)) return@mapNotNull null
+        val english = byLanguageAndId[AppLanguage.ENGLISH]?.get(entry.id)
+        val arabic = byLanguageAndId[AppLanguage.ARABIC]?.get(entry.id)
+        fun translation(language: AppLanguage) =
+          byLanguageAndId[language]?.get(entry.id)?.translation.orEmpty()
+
+        DuaItem(
+          id = id,
+          title = chapter.title(AppLanguage.ENGLISH),
+          titleBn = chapter.titles[AppLanguage.BENGALI].orEmpty(),
+          titleAr = chapter.titles[AppLanguage.ARABIC].orEmpty(),
+          titleEs = chapter.titles[AppLanguage.SPANISH].orEmpty(),
+          titlePt = chapter.titles[AppLanguage.PORTUGUESE].orEmpty(),
+          category = DuaCategory.HISN,
+          arabic = (arabic ?: entry).arabic.ifBlank { english?.arabic.orEmpty() },
+          transliteration = (english ?: entry).transliteration.ifBlank { entry.transliteration },
+          translation = english?.translation.orEmpty(),
+          translationBn = translation(AppLanguage.BENGALI),
+          translationEs = translation(AppLanguage.SPANISH),
+          translationPt = translation(AppLanguage.PORTUGUESE),
+          reference = listOfNotNull(english?.reference, entry.reference)
+            .firstOrNull { it.isNotBlank() }
+            ?: "Hisn al-Muslim",
+          repetition = "${entry.repeat}x",
+          hisnChapter = chapter.number
+        )
+      }
+    }
+
+    return HisnCollection(chapters.filter { chapter -> duas.any { it.hisnChapter == chapter.number } }, duas)
+  }
+
+  private class RawChapter(val title: String, val entries: List<RawEntry>)
+
+  private class RawEntry(
+    val id: String,
+    val arabic: String,
+    val transliteration: String,
+    val translation: String,
+    val reference: String,
+    val repeat: Int
+  )
+
+  private fun parseFile(json: String): List<RawChapter> {
+    val root = JSONObject(json)
+    val chaptersArray = root.keys().asSequence()
+      .mapNotNull { root.optJSONArray(it) }
+      .firstOrNull() ?: return emptyList()
+    return (0 until chaptersArray.length()).mapNotNull { i ->
+      val chapter = chaptersArray.optJSONObject(i) ?: return@mapNotNull null
+      RawChapter(
+        title = chapter.text("TITLE"),
+        entries = parseEntries(chapter.optJSONArray("TEXT"))
+      )
+    }
+  }
+
+  private fun parseEntries(array: JSONArray?): List<RawEntry> {
+    array ?: return emptyList()
+    return (0 until array.length()).mapNotNull { i ->
+      val entry = array.optJSONObject(i) ?: return@mapNotNull null
+      // An entry with no ID cannot have a stable id, and two of them would collide as LazyColumn
+      // keys and crash the list. Skipping it is the only safe choice.
+      val id = entry.opt("ID")?.toString()?.trim().orEmpty()
+      if (id.isEmpty() || id == "null") return@mapNotNull null
+      RawEntry(
+        id = id,
+        arabic = entry.text("ARABIC_TEXT"),
+        transliteration = entry.text("LANGUAGE_ARABIC_TRANSLATED_TEXT"),
+        translation = entry.text("TRANSLATED_TEXT"),
+        reference = entry.text("REFERENCE"),
+        repeat = entry.optInt("REPEAT", 1).coerceAtLeast(1)
+      )
+    }
+  }
+
+  /** optString returns the literal "null" for a JSON null; treat it as absent. */
+  private fun JSONObject.text(key: String): String =
+    if (isNull(key)) "" else optString(key).trim()
+}

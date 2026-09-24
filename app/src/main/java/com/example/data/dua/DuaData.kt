@@ -8,7 +8,9 @@ enum class DuaCategory(val displayName: String) {
   MORNING("Morning Adhkar"),
   EVENING("Evening Adhkar"),
   PRAYER("Prayer & Mosque"),
-  DAILY("Daily Life");
+  DAILY("Daily Life"),
+  /** Hisn al-Muslim, browsed by chapter. Present only once its data files are installed. */
+  HISN("Hisn al-Muslim");
 
   fun getLocalizedName(language: AppLanguage): String = when (language) {
     AppLanguage.BENGALI -> when (this) {
@@ -18,6 +20,7 @@ enum class DuaCategory(val displayName: String) {
       EVENING -> "সন্ধ্যার জিকির"
       PRAYER -> "নামাজ ও মসজিদ"
       DAILY -> "দৈনন্দিন জীবন"
+      HISN -> "হিসনুল মুসলিম"
     }
     AppLanguage.ARABIC -> when (this) {
       ALL -> "الكل"
@@ -26,6 +29,7 @@ enum class DuaCategory(val displayName: String) {
       EVENING -> "أذكار المساء"
       PRAYER -> "الصلاة والمسجد"
       DAILY -> "الحياة اليومية"
+      HISN -> "حصن المسلم"
     }
     AppLanguage.SPANISH -> when (this) {
       ALL -> "Todas"
@@ -34,6 +38,7 @@ enum class DuaCategory(val displayName: String) {
       EVENING -> "Adhkar Tarde"
       PRAYER -> "Oración y Mezquita"
       DAILY -> "Vida Diaria"
+      HISN -> "Hisn al-Muslim"
     }
     AppLanguage.PORTUGUESE -> when (this) {
       ALL -> "Todas"
@@ -42,6 +47,7 @@ enum class DuaCategory(val displayName: String) {
       EVENING -> "Adhkar Tarde"
       PRAYER -> "Oração e Mesquita"
       DAILY -> "Vida Diária"
+      HISN -> "Hisn al-Muslim"
     }
     AppLanguage.ENGLISH -> displayName
   }
@@ -62,7 +68,9 @@ data class DuaItem(
   val translationEs: String = "",
   val translationPt: String = "",
   val reference: String,
-  val repetition: String = "1x"
+  val repetition: String = "1x",
+  /** The Hisn al-Muslim chapter this belongs to; null for the built-in supplications. */
+  val hisnChapter: Int? = null
 ) {
   fun getLocalizedTitle(language: AppLanguage): String = when (language) {
     AppLanguage.BENGALI -> if (titleBn.isNotBlank()) titleBn else title

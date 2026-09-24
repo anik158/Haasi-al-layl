@@ -52,6 +52,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.runtime.LaunchedEffect
+import kotlinx.coroutines.delay
+import com.example.data.dua.HisnChapter
 import com.example.data.dua.DuaCategory
 import com.example.data.dua.DuaItem
 import com.example.data.dua.IslamicContentProvider
@@ -65,34 +68,41 @@ fun DuaScreen(
   allDuas: List<com.example.data.dua.DuaItem>,
   bookmarkedDuaIds: Set<String>,
   onToggleBookmark: (String) -> Unit,
-  language: AppLanguage = AppLanguage.ENGLISH
+  language: AppLanguage = AppLanguage.ENGLISH,
+  /** Hisn al-Muslim's chapters; empty until its data files are installed. */
+  hisnChapters: List<HisnChapter> = emptyList()
 ) {
   var searchQuery by remember { mutableStateOf("") }
   var selectedCategory by remember { mutableStateOf<DuaCategory?>(null) }
   var showBookmarksOnly by remember { mutableStateOf(false) }
-    var expanded by remember { mutableStateOf(false) }
+  var expanded by remember { mutableStateOf(false) }
+  var selectedHisnChapter by remember { mutableStateOf<Int?>(null) }
 
-  val filteredDuas = remember(searchQuery, selectedCategory, showBookmarksOnly, bookmarkedDuaIds, allDuas) {
+  // Filtering waits for typing to pause instead of running on every keystroke - it matters once
+  // Hisn al-Muslim's few hundred entries are in the list.
+  var debouncedQuery by remember { mutableStateOf("") }
+  LaunchedEffect(searchQuery) {
+    if (searchQuery.isNotBlank()) delay(250)
+    debouncedQuery = searchQuery
+  }
+
+  val searchIndex = remember(allDuas) { allDuas.associate { it.id to searchableText(it) } }
+
+  val filteredDuas = remember(debouncedQuery, selectedCategory, showBookmarksOnly, bookmarkedDuaIds, allDuas, selectedHisnChapter) {
+    val query = normalizeForSearch(debouncedQuery)
     allDuas.filter { dua ->
-      val matchesSearch = searchQuery.isBlank() ||
-        dua.title.contains(searchQuery, ignoreCase = true) ||
-        dua.titleBn.contains(searchQuery, ignoreCase = true) ||
-        dua.titleEs.contains(searchQuery, ignoreCase = true) ||
-        dua.titlePt.contains(searchQuery, ignoreCase = true) ||
-        dua.titleAr.contains(searchQuery) ||
-        dua.translation.contains(searchQuery, ignoreCase = true) ||
-        dua.translationBn.contains(searchQuery, ignoreCase = true) ||
-        dua.translationEs.contains(searchQuery, ignoreCase = true) ||
-        dua.translationPt.contains(searchQuery, ignoreCase = true) ||
-        dua.transliteration.contains(searchQuery, ignoreCase = true) ||
-        dua.arabic.contains(searchQuery)
-
+      val matchesSearch = query.isBlank() || searchIndex[dua.id].orEmpty().contains(query)
       val matchesCategory = selectedCategory == null || dua.category == selectedCategory
+      val matchesChapter = selectedHisnChapter == null || dua.hisnChapter == selectedHisnChapter
       val matchesBookmarks = !showBookmarksOnly || bookmarkedDuaIds.contains(dua.id)
-
-      matchesSearch && matchesCategory && matchesBookmarks
+      matchesSearch && matchesCategory && matchesChapter && matchesBookmarks
     }
   }
+
+  // Hisn al-Muslim is browsed by chapter: picking it shows the chapter index, and a chapter shows
+  // its supplications. A search skips the index and searches the whole collection.
+  val showChapterIndex = selectedCategory == DuaCategory.HISN &&
+    selectedHisnChapter == null && debouncedQuery.isBlank() && !showBookmarksOnly
 
   Column(
     modifier = Modifier
@@ -170,27 +180,92 @@ fun DuaScreen(
             text = { Text(DuaCategory.ALL.getLocalizedName(language), fontWeight = if (selectedCategory == null && !showBookmarksOnly) FontWeight.Bold else FontWeight.Normal) },
             onClick = {
               selectedCategory = null
+              selectedHisnChapter = null
               showBookmarksOnly = false
               expanded = false
             }
           )
-          DuaCategory.entries.filter { it != DuaCategory.ALL }.forEach { category ->
-            DropdownMenuItem(
-              text = { Text(category.getLocalizedName(language), fontWeight = if (selectedCategory == category) FontWeight.Bold else FontWeight.Normal) },
-              onClick = {
-                selectedCategory = category
-                showBookmarksOnly = false
-                expanded = false
-              }
-            )
-          }
+          DuaCategory.entries
+            .filter { it != DuaCategory.ALL }
+            .filter { it != DuaCategory.HISN || hisnChapters.isNotEmpty() }
+            .forEach { category ->
+              DropdownMenuItem(
+                text = { Text(category.getLocalizedName(language), fontWeight = if (selectedCategory == category) FontWeight.Bold else FontWeight.Normal) },
+                onClick = {
+                  selectedCategory = category
+                  selectedHisnChapter = null
+                  showBookmarksOnly = false
+                  expanded = false
+                }
+              )
+            }
         }
       }
     }
     Spacer(modifier = Modifier.height(10.dp))
 
+    if (selectedHisnChapter != null) {
+      val chapter = hisnChapters.firstOrNull { it.number == selectedHisnChapter }
+      Surface(
+        onClick = { selectedHisnChapter = null },
+        shape = RoundedCornerShape(12.dp),
+        color = WarmGoldAccent.copy(alpha = 0.15f),
+        modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp).testTag("hisn_chapter_back")
+      ) {
+        Text(
+          text = "←  ${DuaCategory.HISN.getLocalizedName(language)} · " +
+            LocalizationManager.localizeDigits("${chapter?.number ?: ""}", language) +
+            ". ${chapter?.title(language).orEmpty()}",
+          style = MaterialTheme.typography.titleSmall,
+          fontWeight = FontWeight.Bold,
+          color = MaterialTheme.colorScheme.onSurface,
+          modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp)
+        )
+      }
+    }
+
     // Dua Cards List
-    if (filteredDuas.isEmpty()) {
+    if (showChapterIndex) {
+      LazyColumn(
+        modifier = Modifier.fillMaxSize().testTag("hisn_chapter_index"),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+      ) {
+        items(hisnChapters, key = { "hisn_chapter_${it.number}" }) { chapter ->
+          val count = allDuas.count { it.hisnChapter == chapter.number }
+          Surface(
+            onClick = { selectedHisnChapter = chapter.number },
+            shape = RoundedCornerShape(12.dp),
+            color = MaterialTheme.colorScheme.surface,
+            modifier = Modifier.fillMaxWidth()
+          ) {
+            Row(
+              modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
+              verticalAlignment = Alignment.CenterVertically
+            ) {
+              Text(
+                text = LocalizationManager.localizeDigits(chapter.number.toString(), language),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = WarmGoldAccent,
+                modifier = Modifier.width(40.dp)
+              )
+              Text(
+                text = chapter.title(language),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.weight(1f)
+              )
+              Text(
+                text = LocalizationManager.localizeDigits(count.toString(), language),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+              )
+            }
+          }
+        }
+        item { Spacer(modifier = Modifier.height(24.dp)) }
+      }
+    } else if (filteredDuas.isEmpty()) {
       Box(
         modifier = Modifier
           .fillMaxSize()
@@ -213,10 +288,15 @@ fun DuaScreen(
         }
       }
     } else {
-      val groupedDuas = remember(filteredDuas, language) {
-         filteredDuas.groupBy {
-           if (it.id.startsWith("hisn_")) it.title else it.category.getLocalizedName(language)
-         }
+      val groupedDuas = remember(filteredDuas, language, hisnChapters) {
+        filteredDuas.groupBy { dua ->
+          val chapter = dua.hisnChapter?.let { n -> hisnChapters.firstOrNull { it.number == n } }
+          if (chapter != null) {
+            LocalizationManager.localizeDigits("${chapter.number}", language) + ". " + chapter.title(language)
+          } else {
+            dua.category.getLocalizedName(language)
+          }
+        }
       }
 
       LazyColumn(
@@ -226,7 +306,7 @@ fun DuaScreen(
         verticalArrangement = Arrangement.spacedBy(14.dp)
       ) {
         groupedDuas.forEach { (groupTitle, duas) ->
-          stickyHeader {
+          stickyHeader(key = "header_$groupTitle") {
             Surface(
               color = MaterialTheme.colorScheme.background.copy(alpha = 0.95f),
               modifier = Modifier.fillMaxWidth()
@@ -338,13 +418,17 @@ private fun DuaCardItem(
 
       Spacer(modifier = Modifier.height(8.dp))
 
-      // Localized Translation (Bengali / English)
-      Text(
-        text = "“${dua.getLocalizedTranslation(language)}”",
-        style = MaterialTheme.typography.bodyMedium,
-        lineHeight = 22.sp,
-        color = MaterialTheme.colorScheme.onSurface
-      )
+      // The translation, where there is one. In Arabic the Arabic above is the text, and an
+      // unconditional pair of quotes rendered empty.
+      val translation = dua.getLocalizedTranslation(language)
+      if (translation.isNotBlank()) {
+        Text(
+          text = "“$translation”",
+          style = MaterialTheme.typography.bodyMedium,
+          lineHeight = 22.sp,
+          color = MaterialTheme.colorScheme.onSurface
+        )
+      }
 
       Spacer(modifier = Modifier.height(10.dp))
       HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f))
@@ -359,3 +443,27 @@ private fun DuaCardItem(
     }
   }
 }
+
+/** Every field worth searching, normalized once per supplication rather than on every keystroke. */
+private fun searchableText(dua: DuaItem): String = normalizeForSearch(
+  listOf(
+    dua.title, dua.titleBn, dua.titleAr, dua.titleEs, dua.titlePt,
+    dua.translation, dua.translationBn, dua.translationEs, dua.translationPt,
+    dua.transliteration, dua.arabic, dua.reference
+  ).joinToString(" ")
+)
+
+/**
+ * Lower-case, with Arabic vowel marks and tatweel removed and the alef variants folded together,
+ * so "سبحان الله" typed without tashkeel finds the fully vowelled text.
+ */
+internal fun normalizeForSearch(text: String): String = buildString(text.length) {
+  for (c in text.lowercase()) {
+    when (c) {
+      in '\u064B'..'\u065F', '\u0670', '\u0640' -> Unit          // harakat, dagger alef, tatweel
+      '\u0622', '\u0623', '\u0625', '\u0671' -> append('\u0627')  // آ أ إ ٱ -> ا
+      '\u0649' -> append('\u064A')                                  // ى -> ي
+      else -> append(c)
+    }
+  }
+}.trim()

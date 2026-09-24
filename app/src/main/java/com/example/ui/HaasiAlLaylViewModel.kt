@@ -263,14 +263,14 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
   // Live Timer trigger (updates every second for real-time countdown)
   private val _secondTicker = MutableStateFlow(System.currentTimeMillis())
 
-  // Hisn Al-Muslim Duas
-  private val _hisnDuas = MutableStateFlow<List<com.example.data.dua.DuaItem>>(emptyList())
-  val allDuas: StateFlow<List<com.example.data.dua.DuaItem>> = combine(
-    _hisnDuas,
-    MutableStateFlow(com.example.data.dua.IslamicContentProvider.DUAS)
-  ) { hisn, builtIn ->
-    builtIn + hisn
-  }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), com.example.data.dua.IslamicContentProvider.DUAS)
+  // Hisn al-Muslim, loaded from assets/hisn/ when its files are present (they are not in the repo)
+  private val _hisn = MutableStateFlow(com.example.data.dua.HisnCollection.EMPTY)
+  val hisnChapters: StateFlow<List<com.example.data.dua.HisnChapter>> = _hisn
+    .map { it.chapters }
+    .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+  val allDuas: StateFlow<List<com.example.data.dua.DuaItem>> = _hisn
+    .map { com.example.data.dua.IslamicContentProvider.DUAS + it.duas }
+    .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), com.example.data.dua.IslamicContentProvider.DUAS)
 
   // Weather state
   private val _weatherState = MutableStateFlow<WeatherUiState>(WeatherUiState.Loading)
@@ -516,55 +516,37 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
     }
   }
 
+  /**
+   * Loads Hisn al-Muslim from `assets/hisn/<code>.json`, one file per language.
+   *
+   * None of those files are in the repository - the text needs a licensed source, see
+   * `assets/hisn/README.md` - so on a clean checkout this finds nothing and the Duas screen shows
+   * the 14 built-in supplications. That is logged once rather than swallowed: a quiet
+   * printStackTrace here previously changed what the app shipped with nothing to show for it.
+   */
   private fun loadHisnAlMuslimData() {
     viewModelScope.launch(Dispatchers.IO) {
-      try {
-        val jsonString = getApplication<Application>().assets.open("hisn_al_muslim.json").bufferedReader().use { it.readText() }
-        val root = org.json.JSONObject(jsonString)
-        val englishArray = root.getJSONArray("English")
-        
-        val items = mutableListOf<com.example.data.dua.DuaItem>()
-        for (i in 0 until englishArray.length()) {
-          val categoryObj = englishArray.getJSONObject(i)
-          val categoryTitle = categoryObj.optString("TITLE", "Category")
-          val textArray = categoryObj.optJSONArray("TEXT") ?: continue
-          
-          for (j in 0 until textArray.length()) {
-            val duaObj = textArray.getJSONObject(j)
-            val id = duaObj.optString("ID")
-            val arabic = duaObj.optString("ARABIC_TEXT")
-            val transliteration = duaObj.optString("LANGUAGE_ARABIC_TRANSLATED_TEXT")
-            val translation = duaObj.optString("TRANSLATED_TEXT")
-            val repeat = duaObj.optInt("REPEAT", 1)
-            
-            items.add(
-              com.example.data.dua.DuaItem(
-                id = "hisn_${i}_${id}",
-                title = categoryTitle,
-                category = com.example.data.dua.DuaCategory.ALL,
-                arabic = arabic,
-                transliteration = transliteration,
-                translation = translation,
-                reference = "Hisn al-Muslim",
-                repetition = "${repeat}x"
-              )
-            )
-          }
-        }
-        Log.i(TAG, "loaded ${items.size} Hisn al-Muslim supplications")
-        _hisnDuas.value = items
-      } catch (e: java.io.FileNotFoundException) {
-        // The asset is not in the repository. This is the normal state of a clean checkout, and
-        // it is why the Du'a screen shows 14 supplications rather than the full collection -
-        // reported from a device as "not all duas are available", which is exactly right.
-        //
-        // Logged at warning rather than swallowed: a printStackTrace on a background thread is
-        // indistinguishable from nothing, and this silently changed what the app shipped.
-        // See docs/ENGINEERING-NOTES.md and app/src/main/assets/README.md.
-        Log.w(TAG, "assets/hisn_al_muslim.json is missing; only the built-in supplications will show")
-      } catch (e: Exception) {
-        Log.e(TAG, "could not parse assets/hisn_al_muslim.json", e)
+      val assets = getApplication<Application>().assets
+      val present = runCatching { assets.list(HISN_ASSET_DIR)?.toSet() }.getOrNull().orEmpty()
+      val files = com.example.data.localization.AppLanguage.entries.mapNotNull { language ->
+        val name = "${language.code}.json"
+        if (name !in present) return@mapNotNull null
+        runCatching {
+          language to assets.open("$HISN_ASSET_DIR/$name").bufferedReader().use { it.readText() }
+        }.onFailure { Log.e(TAG, "could not read $HISN_ASSET_DIR/$name", it) }.getOrNull()
+      }.toMap()
+
+      if (files.isEmpty()) {
+        Log.w(TAG, "no Hisn al-Muslim files in assets/$HISN_ASSET_DIR; showing the built-in supplications only")
+        return@launch
       }
+      val collection = com.example.data.dua.HisnParser.parse(files)
+      Log.i(
+        TAG,
+        "Hisn al-Muslim: ${collection.chapters.size} chapters, ${collection.duas.size} supplications " +
+          "from ${files.keys.joinToString { it.code }}"
+      )
+      _hisn.value = collection
     }
   }
 
@@ -1292,6 +1274,7 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
      * narrower than that, and narrower than the declination error it was masking, so it
      * essentially never latched.
      */
+    const val HISN_ASSET_DIR = "hisn"
     const val QIBLA_FACING_TOLERANCE_DEGREES = 7.5f
   }
 

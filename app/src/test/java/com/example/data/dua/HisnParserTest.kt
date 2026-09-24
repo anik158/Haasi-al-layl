@@ -1,0 +1,76 @@
+package com.example.data.dua
+
+import com.example.data.localization.AppLanguage
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
+
+/**
+ * org.json is an Android stub on the plain JVM, so this runs under Robolectric. The fixture text is
+ * placeholder, not real supplications - the parser only cares about shape.
+ */
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [36])
+class HisnParserTest {
+
+  private val english = """
+    {"English": [
+      {"TITLE": "Chapter one", "TEXT": [
+        {"ID": 1, "ARABIC_TEXT": "ar-1", "LANGUAGE_ARABIC_TRANSLATED_TEXT": "tr-1",
+         "TRANSLATED_TEXT": "en-1", "REPEAT": 3, "REFERENCE": "ref-1"},
+        {"ARABIC_TEXT": "no id - must be skipped", "TRANSLATED_TEXT": "x"}
+      ]},
+      {"TITLE": "Chapter two", "TEXT": [
+        {"ID": 2, "ARABIC_TEXT": "ar-2", "TRANSLATED_TEXT": "en-2"},
+        {"ID": 1, "ARABIC_TEXT": "duplicate id - must be skipped", "TRANSLATED_TEXT": "dup"}
+      ]}
+    ]}
+  """.trimIndent()
+
+  private val bengali = """
+    {"Bengali": [
+      {"TITLE": "অধ্যায় এক", "TEXT": [{"ID": 1, "TRANSLATED_TEXT": "bn-1"}]},
+      {"TITLE": "অধ্যায় দুই", "TEXT": []}
+    ]}
+  """.trimIndent()
+
+  @Test
+  fun `ids come from the entry ID, and entries without one or duplicated are skipped`() {
+    val collection = HisnParser.parse(mapOf(AppLanguage.ENGLISH to english))
+    assertEquals(listOf("hisn_1", "hisn_2"), collection.duas.map { it.id })
+    assertEquals(listOf(1, 2), collection.duas.map { it.hisnChapter })
+  }
+
+  @Test
+  fun `fields map onto the dua`() {
+    val dua = HisnParser.parse(mapOf(AppLanguage.ENGLISH to english)).duas.first()
+    assertEquals("ar-1", dua.arabic)
+    assertEquals("tr-1", dua.transliteration)
+    assertEquals("en-1", dua.translation)
+    assertEquals("ref-1", dua.reference)
+    assertEquals("3x", dua.repetition)
+    assertEquals(DuaCategory.HISN, dua.category)
+  }
+
+  @Test
+  fun `a second language overlays titles and translations, falling back to English`() {
+    val collection = HisnParser.parse(
+      mapOf(AppLanguage.ENGLISH to english, AppLanguage.BENGALI to bengali)
+    )
+    val (first, second) = collection.duas
+    assertEquals("bn-1", first.getLocalizedTranslation(AppLanguage.BENGALI))
+    assertEquals("en-2", second.getLocalizedTranslation(AppLanguage.BENGALI))  // not translated
+    assertEquals("অধ্যায় এক", collection.chapters.first().title(AppLanguage.BENGALI))
+    assertEquals("Chapter one", collection.chapters.first().title(AppLanguage.SPANISH))
+  }
+
+  @Test
+  fun `no files, or unusable ones, yield an empty collection rather than a crash`() {
+    assertTrue(HisnParser.parse(emptyMap()).isEmpty)
+    assertTrue(HisnParser.parse(mapOf(AppLanguage.ENGLISH to "not json")).isEmpty)
+    assertTrue(HisnParser.parse(mapOf(AppLanguage.BENGALI to bengali)).isEmpty) // no ar/en base
+  }
+}

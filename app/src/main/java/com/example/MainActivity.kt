@@ -114,6 +114,7 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
   val selectedTasbih by viewModel.selectedTasbih.collectAsStateWithLifecycle()
   val bookmarkedDuaIds by viewModel.bookmarkedDuaIds.collectAsStateWithLifecycle()
   val allDuas by viewModel.allDuas.collectAsStateWithLifecycle()
+  val hisnChapters by viewModel.hisnChapters.collectAsStateWithLifecycle()
   val currentLanguage by viewModel.currentLanguage.collectAsStateWithLifecycle()
   val selectedMadhab by viewModel.selectedMadhab.collectAsStateWithLifecycle()
   val selectedMethod by viewModel.selectedCalculationMethod.collectAsStateWithLifecycle()
@@ -382,7 +383,8 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
           allDuas = allDuas,
           bookmarkedDuaIds = bookmarkedDuaIds,
           onToggleBookmark = { id -> viewModel.toggleDuaBookmark(id) },
-          language = currentLanguage
+          language = currentLanguage,
+          hisnChapters = hisnChapters
         )
       }
     }
