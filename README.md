@@ -187,7 +187,8 @@ Fajr alert twenty minutes late is a correctness bug rather than a polish issue.
   (+15 min), the solar zenith (−10 min to Dhuhr) and sunset (−20 min to Maghrib).
 - **Tahajjud reminder** when the last third of the night begins, on its own channel and toggle so a
   3 a.m. alert can be silenced without losing Fajr.
-- **A bundled alert tone**, routed at `USAGE_ALARM` so it is heard in silent mode.
+- **A forest-birdsong alert tone** — a 16-second nature recording, routed at `USAGE_ALARM` so it is
+  heard in silent mode, and looped by the full-screen alarm until you stop it.
 
 Prayer alerts use `setAlarmClock`, which is exempt from Doze and App Standby. The obvious
 alternative, `setExactAndAllowWhileIdle`, is quota-limited to roughly one alarm per app per nine
@@ -211,10 +212,16 @@ The **Duas** tab ships a curated offline set of supplications, each with Arabic 
 transliteration, and translations in English, Bengali, Spanish, Portuguese and Arabic, plus
 bookmarks and instant search across titles and translations.
 
-> **Note:** the app also contains a loader for a fuller *Hisn al-Muslim* (Fortress of the Muslim)
-> dataset, read from `assets/hisn_al_muslim.json` and appended to the built-in set. **That asset is
-> not currently present in this repository**, so builds from a clean checkout show the built-in
-> supplications only. The loader fails silently by design and does not affect the rest of the app.
+Search is diacritic-insensitive: an Arabic query typed without vowel marks still finds the fully
+vowelled text.
+
+**Hisn al-Muslim (Fortress of the Muslim)** is supported in full — browsed by chapter, in all five
+languages, with each supplication's hadith reference — but **its text is not in this repository**.
+The collection has fixed wording and fixed references, so it is never generated, and its
+translations are copyrighted works, so it is never copied from a site that has not licensed it.
+Drop the per-language files into `app/src/main/assets/hisn/` from a source that permits app use and
+it appears as its own entry in the Duas filter; until then the screen shows the curated set above.
+The format is documented beside the files, in `assets/hisn/README.md`.
 
 ---
 
@@ -222,7 +229,14 @@ bookmarks and instant search across titles and translations.
 - **Unified Settings Bottom Sheet**: Prayer start alerts, the 5-minute reminder, Tahajjud alerts, forbidden-time warnings, app language, calculation method, and madhab, all from one menu in the top bar.
 - **Notification reliability panel**: shows at a glance whether notifications, exact alarms and unrestricted battery are actually granted, each with a deep link to the right system screen, plus a *Test alert in 1 minute* button that arms a real alarm through the production path.
 - **Offline Weather Graceful Degradation**: Weather and temperature widgets handle network loss with an offline banner instead of endless loading.
-- **Dynamic Top Bar**: Brand mark, app title, an actionable city changer, and the settings hub.
+- **Dynamic Top Bar**: Brand mark, app title, an icon-only location button, and the settings hub.
+- **Today's schedule at a tap**: tap the next-prayer card for every entry of the day with what its
+  name means — Fajr *dawn*, Asr *afternoon* — its obligatory rak'ahs and its time window, in all
+  five languages. Where the schools differ, it says so rather than choosing.
+- **Text that fits the phone**: type scales with screen width (full size at 393dp, down to 85% on
+  the narrowest phones), on top of a 1.3 cap on the system font scale, so names never truncate.
+- **Fully localized**: every label, date, time and digit follows the app language, not the device —
+  Bengali and Arabic get their own numerals, and the Hijri month and era are named in each language.
 
 ---
 
@@ -237,7 +251,11 @@ bookmarks and instant search across titles and translations.
 
 ### 8. 🌅 Celestial Horizon & Real-Time Tracking
 - **Proportional Curved Horizon**: Tracks the real-time position of the sun and moon across the sky dome for the selected coordinates and timezone.
-- **Animated Moon Phase Indicator**: Lunar phase (New, Waxing Crescent, First Quarter, Waxing Gibbous, Full, Waning Gibbous, Last Quarter, Waning Crescent) with live illumination percentage.
+- **Computed Moon Phase and Visibility**: the phase and the lit share of the disc are calculated
+  astronomically for the current moment, not looked up by Hijri day — alongside whether the moon is
+  actually above the horizon and when it next rises or sets, e.g. *88% lit · below the horizon ·
+  rises 3:52 PM*. The percentage is the phase, not the moonlight reaching you; the visibility line
+  answers that. Rise and set appear once a real location is known.
 - **Triple Calendar Integration**: Hijri lunar date, Bengali solar calendar (বঙ্গাব্দ), and Gregorian calendar shown concurrently.
 
 ---

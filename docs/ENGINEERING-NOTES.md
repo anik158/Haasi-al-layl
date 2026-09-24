@@ -4,7 +4,7 @@ Working context for this codebase: decisions that are non-obvious from the code,
 subtle enough to be worth remembering, and the traps that are still set. The README describes what
 the app *does*; this describes what you need to know before changing it.
 
-Last updated: 17 September 2026.
+Last updated: 25 September 2026.
 
 ---
 
@@ -25,12 +25,15 @@ Last updated: 17 September 2026.
 - `debug.keystore` is gitignored but the debug build type is configured to sign with it. CI
   generates one with `keytool`; locally you must too, or `assembleDebug` fails.
 - `google-services.json` is absent and that is fine — `missingGoogleServicesStrategy = WARN`.
-- **`assets/hisn_al_muslim.json` is referenced but not in the repo**, so a clean checkout ships
-  the 14 built-in duas from `DuaData.kt` rather than the full Hisn al-Muslim set - which reaches a
-  device as "not all duas are available". `loadHisnAlMuslimData()` used to swallow the
-  `FileNotFoundException` in a bare `printStackTrace()` on a background thread, indistinguishable
-  from nothing; it now logs the miss by name. The expected JSON shape, and why the contents are
-  not generated, are in `app/src/main/assets/README.md`.
+- **Hisn al-Muslim's text is not in the repo, and must not be generated or scraped.** The loader
+  reads one file per language from `app/src/main/assets/hisn/` (`ar`, `en`, `bn`, `es`, `pt`
+  `.json`); a clean checkout has none, so it ships the 14 built-in duas from `DuaData.kt` and the
+  Hisn filter stays hidden. The collection has fixed wording and fixed hadith references, so it
+  cannot be written from memory; its translations are copyrighted - sunnah.com's terms forbid
+  reproducing whole collections, and hisnulmuslim.org is all-rights-reserved with no Portuguese.
+  Files must come from a source that permits app use. Format and rationale:
+  `app/src/main/assets/hisn/README.md`. Ids are `hisn_<ID>` from the entry's own `ID` - never its
+  position, which silently orphans bookmarks when chapters reorder.
 
 ### CI traps already hit
 
@@ -80,10 +83,16 @@ default cannot drift. **Maliki, Shafi'i and Hanbali all share `shadowFactor = 1.
 - **Receiver extras carry identity keys only** — enum names plus an epoch day. Copy, times and
   language are recomputed at fire time, so an alert armed yesterday is still correct after a
   language or method change.
-- **Channel ids are versioned** (`haasi_prayer_alerts_v2`). A channel's sound, importance and
-  vibration are immutable after creation on API 26+, so changing any of them needs a new id, and
-  `ensureChannels` deletes superseded ones. Bump only for those attributes, never for copy — each
-  bump costs users their per-channel customisations.
+- **Channel ids are versioned** (`haasi_prayer_alerts_v3`, `haasi_forbidden_alerts_v3`,
+  `haasi_tahajjud_alerts_v2`). A channel's sound, importance and vibration are immutable after
+  creation on API 26+, so changing any of them needs a new id, and `ensureChannels` deletes
+  superseded ones. Bump only for those attributes, never for copy — each bump costs users their
+  per-channel customisations. The last bump was the forest-birdsong tone.
+- **The tone is addressed by resource name**, `android.resource://<pkg>/raw/haasi_alert`, never
+  `R.raw.haasi_alert`. A channel stores its sound URI permanently, and numeric resource ids are
+  reassigned when resources are added - so the numeric form would one day point a live channel at
+  the wrong file, or at nothing, with no error. `PrayerNotificationManager.alertSoundUri` is the
+  one place it is built; `AlarmSoundPlayer` uses it too, so the two cannot drift apart.
 - Four independent mechanisms keep the schedule alive: 48-hour horizon, reschedule at the tail of
   every fired alarm, a daily refresh at 00:05 local, and `Application.onCreate`.
 
@@ -96,11 +105,12 @@ that goes quiet after four seconds cannot wake anyone for Fajr.
   `startActivity`. Background activity launches have been blocked since Android 10; the full-screen
   intent is the sanctioned path for an alarm that must appear over the lock screen. The notification
   is the vehicle, not the alert.
-- **Two channels, on purpose.** `haasi_prayer_alarm_v1` is silent and vibration-free, because
-  `AlarmSoundPlayer` owns the tone on that path; `haasi_prayer_alerts_v2` stays audible and is the
-  fallback whenever full-screen intents are refused, plus what the five-minute nudge uses. Adding a
-  channel rather than bumping the audible one's version was deliberate - a bump costs every user
-  their per-channel settings.
+- **The notification carries the sound; the full-screen alarm only adds to it.** A silent
+  `haasi_prayer_alarm_v1` channel once left all audio to `AlarmSoundPlayer` and produced alerts
+  with no sound at all (see the bugs table); it is swept on startup and must not come back. The
+  channel plays the tone once as the alert posts. `PrayerAlarmActivity` starts the *looping* ring
+  when it opens - so if Android downgrades the full-screen intent to a banner, the one-shot channel
+  tone is the only sound. With a 16-second clip that is acceptable, but it is the known gap.
 - **Android 14 narrowed `USE_FULL_SCREEN_INTENT`** to calling and alarm apps.
   `canUseFullScreenAlarm` asks rather than assumes, and Settings' reliability panel has a row for it
   with a deep link, so a refused permission is visible instead of silently degrading the alarm.
@@ -416,6 +426,12 @@ The rule, wherever a badge shares a row:
 - the badge gets `maxLines = 1, softWrap = false`
 - the flexible sibling gets `Modifier.weight(1f, fill = false)` and an ellipsis
 
+**But that rule only chooses a loser.** In the prayer list it made the *name* yield instead:
+"আসর" collapsed to "…" beside "পরবর্তী". Where the sibling is something that must never truncate
+— a prayer name, the app name — do not share the row at all. The NOW/NEXT badge now sits on the
+second line beside the Arabic name, and the header's location chip is icon-only. The schedule
+popup follows the same layout.
+
 **Bengali did not cause this.** Longer strings simply hit the squeeze at a smaller font scale than
 English does, which is why it looked like a Bengali bug and was not.
 
@@ -425,6 +441,30 @@ Android allows a system font scale of 2.0 and beyond, and this app's compact chr
 it — at 2.0 the header wrapped to two lines and pushed out its own tagline. `HaasiTheme` caps the
 scale at 1.3 through `LocalDensity`. Not 1.0: that would discard accessibility rather than bound
 it. Body text is unaffected in practice because it wraps freely; the cap exists for the chrome.
+
+The same override also fits text to the screen: `responsiveFontFactor` is 1.0 at 393dp, shrinks in
+proportion below that to a 0.85 floor, and never enlarges. Final scale is
+`min(systemScale, 1.3) × widthFactor`. Only `sp` changes; `dp` spacing and touch targets do not.
+
+### Localization is not done until there are no English literals in `ui/`
+
+A sweep found about thirty — `ForbiddenPrayerTimesCard` did not even import
+`LocalizationManager`. Grep for `text = "`, `Text("` and `contentDescription = "` before calling a
+screen localized, and for `language == AppLanguage.BENGALI` two-way branches, which leave three
+languages on English. `formatTime` pins its AM/PM marker to `Locale.ENGLISH` (with the device
+default, a phone in another locale could emit an already-localized marker the replacements then
+miss); digits go through `localizeDigits`. Dates too: the Hijri month and era, and the Gregorian
+date, follow the *app* language, not the device locale.
+
+### The moon is computed, not looked up
+
+`data/astronomy/MoonCalculator.kt`, pure Kotlin like `PrayerCalculator`. The card used to read its
+percentage from a table keyed on the Hijri day — 80% all of day 12, when the real figure was ~88%
+and the moon was 42° below the horizon at the midday it was being read. The percentage is the lit
+fraction of the disc (the phase), labelled "lit", and is paired with whether the moon is actually
+up and when it next rises or sets. Rise/set use real coordinates only: while the location is the
+Makkah placeholder, Makkah's moonrise would read as the user's. Checked against published values:
+September 2026 new and full moons, and Dhaka moonrise on 23 Sep (15:52 published, 15:53 computed).
 
 ### The splash mark is not the launcher icon
 
