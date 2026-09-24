@@ -73,7 +73,6 @@ import com.example.data.notification.PrayerNotificationManager
 import com.example.data.prayer.ForbiddenTimeWindow
 import com.example.data.prayer.CalculationMethod
 import com.example.data.prayer.IslamicMadhab
-import com.example.data.preferences.UserPreferences
 import com.example.ui.theme.DarkForestInk
 import com.example.ui.theme.LinenBorderLight
 import com.example.ui.theme.OutlineDarkBorder
@@ -109,9 +108,6 @@ fun SettingsSheet(
   }
   var tahajjudEnabled by remember {
     mutableStateOf(PrayerNotificationManager.isTahajjudNotificationsEnabled(context))
-  }
-  var discreetAlarms by remember {
-    mutableStateOf(UserPreferences(context).discreetAlarmMode)
   }
 
   var testSentMessage by remember { mutableStateOf<String?>(null) }
@@ -667,50 +663,6 @@ fun SettingsSheet(
                   checkedTrackColor = Color(0xFF0F3E2F)
                 ),
                 modifier = Modifier.testTag("switch_tahajjud")
-              )
-            }
-          }
-        }
-      }
-
-      item {
-        Card(
-          shape = RoundedCornerShape(18.dp),
-          colors = CardDefaults.cardColors(containerColor = WarmBeigeBackground),
-          border = androidx.compose.foundation.BorderStroke(1.dp, LinenBorderLight),
-          modifier = Modifier.fillMaxWidth()
-        ) {
-          Column(modifier = Modifier.padding(16.dp)) {
-            Row(
-              modifier = Modifier.fillMaxWidth(),
-              horizontalArrangement = Arrangement.SpaceBetween,
-              verticalAlignment = Alignment.CenterVertically
-            ) {
-              Column(modifier = Modifier.weight(1f)) {
-                Text(
-                  text = LocalizationManager.getDiscreetAlarmsLabel(language),
-                  fontWeight = FontWeight.Bold,
-                  fontSize = 15.sp,
-                  color = DarkForestInk
-                )
-                Text(
-                  text = LocalizationManager.getDiscreetAlarmsDesc(language),
-                  fontSize = 12.sp,
-                  color = DarkForestInk.copy(alpha = 0.75f)
-                )
-              }
-              Switch(
-                checked = discreetAlarms,
-                onCheckedChange = { checked ->
-                  discreetAlarms = checked
-                  UserPreferences(context).discreetAlarmMode = checked
-                  onSettingsChanged()
-                },
-                colors = SwitchDefaults.colors(
-                  checkedThumbColor = Color.White,
-                  checkedTrackColor = Color(0xFF0F3E2F)
-                ),
-                modifier = Modifier.testTag("switch_discreet_alarms")
               )
             }
           }

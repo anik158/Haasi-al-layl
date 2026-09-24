@@ -25,8 +25,7 @@ import java.time.ZoneId
  * Prayer alerts use `setAlarmClock`, which is exempt from Doze and App Standby. The obvious
  * alternative, `setExactAndAllowWhileIdle`, is quota-limited to roughly one alarm per app per
  * nine minutes in deep Doze - which would silently push every five-minute follow-up out to nine,
- * exactly for Fajr and Isha. The cost is a permanent alarm icon in the status bar, so
- * [UserPreferences.discreetAlarmMode] offers the quieter, less reliable path.
+ * exactly for Fajr and Isha. The cost is an alarm icon in the status bar, which is worth it.
  */
 object PrayerAlarmScheduler {
 
@@ -96,8 +95,9 @@ object PrayerAlarmScheduler {
         tahajjudAlertsEnabled = tahajjudEnabled
       )
     }.filter { it.triggerAtMillis <= horizonEnd }
+      .let(PrayerAlertPlanner::nextPerSlot)
 
-    alerts.forEach { arm(context, alarmManager, it, prefs.discreetAlarmMode) }
+    alerts.forEach { arm(context, alarmManager, it) }
 
     // The day-rollover trigger, and the recovery path if a whole day's alarms were suppressed.
     val refreshAt = PrayerAlertPlanner.toEpochMillis(
@@ -108,8 +108,7 @@ object PrayerAlarmScheduler {
     arm(
       context,
       alarmManager,
-      ScheduledAlert.DailyRefresh(refreshAt, AlertIds.DAILY_REFRESH),
-      discreet = true
+      ScheduledAlert.DailyRefresh(refreshAt, AlertIds.DAILY_REFRESH)
     )
 
     prefs.lastScheduledEpochDay = today.toEpochDay()
@@ -151,8 +150,7 @@ object PrayerAlarmScheduler {
         prayerTime = LocalTime.now(zone),
         triggerAtMillis = System.currentTimeMillis() + 60_000L,
         requestCode = AlertIds.prayer(nextPrayer, PrayerAlertKind.AT_TIME)
-      ),
-      discreet = prefs.discreetAlarmMode
+      )
     )
     Log.i(TAG, "test alarm armed for +60s")
   }
@@ -188,8 +186,7 @@ object PrayerAlarmScheduler {
   private fun arm(
     context: Context,
     alarmManager: AlarmManager,
-    alert: ScheduledAlert,
-    discreet: Boolean
+    alert: ScheduledAlert
   ) {
     val pending = PendingIntent.getBroadcast(
       context,
@@ -210,7 +207,7 @@ object PrayerAlarmScheduler {
       return
     }
 
-    val usesAlarmClock = alert is ScheduledAlert.Prayer && !discreet
+    val usesAlarmClock = alert is ScheduledAlert.Prayer
     if (usesAlarmClock) {
       val show = PendingIntent.getActivity(
         context,
@@ -292,8 +289,7 @@ object PrayerAlarmScheduler {
       PrayerNotificationManager.isPrayerNotificationsEnabled(context),
       PrayerNotificationManager.isFollowUpNotificationsEnabled(context),
       PrayerNotificationManager.isForbiddenNotificationsEnabled(context),
-      PrayerNotificationManager.isTahajjudNotificationsEnabled(context),
-      prefs.discreetAlarmMode
+      PrayerNotificationManager.isTahajjudNotificationsEnabled(context)
     ).joinToString("|")
   }
 

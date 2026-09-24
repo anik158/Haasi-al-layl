@@ -1665,22 +1665,6 @@ object LocalizationManager {
     AppLanguage.ENGLISH -> "Alerts when the last third of the night begins"
   }
 
-  fun getDiscreetAlarmsLabel(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "إخفاء رمز المنبّه"
-    AppLanguage.BENGALI -> "অ্যালার্ম আইকন লুকান"
-    AppLanguage.SPANISH -> "Ocultar el icono de alarma"
-    AppLanguage.PORTUGUESE -> "Ocultar o ícone de alarme"
-    AppLanguage.ENGLISH -> "Hide the alarm icon"
-  }
-
-  fun getDiscreetAlarmsDesc(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "يزيل رمز المنبّه من شريط الحالة، وقد يتأخر تذكير الخمس دقائق حتى تسع دقائق أثناء نوم الهاتف"
-    AppLanguage.BENGALI -> "স্ট্যাটাস বার থেকে অ্যালার্ম আইকন সরায়; ফোন ঘুমিয়ে থাকলে ৫ মিনিটের রিমাইন্ডার ৯ মিনিট পর্যন্ত দেরি হতে পারে"
-    AppLanguage.SPANISH -> "Quita el icono de la barra de estado; el recordatorio de 5 minutos puede tardar hasta 9 con el teléfono dormido"
-    AppLanguage.PORTUGUESE -> "Remove o ícone da barra de estado; o lembrete de 5 minutos pode demorar até 9 com o telemóvel a dormir"
-    AppLanguage.ENGLISH -> "Removes the status bar alarm icon. The 5-minute reminder may then arrive up to 9 minutes late while the phone is asleep"
-  }
-
   fun getForbiddenAlertsLabel(language: AppLanguage): String = when (language) {
     AppLanguage.ARABIC -> "تنبيهات أوقات النهي"
     AppLanguage.BENGALI -> "নিষিদ্ধ সময়ের অ্যালার্ট"

@@ -120,16 +120,6 @@ class UserPreferences(context: Context) {
     get() = prefs.getString(KEY_LAST_TASBIH_ID, null)
     set(value) = writeString(KEY_LAST_TASBIH_ID, value)
 
-  /**
-   * Hides the status-bar alarm icon by using a quota-limited alarm type. Honest cost: in deep
-   * Doze the five-minute follow-up can arrive up to nine minutes late.
-   */
-  var discreetAlarmMode: Boolean
-    get() = prefs.getBoolean(KEY_DISCREET_ALARMS, false)
-    set(value) {
-      prefs.edit().putBoolean(KEY_DISCREET_ALARMS, value).commit()
-    }
-
   /** Bookkeeping so a process start can skip rescheduling when nothing relevant changed. */
   var lastScheduledEpochDay: Long
     get() = prefs.getLong(KEY_LAST_SCHEDULED_DAY, 0L)
@@ -200,7 +190,6 @@ class UserPreferences(context: Context) {
     const val KEY_CALCULATION_METHOD = "calculation_method"
     const val KEY_MADHAB = "madhab"
     const val KEY_LAST_TASBIH_ID = "last_tasbih_id"
-    const val KEY_DISCREET_ALARMS = "discreet_alarms"
     const val KEY_LAST_SCHEDULED_DAY = "last_scheduled_epoch_day"
     const val KEY_LAST_SCHEDULE_SIGNATURE = "last_schedule_signature"
     const val KEY_CITY_NAME = "city_name"

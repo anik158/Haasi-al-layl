@@ -133,6 +133,18 @@ object PrayerAlertPlanner {
   }
 
   /**
+   * Keeps only the earliest alert for each request code.
+   *
+   * Slots are reused day after day (see [AlertIds]), so arming three days of alerts means three
+   * alerts per slot - and each arm replaces the previous PendingIntent. Without this the *last*
+   * day armed won, so today's alarms were always overwritten by tomorrow's and never fired. The
+   * next one is armed when this one fires, or at the 00:05 refresh.
+   */
+  fun nextPerSlot(alerts: List<ScheduledAlert>): List<ScheduledAlert> =
+    alerts.groupBy { it.requestCode }.values.map { slot -> slot.minBy { it.triggerAtMillis } }
+      .sortedBy { it.triggerAtMillis }
+
+  /**
    * Wall-clock millis for a local date and time in [zone].
    *
    * `ZonedDateTime.of` shifts forward out of a DST spring-forward gap rather than throwing, which

@@ -73,8 +73,13 @@ default cannot drift. **Maliki, Shafi'i and Hanbali all share `shadowFactor = 1.
   alert twenty minutes late is a correctness bug.
 - **Prayer alerts use `setAlarmClock`.** `setExactAndAllowWhileIdle` is quota-limited to roughly one
   alarm per app per nine minutes in deep Doze, which would push every five-minute follow-up out to
-  nine, precisely for Fajr and Isha. The cost is a permanent status-bar alarm icon; `discreetAlarmMode`
-  opts out and says so honestly.
+  nine, precisely for Fajr and Isha. The cost is a status-bar alarm icon, and there is no opt-out:
+  the old "Hide the alarm icon" setting was removed as confusing.
+- **Arm one alert per slot, the next one.** `AlertIds` reuses a slot per prayer and kind every day,
+  and arming a slot replaces its PendingIntent. The scheduler plans three days, so it must keep only
+  the earliest per slot (`PrayerAlertPlanner.nextPerSlot`) - before that, tomorrow's alarm always
+  overwrote today's and no real prayer alert ever fired, while the one-minute test alarm (armed
+  last) did. Each alarm that fires re-arms the next.
 - **Never hang rescheduling off `prayerSchedule`.** It is driven by a one-second ticker and would
   re-arm ~30 alarms every second the app is open. Hook the setters: `applyCity`,
   `setCalculationMethod`, `setMadhab`, and the Settings toggles.
