@@ -293,7 +293,10 @@ fun HomeScreen(
         ) {
           CelestialHorizonCard(
             schedule = schedule,
-            language = language
+            language = language,
+            // Only once the location is real: while it is still the Makkah placeholder, Makkah's
+            // moonrise would be shown as though it were the user's.
+            location = currentCity.takeIf { hasResolvedLocation }
           )
         }
       }

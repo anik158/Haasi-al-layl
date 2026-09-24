@@ -56,6 +56,10 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.data.astronomy.MoonCalculator
+import com.example.data.astronomy.MoonState
+import com.example.data.model.CityLocation
+import java.time.ZoneId
 import com.example.data.localization.AppLanguage
 import com.example.data.localization.LocalizationManager
 import com.example.data.model.DailyPrayerSchedule
@@ -88,13 +92,38 @@ fun CelestialHorizonCard(
   modifier: Modifier = Modifier,
   language: AppLanguage = AppLanguage.ENGLISH,
   currentDate: LocalDate = schedule?.date ?: LocalDate.now(),
-  currentTime: LocalTime = schedule?.currentTime ?: LocalTime.now()
+  currentTime: LocalTime = schedule?.currentTime ?: LocalTime.now(),
+  /** Needed for the moon's altitude and rise/set; without it only the phase is shown. */
+  location: CityLocation? = null
 ) {
   var showDetailsDialog by remember { mutableStateOf(false) }
 
-  // Lunar calculations
+  // Lunar calculations. Computed, not looked up by Hijri day - the table this replaces said 80%
+  // all of day 12, when the real figure was ~88% and the moon was below the horizon at midday.
+  // Keyed to the minute: the schedule recomposes every second, and nothing here changes that fast.
   val hijriDay = HijriDateHelper.getHijriDayOfMonth(currentDate).coerceIn(1, 30)
-  val moonInfo = calculateMoonPhase(hijriDay)
+  val zone = remember(location?.timeZoneId) {
+    location?.timeZoneId?.let { runCatching { ZoneId.of(it) }.getOrNull() } ?: ZoneId.systemDefault()
+  }
+  val minuteKey = currentDate.toEpochDay() * 1440 + currentTime.hour * 60 + currentTime.minute
+  val moon = remember(minuteKey, location?.latitude, location?.longitude) {
+    val instant = currentDate.atTime(currentTime).atZone(zone).toInstant()
+    if (location != null) {
+      MoonCalculator.stateAt(instant, location.latitude, location.longitude)
+    } else {
+      val (fraction, elongation) = MoonCalculator.illumination(instant)
+      MoonState(
+        fractionLit = fraction,
+        phaseKey = MoonCalculator.phaseKeyFor(elongation),
+        isWaxing = elongation < 180.0,
+        altitudeDegrees = 0.0,
+        isAboveHorizon = !isDaytimeAt(currentTime, schedule),
+        nextRise = null,
+        nextSet = null
+      )
+    }
+  }
+  val moonVisibility = moonVisibilityLine(moon, location != null, zone, language)
 
   // Solar calculations
   val sunrise = schedule?.sunrise ?: LocalTime.of(6, 0)
@@ -341,7 +370,11 @@ fun CelestialHorizonCard(
           val moonPos = getQuadraticBezierPoint(startX, horizonY, centerX, arcPeakY, endX, horizonY, moonT)
 
           // Draw animated glowing moon (prominent at night, subtle during day)
-          val moonAlpha = if (!isDaytime) 1f else 0.45f
+          val moonAlpha = when {
+            !moon.isAboveHorizon -> 0.2f
+            !isDaytime -> 1f
+            else -> 0.45f
+          }
 
           // Outer animated lunar pulsating aura
           drawCircle(
@@ -520,17 +553,25 @@ fun CelestialHorizonCard(
             Spacer(modifier = Modifier.width(8.dp))
             Column {
               Text(
-                text = LocalizationManager.getMoonPhaseName(moonInfo.phaseKey, language),
+                text = LocalizationManager.getMoonPhaseName(moon.phaseKey, language),
                 style = MaterialTheme.typography.labelSmall,
                 fontWeight = FontWeight.Bold,
                 color = DarkForestInk
               )
               Text(
-                text = LocalizationManager.getIlluminationLabel(moonInfo.illuminationPercent, language),
+                text = LocalizationManager.getIlluminationLabel(moon.percentLit, language),
                 style = MaterialTheme.typography.bodySmall,
                 fontSize = 10.sp,
                 color = DarkForestInk.copy(alpha = 0.7f)
               )
+              if (moonVisibility != null) {
+                Text(
+                  text = moonVisibility,
+                  style = MaterialTheme.typography.bodySmall,
+                  fontSize = 10.sp,
+                  color = DarkForestInk.copy(alpha = 0.7f)
+                )
+              }
             }
           }
         }
@@ -615,8 +656,11 @@ fun CelestialHorizonCard(
           ) {
             Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
               Text("🌙 ${LocalizationManager.getLunarDetailsLabel(language)}", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = DarkForestInk)
-              Text("• ${LocalizationManager.getHijriDayLabel(language)} $hijriDay (${LocalizationManager.getMoonPhaseName(moonInfo.phaseKey, language)})", fontSize = 11.sp, color = DarkForestInk.copy(alpha = 0.8f))
-              Text("• ${LocalizationManager.getIlluminationLabel(moonInfo.illuminationPercent, language)}", fontSize = 11.sp, color = DarkForestInk.copy(alpha = 0.8f))
+              Text("• ${LocalizationManager.getHijriDayLabel(language)} ${LocalizationManager.localizeDigits(hijriDay.toString(), language)} (${LocalizationManager.getMoonPhaseName(moon.phaseKey, language)})", fontSize = 11.sp, color = DarkForestInk.copy(alpha = 0.8f))
+              Text("• ${LocalizationManager.getIlluminationLabel(moon.percentLit, language)}", fontSize = 11.sp, color = DarkForestInk.copy(alpha = 0.8f))
+              if (moonVisibility != null) {
+                Text("• $moonVisibility", fontSize = 11.sp, color = DarkForestInk.copy(alpha = 0.8f))
+              }
             }
           }
         }
@@ -716,35 +760,37 @@ private fun calculateMoonProgress(now: LocalTime, sunset: LocalTime, nextSunrise
   return (elapsed.toFloat() / totalNightSec.toFloat()).coerceIn(0f, 1f)
 }
 
-data class MoonPhaseData(
-  val phaseKey: String,
-  val phaseNameEn: String,
-  val phaseNameBn: String,
-  val illuminationPercent: Int
-)
+/** Fallback when there is no location: treat the moon as up at night and down by day. */
+private fun isDaytimeAt(time: LocalTime, schedule: DailyPrayerSchedule?): Boolean {
+  val rise = schedule?.sunrise ?: LocalTime.of(6, 0)
+  val set = schedule?.maghrib ?: LocalTime.of(18, 15)
+  return time.isAfter(rise) && time.isBefore(set)
+}
 
-private fun calculateMoonPhase(hijriDay: Int): MoonPhaseData {
-  return when (hijriDay) {
-    1 -> MoonPhaseData("NEW_MOON", "Hilal (New Crescent)", "নতুন চাঁদ / হেলাল", 3)
-    in 2..6 -> {
-      val illum = (5 + (hijriDay - 2) * 8)
-      MoonPhaseData("WAXING_CRESCENT", "Waxing Crescent", "শুক্ল কাস্তে চাঁদ", illum)
-    }
-    in 7..9 -> MoonPhaseData("FIRST_QUARTER", "First Quarter", "প্রথম চতুর্থাংশ", 50)
-    in 10..13 -> {
-      val illum = (60 + (hijriDay - 10) * 10).coerceAtMost(94)
-      MoonPhaseData("WAXING_GIBBOUS", "Waxing Gibbous", "উজ্জ্বল কুঁজো চাঁদ", illum)
-    }
-    in 14..16 -> MoonPhaseData("FULL_MOON", "Full Moon (Badr)", "পূর্ণিমা / বদর", 100)
-    in 17..21 -> {
-      val illum = (92 - (hijriDay - 17) * 8).coerceAtLeast(55)
-      MoonPhaseData("WANING_GIBBOUS", "Waning Gibbous", "কৃষ্ণ কুঁজো চাঁদ", illum)
-    }
-    in 22..24 -> MoonPhaseData("LAST_QUARTER", "Last Quarter", "শেষ চতুর্থাংশ", 50)
-    in 25..28 -> {
-      val illum = (40 - (hijriDay - 25) * 8).coerceAtLeast(6)
-      MoonPhaseData("WANING_CRESCENT", "Waning Crescent", "কৃষ্ণ কাস্তে চাঁদ", illum)
-    }
-    else -> MoonPhaseData("DARK_MOON", "Dark Moon (Mahq)", "অমাবস্যা / মাহক", 1)
+/**
+ * "below the horizon · rises 3:52 PM" - the line that answers what the percentage never
+ * could: whether the moon is actually up. Null without a location, since altitude needs one.
+ */
+private fun moonVisibilityLine(
+  moon: MoonState,
+  hasLocation: Boolean,
+  zone: ZoneId,
+  language: AppLanguage
+): String? {
+  if (!hasLocation) return null
+  val position = if (moon.isAboveHorizon) {
+    LocalizationManager.getMoonAboveHorizonLabel(language)
+  } else {
+    LocalizationManager.getMoonBelowHorizonLabel(language)
   }
+  val nextEvent = if (moon.isAboveHorizon) moon.nextSet else moon.nextRise
+  val eventText = nextEvent?.let { instant ->
+    val time = LocalizationManager.formatTime(instant.atZone(zone).toLocalTime(), language)
+    if (moon.isAboveHorizon) {
+      LocalizationManager.getMoonSetsAt(time, language)
+    } else {
+      LocalizationManager.getMoonRisesAt(time, language)
+    }
+  }
+  return if (eventText != null) "$position · $eventText" else position
 }

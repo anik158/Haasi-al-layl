@@ -329,12 +329,51 @@ object LocalizationManager {
     }
   }
 
-  fun getIlluminationLabel(illuminationPercent: Int, language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "$illuminationPercent% إضاءة"
-    AppLanguage.BENGALI -> "$illuminationPercent% আলো"
-    AppLanguage.SPANISH -> "$illuminationPercent% iluminación"
-    AppLanguage.PORTUGUESE -> "$illuminationPercent% iluminação"
-    AppLanguage.ENGLISH -> "$illuminationPercent% illumination"
+  /**
+   * The sunlit share of the moon's disc - its phase. Labelled "lit" rather than "illumination",
+   * which read as the amount of moonlight arriving now, whether or not the moon is even up.
+   */
+  fun getIlluminationLabel(illuminationPercent: Int, language: AppLanguage): String {
+    val p = localizeDigits(illuminationPercent.toString(), language)
+    return when (language) {
+      AppLanguage.ARABIC -> "$p% مضاء"
+      AppLanguage.BENGALI -> "$p% আলোকিত"
+      AppLanguage.SPANISH -> "$p% iluminada"
+      AppLanguage.PORTUGUESE -> "$p% iluminada"
+      AppLanguage.ENGLISH -> "$p% lit"
+    }
+  }
+
+  fun getMoonAboveHorizonLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "فوق الأفق"
+    AppLanguage.BENGALI -> "দিগন্তের ওপরে"
+    AppLanguage.SPANISH -> "sobre el horizonte"
+    AppLanguage.PORTUGUESE -> "acima do horizonte"
+    AppLanguage.ENGLISH -> "above the horizon"
+  }
+
+  fun getMoonBelowHorizonLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "تحت الأفق"
+    AppLanguage.BENGALI -> "দিগন্তের নিচে"
+    AppLanguage.SPANISH -> "bajo el horizonte"
+    AppLanguage.PORTUGUESE -> "abaixo do horizonte"
+    AppLanguage.ENGLISH -> "below the horizon"
+  }
+
+  fun getMoonRisesAt(time: String, language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "يشرق $time"
+    AppLanguage.BENGALI -> "উদয় $time"
+    AppLanguage.SPANISH -> "sale a las $time"
+    AppLanguage.PORTUGUESE -> "nasce às $time"
+    AppLanguage.ENGLISH -> "rises $time"
+  }
+
+  fun getMoonSetsAt(time: String, language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "يغرب $time"
+    AppLanguage.BENGALI -> "অস্ত $time"
+    AppLanguage.SPANISH -> "se pone a las $time"
+    AppLanguage.PORTUGUESE -> "põe-se às $time"
+    AppLanguage.ENGLISH -> "sets $time"
   }
 
   // Weather Card strings
