@@ -366,54 +366,54 @@ fun CelestialHorizonCard(
           }
 
           // 3. Moon Position & Animated Lunar Rendering
-          val moonT = if (!isDaytime) moonProgress.coerceIn(0f, 1f) else ((sunProgress + 0.5f) % 1f)
-          val moonPos = getQuadraticBezierPoint(startX, horizonY, centerX, arcPeakY, endX, horizonY, moonT)
+          // Only while it is actually up: the arc position below is schematic, and drawing a faded
+          // moon on it when the moon has set contradicted the "below the horizon" line beside it.
+          if (moon.isAboveHorizon) {
+            val moonT = if (!isDaytime) moonProgress.coerceIn(0f, 1f) else ((sunProgress + 0.5f) % 1f)
+            val moonPos = getQuadraticBezierPoint(startX, horizonY, centerX, arcPeakY, endX, horizonY, moonT)
 
-          // Draw animated glowing moon (prominent at night, subtle during day)
-          val moonAlpha = when {
-            !moon.isAboveHorizon -> 0.2f
-            !isDaytime -> 1f
-            else -> 0.45f
-          }
+            // Draw animated glowing moon (prominent at night, subtle during day)
+            val moonAlpha = if (!isDaytime) 1f else 0.45f
 
-          // Outer animated lunar pulsating aura
-          drawCircle(
-            color = if (!isDaytime) Color(0xFF81E6D9).copy(alpha = 0.22f * moonPulseAnim) else Color(0xFFE2E8F0).copy(alpha = 0.2f),
-            radius = 24.dp.toPx() * moonPulseAnim,
-            center = moonPos
-          )
-          drawCircle(
-            color = if (!isDaytime) Color(0xFFE2E8F0).copy(alpha = 0.35f * moonAlpha) else Color(0xFFEDF2F7).copy(alpha = 0.25f),
-            radius = 16.dp.toPx(),
-            center = moonPos
-          )
+            // Outer animated lunar pulsating aura
+            drawCircle(
+              color = if (!isDaytime) Color(0xFF81E6D9).copy(alpha = 0.22f * moonPulseAnim) else Color(0xFFE2E8F0).copy(alpha = 0.2f),
+              radius = 24.dp.toPx() * moonPulseAnim,
+              center = moonPos
+            )
+            drawCircle(
+              color = if (!isDaytime) Color(0xFFE2E8F0).copy(alpha = 0.35f * moonAlpha) else Color(0xFFEDF2F7).copy(alpha = 0.25f),
+              radius = 16.dp.toPx(),
+              center = moonPos
+            )
 
-          // Moon body (Ethereal soft pearl with lunar gradient)
-          drawCircle(
-            brush = Brush.radialGradient(
-              colors = listOf(
-                Color(0xFFFFFFFF),
-                Color(0xFFF1F5F9),
-                Color(0xFFCBD5E1)
+            // Moon body (Ethereal soft pearl with lunar gradient)
+            drawCircle(
+              brush = Brush.radialGradient(
+                colors = listOf(
+                  Color(0xFFFFFFFF),
+                  Color(0xFFF1F5F9),
+                  Color(0xFFCBD5E1)
+                ),
+                center = Offset(moonPos.x - 2.dp.toPx(), moonPos.y - 2.dp.toPx()),
+                radius = 10.dp.toPx()
               ),
-              center = Offset(moonPos.x - 2.dp.toPx(), moonPos.y - 2.dp.toPx()),
-              radius = 10.dp.toPx()
-            ),
-            radius = 9.dp.toPx(),
-            center = moonPos
-          )
+              radius = 9.dp.toPx(),
+              center = moonPos
+            )
 
-          // Moon crater / lunar maria texture
-          drawCircle(
-            color = Color(0xFF94A3B8).copy(alpha = 0.35f * moonAlpha),
-            radius = 2.4.dp.toPx(),
-            center = Offset(moonPos.x - 3.dp.toPx(), moonPos.y - 1.5.dp.toPx())
-          )
-          drawCircle(
-            color = Color(0xFF94A3B8).copy(alpha = 0.25f * moonAlpha),
-            radius = 1.6.dp.toPx(),
-            center = Offset(moonPos.x + 2.dp.toPx(), moonPos.y + 2.dp.toPx())
-          )
+            // Moon crater / lunar maria texture
+            drawCircle(
+              color = Color(0xFF94A3B8).copy(alpha = 0.35f * moonAlpha),
+              radius = 2.4.dp.toPx(),
+              center = Offset(moonPos.x - 3.dp.toPx(), moonPos.y - 1.5.dp.toPx())
+            )
+            drawCircle(
+              color = Color(0xFF94A3B8).copy(alpha = 0.25f * moonAlpha),
+              radius = 1.6.dp.toPx(),
+              center = Offset(moonPos.x + 2.dp.toPx(), moonPos.y + 2.dp.toPx())
+            )
+          }
 
           // 4. Ground Horizon Plane
           val groundPath = Path().apply {

@@ -120,7 +120,7 @@ class PrayerAlarmReceiver : BroadcastReceiver() {
 
         PrayerNotificationManager.showForbiddenTimeNotification(
           context = context,
-          windowTitle = type.id,
+          windowTitle = window.getLocalizedTitle(language),
           rangeFormatted = range,
           isStart = isStart,
           language = language
