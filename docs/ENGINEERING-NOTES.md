@@ -367,7 +367,7 @@ repo should assert its match count.
 
 - **Tests.** None of the planned ones are written: `UserPreferencesTest`, `TasbihSeedTest` (the
   highest-value regression — seed, increment, seed again, assert counts survive),
-  `PrayerLogToggleTest`, `PrayerAlertPlannerTest`, `AlertIdsTest` with pinned literals,
+  `PrayerLogToggleTest`, `AlertIdsTest` with pinned literals,
   `QiblaCalculatorTest`, and a DST test. Robolectric and Roborazzi are already configured at
   `sdk = [36]`. **CI runs only `assembleDebug`, so test code is not even compiled there.**
 - **The Hisn al-Muslim translations are unreviewed** (see above) - a scholar's pass is still owed.
@@ -381,6 +381,23 @@ repo should assert its match count.
   worlds → their own, everything else → English. `detectLanguageForCountry` accepts both display
   names and ISO alpha-2 codes — it used to accept only names, so every IP-detected location
   (which returns `"BD"`, not `"Bangladesh"`) fell through to English.
+
+### Hisn al-Muslim: the entries to review first
+
+The translating passes flagged these as idiomatic or ambiguous, where a meaning had to be chosen.
+A reviewer should start here. Edit `tools/hisn/translations/` (or `tools/hisn/source/` for the
+Arabic) and rerun `python3 tools/hisn/build.py`.
+
+| Dua | The part in question | Why it's flagged |
+| --- | --- | --- |
+| Waking up: *"Al-hamdu lillāhil-ladhī aḥyānā ba'da mā amātanā wa ilayhin-nushūr"* | "النُّشُّورُ" | Vowel-mark typo in the GitHub source: a doubled shadda. It should be "النُّشُورُ". |
+| Waking up: *"Lā ilāha illallāhu waḥdahu… rabbighfir lī"* | ending "أَوْ دَعَا اسْتُجِيبَ لَهُ…" | This ending is the hadith describing the reward ("if he then supplicates, it is answered…"). It isn't meant to be recited, so check that the translation doesn't read as part of the dua. |
+| Opening the prayer: *"Allāhu akbar kabīrā… a'ūdhu billāhi minash-shayṭān min nafkhihi wa nafthihi wa hamzih"* | "نَفْخِهِ وَنَفْثِهِ وَهَمْزِهِ" | Literally "his blowing, spitting and pricking". The translation uses the narrators' explanation instead: pride, poetry, madness. |
+| Fasting person invited to a meal: *"Idhā du'iya aḥadukum fal-yujib…"* | "فَلْيُصَلِّ" | Here it means "let him supplicate for the host", not "let him pray salah". |
+| Against bad omens: *"Allāhumma lā ṭayra illā ṭayruk…"* | "لَا طَيْرَ إِلَّا طَيْرُكَ" | Literally "no bird except Your bird". It's an idiom about omens, so it was translated by meaning. |
+| Traveller at dawn: *"Sammi'a sāmi'un biḥamdillāh…"* | "سَمَّعَ سَامِعٌ" | Old, compressed wording that scholars explain in different ways. |
+| Spreading salām: *"Thalāthun man jama'ahunna faqad jama'al-īmān…"* | "الإِنْصَافُ مِنْ نَفْسِكَ" | A compressed phrase meaning "being fair even against yourself". |
+| Between the Yemeni Corner and the Black Stone: *"Rabbanā ātinā fid-dunyā ḥasanah…"* | Spanish only | The Spanish adds "(201)", which the other languages don't have. It's correct (Al-Baqarah 2:201), but inconsistent. |
 
 ### The first-run state machine
 
