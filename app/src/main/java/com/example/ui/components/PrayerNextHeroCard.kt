@@ -265,7 +265,12 @@ fun PrayerNextHeroCard(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Next Prayer Hero details
+        // Current prayer: the time that is running now, on a dark panel so it reads first
+        CurrentPrayerPanel(schedule = schedule, language = language)
+
+        Spacer(modifier = Modifier.height(14.dp))
+
+        // Next prayer: lighter, below
         Row(
           modifier = Modifier.fillMaxWidth(),
           horizontalArrangement = Arrangement.SpaceBetween,
@@ -286,7 +291,7 @@ fun PrayerNextHeroCard(
               } ?: LocalizationManager.getPrayerPlaceholder(language)
               Text(
                 text = prayerNameDisplay,
-                style = MaterialTheme.typography.headlineMedium,
+                style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.ExtraBold,
                 color = DarkForestInk
               )
@@ -294,7 +299,7 @@ fun PrayerNextHeroCard(
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                   text = next?.prayer?.arabicName ?: "",
-                  style = MaterialTheme.typography.titleLarge,
+                  style = MaterialTheme.typography.titleMedium,
                   color = WarmGoldAccent,
                   fontWeight = FontWeight.Bold
                 )
@@ -305,45 +310,179 @@ fun PrayerNextHeroCard(
           Column(horizontalAlignment = Alignment.End) {
             Text(
               text = if (next != null) LocalizationManager.formatTime(next.time, language) else "--:--",
-              style = MaterialTheme.typography.headlineMedium,
+              style = MaterialTheme.typography.headlineSmall,
               fontWeight = FontWeight.Bold,
               color = DarkForestInk
             )
-            Row(
-              verticalAlignment = Alignment.CenterVertically,
-              modifier = Modifier.padding(top = 2.dp)
-            ) {
-              Icon(
-                Icons.Default.AccessTime,
-                contentDescription = null,
-                modifier = Modifier.size(14.dp),
-                tint = DarkForestInk
-              )
-              Spacer(modifier = Modifier.width(4.dp))
-              Text(
-                text = "-${schedule.timeUntilNextFormatted}",
-                style = MaterialTheme.typography.labelMedium,
-                color = DarkForestInk,
-                fontWeight = FontWeight.Bold
-              )
+            // When the current prayer ends as this one begins, the panel's countdown already says
+            // it; a second identical timer would only be noise.
+            if (!schedule.currentEndsAtNext) {
+              Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(top = 2.dp)
+              ) {
+                Icon(
+                  Icons.Default.AccessTime,
+                  contentDescription = null,
+                  modifier = Modifier.size(14.dp),
+                  tint = DarkForestInk
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                  text = "-${schedule.timeUntilNextFormatted}",
+                  style = MaterialTheme.typography.labelMedium,
+                  color = DarkForestInk,
+                  fontWeight = FontWeight.Bold
+                )
+              }
             }
           }
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // Countdown progress bar
-        LinearProgressIndicator(
-          progress = { animatedProgress },
-          modifier = Modifier
-            .fillMaxWidth()
-            .height(5.dp)
-            .clip(CircleShape),
-          color = DarkForestInk,
-          trackColor = CoolMintGradientBase
-        )
+        // With no current prayer the panel has no bar, so progress toward the next lives here.
+        if (schedule.currentPrayer == null) {
+          Spacer(modifier = Modifier.height(12.dp))
+          LinearProgressIndicator(
+            progress = { animatedProgress },
+            modifier = Modifier
+              .fillMaxWidth()
+              .height(5.dp)
+              .clip(CircleShape),
+            color = DarkForestInk,
+            trackColor = CoolMintGradientBase
+          )
+        }
       }
     }
   }
 }
 
+/**
+ * The prayer whose time is running now, with how long is left of it. Between sunrise and Dhuhr
+ * there is none, and the panel says so plainly instead of pretending Fajr is still on.
+ */
+@Composable
+private fun CurrentPrayerPanel(schedule: DailyPrayerSchedule, language: AppLanguage) {
+  val current = schedule.currentPrayer
+  val endsAt = schedule.currentPrayerEndsAt
+
+  if (current == null || endsAt == null) {
+    Row(
+      modifier = Modifier
+        .fillMaxWidth()
+        .clip(RoundedCornerShape(16.dp))
+        .background(Color.White.copy(alpha = 0.7f))
+        .border(1.dp, LinenBorderLight, RoundedCornerShape(16.dp))
+        .padding(horizontal = 14.dp, vertical = 12.dp),
+      verticalAlignment = Alignment.CenterVertically
+    ) {
+      Box(
+        modifier = Modifier
+          .size(8.dp)
+          .clip(CircleShape)
+          .background(DarkForestInk.copy(alpha = 0.3f))
+      )
+      Spacer(modifier = Modifier.width(10.dp))
+      Text(
+        text = LocalizationManager.getNoCurrentPrayerLabel(language),
+        style = MaterialTheme.typography.bodyMedium,
+        fontWeight = FontWeight.SemiBold,
+        color = DarkForestInk.copy(alpha = 0.8f)
+      )
+    }
+    return
+  }
+
+  val animatedProgress by animateFloatAsState(
+    targetValue = schedule.progressInCurrent,
+    label = "current_prayer_progress"
+  )
+
+  Column(
+    modifier = Modifier
+      .fillMaxWidth()
+      .clip(RoundedCornerShape(16.dp))
+      .background(
+        Brush.linearGradient(listOf(DarkForestInk, DarkForestInk.copy(alpha = 0.88f)))
+      )
+      .padding(horizontal = 14.dp, vertical = 12.dp)
+      .testTag("current_prayer_panel")
+  ) {
+    Row(
+      modifier = Modifier.fillMaxWidth(),
+      horizontalArrangement = Arrangement.SpaceBetween,
+      verticalAlignment = Alignment.CenterVertically
+    ) {
+      Column(modifier = Modifier.weight(1f)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+          Box(
+            modifier = Modifier
+              .size(7.dp)
+              .clip(CircleShape)
+              .background(WarmGoldAccent)
+          )
+          Spacer(modifier = Modifier.width(6.dp))
+          Text(
+            text = LocalizationManager.getCurrentPrayerLabel(language),
+            style = MaterialTheme.typography.labelSmall,
+            letterSpacing = 1.5.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.White.copy(alpha = 0.7f)
+          )
+        }
+        Spacer(modifier = Modifier.height(2.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+          Text(
+            text = LocalizationManager.getPrayerDisplayName(current.prayer, language),
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.ExtraBold,
+            color = Color.White
+          )
+          if (language != AppLanguage.ARABIC) {
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+              text = current.prayer.arabicName,
+              style = MaterialTheme.typography.titleLarge,
+              fontWeight = FontWeight.Bold,
+              color = WarmGoldAccent
+            )
+          }
+        }
+        Text(
+          text = LocalizationManager.getPrayerEndsAtLabel(
+            LocalizationManager.formatTime(endsAt, language),
+            language
+          ),
+          style = MaterialTheme.typography.labelMedium,
+          color = Color.White.copy(alpha = 0.75f)
+        )
+      }
+
+      Column(horizontalAlignment = Alignment.End) {
+        Text(
+          text = schedule.timeLeftInCurrentFormatted.orEmpty(),
+          style = MaterialTheme.typography.titleLarge,
+          fontWeight = FontWeight.Bold,
+          color = Color.White
+        )
+        Text(
+          text = LocalizationManager.getTimeLeftLabel(language),
+          style = MaterialTheme.typography.labelSmall,
+          color = Color.White.copy(alpha = 0.7f)
+        )
+      }
+    }
+
+    Spacer(modifier = Modifier.height(10.dp))
+
+    LinearProgressIndicator(
+      progress = { animatedProgress },
+      modifier = Modifier
+        .fillMaxWidth()
+        .height(5.dp)
+        .clip(CircleShape),
+      color = WarmGoldAccent,
+      trackColor = Color.White.copy(alpha = 0.18f)
+    )
+  }
+}

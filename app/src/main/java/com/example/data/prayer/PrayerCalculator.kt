@@ -93,6 +93,8 @@ object PrayerCalculator {
       nextMainPrayer = PrayerName.FAJR
     }
 
+    // The last main prayer that has started today. Only the progress bar's start point: it is not
+    // the "current" prayer, since Fajr's time ends at sunrise, and before Fajr it is still Isha.
     var currentPrayerName: PrayerName? = null
     for (i in mainPrayers.indices.reversed()) {
       val p = mainPrayers[i]
@@ -103,10 +105,12 @@ object PrayerCalculator {
       }
     }
 
+    val window = currentWindow(date, now, timesMap)
+
     for (p in prayerOrder) {
       val time = timesMap[p] ?: LocalTime.of(12, 0)
       val isNext = (p == nextMainPrayer)
-      val isCurrent = (p == currentPrayerName)
+      val isCurrent = (p == window?.prayer)
       val isCompleted = completedPrayerIds.contains(p.name)
 
       list.add(
@@ -170,6 +174,13 @@ object PrayerCalculator {
         currentMinutes >= tahajjudStartMinutes && currentMinutes < fajrMinutes
     }
 
+    val currentItem = window?.let { w -> list.find { it.prayer == w.prayer } }
+    val currentLeft = window?.let { hms(Duration.between(now, it.end)) }
+    val currentProgress = window?.let { w ->
+      val total = Duration.between(w.start, w.end).seconds.coerceAtLeast(1)
+      (Duration.between(w.start, now).seconds.toFloat() / total).coerceIn(0f, 1f)
+    } ?: 0f
+
     return DailyPrayerSchedule(
       date = date,
       city = location.name,
@@ -187,8 +198,49 @@ object PrayerCalculator {
       tahajjudStart = LocalTime.of(
         Math.floorMod(tahajjudStartMinutes, 24 * 60) / 60,
         Math.floorMod(tahajjudStartMinutes, 24 * 60) % 60
-      )
+      ),
+      currentPrayer = currentItem,
+      currentPrayerEndsAt = window?.end?.toLocalTime(),
+      timeLeftInCurrentFormatted = currentLeft,
+      progressInCurrent = currentProgress
     )
+  }
+
+  private data class PrayerWindow(val prayer: PrayerName, val start: LocalDateTime, val end: LocalDateTime)
+
+  /**
+   * The obligatory prayer whose time contains [now]: Fajr to sunrise, Dhuhr to Asr, Asr to
+   * Maghrib, Maghrib to Isha, Isha to the next Fajr. Null between sunrise and Dhuhr.
+   *
+   * Before today's Fajr it is still last night's Isha. Yesterday's Isha and tomorrow's Fajr are
+   * taken from today's times - they differ by a minute or so, which a countdown can live with.
+   */
+  private fun currentWindow(
+    date: LocalDate,
+    now: LocalDateTime,
+    times: Map<PrayerName, LocalTime>
+  ): PrayerWindow? {
+    fun at(p: PrayerName) = times[p]?.let { LocalDateTime.of(date, it) }
+    val fajr = at(PrayerName.FAJR) ?: return null
+    val sunrise = at(PrayerName.SUNRISE) ?: return null
+    val dhuhr = at(PrayerName.DHUHR) ?: return null
+    val asr = at(PrayerName.ASR) ?: return null
+    val maghrib = at(PrayerName.MAGHRIB) ?: return null
+    val isha = at(PrayerName.ISHA) ?: return null
+    return when {
+      now.isBefore(fajr) -> PrayerWindow(PrayerName.ISHA, isha.minusDays(1), fajr)
+      now.isBefore(sunrise) -> PrayerWindow(PrayerName.FAJR, fajr, sunrise)
+      now.isBefore(dhuhr) -> null
+      now.isBefore(asr) -> PrayerWindow(PrayerName.DHUHR, dhuhr, asr)
+      now.isBefore(maghrib) -> PrayerWindow(PrayerName.ASR, asr, maghrib)
+      now.isBefore(isha) -> PrayerWindow(PrayerName.MAGHRIB, maghrib, isha)
+      else -> PrayerWindow(PrayerName.ISHA, isha, fajr.plusDays(1))
+    }
+  }
+
+  private fun hms(duration: Duration): String {
+    val s = duration.seconds.coerceAtLeast(0)
+    return String.format("%02d:%02d:%02d", s / 3600, (s / 60) % 60, s % 60)
   }
 
   private fun computePrayerTimes(

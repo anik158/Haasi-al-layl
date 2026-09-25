@@ -122,6 +122,40 @@ object LocalizationManager {
   }
 
   // Prayer hero texts
+  fun getCurrentPrayerLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "الوقت الحالي"
+    AppLanguage.BENGALI -> "চলমান ওয়াক্ত"
+    AppLanguage.SPANISH -> "ORACIÓN ACTUAL"
+    AppLanguage.PORTUGUESE -> "ORAÇÃO ATUAL"
+    AppLanguage.ENGLISH -> "CURRENT PRAYER"
+  }
+
+  /** "Ends at 05:55 PM" under the current prayer. */
+  fun getPrayerEndsAtLabel(time: String, language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "ينتهي $time"
+    AppLanguage.BENGALI -> "শেষ হবে $time"
+    AppLanguage.SPANISH -> "Termina a las $time"
+    AppLanguage.PORTUGUESE -> "Termina às $time"
+    AppLanguage.ENGLISH -> "Ends at $time"
+  }
+
+  fun getTimeLeftLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "متبقٍ"
+    AppLanguage.BENGALI -> "বাকি"
+    AppLanguage.SPANISH -> "restante"
+    AppLanguage.PORTUGUESE -> "restante"
+    AppLanguage.ENGLISH -> "left"
+  }
+
+  /** Between sunrise and Dhuhr, when no obligatory prayer's time is running. */
+  fun getNoCurrentPrayerLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "لا صلاة فريضة الآن"
+    AppLanguage.BENGALI -> "এখন কোনো ফরজ নামাজের ওয়াক্ত নেই"
+    AppLanguage.SPANISH -> "Ahora no hay oración obligatoria"
+    AppLanguage.PORTUGUESE -> "Agora não há oração obrigatória"
+    AppLanguage.ENGLISH -> "No obligatory prayer now"
+  }
+
   fun getNextPrayerLabel(language: AppLanguage): String = when (language) {
     AppLanguage.ARABIC -> "الصلاة القادمة"
     AppLanguage.BENGALI -> "পরবর্তী নামাজ"

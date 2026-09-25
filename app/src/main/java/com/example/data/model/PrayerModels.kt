@@ -44,8 +44,23 @@ data class DailyPrayerSchedule(
    * When the last third of the night begins, in the city's local time. The alarm scheduler needs
    * the instant, not just [isTahajjudTime]; null when it could not be derived.
    */
-  val tahajjudStart: LocalTime? = null
+  val tahajjudStart: LocalTime? = null,
+  /**
+   * The obligatory prayer whose time is running now, or null between sunrise and Dhuhr. Each one
+   * lasts until the next begins, except Fajr, which ends at sunrise; Isha runs on to Fajr.
+   */
+  val currentPrayer: PrayerTimeItem? = null,
+  /** When [currentPrayer]'s time ends. */
+  val currentPrayerEndsAt: LocalTime? = null,
+  /** HH:MM:SS until [currentPrayerEndsAt]; null with no current prayer. */
+  val timeLeftInCurrentFormatted: String? = null,
+  /** 0..1 through [currentPrayer]'s time. */
+  val progressInCurrent: Float = 0f
 ) {
+  /** Whether the current prayer ends exactly when the next begins, so one countdown serves both. */
+  val currentEndsAtNext: Boolean
+    get() = currentPrayer != null && currentPrayerEndsAt == nextPrayer?.time
+
   val activeForbiddenTime: com.example.data.prayer.ForbiddenTimeWindow?
     get() = forbiddenTimes.firstOrNull { it.isActive(currentTime) }
 
