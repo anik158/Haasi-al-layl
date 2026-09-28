@@ -83,41 +83,54 @@ data class ForbiddenTimeWindow(
       AppLanguage.ENGLISH -> "When the sun is at its highest meridian until it declines (~10 min before Dhuhr). Voluntary prayer prohibited."
     }
     ForbiddenWindowType.SUNSET -> when (language) {
-      AppLanguage.ARABIC -> "عند اصفرار الشمس وتدليها للغروب بنحو ٢٠ دقيقة حتى تغرب تماماً ويدخل المغرب."
-      AppLanguage.BENGALI -> "সূর্য হলুদ বর্ণ ধারণ করা থেকে সূর্যাস্ত সম্পন্ন হওয়া ও মাগরিব প্রবেশ পর্যন্ত (~২০ মিনিট)।"
-      AppLanguage.SPANISH -> "Cuando el sol palidece y se pone (~20 min antes del Maghrib). Prohibida la oración voluntaria."
-      AppLanguage.PORTUGUESE -> "Quando o sol empalidece e se põe (~20 min antes de Maghrib). Proibida a oração voluntária."
-      AppLanguage.ENGLISH -> "When the sun turns pale until it sets completely (~20 min before Maghrib). Voluntary prayer prohibited."
+      AppLanguage.ARABIC -> "من ميل الشمس للغروب حتى تغرب (نحو ١٥ دقيقة قبل الغروب). يُنهى فيه عن صلاة النافلة."
+      AppLanguage.BENGALI -> "সূর্য অস্ত যাওয়ার দিকে ঝুঁকে পড়া থেকে সম্পূর্ণ অস্ত যাওয়া পর্যন্ত (সূর্যাস্তের আগে ~১৫ মিনিট)। এ সময়ে নফল সালাত নিষিদ্ধ।"
+      AppLanguage.SPANISH -> "Desde que el sol se inclina hacia el ocaso hasta que se pone (~15 min antes de la puesta). Prohibida la oración voluntaria."
+      AppLanguage.PORTUGUESE -> "Desde que o sol se inclina para o ocaso até que se põe (~15 min antes do pôr do sol). Proibida a oração voluntária."
+      AppLanguage.ENGLISH -> "From when the sun inclines to setting until it has set (~15 min before sunset). Voluntary prayer prohibited."
     }
   }
 }
 
 object ForbiddenPrayerTimesHelper {
 
+  /** How long each end-of-day window lasts: the scholars' estimate of "a spear's length". */
+  const val SUN_WINDOW_MINUTES = 15L
+  const val ZENITH_WINDOW_MINUTES = 10L
+
+  /**
+   * The three windows in Sahih Muslim 831 (ʿUqbah ibn ʿĀmir): when the sun rises until it is high,
+   * when it stands at midday until it passes the meridian, and when it inclines to setting until
+   * it sets. Muslim 832 (ʿAmr ibn ʿAbasah) gives the height as a spear's length.
+   *
+   * [sunset] is the true sunset, not Maghrib: the hadith end the window when the sun has set, and
+   * Maghrib here carries a 3-minute calculation margin. The old window was Maghrib − 20 to
+   * Maghrib, which ran 17 minutes before sunset to 3 after, and the 20 had no source.
+   */
   fun calculateWindows(
     sunrise: LocalTime,
     dhuhr: LocalTime,
-    maghrib: LocalTime
+    sunset: LocalTime
   ): List<ForbiddenTimeWindow> {
     val sunriseWindow = ForbiddenTimeWindow(
       type = ForbiddenWindowType.SUNRISE,
       startTime = sunrise,
-      endTime = sunrise.plusMinutes(15),
-      hadithReference = "Sahih Muslim 831 (Uqbah ibn Amir: The Messenger of Allah prohibited us from praying at three times...)"
+      endTime = sunrise.plusMinutes(SUN_WINDOW_MINUTES),
+      hadithReference = "Sahih Muslim 831, 832"
     )
 
     val zenithWindow = ForbiddenTimeWindow(
       type = ForbiddenWindowType.ZENITH,
-      startTime = dhuhr.minusMinutes(10),
+      startTime = dhuhr.minusMinutes(ZENITH_WINDOW_MINUTES),
       endTime = dhuhr,
-      hadithReference = "Sahih Muslim 832 (When the sun stands in the middle of the sky until it passes the meridian...)"
+      hadithReference = "Sahih Muslim 831, 832"
     )
 
     val sunsetWindow = ForbiddenTimeWindow(
       type = ForbiddenWindowType.SUNSET,
-      startTime = maghrib.minusMinutes(20),
-      endTime = maghrib,
-      hadithReference = "Sahih al-Bukhari 586 / Muslim 831 (When the sun inclines to set until it has completely set...)"
+      startTime = sunset.minusMinutes(SUN_WINDOW_MINUTES),
+      endTime = sunset,
+      hadithReference = "Sahih Muslim 831; Sahih al-Bukhari 586"
     )
 
     return listOf(sunriseWindow, zenithWindow, sunsetWindow)

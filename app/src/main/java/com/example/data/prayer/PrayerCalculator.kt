@@ -23,6 +23,9 @@ typealias JuristicMethod = IslamicMadhab
 
 object PrayerCalculator {
 
+  /** Minutes Maghrib is set after the computed sunset. */
+  const val MAGHRIB_MARGIN_MINUTES = 3L
+
   val PRESET_CITIES = listOf(
     CityLocation("Makkah", "Saudi Arabia", 21.4225, 39.8262, "Asia/Riyadh"),
     CityLocation("Madinah", "Saudi Arabia", 24.4672, 39.6111, "Asia/Riyadh"),
@@ -158,7 +161,9 @@ object PrayerCalculator {
     val dhuhrTime = timesMap[PrayerName.DHUHR] ?: LocalTime.of(12, 10)
     val maghribTime = timesMap[PrayerName.MAGHRIB] ?: LocalTime.of(18, 15)
     val fajrTime = timesMap[PrayerName.FAJR] ?: LocalTime.of(4, 30)
-    val forbiddenWindows = ForbiddenPrayerTimesHelper.calculateWindows(sunriseTime, dhuhrTime, maghribTime)
+    // True sunset: Maghrib minus its calculation margin. The forbidden window ends at sunset.
+    val sunsetTime = maghribTime.minusMinutes(MAGHRIB_MARGIN_MINUTES)
+    val forbiddenWindows = ForbiddenPrayerTimesHelper.calculateWindows(sunriseTime, dhuhrTime, sunsetTime)
 
     val maghribMinutes = maghribTime.hour * 60 + maghribTime.minute
     val fajrMinutes = fajrTime.hour * 60 + fajrTime.minute
@@ -193,6 +198,7 @@ object PrayerCalculator {
       progressToNext = progress,
       currentTime = now.toLocalTime(),
       forbiddenTimes = forbiddenWindows,
+      trueSunset = sunsetTime,
       isTahajjudTime = isTahajjudTime,
       // floorMod normalises the past-midnight case, where the last third starts before 00:00.
       tahajjudStart = LocalTime.of(
@@ -313,8 +319,9 @@ object PrayerCalculator {
     val asrDiff = sunAngleTime(90.0 - asrAngle, lat, declination)
     val asr = noon + asrDiff
 
-    // Maghrib (same as sunset + 3 min precaution)
-    val maghrib = sunset + (3.0 / 60.0)
+    // Maghrib: sunset plus a small margin for calculation error (refraction, elevation). The
+    // sunnah is to hasten iftar at sunset (Bukhari 1957); the margin is computational, not fiqh.
+    val maghrib = sunset + (MAGHRIB_MARGIN_MINUTES / 60.0)
 
     // Isha. Umm al-Qura sets it by a fixed interval after Maghrib rather than an angle, and
     // widens that interval from 90 to 120 minutes for Ramadan.

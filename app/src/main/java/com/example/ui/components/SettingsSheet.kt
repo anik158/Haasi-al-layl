@@ -798,7 +798,7 @@ fun SettingsSheet(
                       color = DarkForestInk
                     )
                     Text(
-                      text = window.formattedRange,
+                      text = LocalizationManager.formatTimeRange(window.startTime, window.endTime, language),
                       fontWeight = FontWeight.SemiBold,
                       fontSize = 12.sp,
                       color = if (isActive) Color(0xFFD84315) else DarkForestInk.copy(alpha = 0.7f)

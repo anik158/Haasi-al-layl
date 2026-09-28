@@ -31,12 +31,12 @@ class ExampleRobolectricTest {
   fun `verify forbidden prayer times calculation`() {
     val sunrise = java.time.LocalTime.of(6, 0)
     val dhuhr = java.time.LocalTime.of(12, 5)
-    val maghrib = java.time.LocalTime.of(18, 15)
+    val sunset = java.time.LocalTime.of(18, 12)
 
     val windows = com.example.data.prayer.ForbiddenPrayerTimesHelper.calculateWindows(
       sunrise = sunrise,
       dhuhr = dhuhr,
-      maghrib = maghrib
+      sunset = sunset
     )
 
     assertEquals(3, windows.size)
@@ -49,8 +49,9 @@ class ExampleRobolectricTest {
     assertEquals(dhuhr, windows[1].endTime)
 
     assertEquals(com.example.data.prayer.ForbiddenWindowType.SUNSET, windows[2].type)
-    assertEquals(maghrib.minusMinutes(20), windows[2].startTime)
-    assertEquals(maghrib, windows[2].endTime)
+    // Muslim 831: "when it inclines to setting until it sets" - 15 minutes, ending at true sunset.
+    assertEquals(sunset.minusMinutes(15), windows[2].startTime)
+    assertEquals(sunset, windows[2].endTime)
   }
 
   @Test

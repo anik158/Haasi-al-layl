@@ -201,7 +201,9 @@ Fajr alert twenty minutes late is a correctness bug rather than a polish issue.
 - **A different message for each prayer**, in all five languages. Fajr carries the *tathwīb*
   (*"Prayer is better than sleep"*); the others carry the Qur'anic or hadith text for that prayer.
 - **Forbidden-time alerts** at the start and end of the three prohibited windows — sunrise
-  (+15 min), the solar zenith (−10 min to Dhuhr) and sunset (−20 min to Maghrib).
+  (+15 min), the solar zenith (−10 min to Dhuhr) and sunset (−15 min to true sunset), as in
+  Sahih Muslim 831: *"when the sun rises until it is high, when it stands at midday until it
+  passes the meridian, and when it inclines to setting until it sets."*
 - **Tahajjud reminder** when the last third of the night begins, on its own channel and toggle so a
   3 a.m. alert can be silenced without losing Fajr.
 - **A forest-birdsong alert tone** — a 16-second nature recording, routed at `USAGE_ALARM` so it is

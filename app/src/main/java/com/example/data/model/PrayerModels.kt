@@ -39,6 +39,8 @@ data class DailyPrayerSchedule(
   val progressToNext: Float, // 0.0f to 1.0f
   val currentTime: LocalTime = LocalTime.now(),
   val forbiddenTimes: List<com.example.data.prayer.ForbiddenTimeWindow> = emptyList(),
+  /** The computed sunset. Maghrib is this plus `PrayerCalculator.MAGHRIB_MARGIN_MINUTES`. */
+  val trueSunset: LocalTime? = null,
   val isTahajjudTime: Boolean = false,
   /**
    * When the last third of the night begins, in the city's local time. The alarm scheduler needs
