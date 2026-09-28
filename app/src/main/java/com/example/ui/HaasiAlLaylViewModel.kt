@@ -51,6 +51,7 @@ import java.io.BufferedReader
 import org.json.JSONObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import android.util.Log
 
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -485,10 +486,10 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
     // meant it could only ever fire while the app was open. PrayerAlarmScheduler owns it now,
     // along with every other alert, so it works with the app closed.
     resolveOnboarding()
-    // Covers the launch where onboarding has already been dismissed once: the ladder is not
-    // shown, but the app still has no location and should still be listening for one.
-    if (userPrefs.selectedCity == null) startBackgroundLocationWatch()
-    refreshLocationIfMoved()
+    // Covers the launch where onboarding has already been dismissed once, and the one where all
+    // we hold is an IP estimate: either way the app should still be listening for a real fix.
+    if (!userPrefs.locationFromDevice) startBackgroundLocationWatch()
+    // refreshLocationIfMoved runs from onAppResumed, which also fires on the first resume.
     nameCurrentCityIfNeeded()
     startSecondTicker()
     seedTasbih()
@@ -614,7 +615,16 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
    */
   fun onLocationPermissionResult(granted: Boolean) {
     userPrefs.hasAskedLocationPermission = true
-    if (userPrefs.selectedCity != null) return
+    if (userPrefs.selectedCity != null) {
+      // Onboarding already settled - usually on an IP estimate, which names the ISP's hub (a user
+      // in Panchagarh was shown Rangpur, 80 km off, and got Rangpur's times). The watch had been
+      // skipped for want of this permission, so start it now that it exists.
+      if (granted) {
+        startBackgroundLocationWatch()
+        refreshLocationIfMoved()
+      }
+      return
+    }
     if (granted) {
       startDetection()
     } else {
@@ -745,12 +755,17 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
     if (!DeviceLocationProvider.hasPermission(getApplication<Application>())) return
     locationWatchJob = viewModelScope.launch {
       Log.i(TAG, "watching for a GPS fix in the background")
-      LocationRepository.observeDeviceLocation(getApplication<Application>())
-        .collect { city ->
-          if (userPrefs.cityChosenManually) return@collect
-          Log.i(TAG, "background fix arrived; adopting it")
-          settleOnDeviceFix(city)
-        }
+      // Bounded: indoors with no sky the GPS would otherwise stay on for the whole session. The
+      // next resume tries again. It already stops at the first fix, via settleOnDeviceFix.
+      val finished = withTimeoutOrNull(WATCH_TIMEOUT_MILLIS) {
+        LocationRepository.observeDeviceLocation(getApplication<Application>())
+          .collect { city ->
+            if (userPrefs.cityChosenManually) return@collect
+            Log.i(TAG, "background fix arrived; adopting it")
+            settleOnDeviceFix(city)
+          }
+      }
+      if (finished == null) Log.i(TAG, "no GPS fix within the watch window; will retry on resume")
     }
   }
 
@@ -828,6 +843,15 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
    * A city the user chose by hand is never overridden - they may well be checking another city's
    * times deliberately.
    */
+  /**
+   * Called on every resume, including the first. The re-check is cheap - it reads the fix the
+   * system already holds - and running it only on a cold start meant a phone that kept the app
+   * in memory for days never noticed it had moved.
+   */
+  fun onAppResumed() {
+    refreshLocationIfMoved()
+  }
+
   private fun refreshLocationIfMoved() {
     val stored = userPrefs.selectedCity ?: return
     if (userPrefs.cityChosenManually) return
@@ -846,16 +870,18 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
     viewModelScope.launch {
       val fix = withContext(Dispatchers.IO) { DeviceLocationProvider.lastKnownFix(app) }
       if (fix == null) {
-        // Nothing cached to compare against. If what we hold is old, start listening so the next
-        // fix - whenever the user next has a view of the sky - corrects it.
-        if (isLocationStale()) startBackgroundLocationWatch()
+        // Nothing cached to compare against. Listen for the next fix - whenever the user next has
+        // a view of the sky - if what we hold is only an IP estimate, or is old.
+        if (!userPrefs.locationFromDevice || isLocationStale()) startBackgroundLocationWatch()
         return@launch
       }
       val current = _selectedCity.value
       val movedKm = QiblaCalculator.distanceKm(
         current.latitude, current.longitude, fix.latitude, fix.longitude
       )
-      if (movedKm >= MOVED_THRESHOLD_KM) {
+      // An IP estimate is replaced by any real fix, however close: its coordinates are the ISP's,
+      // so "under 25 km" says nothing about how wrong it is.
+      if (movedKm >= MOVED_THRESHOLD_KM || !userPrefs.locationFromDevice) {
         Log.i(TAG, "moved %.0f km since the stored fix; adopting the new one".format(movedKm))
         val named = LocationRepository.reverseGeocode(app, fix.latitude, fix.longitude)
         settleOnDeviceFix(
@@ -1265,6 +1291,7 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
      * re-arm the schedule for someone crossing their own city.
      */
     const val MOVED_THRESHOLD_KM = 25.0
+    const val WATCH_TIMEOUT_MILLIS = 2L * 60L * 1000L
 
     /** After this long without confirmation, a stored fix is worth re-establishing. */
     const val STALE_LOCATION_MILLIS = 7L * 24 * 60 * 60 * 1000

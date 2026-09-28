@@ -127,10 +127,27 @@ otherwise:
   indoor no-fix each get their own message and the action that fixes it — rather than all three
   quietly becoming the same city picker.
 
-**If you move.** The app re-checks on every launch, using the fix your phone already holds — no
-network, no radio wake. Past about 25 km it adopts the new position and re-arms the prayer alarms;
-it also notices when your phone's timezone has changed, which matters more to prayer times than
-distance does. A city you picked by hand is left alone, since you may be checking it deliberately.
+**If you move.** Each time the app is opened or brought back to the screen, it compares where it
+thinks you are with the last position your phone's GPS recorded — no network needed, no extra
+radio use. Past about 25 km it switches to the new position and re-arms the prayer alarms; it also
+notices when your phone's timezone has changed, which matters more to prayer times than distance
+does. It does **not** check while the app is closed: the alarms keep using the last position until
+you next open it. A city you picked by hand is left alone, since you may be checking it
+deliberately.
+
+If the first position came from your internet connection (the fallback when there is no GPS fix
+yet), it is only an estimate — it names your provider's nearest hub, which can be a different
+district. The app keeps listening for a real GPS position for up to two minutes each time it is
+open, and switches as soon as one arrives, however close it is.
+
+**Testing a move** (you need a phone position that is not where you are):
+1. On a phone: in *Developer options*, set a *mock location app* (any "Fake GPS" app from the Play
+   Store), and pick a place more than 25 km away in it.
+2. Open Google Maps once, so the phone records that position.
+3. Open this app (or switch back to it). Within a few seconds the location chip and the prayer
+   times change to the new place.
+4. On an emulator instead: run `adb emu geo fix <longitude> <latitude>` (longitude first), then
+   switch back to the app.
 
 **Testing it offline:** get one fix outdoors first (tap Detect with Location on), then turn data
 off entirely. The app keeps using those coordinates, prayer times stay exact, and the location

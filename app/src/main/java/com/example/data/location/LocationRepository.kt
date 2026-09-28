@@ -130,9 +130,10 @@ object LocationRepository {
         .getFromLocation(latitude, longitude, 1)
         ?.firstOrNull()
         ?.let { address ->
-          val city = address.locality
-            ?: address.subAdminArea
-            ?: address.adminArea
+          // Town, else district. Never adminArea: in Bangladesh that is the *division*, so a user
+          // in Panchagarh would read "Rangpur Division". Coordinates are better than that.
+          val city = (address.locality ?: address.subAdminArea)
+            ?.let(::tidyPlaceName)
             ?: return@let null
           city to (address.countryName ?: "")
         }
@@ -154,8 +155,10 @@ object LocationRepository {
     }
     if (connection.responseCode == 200) {
       val json = org.json.JSONObject(connection.inputStream.bufferedReader().use { it.readText() })
-      val city = listOf("city", "locality", "principalSubdivision")
+      // principalSubdivision is left out for the same reason adminArea is: it is the division.
+      val city = listOf("city", "locality")
         .firstNotNullOfOrNull { key -> json.optString(key, "").ifBlank { null } }
+        ?.let(::tidyPlaceName)
       val country = json.optString("countryName", "")
       city?.let { it to country }
     } else {
@@ -165,6 +168,11 @@ object LocationRepository {
     Log.w(TAG, "http reverse geocode failed", e)
     null
   }
+
+  /** "Panchagarh District" -> "Panchagarh". Geocoders name districts with the word attached. */
+  internal fun tidyPlaceName(name: String): String =
+    name.trim().removeSuffix(" District").removeSuffix(" Zila").removeSuffix(" Sadar").trim()
+      .ifBlank { name.trim() }
 
   /** "23.81°N, 90.41°E" - shown in place of a city name when nothing can name the coordinates. */
   fun formatCoordinates(latitude: Double, longitude: Double): String {

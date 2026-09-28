@@ -209,7 +209,7 @@ returns immediately when a city is stored, and the background watch only runs wh
 missing. Someone who set the app up in Dhaka and then moved kept Dhaka's prayer times indefinitely,
 with nothing on screen suggesting anything was wrong.
 
-`refreshLocationIfMoved` runs on every launch and is deliberately cheap: `lastKnownFix` reads the
+`refreshLocationIfMoved` runs on every resume and is deliberately cheap: `lastKnownFix` reads the
 fix the system already holds, waking no radio and needing no network, so it works offline exactly
 as well as online.
 
@@ -225,6 +225,28 @@ as well as online.
   staleness cannot drift out of sync with the value it describes.
 - A city the user picked by hand is never overridden — they may be checking another city's times
   on purpose.
+- **It runs on every resume (`onAppResumed`, via `LifecycleResumeEffect`), not only a cold start.**
+  A phone that kept the process alive for days otherwise never re-checked.
+- **An IP estimate is replaced by any real fix, however close.** The 25 km threshold is for
+  comparing two real fixes; an IP location's coordinates are the ISP's hub, so distance from it
+  means nothing.
+
+#### An IP estimate must never be the last word
+
+A user in Panchagarh was shown Rangpur, 80 km off, with Rangpur's prayer times. ipinfo named the
+ISP's hub; that part is expected. The bug was that nothing ever corrected it:
+`startBackgroundLocationWatch` returned for want of permission while the permission dialog was
+still up, and `onLocationPermissionResult` then returned early because a city was already stored.
+On later launches the watch only restarted after seven days of staleness, since `applyCity` had
+just stamped the estimate as fresh.
+
+- Granting permission after an IP estimate now starts the watch and the re-check.
+- The watch runs whenever `!locationFromDevice`, not only while no city is stored.
+- **It is bounded to two minutes** (`WATCH_TIMEOUT_MILLIS`) and retried on resume, so indoors it
+  cannot hold the GPS on for a whole session. It already stops at the first fix.
+- Reverse geocoding never falls back to `adminArea` / `principalSubdivision`: in Bangladesh that is
+  the *division*, which would have printed "Rangpur Division" for Panchagarh. Town, else district,
+  else coordinates.
 
 #### "No signal" was three different failures wearing one label
 
