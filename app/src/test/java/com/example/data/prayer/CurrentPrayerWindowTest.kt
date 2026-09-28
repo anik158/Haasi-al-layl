@@ -30,11 +30,30 @@ class CurrentPrayerWindowTest {
     assertTrue(morning.items.none { it.isCurrent })
   }
 
+  /** Sahih Muslim 612: "the time of Isha is until half of the night has passed." */
   @Test
-  fun beforeFajrItIsStillIsha() {
-    val night = scheduleAt(LocalTime.of(0, 30))
-    assertEquals(PrayerName.ISHA, night.currentPrayer?.prayer)
-    assertEquals(at(PrayerName.FAJR), night.currentPrayerEndsAt)
+  fun ishaEndsAtMidnightNotFajr() {
+    val evening = scheduleAt(at(PrayerName.ISHA).plusMinutes(10))
+    assertEquals(PrayerName.ISHA, evening.currentPrayer?.prayer)
+    val midnight = evening.islamicMidnight!!
+    assertEquals(midnight, evening.currentPrayerEndsAt)
+    // The midpoint of sunset and the next Fajr: Makkah's is shortly before or after 00:00.
+    val sunset = at(PrayerName.MAGHRIB).minusMinutes(PrayerCalculator.MAGHRIB_MARGIN_MINUTES)
+    val nightSeconds = java.time.Duration.between(
+      date.atTime(sunset), date.plusDays(1).atTime(at(PrayerName.FAJR))
+    ).seconds
+    assertEquals(date.atTime(sunset).plusSeconds(nightSeconds / 2).toLocalTime(), midnight)
+    // Ends at midnight, and Fajr is next, so the two countdowns differ.
+    assertTrue(!evening.currentEndsAtNext)
+  }
+
+  @Test
+  fun afterMidnightIshaHasEndedAndNothingIsCurrent() {
+    val lateNight = scheduleAt(at(PrayerName.FAJR).minusMinutes(60))
+    assertNull(lateNight.currentPrayer)
+    assertTrue(lateNight.ishaPastMidnight)
+    assertTrue(lateNight.items.none { it.isCurrent })
+    assertEquals(PrayerName.FAJR, lateNight.nextPrayer?.prayer)
   }
 
   @Test

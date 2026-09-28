@@ -49,7 +49,8 @@ data class DailyPrayerSchedule(
   val tahajjudStart: LocalTime? = null,
   /**
    * The obligatory prayer whose time is running now, or null between sunrise and Dhuhr. Each one
-   * lasts until the next begins, except Fajr, which ends at sunrise; Isha runs on to Fajr.
+   * lasts until the next begins, except Fajr, which ends at sunrise, and Isha, which ends at
+   * midnight (Sahih Muslim 612); see [ishaPastMidnight].
    */
   val currentPrayer: PrayerTimeItem? = null,
   /** When [currentPrayer]'s time ends. */
@@ -57,7 +58,14 @@ data class DailyPrayerSchedule(
   /** HH:MM:SS until [currentPrayerEndsAt]; null with no current prayer. */
   val timeLeftInCurrentFormatted: String? = null,
   /** 0..1 through [currentPrayer]'s time. */
-  val progressInCurrent: Float = 0f
+  val progressInCurrent: Float = 0f,
+  /**
+   * Between Isha's midnight and Fajr. Isha's time has ended (Sahih Muslim 612), so there is no
+   * [currentPrayer]; the UI says so, and to pray Isha now if it was missed.
+   */
+  val ishaPastMidnight: Boolean = false,
+  /** Tonight's midpoint of sunset and Fajr, where Isha's time ends. */
+  val islamicMidnight: LocalTime? = null
 ) {
   /** Whether the current prayer ends exactly when the next begins, so one countdown serves both. */
   val currentEndsAtNext: Boolean

@@ -250,6 +250,15 @@ object LocalizationManager {
     AppLanguage.ENGLISH -> "left"
   }
 
+  /** Between midnight and Fajr: Isha's time has ended (Sahih Muslim 612). */
+  fun getIshaPastMidnightNote(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "انتهى وقت العشاء عند منتصف الليل (مسلم ٦١٢). إن لم تصلّها فصلّها الآن."
+    AppLanguage.BENGALI -> "মধ্যরাতে এশার ওয়াক্ত শেষ হয়েছে (মুসলিম ৬১২)। এখনো না পড়ে থাকলে এখনই পড়ে নিন।"
+    AppLanguage.SPANISH -> "El tiempo del Isha terminó a medianoche (Muslim 612). Si no lo ha rezado, rece ahora."
+    AppLanguage.PORTUGUESE -> "O tempo do Isha terminou à meia-noite (Muslim 612). Se ainda não rezou, reze agora."
+    AppLanguage.ENGLISH -> "Isha's time ended at midnight (Muslim 612). If you haven't prayed it, pray it now."
+  }
+
   /** Between sunrise and Dhuhr, when no obligatory prayer's time is running. */
   fun getNoCurrentPrayerLabel(language: AppLanguage): String = when (language) {
     AppLanguage.ARABIC -> "لا صلاة فريضة الآن"

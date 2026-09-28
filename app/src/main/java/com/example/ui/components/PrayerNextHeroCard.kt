@@ -359,7 +359,8 @@ fun PrayerNextHeroCard(
 
 /**
  * The prayer whose time is running now, with how long is left of it. Between sunrise and Dhuhr
- * there is none, and the panel says so plainly instead of pretending Fajr is still on.
+ * there is none, and the panel says so plainly instead of pretending Fajr is still on. Between
+ * midnight and Fajr Isha's time has ended, and the panel says that instead.
  */
 @Composable
 private fun CurrentPrayerPanel(schedule: DailyPrayerSchedule, language: AppLanguage) {
@@ -384,7 +385,13 @@ private fun CurrentPrayerPanel(schedule: DailyPrayerSchedule, language: AppLangu
       )
       Spacer(modifier = Modifier.width(10.dp))
       Text(
-        text = LocalizationManager.getNoCurrentPrayerLabel(language),
+        // After midnight Isha's time has ended (Muslim 612) - say so, rather than the morning's
+        // "no obligatory prayer", which would read as though Isha did not matter.
+        text = if (schedule.ishaPastMidnight) {
+          LocalizationManager.getIshaPastMidnightNote(language)
+        } else {
+          LocalizationManager.getNoCurrentPrayerLabel(language)
+        },
         style = MaterialTheme.typography.bodyMedium,
         fontWeight = FontWeight.SemiBold,
         color = DarkForestInk.copy(alpha = 0.8f)

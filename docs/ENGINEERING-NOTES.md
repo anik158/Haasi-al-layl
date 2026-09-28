@@ -61,6 +61,21 @@ Last updated: 25 September 2026.
   Isha now use `sunAngleTimeOrNull` and fall back to one-seventh of the night. Sunrise, sunset and
   Asr keep the clamped path because they always occur.
 
+### Isha's time ends at midnight, not Fajr
+
+Sahih Muslim 612 (ʿAbdullah ibn ʿAmr) is explicit: *"the time of ʿIsha is until half of the night
+has passed"*, supported by Tirmidhi 167. The current-prayer panel first ran Isha to Fajr - the
+majority reading of Muslim 681, *"negligence is only for one who does not pray until the time of
+the next prayer comes"* - and presented that most lenient reading as simply the time.
+
+- `currentWindow` ends Isha at the **Islamic midnight**, the midpoint of true sunset and the next
+  Fajr. After midnight `ishaPastMidnight` is set and nothing is current; the panel says Isha's time
+  ended (Muslim 612) and to pray it now if missed, which still respects the majority's reading.
+- Where Isha itself starts after that midpoint (high latitudes in summer) the rule cannot apply,
+  and Isha runs to Fajr.
+- The prayer-info popup already said "preferred before midnight, valid until dawn according to
+  most scholars"; that text is unchanged.
+
 ### Sehri and Iftar follow the sahih texts, not timetable conventions
 
 **Hidden** (`FeatureFlags.SHOW_FASTING_TIMES = false`): the Today card, the Settings Hijri

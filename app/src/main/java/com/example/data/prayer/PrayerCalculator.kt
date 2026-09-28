@@ -108,7 +108,8 @@ object PrayerCalculator {
       }
     }
 
-    val window = currentWindow(date, now, timesMap)
+    val current = currentWindow(date, now, timesMap)
+    val window = current.window
 
     for (p in prayerOrder) {
       val time = timesMap[p] ?: LocalTime.of(12, 0)
@@ -208,39 +209,70 @@ object PrayerCalculator {
       currentPrayer = currentItem,
       currentPrayerEndsAt = window?.end?.toLocalTime(),
       timeLeftInCurrentFormatted = currentLeft,
-      progressInCurrent = currentProgress
+      progressInCurrent = currentProgress,
+      ishaPastMidnight = current.ishaPastMidnight,
+      islamicMidnight = current.midnight?.toLocalTime()
     )
   }
 
   private data class PrayerWindow(val prayer: PrayerName, val start: LocalDateTime, val end: LocalDateTime)
 
+  /** What [currentWindow] found: the running prayer, or the stretch after Isha's midnight. */
+  private data class CurrentState(val window: PrayerWindow?, val ishaPastMidnight: Boolean, val midnight: LocalDateTime?)
+
   /**
    * The obligatory prayer whose time contains [now]: Fajr to sunrise, Dhuhr to Asr, Asr to
-   * Maghrib, Maghrib to Isha, Isha to the next Fajr. Null between sunrise and Dhuhr.
+   * Maghrib, Maghrib to Isha, and Isha to **midnight** - Sahih Muslim 612: "the time of ʿIsha is
+   * until half of the night has passed." Midnight is the midpoint of sunset and the next Fajr.
    *
-   * Before today's Fajr it is still last night's Isha. Yesterday's Isha and tomorrow's Fajr are
-   * taken from today's times - they differ by a minute or so, which a countdown can live with.
+   * Midnight to Fajr is not a prayer's time: [CurrentState.ishaPastMidnight] is set so the UI can
+   * say Isha's time has ended and, for anyone who has not prayed it, to pray it now - the majority
+   * reading of Muslim 681. Between sunrise and Dhuhr there is nothing.
+   *
+   * Yesterday's sunset and tomorrow's Fajr are taken from today's times; they differ by a minute
+   * or so, which a countdown can live with. Where Isha itself starts after midnight (high
+   * latitudes in summer) the midpoint rule cannot apply, and Isha runs to Fajr.
    */
   private fun currentWindow(
     date: LocalDate,
     now: LocalDateTime,
     times: Map<PrayerName, LocalTime>
-  ): PrayerWindow? {
+  ): CurrentState {
     fun at(p: PrayerName) = times[p]?.let { LocalDateTime.of(date, it) }
-    val fajr = at(PrayerName.FAJR) ?: return null
-    val sunrise = at(PrayerName.SUNRISE) ?: return null
-    val dhuhr = at(PrayerName.DHUHR) ?: return null
-    val asr = at(PrayerName.ASR) ?: return null
-    val maghrib = at(PrayerName.MAGHRIB) ?: return null
-    val isha = at(PrayerName.ISHA) ?: return null
+    val none = CurrentState(null, false, null)
+    val fajr = at(PrayerName.FAJR) ?: return none
+    val sunrise = at(PrayerName.SUNRISE) ?: return none
+    val dhuhr = at(PrayerName.DHUHR) ?: return none
+    val asr = at(PrayerName.ASR) ?: return none
+    val maghrib = at(PrayerName.MAGHRIB) ?: return none
+    val isha = at(PrayerName.ISHA) ?: return none
+    val sunset = maghrib.minusMinutes(MAGHRIB_MARGIN_MINUTES)
+
+    fun midpoint(from: LocalDateTime, to: LocalDateTime) =
+      from.plusSeconds(Duration.between(from, to).seconds / 2)
+
+    // The night in question: last night before Fajr, tonight after Maghrib.
+    val (ishaStart, nightMidnight, nightFajr) = if (now.isBefore(fajr)) {
+      Triple(isha.minusDays(1), midpoint(sunset.minusDays(1), fajr), fajr)
+    } else {
+      Triple(isha, midpoint(sunset, fajr.plusDays(1)), fajr.plusDays(1))
+    }
+    val ishaEnd = if (nightMidnight.isAfter(ishaStart)) nightMidnight else nightFajr
+
+    fun running(p: PrayerName, start: LocalDateTime, end: LocalDateTime) =
+      CurrentState(PrayerWindow(p, start, end), false, nightMidnight)
+
     return when {
-      now.isBefore(fajr) -> PrayerWindow(PrayerName.ISHA, isha.minusDays(1), fajr)
-      now.isBefore(sunrise) -> PrayerWindow(PrayerName.FAJR, fajr, sunrise)
-      now.isBefore(dhuhr) -> null
-      now.isBefore(asr) -> PrayerWindow(PrayerName.DHUHR, dhuhr, asr)
-      now.isBefore(maghrib) -> PrayerWindow(PrayerName.ASR, asr, maghrib)
-      now.isBefore(isha) -> PrayerWindow(PrayerName.MAGHRIB, maghrib, isha)
-      else -> PrayerWindow(PrayerName.ISHA, isha, fajr.plusDays(1))
+      now.isBefore(fajr) ->
+        if (now.isBefore(ishaEnd)) running(PrayerName.ISHA, ishaStart, ishaEnd)
+        else CurrentState(null, true, nightMidnight)
+      now.isBefore(sunrise) -> running(PrayerName.FAJR, fajr, sunrise)
+      now.isBefore(dhuhr) -> none
+      now.isBefore(asr) -> running(PrayerName.DHUHR, dhuhr, asr)
+      now.isBefore(maghrib) -> running(PrayerName.ASR, asr, maghrib)
+      now.isBefore(isha) -> running(PrayerName.MAGHRIB, maghrib, isha)
+      now.isBefore(ishaEnd) -> running(PrayerName.ISHA, ishaStart, ishaEnd)
+      else -> CurrentState(null, true, nightMidnight)
     }
   }
 
