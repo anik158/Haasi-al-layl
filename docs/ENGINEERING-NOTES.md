@@ -72,6 +72,10 @@ Last updated: 25 September 2026.
   screen the evening before 1 Ramadan.
 - **`HijriDateHelper.adjustmentDays`** is loaded in `HaasiApplication.onCreate`, before any receiver
   can compute a Ramadan Isha interval, and is part of the alarm schedule signature.
+- **The adjustment is automatic unless overridden.** `hijriAdjustmentOverride == null` means "use
+  `automaticAdjustmentFor(country)`" (−1 for BD/IN/PK/NP/LK/MA, else 0). The `selectedCity` setter
+  re-applies it, so a new country moves Ramadan before `applyCity` re-arms the alarms. A manual
+  setting was the first version; users should not have to know what an Umm al-Qura offset is.
 - References were checked against sunnah.com: Bukhari 586, 1918-1919, 1921, 1923, 1954, 1957;
   Muslim 831, 832.
 

@@ -46,6 +46,7 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
@@ -112,6 +113,10 @@ fun SettingsSheet(
   }
 
   var testSentMessage by remember { mutableStateOf<String?>(null) }
+  // When the test alarm is due, so the confirmation can sit under the button with a countdown -
+  // the old message went to the top of the sheet, out of sight of the button that was tapped.
+  var testAlarmDueAt by remember { mutableStateOf<Long?>(null) }
+  var testSecondsLeft by remember { mutableStateOf(0) }
   var showSatelliteSignal by remember { mutableStateOf(false) }
 
   if (showSatelliteSignal) {
@@ -377,8 +382,20 @@ fun SettingsSheet(
       // Hijri date adjustment: moon sighting starts the month a day later in much of the world,
       // and Ramadan - with Sehri and Iftar at the top of Today - has to start on the right day.
       item {
-        var hijriAdjustment by remember {
-          mutableStateOf(com.example.data.preferences.UserPreferences(context).hijriAdjustmentDays)
+        val hijriPrefs = remember { com.example.data.preferences.UserPreferences(context) }
+        // null = automatic, from the country.
+        var hijriOverride by remember { mutableStateOf(hijriPrefs.hijriAdjustmentOverride) }
+        val automaticDays = com.example.data.prayer.HijriDateHelper
+          .automaticAdjustmentFor(hijriPrefs.selectedCity?.country)
+        fun signed(days: Int) = LocalizationManager.localizeDigits(
+          if (days > 0) "+$days" else days.toString(),
+          language
+        )
+        fun chooseHijri(value: Int?) {
+          hijriOverride = value
+          hijriPrefs.hijriAdjustmentOverride = value
+          // Ramadan moves Umm al-Qura's Isha interval, so the alarms re-arm.
+          onSettingsChanged()
         }
         Card(
           shape = RoundedCornerShape(18.dp),
@@ -404,25 +421,33 @@ fun SettingsSheet(
               horizontalArrangement = Arrangement.spacedBy(8.dp),
               verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
+              // Automatic first, and the default: most people should never need the rest.
+              Surface(
+                onClick = { chooseHijri(null) },
+                shape = RoundedCornerShape(20.dp),
+                color = if (hijriOverride == null) Color(0xFF0F3E2F) else Color.White,
+                border = androidx.compose.foundation.BorderStroke(1.dp, if (hijriOverride == null) Color(0xFF0F3E2F) else OutlineDarkBorder),
+                modifier = Modifier.testTag("hijri_adjust_auto")
+              ) {
+                Text(
+                  text = "${LocalizationManager.getAutomaticLabel(language)} (${signed(automaticDays)})",
+                  fontWeight = if (hijriOverride == null) FontWeight.Bold else FontWeight.Normal,
+                  fontSize = 13.sp,
+                  color = if (hijriOverride == null) Color.White else DarkForestInk,
+                  modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp)
+                )
+              }
               (-2..2).forEach { days ->
-                val isSelected = hijriAdjustment == days
+                val isSelected = hijriOverride == days
                 Surface(
-                  onClick = {
-                    hijriAdjustment = days
-                    com.example.data.preferences.UserPreferences(context).hijriAdjustmentDays = days
-                    // Ramadan moves Umm al-Qura's Isha interval, so the alarms re-arm.
-                    onSettingsChanged()
-                  },
+                  onClick = { chooseHijri(days) },
                   shape = RoundedCornerShape(20.dp),
                   color = if (isSelected) Color(0xFF0F3E2F) else Color.White,
                   border = androidx.compose.foundation.BorderStroke(1.dp, if (isSelected) Color(0xFF0F3E2F) else OutlineDarkBorder),
                   modifier = Modifier.testTag("hijri_adjust_$days")
                 ) {
                   Text(
-                    text = LocalizationManager.localizeDigits(
-                      if (days > 0) "+$days" else days.toString(),
-                      language
-                    ),
+                    text = signed(days),
                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                     fontSize = 13.sp,
                     color = if (isSelected) Color.White else DarkForestInk,
@@ -433,7 +458,7 @@ fun SettingsSheet(
             }
             Spacer(modifier = Modifier.height(8.dp))
             // Read after the chips, so it reflects the value just chosen.
-            key(hijriAdjustment) {
+            key(hijriOverride) {
               Text(
                 text = com.example.data.prayer.HijriDateHelper.getTodayHijriFormatted(
                   java.time.LocalDate.now(),
@@ -589,7 +614,8 @@ fun SettingsSheet(
             Surface(
               onClick = {
                 PrayerAlarmScheduler.scheduleTestAlarm(context)
-                testSentMessage = LocalizationManager.getTestAlarmSent(language)
+                testSecondsLeft = 60
+                testAlarmDueAt = System.currentTimeMillis() + 60_000L
               },
               shape = RoundedCornerShape(14.dp),
               color = Color(0xFF0F3E2F),
@@ -603,6 +629,46 @@ fun SettingsSheet(
                 textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                 modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp)
               )
+            }
+
+            // Right under the button: that it worked, and when to expect the ring.
+            testAlarmDueAt?.let { dueAt ->
+              LaunchedEffect(dueAt) {
+                while (true) {
+                  testSecondsLeft = ((dueAt - System.currentTimeMillis() + 999) / 1000).toInt()
+                    .coerceAtLeast(0)
+                  if (testSecondsLeft == 0) break
+                  kotlinx.coroutines.delay(1_000L)
+                }
+              }
+              Spacer(modifier = Modifier.height(10.dp))
+              Row(
+                modifier = Modifier
+                  .fillMaxWidth()
+                  .clip(RoundedCornerShape(12.dp))
+                  .background(Color(0xFFE8F5E9))
+                  .padding(12.dp)
+                  .testTag("test_alarm_status"),
+                verticalAlignment = Alignment.CenterVertically
+              ) {
+                Icon(
+                  Icons.Default.CheckCircle,
+                  contentDescription = null,
+                  tint = Color(0xFF2E7D32),
+                  modifier = Modifier.size(20.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                  text = if (testSecondsLeft > 0) {
+                    LocalizationManager.getTestAlarmCountdown(testSecondsLeft, language)
+                  } else {
+                    LocalizationManager.getTestAlarmDue(language)
+                  },
+                  color = Color(0xFF1B5E20),
+                  fontWeight = FontWeight.SemiBold,
+                  fontSize = 13.sp
+                )
+              }
             }
           }
         }

@@ -239,9 +239,11 @@ Computed offline from the same calculator as the prayer times, so it works with 
 - **During Ramadan** the card sits at the top of Today, under the prayer card, with the Ramadan day
   and a countdown. After Iftar it switches to tomorrow's times, so the first Sehri shows on the
   evening before 1 Ramadan. The rest of the year it sits above Today's verse, for voluntary fasts.
-- **Hijri date adjustment** (Settings, −2 to +2 days). The offline calendar follows Umm al-Qura;
-  where the month starts on local moon sighting — Bangladesh and much of South Asia — it is often a
-  day behind. The adjustment moves every Hijri date in the app, and with it the start of Ramadan.
+- **Hijri date adjustment — automatic by default.** The offline calendar follows Umm al-Qura; where
+  the month starts on local moon sighting it is usually a day behind, so Bangladesh, India,
+  Pakistan, Nepal, Sri Lanka and Morocco get −1 automatically and everywhere else 0. It follows the
+  location, so moving country moves it too. If a local sighting differs, Settings has −2…+2 to
+  override. It moves every Hijri date in the app, and with it the start of Ramadan.
 
 ### 5. 📖 Prophetic Supplications (Duas)
 

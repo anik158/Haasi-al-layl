@@ -16,6 +16,27 @@ object HijriDateHelper {
   @Volatile
   var adjustmentDays: Int = 0
 
+  /**
+   * Where months start on local moon sighting, typically a day after Umm al-Qura: Bangladesh,
+   * India, Pakistan, Nepal, Sri Lanka, Morocco. ISO codes and English names both, since the stored
+   * country comes from IP lookup (codes) as well as geocoders and the picker (names).
+   *
+   * A typical pattern, not a guarantee - a sighting can land on the same day as Makkah's - so the
+   * user can always override it in Settings.
+   */
+  private val SIGHTING_A_DAY_LATER = setOf(
+    "BD", "BANGLADESH",
+    "IN", "INDIA",
+    "PK", "PAKISTAN",
+    "NP", "NEPAL",
+    "LK", "SRI LANKA",
+    "MA", "MOROCCO"
+  )
+
+  /** The adjustment that fits [country] when the user has not chosen one: -1 or 0. */
+  fun automaticAdjustmentFor(country: String?): Int =
+    if (country?.trim()?.uppercase() in SIGHTING_A_DAY_LATER) -1 else 0
+
   private val HIJRI_MONTH_NAMES = mapOf(
     AppLanguage.ENGLISH to listOf(
       "Muharram", "Safar", "Rabi' al-Awwal", "Rabi' al-Thani",

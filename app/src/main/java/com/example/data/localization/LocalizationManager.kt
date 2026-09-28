@@ -210,11 +210,19 @@ object LocalizationManager {
   }
 
   fun getHijriAdjustmentDesc(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "إذا بدأ الشهر عندكم برؤية الهلال في يوم مختلف. يغيّر بداية رمضان أيضاً."
-    AppLanguage.BENGALI -> "আপনার এলাকায় চাঁদ দেখার ভিত্তিতে মাস অন্য দিনে শুরু হলে। রমজানের শুরুও এতে বদলায়।"
-    AppLanguage.SPANISH -> "Si en su zona el mes empieza otro día por el avistamiento de la luna. También mueve el inicio del Ramadán."
-    AppLanguage.PORTUGUESE -> "Se na sua região o mês começa noutro dia pelo avistamento da lua. Também muda o início do Ramadão."
-    AppLanguage.ENGLISH -> "If the month starts on a different day where you are, by moon sighting. This also moves the start of Ramadan."
+    AppLanguage.ARABIC -> "يُضبط تلقائياً حسب بلدك. غيّره فقط إذا بدأ الشهر عندكم برؤية الهلال في يوم آخر. يغيّر بداية رمضان أيضاً."
+    AppLanguage.BENGALI -> "আপনার দেশ অনুযায়ী স্বয়ংক্রিয়ভাবে ঠিক হয়। শুধু আপনার এলাকায় চাঁদ দেখে মাস অন্য দিনে শুরু হলে বদলান। রমজানের শুরুও এতে বদলায়।"
+    AppLanguage.SPANISH -> "Se ajusta solo según su país. Cámbielo solo si en su zona el mes empieza otro día por el avistamiento. También mueve el inicio del Ramadán."
+    AppLanguage.PORTUGUESE -> "Ajusta-se sozinho conforme o seu país. Altere só se na sua região o mês começar noutro dia pelo avistamento. Também muda o início do Ramadão."
+    AppLanguage.ENGLISH -> "Set automatically from your country. Change it only if your local moon sighting starts the month on another day. This also moves the start of Ramadan."
+  }
+
+  fun getAutomaticLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "تلقائي"
+    AppLanguage.BENGALI -> "স্বয়ংক্রিয়"
+    AppLanguage.SPANISH -> "Automático"
+    AppLanguage.PORTUGUESE -> "Automático"
+    AppLanguage.ENGLISH -> "Automatic"
   }
 
   fun getCurrentPrayerLabel(language: AppLanguage): String = when (language) {
@@ -1426,11 +1434,11 @@ object LocalizationManager {
   }
 
   fun getAlarmAutoStopHint(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "سيتوقف الصوت من تلقاء نفسه بعد ثلاث دقائق."
-    AppLanguage.BENGALI -> "তিন মিনিট পর শব্দ নিজেই বন্ধ হয়ে যাবে।"
-    AppLanguage.SPANISH -> "El sonido se detendrá por sí solo en tres minutos."
-    AppLanguage.PORTUGUESE -> "O som para sozinho depois de três minutos."
-    AppLanguage.ENGLISH -> "The sound stops on its own after three minutes."
+    AppLanguage.ARABIC -> "يتوقف الصوت من تلقاء نفسه بعد خمس ثوانٍ."
+    AppLanguage.BENGALI -> "পাঁচ সেকেন্ড পর শব্দ নিজেই বন্ধ হয়ে যাবে।"
+    AppLanguage.SPANISH -> "El sonido se detiene por sí solo a los cinco segundos."
+    AppLanguage.PORTUGUESE -> "O som para sozinho após cinco segundos."
+    AppLanguage.ENGLISH -> "The sound stops on its own after five seconds."
   }
 
   // ---------------------------------------------------------------------------------------------
@@ -1739,12 +1747,25 @@ object LocalizationManager {
     AppLanguage.ENGLISH -> "Test alert in 1 minute"
   }
 
-  fun getTestAlarmSent(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "تم ضبط التنبيه. أغلق التطبيق وانتظر دقيقة."
-    AppLanguage.BENGALI -> "অ্যালার্ম সেট হয়েছে। অ্যাপ বন্ধ করে ১ মিনিট অপেক্ষা করুন।"
-    AppLanguage.SPANISH -> "Aviso programado. Cierra la app y espera un minuto."
-    AppLanguage.PORTUGUESE -> "Aviso agendado. Feche a app e aguarde um minuto."
-    AppLanguage.ENGLISH -> "Alert scheduled. Close the app and wait one minute."
+  /** Under the test button while the test alarm is pending. [seconds] is localized. */
+  fun getTestAlarmCountdown(seconds: Int, language: AppLanguage): String = localizeDigits(
+    when (language) {
+      AppLanguage.ARABIC -> "تم ضبط التنبيه التجريبي. يرن بعد $seconds ثانية - يمكنك إغلاق التطبيق."
+      AppLanguage.BENGALI -> "পরীক্ষামূলক অ্যালার্ম সেট হয়েছে। $seconds সেকেন্ড পর বাজবে - চাইলে অ্যাপ বন্ধ করতে পারেন।"
+      AppLanguage.SPANISH -> "Alarma de prueba programada. Sonará en $seconds s; puede cerrar la app."
+      AppLanguage.PORTUGUESE -> "Alarme de teste agendado. Toca em $seconds s; pode fechar a app."
+      AppLanguage.ENGLISH -> "Test alarm set. It rings in $seconds s - you can close the app."
+    },
+    language
+  )
+
+  /** Once the minute is up. Points at the reliability rows if nothing rang. */
+  fun getTestAlarmDue(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "كان يجب أن يرن الآن. إن لم يرن، أصلح البنود المعلَّمة أعلاه."
+    AppLanguage.BENGALI -> "এখন বাজার কথা। না বাজলে ওপরের চিহ্নিত বিষয়গুলো ঠিক করুন।"
+    AppLanguage.SPANISH -> "Debería haber sonado. Si no, corrija los puntos marcados arriba."
+    AppLanguage.PORTUGUESE -> "Já devia ter tocado. Se não tocou, corrija os itens marcados acima."
+    AppLanguage.ENGLISH -> "It should have rung by now. If it didn't, fix the items marked above."
   }
 
   /**

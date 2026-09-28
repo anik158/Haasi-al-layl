@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import com.example.data.localization.AppLanguage
 import com.example.data.model.CityLocation
 import com.example.data.prayer.CalculationMethod
+import com.example.data.prayer.HijriDateHelper
 import com.example.data.prayer.IslamicMadhab
 
 /**
@@ -116,16 +117,33 @@ class UserPreferences(context: Context) {
     set(value) = writeString(KEY_MADHAB, value.name)
 
   /**
-   * Days to shift the Hijri date by, -2..+2. The offline calendar follows Umm al-Qura; where the
-   * month starts on local moon sighting it is often a day behind (Bangladesh, South Asia), and
-   * Ramadan has to start on the right day. Also mirrored into [HijriDateHelper.adjustmentDays].
+   * The user's own Hijri adjustment, -2..+2 days, or null for automatic - the default, which
+   * follows the country (see [HijriDateHelper.automaticAdjustmentFor]). Setting it re-applies the
+   * effective value to [HijriDateHelper.adjustmentDays].
    */
-  var hijriAdjustmentDays: Int
-    get() = prefs.getInt(KEY_HIJRI_ADJUSTMENT, 0).coerceIn(-2, 2)
-    set(value) {
-      prefs.edit().putInt(KEY_HIJRI_ADJUSTMENT, value.coerceIn(-2, 2)).commit()
-      com.example.data.prayer.HijriDateHelper.adjustmentDays = value.coerceIn(-2, 2)
+  var hijriAdjustmentOverride: Int?
+    get() = if (prefs.contains(KEY_HIJRI_ADJUSTMENT)) {
+      prefs.getInt(KEY_HIJRI_ADJUSTMENT, 0).coerceIn(-2, 2)
+    } else {
+      null
     }
+    set(value) {
+      prefs.edit().run {
+        if (value == null) remove(KEY_HIJRI_ADJUSTMENT) else putInt(KEY_HIJRI_ADJUSTMENT, value.coerceIn(-2, 2))
+        commit()
+      }
+      applyHijriAdjustment()
+    }
+
+  /** What is actually in force: the user's choice, else the country's usual offset. */
+  val effectiveHijriAdjustment: Int
+    get() = hijriAdjustmentOverride
+      ?: HijriDateHelper.automaticAdjustmentFor(selectedCity?.country)
+
+  /** Pushes [effectiveHijriAdjustment] into the calendar. Cheap; call whenever either input moves. */
+  fun applyHijriAdjustment() {
+    HijriDateHelper.adjustmentDays = effectiveHijriAdjustment
+  }
 
   /** The dhikr the user was last counting, so the Tasbih screen reopens where they left off. */
   var lastTasbihId: String?
@@ -181,6 +199,9 @@ class UserPreferences(context: Context) {
         }
         commit()
       }
+      // A new country can mean a different automatic Hijri offset - moving from Dhaka to Makkah
+      // moves Ramadan by a day. Applied here, before the caller re-arms the alarms.
+      applyHijriAdjustment()
     }
 
   private fun writeString(key: String, value: String?) {

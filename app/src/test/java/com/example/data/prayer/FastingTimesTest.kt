@@ -78,6 +78,15 @@ class FastingTimesTest {
   }
 
   @Test
+  fun automaticAdjustmentFollowsTheCountry() {
+    assertEquals(-1, HijriDateHelper.automaticAdjustmentFor("Bangladesh"))
+    assertEquals(-1, HijriDateHelper.automaticAdjustmentFor("BD")) // IP lookup gives codes
+    assertEquals(-1, HijriDateHelper.automaticAdjustmentFor(" pakistan "))
+    assertEquals(0, HijriDateHelper.automaticAdjustmentFor("Saudi Arabia"))
+    assertEquals(0, HijriDateHelper.automaticAdjustmentFor(null))
+  }
+
+  @Test
   fun adjustmentMovesTheStartOfRamadan() {
     val first = firstOfRamadan()
     HijriDateHelper.adjustmentDays = -1
