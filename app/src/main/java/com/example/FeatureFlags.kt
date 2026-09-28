@@ -12,4 +12,11 @@ object FeatureFlags {
    * FastingTimes and the automatic Hijri adjustment still run underneath.
    */
   const val SHOW_FASTING_TIMES = false
+
+  /**
+   * Whether [prayer] belongs in the schedule lists. Imsak (Fajr - 10) is the conventional Sehri
+   * cut-off, so it is hidden along with the rest of the fasting times.
+   */
+  fun showsInSchedule(prayer: com.example.data.model.PrayerName): Boolean =
+    SHOW_FASTING_TIMES || prayer != com.example.data.model.PrayerName.IMSAK
 }

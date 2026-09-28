@@ -70,7 +70,9 @@ fun TodayScheduleDialog(
         modifier = Modifier.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(8.dp)
       ) {
-        schedule.items.forEach { item -> ScheduleEntry(item, language) }
+        schedule.items
+          .filter { com.example.FeatureFlags.showsInSchedule(it.prayer) }
+          .forEach { item -> ScheduleEntry(item, language) }
       }
     },
     confirmButton = {

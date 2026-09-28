@@ -63,8 +63,9 @@ Last updated: 25 September 2026.
 
 ### Sehri and Iftar follow the sahih texts, not timetable conventions
 
-**Hidden** (`FeatureFlags.SHOW_FASTING_TIMES = false`): the Today card and the Settings Hijri
-adjustment card are both switched off. `FastingTimes` and the automatic Hijri adjustment still run,
+**Hidden** (`FeatureFlags.SHOW_FASTING_TIMES = false`): the Today card, the Settings Hijri
+adjustment card, and the Imsak row in the schedule lists (`FeatureFlags.showsInSchedule`) are all
+switched off. `FastingTimes` and the automatic Hijri adjustment still run,
 and `FastingTimesTest` still covers them. Why it is held back: Ramadan's start has to follow the
 local sighting (*"fast when you see it"*, Bukhari 1909 / Muslim 1081), and a calculation cannot know
 that. The automatic offset (−1 for BD/IN/PK/NP/LK/MA, 0 elsewhere) is a rule of thumb, not an

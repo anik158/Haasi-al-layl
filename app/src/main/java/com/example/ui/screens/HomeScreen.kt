@@ -340,7 +340,7 @@ fun HomeScreen(
       // 4. Today's 5 Prayers Schedule with Checkboxes
       item {
         PrayerScheduleListCard(
-          items = schedule.items,
+          items = schedule.items.filter { com.example.FeatureFlags.showsInSchedule(it.prayer) },
           language = language,
           madhab = madhab,
           onMadhabClick = { showNotificationSheet = true },

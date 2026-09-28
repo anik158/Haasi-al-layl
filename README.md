@@ -228,8 +228,8 @@ time, and `Application.onCreate`.
 
 ### 4b. 🌙 Sehri & Iftar *(built, not shown yet)*
 
-> **Hidden for now** behind `FeatureFlags.SHOW_FASTING_TIMES`. Neither the Today card nor the Hijri
-> adjustment in Settings appears in the app. It is held back until the start of Ramadan can follow
+> **Hidden for now** behind `FeatureFlags.SHOW_FASTING_TIMES`. The Today card, the Hijri adjustment
+> in Settings and the Imsak row in the prayer list are all hidden. It is held back until the start of Ramadan can follow
 > the local moon sighting instead of only a calculation. The code, strings and tests stay in place.
 
 Computed offline from the same calculator as the prayer times, so it works with no network:
