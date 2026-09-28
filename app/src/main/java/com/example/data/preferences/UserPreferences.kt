@@ -115,6 +115,18 @@ class UserPreferences(context: Context) {
       ?: IslamicMadhab.DEFAULT
     set(value) = writeString(KEY_MADHAB, value.name)
 
+  /**
+   * Days to shift the Hijri date by, -2..+2. The offline calendar follows Umm al-Qura; where the
+   * month starts on local moon sighting it is often a day behind (Bangladesh, South Asia), and
+   * Ramadan has to start on the right day. Also mirrored into [HijriDateHelper.adjustmentDays].
+   */
+  var hijriAdjustmentDays: Int
+    get() = prefs.getInt(KEY_HIJRI_ADJUSTMENT, 0).coerceIn(-2, 2)
+    set(value) {
+      prefs.edit().putInt(KEY_HIJRI_ADJUSTMENT, value.coerceIn(-2, 2)).commit()
+      com.example.data.prayer.HijriDateHelper.adjustmentDays = value.coerceIn(-2, 2)
+    }
+
   /** The dhikr the user was last counting, so the Tasbih screen reopens where they left off. */
   var lastTasbihId: String?
     get() = prefs.getString(KEY_LAST_TASBIH_ID, null)
@@ -190,6 +202,7 @@ class UserPreferences(context: Context) {
     const val KEY_CALCULATION_METHOD = "calculation_method"
     const val KEY_MADHAB = "madhab"
     const val KEY_LAST_TASBIH_ID = "last_tasbih_id"
+    const val KEY_HIJRI_ADJUSTMENT = "hijri_adjustment_days"
     const val KEY_LAST_SCHEDULED_DAY = "last_scheduled_epoch_day"
     const val KEY_LAST_SCHEDULE_SIGNATURE = "last_schedule_signature"
     const val KEY_CITY_NAME = "city_name"

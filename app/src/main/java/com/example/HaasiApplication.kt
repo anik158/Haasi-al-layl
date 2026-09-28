@@ -25,6 +25,9 @@ class HaasiApplication : Application() {
 
   override fun onCreate() {
     super.onCreate()
+    // Before anything computes a Hijri date, including an alarm receiver's Ramadan Isha rule.
+    com.example.data.prayer.HijriDateHelper.adjustmentDays =
+      com.example.data.preferences.UserPreferences(this).hijriAdjustmentDays
     PrayerNotificationManager.ensureChannels(this)
     appScope.launch {
       // A no-op unless the day or the settings signature changed.

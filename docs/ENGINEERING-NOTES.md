@@ -61,6 +61,20 @@ Last updated: 25 September 2026.
   Isha now use `sunAngleTimeOrNull` and fall back to one-seventh of the night. Sunrise, sunset and
   Asr keep the clamped path because they always occur.
 
+### Sehri and Iftar follow the sahih texts, not timetable conventions
+
+- **Sehri ends at Fajr** (Qur'an 2:187; Bukhari 1918-1919). The calculator's `IMSAK` (Fajr − 10)
+  stays in the schedule list but is never the end of Sehri: it is a precaution with no basis in the
+  sunnah, and the user asked for sahih guidance over convention.
+- **Iftar is Maghrib**, i.e. sunset + `MAGHRIB_MARGIN_MINUTES` (3). The margin is computational
+  (refraction, elevation), not fiqh; the forbidden window uses the true sunset (`trueSunset`).
+- **The fast switches at Iftar, not midnight** (`FastingTimes.statusAt`), so the first Sehri is on
+  screen the evening before 1 Ramadan.
+- **`HijriDateHelper.adjustmentDays`** is loaded in `HaasiApplication.onCreate`, before any receiver
+  can compute a Ramadan Isha interval, and is part of the alarm schedule signature.
+- References were checked against sunnah.com: Bukhari 586, 1918-1919, 1921, 1923, 1954, 1957;
+  Muslim 831, 832.
+
 ### Default madhab is Maliki
 
 Derived from `IslamicMadhab.DEFAULT`, which reads the `isDefault` flag, so the flag and the real

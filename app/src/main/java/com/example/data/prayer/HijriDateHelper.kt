@@ -9,6 +9,13 @@ import java.util.Locale
 
 object HijriDateHelper {
 
+  /**
+   * The user's Hijri adjustment in days, applied to every conversion here - the displayed date,
+   * Ramadan detection, and the Ramadan Isha rule alike. Loaded from preferences at process start.
+   */
+  @Volatile
+  var adjustmentDays: Int = 0
+
   private val HIJRI_MONTH_NAMES = mapOf(
     AppLanguage.ENGLISH to listOf(
       "Muharram", "Safar", "Rabi' al-Awwal", "Rabi' al-Thani",
@@ -47,7 +54,12 @@ object HijriDateHelper {
   }
 
   /** Day, month (1-12) and year of [date] in the Hijri calendar. */
-  private fun hijriParts(date: LocalDate): Triple<Int, Int, Int> = try {
+  private fun hijriParts(gregorian: LocalDate): Triple<Int, Int, Int> {
+    val date = gregorian.plusDays(adjustmentDays.toLong())
+    return rawHijriParts(date)
+  }
+
+  private fun rawHijriParts(date: LocalDate): Triple<Int, Int, Int> = try {
     val hijrahDate = HijrahDate.from(date)
     Triple(
       hijrahDate.get(java.time.temporal.ChronoField.DAY_OF_MONTH),
@@ -57,8 +69,10 @@ object HijriDateHelper {
   } catch (_: Exception) {
     // Fallback calculation if HijrahChronology is unavailable on older runtimes
     val epochDay = date.toEpochDay()
-    // Approximate Islamic lunar calendar calculation (354.367 days per year)
-    val l = epochDay - 1948439 + 2400001
+    // Tabular Islamic calendar (the Kuwaiti algorithm), from the Julian day number. The epoch
+    // offset here used to be wrong by some 51,000 days.
+    val julianDay = epochDay + 2440588
+    val l = julianDay - 1948440 + 10632
     val n = ((l - 1) / 10631).toInt()
     val l2 = l - 10631 * n + 354
     val j = ((10985 - l2) / 5316).toInt() * ((50 * l2) / 17719).toInt() +
@@ -86,31 +100,13 @@ object HijriDateHelper {
    * True during Ramadan. Umm al-Qura stretches the Isha interval from 90 to 120 minutes for the
    * month, so the calculator needs to know.
    */
-  fun isRamadan(date: LocalDate = LocalDate.now()): Boolean {
-    return try {
-      HijrahDate.from(date).get(java.time.temporal.ChronoField.MONTH_OF_YEAR) == 9
-    } catch (_: Exception) {
-      false
-    }
-  }
+  fun isRamadan(date: LocalDate = LocalDate.now()): Boolean = hijriParts(date).second == 9
 
-  fun getHijriDayOfMonth(date: LocalDate = LocalDate.now()): Int {
-    return try {
-      val hijrahDate = HijrahDate.from(date)
-      hijrahDate.get(java.time.temporal.ChronoField.DAY_OF_MONTH)
-    } catch (_: Exception) {
-      val epochDay = date.toEpochDay()
-      val l = epochDay - 1948439 + 2400001
-      val n = ((l - 1) / 10631).toInt()
-      val l2 = l - 10631 * n + 354
-      val j = ((10985 - l2) / 5316).toInt() * ((50 * l2) / 17719).toInt() +
-        (l2 / 5670).toInt() * ((43 * l2) / 15238).toInt()
-      val l3 = l2 - ((30 - j) / 15).toInt() * ((17719 * j) / 50).toInt() -
-        (j / 16).toInt() * ((15238 * j) / 43).toInt() + 29
-      val m = ((24 * l3) / 709).toInt()
-      (l3 - ((709 * m) / 24)).toInt().coerceIn(1, 30)
-    }
-  }
+  /** The Hijri month, 1-12, after the user's adjustment. */
+  fun getHijriMonth(date: LocalDate = LocalDate.now()): Int = hijriParts(date).second
+
+  fun getHijriDayOfMonth(date: LocalDate = LocalDate.now()): Int =
+    hijriParts(date).first.coerceIn(1, 30)
 
   /**
    * The Gregorian date in the *app's* language. It used the device locale, so a phone set to

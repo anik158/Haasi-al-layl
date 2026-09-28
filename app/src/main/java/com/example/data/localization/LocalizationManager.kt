@@ -122,6 +122,101 @@ object LocalizationManager {
   }
 
   // Prayer hero texts
+  fun getSehriIftarTitle(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "السحور والإفطار"
+    AppLanguage.BENGALI -> "সাহরি ও ইফতার"
+    AppLanguage.SPANISH -> "Suhur e Iftar"
+    AppLanguage.PORTUGUESE -> "Suhur e Iftar"
+    AppLanguage.ENGLISH -> "Sehri & Iftar"
+  }
+
+  /** Under the title outside Ramadan, so the card does not read as a claim that it is Ramadan. */
+  fun getSehriIftarVoluntarySubtitle(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "لصيام التطوع"
+    AppLanguage.BENGALI -> "নফল রোজার জন্য"
+    AppLanguage.SPANISH -> "Para el ayuno voluntario"
+    AppLanguage.PORTUGUESE -> "Para o jejum voluntário"
+    AppLanguage.ENGLISH -> "For voluntary fasts"
+  }
+
+  fun getSehriEndsLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "انتهاء السحور"
+    AppLanguage.BENGALI -> "সাহরির শেষ সময়"
+    AppLanguage.SPANISH -> "Fin del suhur"
+    AppLanguage.PORTUGUESE -> "Fim do suhur"
+    AppLanguage.ENGLISH -> "Sehri ends"
+  }
+
+  fun getIftarLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "الإفطار"
+    AppLanguage.BENGALI -> "ইফতার"
+    AppLanguage.SPANISH -> "Iftar"
+    AppLanguage.PORTUGUESE -> "Iftar"
+    AppLanguage.ENGLISH -> "Iftar"
+  }
+
+  /** "Ramadan, day 5". [day] is localized to the language's digits. */
+  fun getRamadanDayLabel(day: Int, language: AppLanguage): String = localizeDigits(
+    when (language) {
+      AppLanguage.ARABIC -> "رمضان، اليوم $day"
+      AppLanguage.BENGALI -> "রমজান, $day তম দিন"
+      AppLanguage.SPANISH -> "Ramadán, día $day"
+      AppLanguage.PORTUGUESE -> "Ramadão, dia $day"
+      AppLanguage.ENGLISH -> "Ramadan, day $day"
+    },
+    language
+  )
+
+  fun getUntilSehriEndsLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "حتى انتهاء السحور"
+    AppLanguage.BENGALI -> "সাহরি শেষ হতে বাকি"
+    AppLanguage.SPANISH -> "hasta el fin del suhur"
+    AppLanguage.PORTUGUESE -> "até o fim do suhur"
+    AppLanguage.ENGLISH -> "until Sehri ends"
+  }
+
+  fun getUntilIftarLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "حتى الإفطار"
+    AppLanguage.BENGALI -> "ইফতার হতে বাকি"
+    AppLanguage.SPANISH -> "hasta el iftar"
+    AppLanguage.PORTUGUESE -> "até o iftar"
+    AppLanguage.ENGLISH -> "until Iftar"
+  }
+
+  /** Tomorrow's times, shown after today's Iftar. */
+  fun getTomorrowLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "غداً"
+    AppLanguage.BENGALI -> "আগামীকাল"
+    AppLanguage.SPANISH -> "Mañana"
+    AppLanguage.PORTUGUESE -> "Amanhã"
+    AppLanguage.ENGLISH -> "Tomorrow"
+  }
+
+  /** Where the two times come from. References only, no quoted wording. */
+  fun getSehriIftarFootnote(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "السحور حتى الفجر الصادق (البقرة ١٨٧؛ البخاري ١٩١٩)، والإفطار عند الغروب (البخاري ١٩٥٤، ١٩٥٧)."
+    AppLanguage.BENGALI -> "সাহরি সুবহে সাদিক পর্যন্ত (আল-বাকারা ১৮৭; বুখারি ১৯১৯), ইফতার সূর্যাস্তে (বুখারি ১৯৫৪, ১৯৫৭)।"
+    AppLanguage.SPANISH -> "El suhur hasta el alba verdadera (Corán 2:187; Bujari 1919); el iftar a la puesta del sol (Bujari 1954, 1957)."
+    AppLanguage.PORTUGUESE -> "O suhur até a aurora verdadeira (Alcorão 2:187; Bukhari 1919); o iftar ao pôr do sol (Bukhari 1954, 1957)."
+    AppLanguage.ENGLISH -> "Sehri until true dawn (Qur'an 2:187; Bukhari 1919); Iftar at sunset (Bukhari 1954, 1957)."
+  }
+
+  fun getHijriAdjustmentLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "تعديل التاريخ الهجري"
+    AppLanguage.BENGALI -> "হিজরি তারিখ সমন্বয়"
+    AppLanguage.SPANISH -> "Ajuste de la fecha hégira"
+    AppLanguage.PORTUGUESE -> "Ajuste da data hégira"
+    AppLanguage.ENGLISH -> "Hijri date adjustment"
+  }
+
+  fun getHijriAdjustmentDesc(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "إذا بدأ الشهر عندكم برؤية الهلال في يوم مختلف. يغيّر بداية رمضان أيضاً."
+    AppLanguage.BENGALI -> "আপনার এলাকায় চাঁদ দেখার ভিত্তিতে মাস অন্য দিনে শুরু হলে। রমজানের শুরুও এতে বদলায়।"
+    AppLanguage.SPANISH -> "Si en su zona el mes empieza otro día por el avistamiento de la luna. También mueve el inicio del Ramadán."
+    AppLanguage.PORTUGUESE -> "Se na sua região o mês começa noutro dia pelo avistamento da lua. Também muda o início do Ramadão."
+    AppLanguage.ENGLISH -> "If the month starts on a different day where you are, by moon sighting. This also moves the start of Ramadan."
+  }
+
   fun getCurrentPrayerLabel(language: AppLanguage): String = when (language) {
     AppLanguage.ARABIC -> "الوقت الحالي"
     AppLanguage.BENGALI -> "চলমান ওয়াক্ত"

@@ -66,6 +66,7 @@ import androidx.compose.material.icons.filled.Settings
 // ... existing imports ...
 import com.example.ui.components.SettingsSheet
 import com.example.ui.components.PrayerNextHeroCard
+import com.example.ui.components.SehriIftarCard
 import com.example.ui.components.PrayerScheduleListCard
 import com.example.ui.components.WeatherHomeScreenCard
 import com.example.ui.theme.CoolMintGradientBase
@@ -234,6 +235,20 @@ fun HomeScreen(
       )
     }
 
+    // Sehri & Iftar for the fast that matters now. Recomputed with the per-second schedule, which
+    // is two calls into the pure calculator - cheap. Hidden while the location is the Makkah
+    // placeholder, like every other place-specific time.
+    val fastingStatus = if (hasResolvedLocation) {
+      com.example.data.prayer.FastingTimes.statusAt(
+        now = java.time.LocalDateTime.of(schedule.date, schedule.currentTime),
+        location = currentCity,
+        method = method,
+        madhab = madhab
+      )
+    } else {
+      null
+    }
+
     LazyColumn(
       modifier = Modifier
         .fillMaxSize()
@@ -253,6 +268,13 @@ fun HomeScreen(
           onCardClick = { showScheduleDialog = true }
         )
 
+      }
+
+      // In Ramadan, Sehri and Iftar are the day's headline, so they sit right under the prayers.
+      if (fastingStatus?.day?.isRamadan == true) {
+        item {
+          SehriIftarCard(status = fastingStatus, language = language)
+        }
       }
 
       if (schedule.isTahajjudTime) {
@@ -324,6 +346,13 @@ fun HomeScreen(
           onMadhabClick = { showNotificationSheet = true },
           onTogglePrayer = onTogglePrayer
         )
+      }
+
+      // Outside Ramadan: for voluntary fasts, just before today's verse.
+      if (fastingStatus != null && !fastingStatus.day.isRamadan) {
+        item {
+          SehriIftarCard(status = fastingStatus, language = language)
+        }
       }
 
       // 5. Daily Inspiration (Ayah & Hadith)

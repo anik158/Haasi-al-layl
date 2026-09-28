@@ -226,6 +226,23 @@ time, and `Application.onCreate`.
 
 ---
 
+### 4b. 🌙 Sehri & Iftar
+
+Computed offline from the same calculator as the prayer times, so it works with no network:
+
+- **Sehri ends at Fajr, true dawn** — Qur'an 2:187, and Sahih al-Bukhari 1918-1919: *"eat and drink
+  until Ibn Umm Maktum calls the adhan."* The ten-minute Imsak some timetables print is a later
+  precaution, not the sunnah, so it is not used.
+- **Iftar at sunset** — Bukhari 1954, and hastening it, Bukhari 1957. It uses Maghrib, which is the
+  computed sunset plus a three-minute margin for calculation error, so Iftar and the Maghrib alert
+  agree.
+- **During Ramadan** the card sits at the top of Today, under the prayer card, with the Ramadan day
+  and a countdown. After Iftar it switches to tomorrow's times, so the first Sehri shows on the
+  evening before 1 Ramadan. The rest of the year it sits above Today's verse, for voluntary fasts.
+- **Hijri date adjustment** (Settings, −2 to +2 days). The offline calendar follows Umm al-Qura;
+  where the month starts on local moon sighting — Bangladesh and much of South Asia — it is often a
+  day behind. The adjustment moves every Hijri date in the app, and with it the start of Ramadan.
+
 ### 5. 📖 Prophetic Supplications (Duas)
 
 The **Duas** tab ships a curated offline set of supplications, each with Arabic text, phonetic

@@ -47,6 +47,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -369,6 +370,80 @@ fun SettingsSheet(
               fontSize = 11.sp,
               color = DarkForestInk.copy(alpha = 0.6f)
             )
+          }
+        }
+      }
+
+      // Hijri date adjustment: moon sighting starts the month a day later in much of the world,
+      // and Ramadan - with Sehri and Iftar at the top of Today - has to start on the right day.
+      item {
+        var hijriAdjustment by remember {
+          mutableStateOf(com.example.data.preferences.UserPreferences(context).hijriAdjustmentDays)
+        }
+        Card(
+          shape = RoundedCornerShape(18.dp),
+          colors = CardDefaults.cardColors(containerColor = WarmBeigeBackground),
+          border = androidx.compose.foundation.BorderStroke(1.dp, LinenBorderLight),
+          modifier = Modifier.fillMaxWidth()
+        ) {
+          Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+              text = LocalizationManager.getHijriAdjustmentLabel(language),
+              fontWeight = FontWeight.Bold,
+              fontSize = 15.sp,
+              color = DarkForestInk
+            )
+            Text(
+              text = LocalizationManager.getHijriAdjustmentDesc(language),
+              fontSize = 12.sp,
+              color = DarkForestInk.copy(alpha = 0.75f)
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            FlowRow(
+              modifier = Modifier.fillMaxWidth(),
+              horizontalArrangement = Arrangement.spacedBy(8.dp),
+              verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+              (-2..2).forEach { days ->
+                val isSelected = hijriAdjustment == days
+                Surface(
+                  onClick = {
+                    hijriAdjustment = days
+                    com.example.data.preferences.UserPreferences(context).hijriAdjustmentDays = days
+                    // Ramadan moves Umm al-Qura's Isha interval, so the alarms re-arm.
+                    onSettingsChanged()
+                  },
+                  shape = RoundedCornerShape(20.dp),
+                  color = if (isSelected) Color(0xFF0F3E2F) else Color.White,
+                  border = androidx.compose.foundation.BorderStroke(1.dp, if (isSelected) Color(0xFF0F3E2F) else OutlineDarkBorder),
+                  modifier = Modifier.testTag("hijri_adjust_$days")
+                ) {
+                  Text(
+                    text = LocalizationManager.localizeDigits(
+                      if (days > 0) "+$days" else days.toString(),
+                      language
+                    ),
+                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                    fontSize = 13.sp,
+                    color = if (isSelected) Color.White else DarkForestInk,
+                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp)
+                  )
+                }
+              }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            // Read after the chips, so it reflects the value just chosen.
+            key(hijriAdjustment) {
+              Text(
+                text = com.example.data.prayer.HijriDateHelper.getTodayHijriFormatted(
+                  java.time.LocalDate.now(),
+                  language
+                ),
+                fontSize = 12.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = DarkForestInk.copy(alpha = 0.8f)
+              )
+            }
           }
         }
       }

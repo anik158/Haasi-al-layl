@@ -289,7 +289,9 @@ object PrayerAlarmScheduler {
       PrayerNotificationManager.isPrayerNotificationsEnabled(context),
       PrayerNotificationManager.isFollowUpNotificationsEnabled(context),
       PrayerNotificationManager.isForbiddenNotificationsEnabled(context),
-      PrayerNotificationManager.isTahajjudNotificationsEnabled(context)
+      PrayerNotificationManager.isTahajjudNotificationsEnabled(context),
+      // Moves Ramadan, and with it Umm al-Qura's Isha interval.
+      com.example.data.prayer.HijriDateHelper.adjustmentDays
     ).joinToString("|")
   }
 
