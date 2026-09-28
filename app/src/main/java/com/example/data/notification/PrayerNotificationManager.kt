@@ -25,6 +25,12 @@ import java.time.ZoneId
 
 object PrayerNotificationManager {
 
+  /** Offsets the tap action's request code away from the full-screen one; ids stay below 50,000. */
+  private const val TAP_REQUEST_OFFSET = 1_000_000
+
+  /** How long a prayer or Tahajjud alarm stays in the shade before clearing itself. */
+  private const val ALARM_NOTIFICATION_TIMEOUT_MILLIS = 10L * 60L * 1000L
+
   private const val TAG = "HaasiNotifications"
 
   // A channel's sound, importance and vibration are frozen at creation on API 26+, so changing
@@ -225,6 +231,23 @@ object PrayerNotificationManager {
       alarmIntent,
       PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
+    // The tap action gets its own PendingIntent - a distinct request code, since extras alone do
+    // not make two PendingIntents different - that opens the screen without ringing. Sharing the
+    // full-screen one meant tapping an hour-old banner rang that old alarm again.
+    val tap = PendingIntent.getActivity(
+      context,
+      notificationId + TAP_REQUEST_OFFSET,
+      com.example.PrayerAlarmActivity.intent(
+        context = context,
+        title = title,
+        body = body,
+        prayer = prayer,
+        language = language,
+        notificationId = notificationId,
+        silent = true
+      ),
+      PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+    )
 
     val builder = NotificationCompat.Builder(context, channelId)
       .setSmallIcon(R.drawable.ic_notification)
@@ -238,8 +261,10 @@ object PrayerNotificationManager {
       // minSdk is 24. Either way the *system* plays it, so it does not depend on this process
       // surviving the broadcast.
       .setSound(alertSoundUri(context))
-      .setContentIntent(fullScreen)
+      .setContentIntent(tap)
       .setFullScreenIntent(fullScreen, /* highPriority = */ true)
+      // An alert is about *now*; one left in the shade is only misleading later.
+      .setTimeoutAfter(ALARM_NOTIFICATION_TIMEOUT_MILLIS)
       // A broadcast, not the activity: when the system downgrades the full-screen intent to a
       // heads-up banner, "Stop" has to silence the ring where the user is, not take over the
       // display to do it.

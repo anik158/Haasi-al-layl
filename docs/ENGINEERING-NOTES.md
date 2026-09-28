@@ -113,13 +113,20 @@ that goes quiet after four seconds cannot wake anyone for Fajr.
   with no sound at all (see the bugs table); it is swept on startup and must not come back. The
   channel plays the tone once as the alert posts. `PrayerAlarmActivity` starts the *looping* ring
   when it opens - so if Android downgrades the full-screen intent to a banner, the one-shot channel
-  tone is the only sound. With a 16-second clip that is acceptable, but it is the known gap.
+  tone is the only sound. Both are five seconds: `haasi_alert.mp3` is trimmed to 5 s, so the
+  channel's one-shot and the looping ring end together.
 - **Android 14 narrowed `USE_FULL_SCREEN_INTENT`** to calling and alarm apps.
   `canUseFullScreenAlarm` asks rather than assumes, and Settings' reliability panel has a row for it
   with a deep link, so a refused permission is visible instead of silently degrading the alarm.
-- **The three-minute auto-stop lives in `AlarmSoundPlayer`, not the activity.** The system downgrades
+- **The five-second auto-stop lives in `AlarmSoundPlayer`, not the activity.** The system downgrades
   a full-screen intent to a heads-up banner whenever the device is already unlocked and in use, so an
   activity-owned timer would never run and an untapped banner would ring until the process died.
+  It was three minutes; a prayer alert is a reminder, not a wake-up alarm that must be dismissed.
+- **The tap action never rings.** It used to share the full-screen PendingIntent, and the activity
+  rings on open - so a banner left in the shade rang its old prayer's alarm when tapped an hour
+  later. Tapping now opens the screen with `EXTRA_SILENT` under its own request code (extras do not
+  distinguish PendingIntents), the activity only rings for an alert under a minute old
+  (`EXTRA_FIRED_AT`), and alarm notifications time out after ten minutes.
 - **Only `AT_TIME` and Tahajjud take over the screen.** The five-minute follow-up stays an ordinary
   notification; taking over the display twice per prayer makes a reminder something to switch off.
 - `AlarmStopReceiver` backs both the notification's Stop action and its delete intent, so clearing

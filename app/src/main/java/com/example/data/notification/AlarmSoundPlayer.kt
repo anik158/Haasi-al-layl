@@ -34,15 +34,16 @@ object AlarmSoundPlayer {
   /**
    * How long the ring is allowed to run unattended.
    *
-   * A real alarm gives up rather than draining the battery flat into an empty room. Three minutes
-   * is long enough to wake someone and short enough to be forgivable if it fires by mistake.
+   * Five seconds: a prayer alert is a reminder, not a wake-up alarm that must ring until
+   * dismissed. The tone file itself is trimmed to the same length, because the notification
+   * channel plays it on its own when the full-screen screen does not open.
    *
    * Enforced here rather than by the alarm screen, because the screen is not guaranteed to open:
    * the system downgrades a full-screen intent to a heads-up banner whenever the device is
    * already unlocked and in use. A timeout that lived in the activity would then never run, and
    * a banner nobody taps would ring until the process died.
    */
-  const val MAX_RING_MILLIS = 3L * 60L * 1000L
+  const val MAX_RING_MILLIS = 5_000L
 
   /** Buzz, pause, buzz - repeated from index 0, which is what makes it a loop. */
   private val VIBRATION_PATTERN = longArrayOf(0, 700, 900, 700, 1500)

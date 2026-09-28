@@ -206,8 +206,9 @@ Fajr alert twenty minutes late is a correctness bug rather than a polish issue.
   passes the meridian, and when it inclines to setting until it sets."*
 - **Tahajjud reminder** when the last third of the night begins, on its own channel and toggle so a
   3 a.m. alert can be silenced without losing Fajr.
-- **A forest-birdsong alert tone** — a 16-second nature recording, routed at `USAGE_ALARM` so it is
-  heard in silent mode, and looped by the full-screen alarm until you stop it.
+- **A forest-birdsong alert tone** — a five-second nature recording, routed at `USAGE_ALARM` so it is
+  heard in silent mode. It rings for five seconds; tapping the notification later opens the alert
+  without ringing again.
 
 Prayer alerts use `setAlarmClock`, which is exempt from Doze and App Standby. The obvious
 alternative, `setExactAndAllowWhileIdle`, is quota-limited to roughly one alarm per app per nine

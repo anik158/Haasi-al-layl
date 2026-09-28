@@ -80,10 +80,15 @@ class PrayerAlarmActivity : ComponentActivity() {
       NotificationManagerCompat.from(this).cancel(content.notificationId)
     }
     // The notification's channel plays the tone once as it posts; nothing else starts the
-    // looping player, so this is where the alarm screen's continuous ring begins. If the system
-    // downgrades the full-screen intent to a banner this activity never opens, and the channel's
-    // one-shot tone is the only sound.
-    AlarmSoundPlayer.start(this)
+    // looping player, so this is where the alarm screen's ring begins. If the system downgrades
+    // the full-screen intent to a banner this activity never opens, and the channel's one-shot
+    // tone is the only sound.
+    //
+    // Only for a fresh alert opened by the full-screen intent. Tapping a banner that sat in the
+    // shade for an hour used to ring that old prayer's alarm all over again.
+    if (content.shouldRing(System.currentTimeMillis())) {
+      AlarmSoundPlayer.start(this)
+    }
   }
 
   private fun stopAndFinish() {
@@ -133,10 +138,15 @@ class PrayerAlarmActivity : ComponentActivity() {
     val body: String,
     val arabicName: String?,
     val language: AppLanguage,
-    val notificationId: Int
+    val notificationId: Int,
+    val firedAtMillis: Long,
+    val silent: Boolean
   ) {
+    fun shouldRing(nowMillis: Long): Boolean =
+      !silent && nowMillis - firedAtMillis in 0..RING_FRESH_MILLIS
+
     companion object {
-      val EMPTY = AlarmContent("", "", null, AppLanguage.ENGLISH, 0)
+      val EMPTY = AlarmContent("", "", null, AppLanguage.ENGLISH, 0, 0L, silent = true)
 
       fun from(intent: Intent?): AlarmContent {
         intent ?: return EMPTY
@@ -149,7 +159,9 @@ class PrayerAlarmActivity : ComponentActivity() {
           language = intent.getStringExtra(EXTRA_LANGUAGE)
             ?.let { AppLanguage.fromCode(it) }
             ?: AppLanguage.ENGLISH,
-          notificationId = intent.getIntExtra(EXTRA_NOTIFICATION_ID, 0)
+          notificationId = intent.getIntExtra(EXTRA_NOTIFICATION_ID, 0),
+          firedAtMillis = intent.getLongExtra(EXTRA_FIRED_AT, 0L),
+          silent = intent.getBooleanExtra(EXTRA_SILENT, false)
         )
       }
     }
@@ -161,6 +173,11 @@ class PrayerAlarmActivity : ComponentActivity() {
     const val EXTRA_PRAYER = "alarm_prayer"
     const val EXTRA_LANGUAGE = "alarm_language"
     const val EXTRA_NOTIFICATION_ID = "alarm_notification_id"
+    const val EXTRA_FIRED_AT = "alarm_fired_at"
+    const val EXTRA_SILENT = "alarm_silent"
+
+    /** How old an alert may be and still ring when its screen opens. */
+    const val RING_FRESH_MILLIS = 60_000L
 
     /**
      * The intent a notification's full-screen intent wraps.
@@ -174,7 +191,9 @@ class PrayerAlarmActivity : ComponentActivity() {
       body: String,
       prayer: PrayerName?,
       language: AppLanguage,
-      notificationId: Int
+      notificationId: Int,
+      /** True for the notification's tap action: show the screen, never ring. */
+      silent: Boolean = false
     ): Intent = Intent(context, PrayerAlarmActivity::class.java).apply {
       flags = Intent.FLAG_ACTIVITY_NEW_TASK or
         Intent.FLAG_ACTIVITY_CLEAR_TOP or
@@ -184,6 +203,8 @@ class PrayerAlarmActivity : ComponentActivity() {
       putExtra(EXTRA_PRAYER, prayer?.name)
       putExtra(EXTRA_LANGUAGE, language.code)
       putExtra(EXTRA_NOTIFICATION_ID, notificationId)
+      putExtra(EXTRA_FIRED_AT, System.currentTimeMillis())
+      putExtra(EXTRA_SILENT, silent)
     }
   }
 }
