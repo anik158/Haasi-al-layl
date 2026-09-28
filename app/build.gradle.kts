@@ -67,6 +67,22 @@ android {
 // haasi-al-layl-debug.apk instead of app-debug.apk.
 base { archivesName = "haasi-al-layl" }
 
+// Ensure app-debug.apk is also created in the outputs directory so the AI Studio preview
+// emulator runner can locate and install it without violating configuration cache.
+val debugApkDir = layout.buildDirectory.dir("outputs/apk/debug")
+tasks.matching { it.name == "assembleDebug" }.configureEach {
+  val targetDir = debugApkDir
+  doLast {
+    val dir = targetDir.get().asFile
+    val src = File(dir, "haasi-al-layl-debug.apk")
+    val dest = File(dir, "app-debug.apk")
+    if (src.exists()) {
+      src.copyTo(dest, overwrite = true)
+    }
+  }
+}
+
+
 // Configure the Secrets Gradle Plugin to use .env and .env.example files
 // to match the convention used in Web projects.
 secrets {
