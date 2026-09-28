@@ -381,93 +381,95 @@ fun SettingsSheet(
 
       // Hijri date adjustment: moon sighting starts the month a day later in much of the world,
       // and Ramadan - with Sehri and Iftar at the top of Today - has to start on the right day.
-      item {
-        val hijriPrefs = remember { com.example.data.preferences.UserPreferences(context) }
-        // null = automatic, from the country.
-        var hijriOverride by remember { mutableStateOf(hijriPrefs.hijriAdjustmentOverride) }
-        val automaticDays = com.example.data.prayer.HijriDateHelper
-          .automaticAdjustmentFor(hijriPrefs.selectedCity?.country)
-        fun signed(days: Int) = LocalizationManager.localizeDigits(
-          if (days > 0) "+$days" else days.toString(),
-          language
-        )
-        fun chooseHijri(value: Int?) {
-          hijriOverride = value
-          hijriPrefs.hijriAdjustmentOverride = value
-          // Ramadan moves Umm al-Qura's Isha interval, so the alarms re-arm.
-          onSettingsChanged()
-        }
-        Card(
-          shape = RoundedCornerShape(18.dp),
-          colors = CardDefaults.cardColors(containerColor = WarmBeigeBackground),
-          border = androidx.compose.foundation.BorderStroke(1.dp, LinenBorderLight),
-          modifier = Modifier.fillMaxWidth()
-        ) {
-          Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-              text = LocalizationManager.getHijriAdjustmentLabel(language),
-              fontWeight = FontWeight.Bold,
-              fontSize = 15.sp,
-              color = DarkForestInk
-            )
-            Text(
-              text = LocalizationManager.getHijriAdjustmentDesc(language),
-              fontSize = 12.sp,
-              color = DarkForestInk.copy(alpha = 0.75f)
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            FlowRow(
-              modifier = Modifier.fillMaxWidth(),
-              horizontalArrangement = Arrangement.spacedBy(8.dp),
-              verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-              // Automatic first, and the default: most people should never need the rest.
-              Surface(
-                onClick = { chooseHijri(null) },
-                shape = RoundedCornerShape(20.dp),
-                color = if (hijriOverride == null) Color(0xFF0F3E2F) else Color.White,
-                border = androidx.compose.foundation.BorderStroke(1.dp, if (hijriOverride == null) Color(0xFF0F3E2F) else OutlineDarkBorder),
-                modifier = Modifier.testTag("hijri_adjust_auto")
+      if (com.example.FeatureFlags.SHOW_FASTING_TIMES) {
+        item {
+          val hijriPrefs = remember { com.example.data.preferences.UserPreferences(context) }
+          // null = automatic, from the country.
+          var hijriOverride by remember { mutableStateOf(hijriPrefs.hijriAdjustmentOverride) }
+          val automaticDays = com.example.data.prayer.HijriDateHelper
+            .automaticAdjustmentFor(hijriPrefs.selectedCity?.country)
+          fun signed(days: Int) = LocalizationManager.localizeDigits(
+            if (days > 0) "+$days" else days.toString(),
+            language
+          )
+          fun chooseHijri(value: Int?) {
+            hijriOverride = value
+            hijriPrefs.hijriAdjustmentOverride = value
+            // Ramadan moves Umm al-Qura's Isha interval, so the alarms re-arm.
+            onSettingsChanged()
+          }
+          Card(
+            shape = RoundedCornerShape(18.dp),
+            colors = CardDefaults.cardColors(containerColor = WarmBeigeBackground),
+            border = androidx.compose.foundation.BorderStroke(1.dp, LinenBorderLight),
+            modifier = Modifier.fillMaxWidth()
+          ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+              Text(
+                text = LocalizationManager.getHijriAdjustmentLabel(language),
+                fontWeight = FontWeight.Bold,
+                fontSize = 15.sp,
+                color = DarkForestInk
+              )
+              Text(
+                text = LocalizationManager.getHijriAdjustmentDesc(language),
+                fontSize = 12.sp,
+                color = DarkForestInk.copy(alpha = 0.75f)
+              )
+              Spacer(modifier = Modifier.height(10.dp))
+              FlowRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
               ) {
-                Text(
-                  text = "${LocalizationManager.getAutomaticLabel(language)} (${signed(automaticDays)})",
-                  fontWeight = if (hijriOverride == null) FontWeight.Bold else FontWeight.Normal,
-                  fontSize = 13.sp,
-                  color = if (hijriOverride == null) Color.White else DarkForestInk,
-                  modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp)
-                )
-              }
-              (-2..2).forEach { days ->
-                val isSelected = hijriOverride == days
+                // Automatic first, and the default: most people should never need the rest.
                 Surface(
-                  onClick = { chooseHijri(days) },
+                  onClick = { chooseHijri(null) },
                   shape = RoundedCornerShape(20.dp),
-                  color = if (isSelected) Color(0xFF0F3E2F) else Color.White,
-                  border = androidx.compose.foundation.BorderStroke(1.dp, if (isSelected) Color(0xFF0F3E2F) else OutlineDarkBorder),
-                  modifier = Modifier.testTag("hijri_adjust_$days")
+                  color = if (hijriOverride == null) Color(0xFF0F3E2F) else Color.White,
+                  border = androidx.compose.foundation.BorderStroke(1.dp, if (hijriOverride == null) Color(0xFF0F3E2F) else OutlineDarkBorder),
+                  modifier = Modifier.testTag("hijri_adjust_auto")
                 ) {
                   Text(
-                    text = signed(days),
-                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                    text = "${LocalizationManager.getAutomaticLabel(language)} (${signed(automaticDays)})",
+                    fontWeight = if (hijriOverride == null) FontWeight.Bold else FontWeight.Normal,
                     fontSize = 13.sp,
-                    color = if (isSelected) Color.White else DarkForestInk,
+                    color = if (hijriOverride == null) Color.White else DarkForestInk,
                     modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp)
                   )
                 }
+                (-2..2).forEach { days ->
+                  val isSelected = hijriOverride == days
+                  Surface(
+                    onClick = { chooseHijri(days) },
+                    shape = RoundedCornerShape(20.dp),
+                    color = if (isSelected) Color(0xFF0F3E2F) else Color.White,
+                    border = androidx.compose.foundation.BorderStroke(1.dp, if (isSelected) Color(0xFF0F3E2F) else OutlineDarkBorder),
+                    modifier = Modifier.testTag("hijri_adjust_$days")
+                  ) {
+                    Text(
+                      text = signed(days),
+                      fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                      fontSize = 13.sp,
+                      color = if (isSelected) Color.White else DarkForestInk,
+                      modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp)
+                    )
+                  }
+                }
               }
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            // Read after the chips, so it reflects the value just chosen.
-            key(hijriOverride) {
-              Text(
-                text = com.example.data.prayer.HijriDateHelper.getTodayHijriFormatted(
-                  java.time.LocalDate.now(),
-                  language
-                ),
-                fontSize = 12.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = DarkForestInk.copy(alpha = 0.8f)
-              )
+              Spacer(modifier = Modifier.height(8.dp))
+              // Read after the chips, so it reflects the value just chosen.
+              key(hijriOverride) {
+                Text(
+                  text = com.example.data.prayer.HijriDateHelper.getTodayHijriFormatted(
+                    java.time.LocalDate.now(),
+                    language
+                  ),
+                  fontSize = 12.sp,
+                  fontWeight = FontWeight.SemiBold,
+                  color = DarkForestInk.copy(alpha = 0.8f)
+                )
+              }
             }
           }
         }

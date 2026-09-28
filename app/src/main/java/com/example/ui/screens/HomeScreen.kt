@@ -238,7 +238,7 @@ fun HomeScreen(
     // Sehri & Iftar for the fast that matters now. Recomputed with the per-second schedule, which
     // is two calls into the pure calculator - cheap. Hidden while the location is the Makkah
     // placeholder, like every other place-specific time.
-    val fastingStatus = if (hasResolvedLocation) {
+    val fastingStatus = if (com.example.FeatureFlags.SHOW_FASTING_TIMES && hasResolvedLocation) {
       com.example.data.prayer.FastingTimes.statusAt(
         now = java.time.LocalDateTime.of(schedule.date, schedule.currentTime),
         location = currentCity,

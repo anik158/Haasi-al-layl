@@ -63,6 +63,18 @@ Last updated: 25 September 2026.
 
 ### Sehri and Iftar follow the sahih texts, not timetable conventions
 
+**Hidden** (`FeatureFlags.SHOW_FASTING_TIMES = false`): the Today card and the Settings Hijri
+adjustment card are both switched off. `FastingTimes` and the automatic Hijri adjustment still run,
+and `FastingTimesTest` still covers them. Why it is held back: Ramadan's start has to follow the
+local sighting (*"fast when you see it"*, Bukhari 1909 / Muslim 1081), and a calculation cannot know
+that. The automatic offset (−1 for BD/IN/PK/NP/LK/MA, 0 elsewhere) is a rule of thumb, not an
+official guideline. Options discussed before turning it back on:
+- **Online:** Aladhan's `HJCoSA` calendar (Umm al-Qura corrected by Saudi Arabia's announced
+  sightings) for Saudi-following countries, `DIYANET` for Turkey. There is no public feed for
+  Bangladesh, Pakistan, India or Morocco.
+- **A one-tap sighting prompt** on the evening of the 29th: "Was the moon sighted in your area?"
+- **Optionally**, an announcements file in the repo, updated on the night of each sighting.
+
 - **Sehri ends at Fajr** (Qur'an 2:187; Bukhari 1918-1919). The calculator's `IMSAK` (Fajr − 10)
   stays in the schedule list but is never the end of Sehri: it is a precaution with no basis in the
   sunnah, and the user asked for sahih guidance over convention.
@@ -417,6 +429,7 @@ repo should assert its match count.
   `PrayerLogToggleTest`, `AlertIdsTest` with pinned literals,
   `QiblaCalculatorTest`, and a DST test. Robolectric and Roborazzi are already configured at
   `sdk = [36]`. **CI runs only `assembleDebug`, so test code is not even compiled there.**
+- **Sehri & Iftar is hidden** until moon sighting is handled; see Architecture decisions.
 - **The Hisn al-Muslim translations are unreviewed** (see above) - a scholar's pass is still owed.
 - **Prayer log has no city dimension** — `PrayerLogEntity` is keyed on date alone, so completions
   carry across cities. Deliberate: "did I pray Fajr" is a fact about the worshipper. Adding it needs
