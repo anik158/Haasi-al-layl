@@ -2,7 +2,7 @@
 
 What the app needs before its first upload, and the answers to Play Console's forms. Keep this in
 step with the code: if a network call or permission is added, this page and
-`docs/privacy-policy.html` change with it.
+`docs/site/haasi-al-layl/privacy/index.html` change with it.
 
 ## Before the first upload
 
@@ -12,10 +12,11 @@ step with the code: if a network call or permission is added, this page and
 - [ ] **Remove the unused Firebase dependencies** in `app/build.gradle.kts`: `firebase-bom`,
       `firebase-ai`, `firebase-appcheck-recaptcha`, `firebase-appcheck-debug`. No code uses them,
       and the App Check *debug* provider must not ship in a release build.
-- [ ] **Publish the privacy policy** at exactly
-      `https://www.ahsanulhouqe.com/haasi-al-layl/privacy/` — upload `docs/privacy-policy.html` as
-      that page's `index.html`. The app links there (`DeveloperContact.PRIVACY_POLICY`), and the
-      same URL goes into Play Console → App content → Privacy policy.
+- [ ] **Publish the site folder.** Upload `docs/site/haasi-al-layl/` to the root of
+      ahsanulhouqe.com, so the policy is at `https://www.ahsanulhouqe.com/haasi-al-layl/privacy/`
+      and the guide at `…/haasi-al-layl/guide/`. The app links to both
+      (`DeveloperContact.PRIVACY_POLICY`, `USER_GUIDE`); the privacy URL also goes into Play
+      Console → App content → Privacy policy. See `docs/site/README.md`.
 - [ ] **Closed test first.** New personal developer accounts must run a closed test with at least
       12 testers for 14 days before production access.
 - [ ] Release signing key and a `versionCode` bump per upload.

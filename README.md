@@ -352,7 +352,7 @@ as a bordered link chip.
 The app has no accounts, ads or analytics, and no server of its own. Before the location prompt it
 shows a disclosure of what is used and who receives it: coordinates go to BigDataCloud (place name)
 and Open-Meteo (weather, city search), and — only when the device gives no location — the IP address
-to ipinfo.io. The policy is [`docs/privacy-policy.html`](docs/privacy-policy.html), linked from
+to ipinfo.io. The policy is [`docs/site/haasi-al-layl/privacy/index.html`](docs/site/haasi-al-layl/privacy/index.html), linked from
 Settings and from the disclosure; [`docs/PLAY-STORE.md`](docs/PLAY-STORE.md) has the pre-upload
 checklist, the Data safety answers and the permission declarations.
 

@@ -460,7 +460,7 @@ repo should assert its match count.
   `sdk = [36]`. **CI runs only `assembleDebug`, so test code is not even compiled there.**
 - **Sehri & Iftar is hidden** until moon sighting is handled; see Architecture decisions.
 - **Before Play:** see `docs/PLAY-STORE.md` — new application ID, remove the unused Firebase
-  dependencies, publish `docs/privacy-policy.html` at the URL in `DeveloperContact.PRIVACY_POLICY`.
+  dependencies, publish `docs/site/haasi-al-layl/privacy/index.html` at the URL in `DeveloperContact.PRIVACY_POLICY`.
   The location prompt is always preceded by `LocationDisclosureDialog` (Play's prominent
   disclosure); exact alarms are `SCHEDULE_EXACT_ALARM`, never `USE_EXACT_ALARM`.
 - **The 99 Names' meanings and pronunciations are unreviewed** (`data/dua/AsmaUlHusna.kt`).

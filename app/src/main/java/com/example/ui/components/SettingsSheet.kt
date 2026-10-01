@@ -1040,6 +1040,19 @@ fun SettingsSheet(
             }
             Spacer(modifier = Modifier.height(10.dp))
             Text(
+              text = LocalizationManager.getUserGuideLabel(language),
+              fontSize = 13.sp,
+              fontWeight = FontWeight.SemiBold,
+              color = DarkForestInk,
+              textDecoration = androidx.compose.ui.text.style.TextDecoration.Underline,
+              textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+              modifier = Modifier
+                .fillMaxWidth()
+                .clickable { DeveloperContact.openUserGuide(context) }
+                .padding(vertical = 6.dp)
+                .testTag("btn_user_guide")
+            )
+            Text(
               text = LocalizationManager.getPrivacyPolicyLabel(language),
               fontSize = 13.sp,
               fontWeight = FontWeight.SemiBold,

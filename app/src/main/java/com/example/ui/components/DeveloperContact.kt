@@ -17,12 +17,17 @@ object DeveloperContact {
   const val FEEDBACK_EMAIL = "ahsanan@outlook.com"
 
   /**
-   * Where the privacy policy is published. The text is `docs/privacy-policy.html` in this repo;
+   * Where the privacy policy is published. The text is `docs/site/haasi-al-layl/privacy/index.html` in this repo;
    * it has to be uploaded to exactly this address before the Play listing goes live.
    */
   const val PRIVACY_POLICY = "https://www.ahsanulhouqe.com/haasi-al-layl/privacy/"
 
   fun openPrivacyPolicy(context: Context) = openUrl(context, PRIVACY_POLICY)
+
+  /** The user guide, `docs/site/haasi-al-layl/guide/index.html`, published beside the policy. */
+  const val USER_GUIDE = "https://www.ahsanulhouqe.com/haasi-al-layl/guide/"
+
+  fun openUserGuide(context: Context) = openUrl(context, USER_GUIDE)
 
   fun openWebsite(context: Context) = openUrl(context, WEBSITE)
 

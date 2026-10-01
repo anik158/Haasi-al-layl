@@ -176,6 +176,14 @@ object LocalizationManager {
     )
   }
 
+  fun getUserGuideLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "دليل الاستخدام"
+    AppLanguage.BENGALI -> "ব্যবহার নির্দেশিকা"
+    AppLanguage.SPANISH -> "Guía de uso"
+    AppLanguage.PORTUGUESE -> "Guia de uso"
+    AppLanguage.ENGLISH -> "User guide"
+  }
+
   fun getPrivacyPolicyLabel(language: AppLanguage): String = when (language) {
     AppLanguage.ARABIC -> "سياسة الخصوصية"
     AppLanguage.BENGALI -> "গোপনীয়তা নীতি"
