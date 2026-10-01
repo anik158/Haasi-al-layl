@@ -459,6 +459,10 @@ repo should assert its match count.
   `QiblaCalculatorTest`, and a DST test. Robolectric and Roborazzi are already configured at
   `sdk = [36]`. **CI runs only `assembleDebug`, so test code is not even compiled there.**
 - **Sehri & Iftar is hidden** until moon sighting is handled; see Architecture decisions.
+- **Before Play:** see `docs/PLAY-STORE.md` — new application ID, remove the unused Firebase
+  dependencies, publish `docs/privacy-policy.html` at the URL in `DeveloperContact.PRIVACY_POLICY`.
+  The location prompt is always preceded by `LocationDisclosureDialog` (Play's prominent
+  disclosure); exact alarms are `SCHEDULE_EXACT_ALARM`, never `USE_EXACT_ALARM`.
 - **The 99 Names' meanings and pronunciations are unreviewed** (`data/dua/AsmaUlHusna.kt`).
   `pronunciation(language)` gives Bengali script in Bengali, a Spanish-adapted spelling in Spanish
   (Y for ج, J for خ, accented long vowels), the English-style spelling in English and Portuguese,

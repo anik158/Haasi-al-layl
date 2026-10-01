@@ -16,13 +16,23 @@ object DeveloperContact {
   const val WEBSITE = "https://www.ahsanulhouqe.com/"
   const val FEEDBACK_EMAIL = "ahsanan@outlook.com"
 
-  fun openWebsite(context: Context) {
+  /**
+   * Where the privacy policy is published. The text is `docs/privacy-policy.html` in this repo;
+   * it has to be uploaded to exactly this address before the Play listing goes live.
+   */
+  const val PRIVACY_POLICY = "https://www.ahsanulhouqe.com/haasi-al-layl/privacy/"
+
+  fun openPrivacyPolicy(context: Context) = openUrl(context, PRIVACY_POLICY)
+
+  fun openWebsite(context: Context) = openUrl(context, WEBSITE)
+
+  private fun openUrl(context: Context, url: String) {
     try {
       context.startActivity(
-        Intent(Intent.ACTION_VIEW, Uri.parse(WEBSITE)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        Intent(Intent.ACTION_VIEW, Uri.parse(url)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
       )
     } catch (_: ActivityNotFoundException) {
-      Toast.makeText(context, WEBSITE, Toast.LENGTH_LONG).show()
+      Toast.makeText(context, url, Toast.LENGTH_LONG).show()
     }
   }
 

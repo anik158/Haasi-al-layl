@@ -6,6 +6,7 @@ import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -1037,6 +1038,20 @@ fun SettingsSheet(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp)
               )
             }
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+              text = LocalizationManager.getPrivacyPolicyLabel(language),
+              fontSize = 13.sp,
+              fontWeight = FontWeight.SemiBold,
+              color = DarkForestInk,
+              textDecoration = androidx.compose.ui.text.style.TextDecoration.Underline,
+              textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+              modifier = Modifier
+                .fillMaxWidth()
+                .clickable { DeveloperContact.openPrivacyPolicy(context) }
+                .padding(vertical = 6.dp)
+                .testTag("btn_privacy_policy")
+            )
           }
         }
       }

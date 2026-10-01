@@ -58,6 +58,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.data.localization.LocalizationManager
 import com.example.ui.HaasiAlLaylViewModel
+import com.example.ui.components.LocationDisclosureDialog
 import com.example.ui.components.CitySelectionSheet
 import com.example.ui.LocatingPhase
 import com.example.ui.OnboardingState
@@ -89,6 +90,9 @@ class MainActivity : ComponentActivity() {
     }
   }
 }
+
+private const val DISCLOSURE_FIRST_RUN = "first_run"
+private const val DISCLOSURE_DETECT = "detect"
 
 private data class NavDestination(
   val label: String,
@@ -155,7 +159,13 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
   // there is a network the app resolves by IP in under a second and shows no ladder, and it still
   // needs this permission for the Qibla compass and for the background fix that upgrades the IP
   // estimate to real coordinates.
+  //
+  // The system prompt is never the first thing shown: Google Play requires a prominent
+  // disclosure in front of it, saying what is collected, why, and who receives it. So the first
+  // launch opens LocationDisclosureDialog, and only "Continue" reaches the system dialog.
   var hasLaunchedLocationRequest by rememberSaveable { mutableStateOf(false) }
+  // null = no disclosure up; FIRST_RUN or DETECT = which request "Continue" goes on to.
+  var pendingDisclosure by rememberSaveable { mutableStateOf<String?>(null) }
   LaunchedEffect(Unit) {
     if (hasLaunchedLocationRequest) return@LaunchedEffect
     val prefs = UserPreferences(context)
@@ -163,12 +173,7 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
       return@LaunchedEffect
     }
     hasLaunchedLocationRequest = true
-    firstRunLocationLauncher.launch(
-      arrayOf(
-        Manifest.permission.ACCESS_FINE_LOCATION,
-        Manifest.permission.ACCESS_COARSE_LOCATION
-      )
-    )
+    pendingDisclosure = DISCLOSURE_FIRST_RUN
   }
 
   // The notification prompt waits until the location question has settled, so it does not land
@@ -241,6 +246,30 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
     contract = ActivityResultContracts.RequestMultiplePermissions()
   ) { granted ->
     if (granted.values.any { it }) viewModel.autoDetectLocation()
+  }
+
+  pendingDisclosure?.let { mode ->
+    val locationPermissions = arrayOf(
+      Manifest.permission.ACCESS_FINE_LOCATION,
+      Manifest.permission.ACCESS_COARSE_LOCATION
+    )
+    LocationDisclosureDialog(
+      language = currentLanguage,
+      onContinue = {
+        pendingDisclosure = null
+        if (mode == DISCLOSURE_DETECT) {
+          detectLocationLauncher.launch(locationPermissions)
+        } else {
+          firstRunLocationLauncher.launch(locationPermissions)
+        }
+      },
+      onNotNow = {
+        pendingDisclosure = null
+        // A first-run "Not now" is a refusal: say so to the ladder, which falls back to an
+        // estimate, and do not ask again unprompted. "Use my location" still offers it.
+        if (mode == DISCLOSURE_FIRST_RUN) viewModel.onLocationPermissionResult(false)
+      }
+    )
   }
 
   // Held in front of everything while the fix is in flight, on the same night navy as the launch
@@ -429,12 +458,8 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
           if (DeviceLocationProvider.hasPermission(context)) {
             viewModel.autoDetectLocation()
           } else {
-            detectLocationLauncher.launch(
-              arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-              )
-            )
+            // The same disclosure first, then the system prompt.
+            pendingDisclosure = DISCLOSURE_DETECT
           }
         },
         onSearch = { query -> viewModel.searchPlaces(query) },

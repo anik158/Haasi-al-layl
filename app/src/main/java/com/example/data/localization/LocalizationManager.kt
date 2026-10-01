@@ -131,6 +131,75 @@ object LocalizationManager {
   }
 
   // Prayer hero texts
+  fun getLocationDisclosureTitle(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "لماذا يحتاج التطبيق موقعك"
+    AppLanguage.BENGALI -> "অ্যাপটির কেন আপনার অবস্থান প্রয়োজন"
+    AppLanguage.SPANISH -> "Por qué la app necesita su ubicación"
+    AppLanguage.PORTUGUESE -> "Por que a app precisa da sua localização"
+    AppLanguage.ENGLISH -> "Why the app needs your location"
+  }
+
+  /**
+   * Google Play's prominent disclosure, shown before the system prompt: what is collected, what
+   * for, who receives it, and that it is used only while the app is open.
+   */
+  fun getLocationDisclosurePoints(language: AppLanguage): List<String> = when (language) {
+    AppLanguage.ARABIC -> listOf(
+      "يستخدم التطبيق موقعك الدقيق لحساب أوقات الصلاة واتجاه القبلة والطقس لمكانك، ويعمل ذلك دون إنترنت.",
+      "عند الاتصال بالإنترنت تُرسل الإحداثيات إلى BigDataCloud لمعرفة اسم المكان، وإلى Open-Meteo لجلب الطقس.",
+      "إن لم يتوفر موقع الجهاز، يُرسل عنوان IP إلى ipinfo.io لتقدير مدينتك تقريبياً.",
+      "يُستخدم الموقع فقط أثناء فتح التطبيق، ويُحفظ على جهازك وحده، ولا نجمعه نحن ولا نبيعه."
+    )
+    AppLanguage.BENGALI -> listOf(
+      "আপনার এলাকার নামাজের সময়, কিবলার দিক ও আবহাওয়া হিসাব করতে অ্যাপটি আপনার সঠিক অবস্থান ব্যবহার করে — এটি ইন্টারনেট ছাড়াই কাজ করে।",
+      "ইন্টারনেট থাকলে জায়গার নাম জানতে স্থানাঙ্ক BigDataCloud-এ এবং আবহাওয়ার জন্য Open-Meteo-তে পাঠানো হয়।",
+      "ডিভাইসের অবস্থান না পেলে আনুমানিক শহর জানতে আপনার IP ঠিকানা ipinfo.io-তে পাঠানো হয়।",
+      "অবস্থান শুধু অ্যাপ খোলা থাকলে ব্যবহৃত হয় এবং কেবল আপনার ফোনে সংরক্ষিত থাকে; আমরা এটি সংগ্রহ বা বিক্রি করি না।"
+    )
+    AppLanguage.SPANISH -> listOf(
+      "La app usa su ubicación precisa para calcular los horarios de oración, la dirección de la Qibla y el tiempo de su lugar; esto funciona sin internet.",
+      "Con conexión, las coordenadas se envían a BigDataCloud para obtener el nombre del lugar y a Open-Meteo para el tiempo.",
+      "Si no hay ubicación del dispositivo, su dirección IP se envía a ipinfo.io para estimar su ciudad.",
+      "La ubicación solo se usa con la app abierta y se guarda solo en su teléfono; nosotros no la recogemos ni la vendemos."
+    )
+    AppLanguage.PORTUGUESE -> listOf(
+      "A app usa a sua localização precisa para calcular os horários de oração, a direção da Qibla e o tempo do seu local; isto funciona sem internet.",
+      "Com ligação, as coordenadas são enviadas à BigDataCloud para obter o nome do local e à Open-Meteo para o tempo.",
+      "Sem localização do dispositivo, o seu endereço IP é enviado à ipinfo.io para estimar a sua cidade.",
+      "A localização só é usada com a app aberta e fica guardada apenas no seu telemóvel; nós não a recolhemos nem vendemos."
+    )
+    AppLanguage.ENGLISH -> listOf(
+      "The app uses your precise location to work out prayer times, the Qibla direction and the weather for where you are. This works offline.",
+      "When you are online, the coordinates are sent to BigDataCloud to name the place and to Open-Meteo for the weather.",
+      "If the device cannot give a location, your IP address is sent to ipinfo.io to estimate your city.",
+      "Location is used only while the app is open and is stored only on your phone. We do not collect or sell it."
+    )
+  }
+
+  fun getPrivacyPolicyLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "سياسة الخصوصية"
+    AppLanguage.BENGALI -> "গোপনীয়তা নীতি"
+    AppLanguage.SPANISH -> "Política de privacidad"
+    AppLanguage.PORTUGUESE -> "Política de privacidade"
+    AppLanguage.ENGLISH -> "Privacy policy"
+  }
+
+  fun getContinueLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "متابعة"
+    AppLanguage.BENGALI -> "চালিয়ে যান"
+    AppLanguage.SPANISH -> "Continuar"
+    AppLanguage.PORTUGUESE -> "Continuar"
+    AppLanguage.ENGLISH -> "Continue"
+  }
+
+  fun getNotNowLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "ليس الآن"
+    AppLanguage.BENGALI -> "এখন নয়"
+    AppLanguage.SPANISH -> "Ahora no"
+    AppLanguage.PORTUGUESE -> "Agora não"
+    AppLanguage.ENGLISH -> "Not now"
+  }
+
   fun getExactAlarmCardTitle(language: AppLanguage): String = when (language) {
     AppLanguage.ARABIC -> "اسمح بالتنبيهات الدقيقة"
     AppLanguage.BENGALI -> "নির্ভুল অ্যালার্মের অনুমতি দিন"
