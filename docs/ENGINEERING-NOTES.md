@@ -595,6 +595,10 @@ exist for most users.
 tab label is `"\uFDF2\u200E" + localizeDigits("99", language)` - the left-to-right mark pins the
 order in every language.
 
+The same happened in Today's Prayers: "الفجر · 04:32 AM" starts with Arabic, so the whole line went
+right-to-left and rendered "04:32 · الفجر AM". Any line mixing an Arabic name with a time or number
+gets a leading LRM (RLM in Arabic) and each part wrapped in FSI…PDI (`\u2068`…`\u2069`).
+
 ### Localization is not done until there are no English literals in `ui/`
 
 A sweep found about thirty — `ForbiddenPrayerTimesCard` did not even import

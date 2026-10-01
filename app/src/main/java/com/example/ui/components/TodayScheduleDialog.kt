@@ -129,7 +129,12 @@ private fun ScheduleEntry(item: PrayerTimeItem, language: AppLanguage) {
           color = DarkForestInk
         )
         Text(
-          text = "${item.prayer.arabicName}  ·  ${LocalizationManager.formatTime(item.time, language)}",
+          // Starting with Arabic made the whole line right-to-left, which split "04:32 AM" around
+          // the name ("04:32 · الفجر AM"). A mark sets the line's direction from the app language,
+          // and each part is isolated so neither reorders the other.
+          text = (if (language == AppLanguage.ARABIC) "\u200F" else "\u200E") +
+            "\u2068${item.prayer.arabicName}\u2069  ·  " +
+            "\u2068${LocalizationManager.formatTime(item.time, language)}\u2069",
           style = MaterialTheme.typography.bodySmall,
           fontWeight = FontWeight.Medium,
           color = DarkForestInk.copy(alpha = 0.75f)
