@@ -561,7 +561,7 @@ fun SettingsSheet(
                 // list of every installed app. Play restricts ACTION_REQUEST_IGNORE_BATTERY_-
                 // OPTIMIZATIONS to a short list of permitted use cases, of which "alarms and
                 // reminders as core functionality" is one - and that is literally what this app
-                // is; it holds USE_EXACT_ALARM for the same reason.
+                // is.
                 //
                 // Falls back to the full list if the direct dialog is refused by the OEM, which
                 // some heavily skinned ROMs do.

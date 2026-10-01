@@ -647,7 +647,7 @@ ship on an OEM allowlist; neither is something an app can grant itself.
 What *can* be offered is the direct battery-optimisation exemption - one "Allow" rather than
 finding this app in a list of every installed one. `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS` is
 restricted by Play to a short list of permitted use cases, of which "alarms or reminders as core
-functionality" is one, and is what this app is; it holds `USE_EXACT_ALARM` for the same reason. Some
+functionality" is one, and is what this app is. Some
 heavily skinned ROMs refuse the direct dialog, so it falls back to the full list.
 
 Settings has a reliability panel reporting what is blocked - notifications, exact alarms,

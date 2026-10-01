@@ -263,6 +263,16 @@ fun HomeScreen(
       null
     }
 
+    // Re-read on every resume, so the card disappears as soon as the user comes back from granting.
+    val homeContext = androidx.compose.ui.platform.LocalContext.current
+    var needsExactAlarmPermission by remember { mutableStateOf(false) }
+    androidx.lifecycle.compose.LifecycleResumeEffect(Unit) {
+      needsExactAlarmPermission =
+        com.example.data.notification.PrayerNotificationManager.isPrayerNotificationsEnabled(homeContext) &&
+          !com.example.data.notification.PrayerAlarmScheduler.canScheduleExactAlarms(homeContext)
+      onPauseOrDispose { }
+    }
+
     LazyColumn(
       modifier = Modifier
         .fillMaxSize()
@@ -283,6 +293,14 @@ fun HomeScreen(
           onCardClick = { showScheduleDialog = true }
         )
 
+      }
+
+      // Exact alarms are user-granted (SCHEDULE_EXACT_ALARM, denied by default on Android 14+), and
+      // without them the prayer alert can drift. Ask right here, once, where it matters.
+      if (needsExactAlarmPermission) {
+        item {
+          ExactAlarmPermissionCard(language = language)
+        }
       }
 
       // In Ramadan, Sehri and Iftar are the day's headline, so they sit right under the prayers.
@@ -400,3 +418,65 @@ fun HomeScreen(
     )
   }
 }
+
+/** One tap to the system screen that grants exact alarms, with the reason in plain words. */
+@Composable
+private fun ExactAlarmPermissionCard(language: AppLanguage) {
+  val context = androidx.compose.ui.platform.LocalContext.current
+  Card(
+    modifier = Modifier.fillMaxWidth().testTag("exact_alarm_card"),
+    shape = RoundedCornerShape(18.dp),
+    colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF4E0)),
+    border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFE8C77A))
+  ) {
+    Column(modifier = Modifier.padding(16.dp)) {
+      Row(verticalAlignment = Alignment.CenterVertically) {
+        Icon(
+          Icons.Filled.NotificationsActive,
+          contentDescription = null,
+          tint = Color(0xFF8A5A00),
+          modifier = Modifier.size(20.dp)
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+          text = LocalizationManager.getExactAlarmCardTitle(language),
+          fontWeight = FontWeight.Bold,
+          color = DarkForestInk,
+          style = MaterialTheme.typography.titleSmall
+        )
+      }
+      Spacer(modifier = Modifier.height(6.dp))
+      Text(
+        text = LocalizationManager.getExactAlarmCardBody(language),
+        style = MaterialTheme.typography.bodySmall,
+        color = DarkForestInk.copy(alpha = 0.8f)
+      )
+      Spacer(modifier = Modifier.height(10.dp))
+      Surface(
+        onClick = {
+          if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            runCatching {
+              context.startActivity(
+                android.content.Intent(android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
+                  .setData(android.net.Uri.fromParts("package", context.packageName, null))
+                  .addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+              )
+            }
+          }
+        },
+        shape = RoundedCornerShape(14.dp),
+        color = Color(0xFF0F3E2F),
+        modifier = Modifier.fillMaxWidth().testTag("btn_allow_exact_alarms")
+      ) {
+        Text(
+          text = LocalizationManager.getExactAlarmCardAction(language),
+          color = Color.White,
+          fontWeight = FontWeight.Bold,
+          textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+          modifier = Modifier.fillMaxWidth().padding(vertical = 11.dp)
+        )
+      }
+    }
+  }
+}
+

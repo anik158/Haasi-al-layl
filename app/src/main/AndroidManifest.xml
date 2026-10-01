@@ -8,13 +8,13 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <!-- Prayer alerts are the app's core function, which is what USE_EXACT_ALARM is for: it is a
-         normal permission, auto-granted, with no prompt. SCHEDULE_EXACT_ALARM stays for API 31-32,
-         where USE_EXACT_ALARM does not exist; leaving it unbounded on 33+ is flagged by Play. -->
-    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
-    <uses-permission
-        android:name="android.permission.SCHEDULE_EXACT_ALARM"
-        android:maxSdkVersion="32" />
+    <!-- Exact alarms through SCHEDULE_EXACT_ALARM on every version, not USE_EXACT_ALARM. Play
+         reserves USE_EXACT_ALARM for alarm-clock and calendar apps and rejects others; a prayer
+         app is not reliably accepted. SCHEDULE_EXACT_ALARM is user-granted (denied by default for
+         new installs on Android 14+), so Today shows a one-tap card to allow it, Settings'
+         reliability panel has a Fix row, and BootAndTimeChangeReceiver re-arms when it changes.
+         Without it the scheduler falls back to a one-minute window. -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <!-- The prayer alert is an alarm, not a notice: it opens a screen over the lock screen and
          rings until it is stopped. A full-screen intent is the only sanctioned way to do that
@@ -28,7 +28,7 @@
     <!-- So Settings' reliability panel can offer a single "Allow" rather than sending the user to
          find this app in a list of every installed one. Play restricts this permission to a short
          list of permitted use cases; "alarms or reminders as the app's core functionality" is one,
-         and is what this app is - it holds USE_EXACT_ALARM for the same reason. OEM power managers
+         and is what this app is. OEM power managers
          that ignore the direct dialog fall back to the full list. -->
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 

@@ -131,6 +131,30 @@ object LocalizationManager {
   }
 
   // Prayer hero texts
+  fun getExactAlarmCardTitle(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "اسمح بالتنبيهات الدقيقة"
+    AppLanguage.BENGALI -> "নির্ভুল অ্যালার্মের অনুমতি দিন"
+    AppLanguage.SPANISH -> "Permitir alarmas exactas"
+    AppLanguage.PORTUGUESE -> "Permitir alarmes exatos"
+    AppLanguage.ENGLISH -> "Allow exact alarms"
+  }
+
+  fun getExactAlarmCardBody(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "ليرنّ تنبيه الصلاة في وقته تماماً، يحتاج أندرويد إلى إذنك مرة واحدة. بدونه قد يتأخر التنبيه."
+    AppLanguage.BENGALI -> "নামাজের অ্যালার্ম ঠিক সময়ে বাজাতে অ্যান্ড্রয়েডের একবার আপনার অনুমতি লাগে। না দিলে অ্যালার্ম দেরিতে বাজতে পারে।"
+    AppLanguage.SPANISH -> "Para que el aviso de oración suene a su hora exacta, Android necesita su permiso una vez. Sin él puede retrasarse."
+    AppLanguage.PORTUGUESE -> "Para o aviso de oração tocar na hora exata, o Android precisa da sua permissão uma vez. Sem ela pode atrasar."
+    AppLanguage.ENGLISH -> "For prayer alerts to ring at the exact time, Android needs your permission once. Without it they can arrive late."
+  }
+
+  fun getExactAlarmCardAction(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "السماح"
+    AppLanguage.BENGALI -> "অনুমতি দিন"
+    AppLanguage.SPANISH -> "Permitir"
+    AppLanguage.PORTUGUESE -> "Permitir"
+    AppLanguage.ENGLISH -> "Allow"
+  }
+
   /** Accessibility label for the header's app name, which opens the About dialog. */
   fun getAboutAppLabel(language: AppLanguage): String = when (language) {
     AppLanguage.ARABIC -> "عن التطبيق"
