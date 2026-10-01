@@ -15,21 +15,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.TouchApp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -38,6 +36,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,6 +54,7 @@ import com.example.data.localization.AppLanguage
 import com.example.data.localization.LocalizationManager
 import com.example.ui.theme.WarmGoldAccent
 
+@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
 fun TasbihScreen(
   tasbihList: List<TasbihEntity>,
@@ -82,6 +83,20 @@ fun TasbihScreen(
   )
 
   val completedRounds = count / target
+
+  var showPicker by remember { mutableStateOf(false) }
+  if (showPicker) {
+    DhikrPickerSheet(
+      tasbihList = tasbihList,
+      selectedId = currentItem.id,
+      language = language,
+      onSelect = { id ->
+        onSelectTasbih(id)
+        showPicker = false
+      },
+      onDismiss = { showPicker = false }
+    )
+  }
 
   Column(
     modifier = Modifier
@@ -125,43 +140,16 @@ fun TasbihScreen(
       }
     }
 
-    // Presets Row
-    LazyRow(
-      horizontalArrangement = Arrangement.spacedBy(8.dp),
+    // The current dhikr, which is also the way to pick another: the whole card opens the list,
+    // and says so. A sideways-scrolling row of chips hid most of the choices off screen.
+    Card(
+      onClick = { showPicker = true },
       modifier = Modifier
         .fillMaxWidth()
-        .padding(vertical = 8.dp)
-        .testTag("tasbih_presets_row")
-    ) {
-      items(tasbihList) { item ->
-        val isSelected = item.id == currentItem.id
-        FilterChip(
-          selected = isSelected,
-          onClick = { onSelectTasbih(item.id) },
-          label = {
-            Text(
-              text = LocalizationManager.getTasbihName(item.id, language, item.name),
-              fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-            )
-          },
-          colors = FilterChipDefaults.filterChipColors(
-            selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-            selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer
-          ),
-          modifier = Modifier.testTag("preset_${item.id}")
-        )
-      }
-    }
-
-    Spacer(modifier = Modifier.height(16.dp))
-
-    // Active Dhikr Title Card
-    Card(
-      modifier = Modifier.fillMaxWidth(),
+        .padding(top = 8.dp)
+        .testTag("tasbih_current_card"),
       shape = RoundedCornerShape(20.dp),
-      colors = CardDefaults.cardColors(
-        containerColor = MaterialTheme.colorScheme.surface
-      ),
+      colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
       elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
       Column(
@@ -177,18 +165,62 @@ fun TasbihScreen(
           color = MaterialTheme.colorScheme.primary,
           textAlign = TextAlign.Center
         )
+        LocalizationManager.getTasbihPronunciation(currentItem.id, language)?.let { pronunciation ->
+          Spacer(modifier = Modifier.height(6.dp))
+          Text(
+            text = pronunciation,
+            style = MaterialTheme.typography.bodyMedium,
+            fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
+            color = MaterialTheme.colorScheme.onSurface,
+            textAlign = TextAlign.Center
+          )
+        }
         Spacer(modifier = Modifier.height(6.dp))
         Text(
           text = LocalizationManager.getTasbihName(currentItem.id, language, currentItem.name),
           style = MaterialTheme.typography.titleMedium,
           fontWeight = FontWeight.SemiBold,
-          color = MaterialTheme.colorScheme.onSurface
+          color = MaterialTheme.colorScheme.onSurface,
+          textAlign = TextAlign.Center
         )
         Text(
           text = LocalizationManager.getTasbihMeaning(currentItem.id, language, currentItem.transliteration),
           style = MaterialTheme.typography.bodySmall,
-          color = MaterialTheme.colorScheme.onSurfaceVariant
+          color = MaterialTheme.colorScheme.onSurfaceVariant,
+          textAlign = TextAlign.Center
         )
+        LocalizationManager.getTasbihSource(currentItem.id, language)?.let { source ->
+          Text(
+            text = source,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.outline,
+            modifier = Modifier.padding(top = 4.dp)
+          )
+        }
+        Spacer(modifier = Modifier.height(12.dp))
+        Surface(
+          shape = RoundedCornerShape(20.dp),
+          color = MaterialTheme.colorScheme.primaryContainer
+        ) {
+          Row(
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 7.dp),
+            verticalAlignment = Alignment.CenterVertically
+          ) {
+            Text(
+              text = LocalizationManager.getChangeDhikrLabel(language),
+              style = MaterialTheme.typography.labelLarge,
+              fontWeight = FontWeight.Bold,
+              color = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            Icon(
+              Icons.Default.KeyboardArrowDown,
+              contentDescription = null,
+              tint = MaterialTheme.colorScheme.onPrimaryContainer,
+              modifier = Modifier.size(18.dp)
+            )
+          }
+        }
       }
     }
 
@@ -333,3 +365,89 @@ fun TasbihScreen(
     Spacer(modifier = Modifier.height(24.dp))
   }
 }
+
+/** Every dhikr as a full row - Arabic, name, meaning and progress - so the choice is visible. */
+@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+@Composable
+private fun DhikrPickerSheet(
+  tasbihList: List<TasbihEntity>,
+  selectedId: String,
+  language: AppLanguage,
+  onSelect: (String) -> Unit,
+  onDismiss: () -> Unit
+) {
+  androidx.compose.material3.ModalBottomSheet(
+    onDismissRequest = onDismiss,
+    sheetState = androidx.compose.material3.rememberModalBottomSheetState(skipPartiallyExpanded = true),
+    modifier = Modifier.testTag("dhikr_picker_sheet")
+  ) {
+    Text(
+      text = LocalizationManager.getChooseDhikrTitle(language),
+      style = MaterialTheme.typography.titleLarge,
+      fontWeight = FontWeight.Bold,
+      modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
+    )
+    androidx.compose.foundation.lazy.LazyColumn(
+      contentPadding = androidx.compose.foundation.layout.PaddingValues(start = 16.dp, end = 16.dp, bottom = 28.dp),
+      verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+      items(tasbihList, key = { it.id }) { item ->
+        val selected = item.id == selectedId
+        Surface(
+          onClick = { onSelect(item.id) },
+          shape = RoundedCornerShape(16.dp),
+          color = if (selected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface,
+          border = androidx.compose.foundation.BorderStroke(
+            1.dp,
+            if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant
+          ),
+          modifier = Modifier.fillMaxWidth().testTag("dhikr_option_${item.id}")
+        ) {
+          Row(
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
+          ) {
+            Column(modifier = Modifier.weight(1f)) {
+              Text(
+                text = LocalizationManager.getTasbihName(item.id, language, item.name),
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.Bold
+              )
+              Text(
+                text = LocalizationManager.getTasbihMeaning(item.id, language, item.transliteration),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 2
+              )
+              Text(
+                text = "${item.currentCount} / ${item.targetCount.coerceAtLeast(1)}",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(top = 2.dp)
+              )
+            }
+            Spacer(modifier = Modifier.width(10.dp))
+            Text(
+              text = item.arabic,
+              style = MaterialTheme.typography.titleMedium,
+              fontWeight = FontWeight.Bold,
+              color = MaterialTheme.colorScheme.primary,
+              textAlign = TextAlign.End,
+              maxLines = 2,
+              modifier = Modifier.weight(0.9f)
+            )
+            if (selected) {
+              Spacer(modifier = Modifier.width(8.dp))
+              Icon(
+                Icons.Outlined.Check,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary
+              )
+            }
+          }
+        }
+      }
+    }
+  }
+}
+

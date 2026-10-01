@@ -126,6 +126,18 @@ private val DEFAULT_TASBIH = listOf(
       transliteration = "O Allah, send blessings upon Muhammad ﷺ",
       currentCount = 0,
       targetCount = 100
+    ),
+    // Qur'an 21:87; its virtue is Tirmidhi 3505 (sahih). Standalone it begins "لَا" - in the mushaf
+    // the shadda on the lam comes from the أَن before it. The sunnah gives no number; 100 is only
+    // the size of a counting round. Appended last, so existing installs gain it on the next seed
+    // without disturbing the others' rows.
+    TasbihEntity(
+      id = "dua_yunus",
+      name = "Dua of Yunus",
+      arabic = "لَا إِلَٰهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ",
+      transliteration = "There is no god but You; glory be to You; indeed, I have been of the wrongdoers.",
+      currentCount = 0,
+      targetCount = 100
     )
 )
 

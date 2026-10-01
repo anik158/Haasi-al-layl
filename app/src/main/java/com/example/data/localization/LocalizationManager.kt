@@ -208,6 +208,22 @@ object LocalizationManager {
     AppLanguage.ENGLISH -> "Not now"
   }
 
+  fun getChangeDhikrLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "تغيير الذكر"
+    AppLanguage.BENGALI -> "জিকির বদলান"
+    AppLanguage.SPANISH -> "Cambiar dhikr"
+    AppLanguage.PORTUGUESE -> "Mudar dhikr"
+    AppLanguage.ENGLISH -> "Change dhikr"
+  }
+
+  fun getChooseDhikrTitle(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "اختر ذكراً"
+    AppLanguage.BENGALI -> "একটি জিকির বেছে নিন"
+    AppLanguage.SPANISH -> "Elija un dhikr"
+    AppLanguage.PORTUGUESE -> "Escolha um dhikr"
+    AppLanguage.ENGLISH -> "Choose a dhikr"
+  }
+
   fun getExactAlarmCardTitle(language: AppLanguage): String = when (language) {
     AppLanguage.ARABIC -> "اسمح بالتنبيهات الدقيقة"
     AppLanguage.BENGALI -> "নির্ভুল অ্যালার্মের অনুমতি দিন"
@@ -1288,7 +1304,40 @@ object LocalizationManager {
       AppLanguage.PORTUGUESE -> "Salawat sobre o Profeta ﷺ"
       AppLanguage.ENGLISH -> "Salawat upon the Prophet ﷺ"
     }
+    "dua_yunus" -> when (language) {
+      AppLanguage.ARABIC -> "دعاء ذي النون (يونس عليه السلام)"
+      AppLanguage.BENGALI -> "দোয়া ইউনুস (আ.)"
+      AppLanguage.SPANISH -> "Súplica de Yunus (la paz sea con él)"
+      AppLanguage.PORTUGUESE -> "Súplica de Yunus (que a paz esteja com ele)"
+      AppLanguage.ENGLISH -> "Dua of Yunus (peace be upon him)"
+    }
     else -> fallback
+  }
+
+  /**
+   * How to say a longer dhikr, in the reader's script; null where the name already is the
+   * pronunciation (SubhanAllah…) or in Arabic, where the Arabic is read directly.
+   */
+  fun getTasbihPronunciation(id: String, language: AppLanguage): String? = when (id) {
+    "dua_yunus" -> when (language) {
+      AppLanguage.ARABIC -> null
+      AppLanguage.BENGALI -> "লা ইলাহা ইল্লা আনতা, সুবহানাকা, ইন্নি কুনতু মিনায-যালিমীন"
+      AppLanguage.SPANISH, AppLanguage.PORTUGUESE, AppLanguage.ENGLISH ->
+        "Lā ilāha illā Anta, Subḥānaka, innī kuntu minaẓ-ẓālimīn"
+    }
+    else -> null
+  }
+
+  /** Where a dhikr comes from, when the card should say so. */
+  fun getTasbihSource(id: String, language: AppLanguage): String? = when (id) {
+    "dua_yunus" -> when (language) {
+      AppLanguage.ARABIC -> "الأنبياء ٨٧ · الترمذي ٣٥٠٥"
+      AppLanguage.BENGALI -> "সূরা আম্বিয়া ২১:৮৭ · তিরমিজি ৩৫০৫"
+      AppLanguage.SPANISH -> "Corán 21:87 · Tirmidhi 3505"
+      AppLanguage.PORTUGUESE -> "Alcorão 21:87 · Tirmidhi 3505"
+      AppLanguage.ENGLISH -> "Qur'an 21:87 · Tirmidhi 3505"
+    }
+    else -> null
   }
 
   /** Meaning of a seeded dhikr. See [getTasbihName] for why these are not stored on the row. */
@@ -1334,6 +1383,13 @@ object LocalizationManager {
       AppLanguage.SPANISH -> "Oh Alá, envía bendiciones sobre Muhammad ﷺ"
       AppLanguage.PORTUGUESE -> "Ó Allah, envie bênçãos sobre Muhammad ﷺ"
       AppLanguage.ENGLISH -> "O Allah, send blessings upon Muhammad ﷺ"
+    }
+    "dua_yunus" -> when (language) {
+      AppLanguage.ARABIC -> "دعاء يونس في بطن الحوت: لا يدعو به مسلم في شيء إلا استجاب الله له"
+      AppLanguage.BENGALI -> "কোনো উপাস্য নেই আপনি ছাড়া; আপনি পবিত্র; নিশ্চয়ই আমি ছিলাম জালিমদের অন্তর্ভুক্ত।"
+      AppLanguage.SPANISH -> "No hay dios sino Tú; glorificado seas; ciertamente he sido de los injustos."
+      AppLanguage.PORTUGUESE -> "Não há divindade além de Ti; glorificado sejas; certamente fui dos injustos."
+      AppLanguage.ENGLISH -> "There is no god but You; glory be to You; indeed, I have been of the wrongdoers."
     }
     else -> fallback
   }
