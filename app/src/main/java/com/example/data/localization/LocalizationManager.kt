@@ -131,6 +131,47 @@ object LocalizationManager {
   }
 
   // Prayer hero texts
+  fun getAboutDeveloperTitle(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "عن المطوّر"
+    AppLanguage.BENGALI -> "ডেভেলপার সম্পর্কে"
+    AppLanguage.SPANISH -> "Sobre el desarrollador"
+    AppLanguage.PORTUGUESE -> "Sobre o desenvolvedor"
+    AppLanguage.ENGLISH -> "About the developer"
+  }
+
+  fun getDevelopedByLabel(name: String, language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "من تطوير $name"
+    AppLanguage.BENGALI -> "তৈরি করেছেন $name"
+    AppLanguage.SPANISH -> "Desarrollado por $name"
+    AppLanguage.PORTUGUESE -> "Desenvolvido por $name"
+    AppLanguage.ENGLISH -> "Developed by $name"
+  }
+
+  fun getVisitWebsiteLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "زيارة الموقع"
+    AppLanguage.BENGALI -> "ওয়েবসাইট দেখুন"
+    AppLanguage.SPANISH -> "Visitar el sitio web"
+    AppLanguage.PORTUGUESE -> "Visitar o site"
+    AppLanguage.ENGLISH -> "Visit website"
+  }
+
+  fun getSendFeedbackLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "إرسال ملاحظات"
+    AppLanguage.BENGALI -> "মতামত পাঠান"
+    AppLanguage.SPANISH -> "Enviar comentarios"
+    AppLanguage.PORTUGUESE -> "Enviar comentários"
+    AppLanguage.ENGLISH -> "Send feedback"
+  }
+
+  /** When no mail app is installed: the address, so it can still be written to. */
+  fun getNoMailAppMessage(email: String, language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "لا يوجد تطبيق بريد. راسلنا على $email"
+    AppLanguage.BENGALI -> "কোনো ইমেইল অ্যাপ পাওয়া যায়নি। লিখুন: $email"
+    AppLanguage.SPANISH -> "No hay app de correo. Escriba a $email"
+    AppLanguage.PORTUGUESE -> "Não há app de email. Escreva para $email"
+    AppLanguage.ENGLISH -> "No email app found. Write to $email"
+  }
+
   fun getAsmaUlHusnaTitle(language: AppLanguage): String = when (language) {
     AppLanguage.ARABIC -> "أسماء الله الحسنى"
     AppLanguage.BENGALI -> "আল্লাহর ৯৯টি নাম"

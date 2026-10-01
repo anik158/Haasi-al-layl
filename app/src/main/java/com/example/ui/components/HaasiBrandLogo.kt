@@ -193,6 +193,28 @@ fun AboutHaasiDialog(
           }
         }
 
+        Spacer(modifier = Modifier.height(12.dp))
+
+        // Who made it - tap for the website.
+        val context = androidx.compose.ui.platform.LocalContext.current
+        Text(
+          text = LocalizationManager.getDevelopedByLabel(DeveloperContact.DEVELOPER_NAME, language) +
+            " · ahsanulhouqe.com",
+          style = MaterialTheme.typography.bodySmall,
+          fontWeight = FontWeight.SemiBold,
+          color = DarkForestInk.copy(alpha = 0.8f),
+          modifier = Modifier
+            .clickable { DeveloperContact.openWebsite(context) }
+            .padding(vertical = 4.dp)
+            .testTag("about_developer_link")
+        )
+
+      }
+    },
+    dismissButton = {
+      val context = androidx.compose.ui.platform.LocalContext.current
+      TextButton(onClick = { DeveloperContact.sendFeedback(context, language) }) {
+        Text(LocalizationManager.getSendFeedbackLabel(language), color = DarkForestInk)
       }
     },
     confirmButton = {

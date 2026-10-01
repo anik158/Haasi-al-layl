@@ -294,6 +294,11 @@ says plainly that its chain is graded weak.
 
 ---
 
+**About & feedback.** Settings ends with an *About the developer* card — Ahsanul Houqe, with a link
+to [ahsanulhouqe.com](https://www.ahsanulhouqe.com/) — and **Send feedback**, which opens your mail
+app addressed to ahsanan@outlook.com with the app and Android versions in the subject. The About
+dialog (tap the app name) has both too.
+
 ### 7. 🎨 Color Depth & Visual Aesthetic
 - **Warm Parchment Canvas (`#F4EFE6`)**: Natural unbleached manuscript backdrop that reduces eye strain and honors Islamic scholarly manuscripts.
 - **Deep Forest Emerald (`#1C3D2B`)**: Rich, saturated ink tones for typography, iconography, and active highlights.

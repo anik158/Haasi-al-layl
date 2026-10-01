@@ -984,6 +984,63 @@ fun SettingsSheet(
         }
       }
 
+      // About the developer, and a way to reach him.
+      item {
+        Card(
+          shape = RoundedCornerShape(18.dp),
+          colors = CardDefaults.cardColors(containerColor = WarmBeigeBackground),
+          border = androidx.compose.foundation.BorderStroke(1.dp, LinenBorderLight),
+          modifier = Modifier.fillMaxWidth()
+        ) {
+          Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+              text = LocalizationManager.getAboutDeveloperTitle(language),
+              fontWeight = FontWeight.Bold,
+              fontSize = 15.sp,
+              color = DarkForestInk
+            )
+            Text(
+              text = LocalizationManager.getDevelopedByLabel(DeveloperContact.DEVELOPER_NAME, language),
+              fontSize = 12.sp,
+              color = DarkForestInk.copy(alpha = 0.75f)
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            Surface(
+              onClick = { DeveloperContact.openWebsite(context) },
+              shape = RoundedCornerShape(14.dp),
+              color = Color.White,
+              border = androidx.compose.foundation.BorderStroke(1.dp, OutlineDarkBorder),
+              modifier = Modifier.fillMaxWidth().testTag("btn_developer_site")
+            ) {
+              Text(
+                text = LocalizationManager.getVisitWebsiteLabel(language),
+                fontWeight = FontWeight.Bold,
+                fontSize = 13.sp,
+                color = DarkForestInk,
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp)
+              )
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+            Surface(
+              onClick = { DeveloperContact.sendFeedback(context, language) },
+              shape = RoundedCornerShape(14.dp),
+              color = Color(0xFF0F3E2F),
+              modifier = Modifier.fillMaxWidth().testTag("btn_feedback")
+            ) {
+              Text(
+                text = LocalizationManager.getSendFeedbackLabel(language),
+                fontWeight = FontWeight.Bold,
+                fontSize = 13.sp,
+                color = Color.White,
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp)
+              )
+            }
+          }
+        }
+      }
+
       item {
         Spacer(modifier = Modifier.height(20.dp))
       }
