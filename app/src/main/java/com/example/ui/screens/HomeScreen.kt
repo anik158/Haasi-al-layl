@@ -62,6 +62,7 @@ import com.example.ui.components.ForbiddenPrayerTimesBanner
 import com.example.ui.components.HaasiBrandLogo
 import com.example.ui.components.MadhabSelectionDialog
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Info
 
 // ... existing imports ...
 import com.example.ui.components.SettingsSheet
@@ -151,14 +152,25 @@ fun HomeScreen(
           // One line, always. At a large system font scale this wrapped to two and pushed the
           // tagline out of the header entirely; an ellipsis is the lesser evil for a name that
           // no longer fits, and the font-scale ceiling in HaasiTheme makes that rare.
-          Text(
-            text = LocalizationManager.getAppName(language),
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.ExtraBold,
-            color = DarkForestInk,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-          )
+          // The ⓘ says the name opens something - on its own the name read as a plain title.
+          Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+              text = LocalizationManager.getAppName(language),
+              style = MaterialTheme.typography.titleLarge,
+              fontWeight = FontWeight.ExtraBold,
+              color = DarkForestInk,
+              maxLines = 1,
+              overflow = TextOverflow.Ellipsis,
+              modifier = Modifier.weight(1f, fill = false)
+            )
+            Spacer(modifier = Modifier.width(6.dp))
+            Icon(
+              imageVector = Icons.Outlined.Info,
+              contentDescription = LocalizationManager.getAboutAppLabel(language),
+              tint = DarkForestInk.copy(alpha = 0.55f),
+              modifier = Modifier.size(18.dp)
+            )
+          }
           Text(
             text = LocalizationManager.getAppSubtitle(language),
             style = MaterialTheme.typography.labelSmall,

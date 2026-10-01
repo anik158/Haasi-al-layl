@@ -25,6 +25,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material.icons.automirrored.outlined.OpenInNew
+import androidx.compose.material.icons.outlined.Language
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -195,19 +197,50 @@ fun AboutHaasiDialog(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Who made it - tap for the website.
+        // Who made it, and a link that looks like one: a bordered chip with a globe and the
+        // underlined address. As plain text beside the name it gave no hint it could be tapped.
         val context = androidx.compose.ui.platform.LocalContext.current
         Text(
-          text = LocalizationManager.getDevelopedByLabel(DeveloperContact.DEVELOPER_NAME, language) +
-            " · ahsanulhouqe.com",
+          text = LocalizationManager.getDevelopedByLabel(DeveloperContact.DEVELOPER_NAME, language),
           style = MaterialTheme.typography.bodySmall,
           fontWeight = FontWeight.SemiBold,
-          color = DarkForestInk.copy(alpha = 0.8f),
-          modifier = Modifier
-            .clickable { DeveloperContact.openWebsite(context) }
-            .padding(vertical = 4.dp)
-            .testTag("about_developer_link")
+          color = DarkForestInk.copy(alpha = 0.8f)
         )
+        Spacer(modifier = Modifier.height(6.dp))
+        androidx.compose.material3.Surface(
+          onClick = { DeveloperContact.openWebsite(context) },
+          shape = RoundedCornerShape(20.dp),
+          color = androidx.compose.ui.graphics.Color.White,
+          border = androidx.compose.foundation.BorderStroke(1.dp, DarkForestInk.copy(alpha = 0.35f)),
+          modifier = Modifier.testTag("about_developer_link")
+        ) {
+          androidx.compose.foundation.layout.Row(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp),
+            verticalAlignment = Alignment.CenterVertically
+          ) {
+            androidx.compose.material3.Icon(
+              imageVector = androidx.compose.material.icons.Icons.Outlined.Language,
+              contentDescription = null,
+              tint = DarkForestInk,
+              modifier = Modifier.size(16.dp)
+            )
+            androidx.compose.foundation.layout.Spacer(modifier = Modifier.width(6.dp))
+            Text(
+              text = "ahsanulhouqe.com",
+              style = MaterialTheme.typography.labelLarge,
+              fontWeight = FontWeight.Bold,
+              color = DarkForestInk,
+              textDecoration = androidx.compose.ui.text.style.TextDecoration.Underline
+            )
+            androidx.compose.foundation.layout.Spacer(modifier = Modifier.width(4.dp))
+            androidx.compose.material3.Icon(
+              imageVector = androidx.compose.material.icons.Icons.AutoMirrored.Outlined.OpenInNew,
+              contentDescription = LocalizationManager.getVisitWebsiteLabel(language),
+              tint = DarkForestInk.copy(alpha = 0.6f),
+              modifier = Modifier.size(14.dp)
+            )
+          }
+        }
 
       }
     },

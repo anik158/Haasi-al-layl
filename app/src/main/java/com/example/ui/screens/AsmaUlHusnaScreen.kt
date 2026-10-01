@@ -59,7 +59,8 @@ fun AsmaUlHusnaScreen(language: AppLanguage = AppLanguage.ENGLISH) {
   val index = remember(language) {
     AsmaUlHusna.NAMES.associate { name ->
       name.number to normalizeForSearch(
-        "${name.arabic} ${name.transliteration} ${name.meaning(language)} ${name.meaning(AppLanguage.ENGLISH)}"
+        "${name.arabic} ${name.transliteration} ${name.transliterationBn} " +
+          "${name.meaning(language)} ${name.meaning(AppLanguage.ENGLISH)}"
       )
     }
   }
@@ -156,16 +157,21 @@ private fun NameCard(name: AllahName, language: AppLanguage) {
     }
     Spacer(modifier = Modifier.width(12.dp))
     Column(modifier = Modifier.weight(1f)) {
-      Text(
-        text = name.transliteration,
-        style = MaterialTheme.typography.titleMedium,
-        fontWeight = FontWeight.Bold,
-        color = DarkForestInk
-      )
+      // In the reader's own script - Bengali readers were left reading Latin letters.
+      val pronunciation = name.pronunciation(language)
+      if (pronunciation != null) {
+        Text(
+          text = pronunciation,
+          style = MaterialTheme.typography.titleMedium,
+          fontWeight = FontWeight.Bold,
+          color = DarkForestInk
+        )
+      }
       Text(
         text = name.meaning(language),
-        style = MaterialTheme.typography.bodyMedium,
-        color = DarkForestInk.copy(alpha = 0.75f)
+        style = if (pronunciation == null) MaterialTheme.typography.titleMedium else MaterialTheme.typography.bodyMedium,
+        fontWeight = if (pronunciation == null) FontWeight.SemiBold else FontWeight.Normal,
+        color = DarkForestInk.copy(alpha = if (pronunciation == null) 0.9f else 0.75f)
       )
     }
     Spacer(modifier = Modifier.width(10.dp))

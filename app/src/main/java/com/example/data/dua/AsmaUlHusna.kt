@@ -16,15 +16,31 @@ data class AllahName(
   val number: Int,
   val arabic: String,
   val transliteration: String,
-  val meanings: Map<AppLanguage, String>
+  val meanings: Map<AppLanguage, String>,
+  /** The pronunciation in Bengali script, for reading in Bengali rather than in Latin letters. */
+  val transliterationBn: String = ""
 ) {
+  /**
+   * The pronunciation for [language]: Bengali script in Bengali, none in Arabic (the Arabic is
+   * already the name), Latin otherwise.
+   */
+  fun pronunciation(language: AppLanguage): String? = when (language) {
+    AppLanguage.ARABIC -> null
+    AppLanguage.BENGALI -> transliterationBn.ifBlank { transliteration }
+    AppLanguage.ENGLISH, AppLanguage.SPANISH, AppLanguage.PORTUGUESE -> transliteration
+  }
+
   fun meaning(language: AppLanguage): String =
     meanings[language]?.takeIf { it.isNotBlank() }
       ?: meanings[AppLanguage.ENGLISH].orEmpty()
 }
 
 object AsmaUlHusna {
-  val NAMES: List<AllahName> = listOf(
+  val NAMES: List<AllahName> by lazy {
+    RAW.mapIndexed { index, name -> name.copy(transliterationBn = BENGALI_PRONUNCIATION[index]) }
+  }
+
+  private val RAW: List<AllahName> = listOf(
     name(1, "اللَّهُ", "Allah",
       en = "The One God, worthy of all worship", ar = "الإله المعبود بحق وحده", bn = "একমাত্র উপাস্য, সকল ইবাদতের যোগ্য", es = "El Dios único, digno de toda adoración", pt = "O Deus único, digno de toda adoração"),
     name(2, "الرَّحْمَٰنُ", "Ar-Rahman",
@@ -223,6 +239,109 @@ object AsmaUlHusna {
       en = "The Guide to Right Course", ar = "المرشد الذي تجري أقداره على الحكمة", bn = "সঠিক পথের নির্দেশক", es = "El que Guía al Recto Camino", pt = "O que Guia ao Caminho Reto"),
     name(99, "الصَّبُورُ", "As-Sabur",
       en = "The Most Patient", ar = "الذي لا يعاجل العصاة بالعقوبة", bn = "পরম ধৈর্যশীল", es = "El Paciente", pt = "O Paciente")
+  )
+
+  /** Bengali-script pronunciation, in [NAMES] order. Common Bangladeshi spellings. */
+  private val BENGALI_PRONUNCIATION = listOf(
+    "আল্লাহ",
+    "আর-রাহমান",
+    "আর-রাহীম",
+    "আল-মালিক",
+    "আল-কুদ্দূস",
+    "আস-সালাম",
+    "আল-মু'মিন",
+    "আল-মুহাইমিন",
+    "আল-আযীয",
+    "আল-জাব্বার",
+    "আল-মুতাকাব্বির",
+    "আল-খালিক",
+    "আল-বারি",
+    "আল-মুসাওয়্যির",
+    "আল-গাফফার",
+    "আল-কাহহার",
+    "আল-ওয়াহহাব",
+    "আর-রাযযাক",
+    "আল-ফাত্তাহ",
+    "আল-আলীম",
+    "আল-কাবিদ",
+    "আল-বাসিত",
+    "আল-খাফিদ",
+    "আর-রাফি'",
+    "আল-মু'ইয্য",
+    "আল-মুযিল্ল",
+    "আস-সামী'",
+    "আল-বাসীর",
+    "আল-হাকাম",
+    "আল-আদল",
+    "আল-লাতীফ",
+    "আল-খাবীর",
+    "আল-হালীম",
+    "আল-আযীম",
+    "আল-গাফূর",
+    "আশ-শাকূর",
+    "আল-আলিয়্য",
+    "আল-কাবীর",
+    "আল-হাফীয",
+    "আল-মুকীত",
+    "আল-হাসীব",
+    "আল-জালীল",
+    "আল-কারীম",
+    "আর-রাকীব",
+    "আল-মুজীব",
+    "আল-ওয়াসি'",
+    "আল-হাকীম",
+    "আল-ওয়াদূদ",
+    "আল-মাজীদ",
+    "আল-বা'ইস",
+    "আশ-শাহীদ",
+    "আল-হাক্ক",
+    "আল-ওয়াকীল",
+    "আল-কাওয়িয়্য",
+    "আল-মাতীন",
+    "আল-ওয়ালিয়্য",
+    "আল-হামীদ",
+    "আল-মুহসী",
+    "আল-মুবদি'",
+    "আল-মু'ঈদ",
+    "আল-মুহয়ী",
+    "আল-মুমীত",
+    "আল-হাইয়্য",
+    "আল-কাইয়্যূম",
+    "আল-ওয়াজিদ",
+    "আল-মাজিদ",
+    "আল-ওয়াহিদ",
+    "আস-সামাদ",
+    "আল-কাদির",
+    "আল-মুকতাদির",
+    "আল-মুকাদ্দিম",
+    "আল-মুআখখির",
+    "আল-আউয়াল",
+    "আল-আখির",
+    "আয-যাহির",
+    "আল-বাতিন",
+    "আল-ওয়ালী",
+    "আল-মুতা'আলী",
+    "আল-বার্র",
+    "আত-তাওয়াব",
+    "আল-মুনতাকিম",
+    "আল-আফুউ",
+    "আর-রাউফ",
+    "মালিকুল মুলক",
+    "যুল-জালালি ওয়াল-ইকরাম",
+    "আল-মুকসিত",
+    "আল-জামি'",
+    "আল-গানিয়্য",
+    "আল-মুগনী",
+    "আল-মানি'",
+    "আদ-দার্র",
+    "আন-নাফি'",
+    "আন-নূর",
+    "আল-হাদী",
+    "আল-বাদী'",
+    "আল-বাকী",
+    "আল-ওয়ারিস",
+    "আর-রাশীদ",
+    "আস-সাবূর"
   )
 
   private fun name(number: Int, arabic: String, transliteration: String, en: String, ar: String, bn: String, es: String, pt: String) =

@@ -296,7 +296,14 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
     NavDestination(LocalizationManager.getNavDuas(currentLanguage), Icons.Filled.AutoStories, Icons.Outlined.AutoStories, "nav_duas"),
     // Last, so the hardcoded indices above (Weather 1, Qibla 2) do not shift. The label is the
     // same in every language: the name of Allah and the number.
-    NavDestination("\uFDF299", Icons.Filled.AutoAwesome, Icons.Outlined.AutoAwesome, "nav_asma")
+    NavDestination(
+      // ﷲ then the number in the app's digits. The left-to-right mark keeps the order: next to
+      // the Arabic ligature, Western digits otherwise rendered as "99ﷲ".
+      "\uFDF2\u200E" + LocalizationManager.localizeDigits("99", currentLanguage),
+      Icons.Filled.AutoAwesome,
+      Icons.Outlined.AutoAwesome,
+      "nav_asma"
+    )
   )
 
   Scaffold(

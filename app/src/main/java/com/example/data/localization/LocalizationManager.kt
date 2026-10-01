@@ -131,6 +131,15 @@ object LocalizationManager {
   }
 
   // Prayer hero texts
+  /** Accessibility label for the header's app name, which opens the About dialog. */
+  fun getAboutAppLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "عن التطبيق"
+    AppLanguage.BENGALI -> "অ্যাপ সম্পর্কে"
+    AppLanguage.SPANISH -> "Acerca de la app"
+    AppLanguage.PORTUGUESE -> "Sobre a app"
+    AppLanguage.ENGLISH -> "About the app"
+  }
+
   fun getAboutDeveloperTitle(language: AppLanguage): String = when (language) {
     AppLanguage.ARABIC -> "عن المطوّر"
     AppLanguage.BENGALI -> "ডেভেলপার সম্পর্কে"

@@ -26,6 +26,14 @@ class AsmaUlHusnaTest {
   }
 
   @Test
+  fun bengaliReadersGetBengaliPronunciation() {
+    assertEquals("আল্লাহ", names.first().pronunciation(AppLanguage.BENGALI))
+    assertEquals("আস-সাবূর", names.last().pronunciation(AppLanguage.BENGALI))
+    names.forEach { assertTrue("${it.number}", it.transliterationBn.isNotBlank()) }
+    assertEquals(null, names.first().pronunciation(AppLanguage.ARABIC))
+  }
+
+  @Test
   fun everyNameHasEveryLanguage() {
     names.forEach { name ->
       AppLanguage.entries.forEach { language ->
