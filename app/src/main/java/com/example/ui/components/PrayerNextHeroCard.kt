@@ -64,6 +64,8 @@ fun PrayerNextHeroCard(
   schedule: DailyPrayerSchedule,
   /** False while the location is only the Makkah placeholder; see the location chip below. */
   hasResolvedLocation: Boolean = true,
+  /** Only an IP estimate: shown with "≈" and the word "approximate", tap to fix. */
+  isLocationApproximate: Boolean = false,
   currentWeather: CurrentWeather?,
   temperatureFormatted: String,
   language: AppLanguage = AppLanguage.ENGLISH,
@@ -137,7 +139,11 @@ fun PrayerNextHeroCard(
                 // An unresolved location is a prompt, never a city name. The placeholder is
                 // Makkah, and rendering it as fact is how the app came to tell a user in
                 // Helsinki that they were in Saudi Arabia.
-                text = if (hasResolvedLocation) {
+                text = if (hasResolvedLocation && isLocationApproximate) {
+                  // An IP estimate names the ISP's hub, not the user's town - say so, and the chip
+                  // is already the way to fix it.
+                  "≈ ${schedule.city} · ${LocalizationManager.getApproximateLocationLabel(language)}"
+                } else if (hasResolvedLocation) {
                   "${schedule.city}, ${schedule.country}"
                 } else {
                   LocalizationManager.getLocationNotSetLabel(language)

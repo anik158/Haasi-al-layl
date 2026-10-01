@@ -210,18 +210,31 @@ user is not standing. `_deviceLocation` is populated **only** from real receiver
 never from IP geolocation, which names the ISP's hub and can be 150 km out. When the fallback is
 in use, `qiblaUsesDeviceLocation` is false and the screen says so.
 
-#### The ladder is ordered by what answers fastest, not by what is most accurate
+#### The device decides where you are; the internet only names it
 
-This reversed once and the reversal was wrong. **When there is a network, IP geolocation goes
-first** - it answers in under a second, needs no permission, and puts the app in a usable state
-immediately. Only with no network (or a failed IP lookup) does the app block on the receiver
-behind the acquisition screen. Putting GPS first unconditionally meant an online user was shown a
-"turn on location" screen to solve a problem the network had already solved.
+This has reversed twice, and the second reversal is the one to keep. IP geolocation used to go
+**first** whenever there was a network, on latency grounds, with the background watch meant to
+upgrade it later. In practice the estimate stuck: a phone in Panchagarh was put in Rangpur, then
+Natore (215 km off), and given that town's prayer times. ipinfo names the ISP's routing point, and
+the upgrade path had three holes - a GPS-only live fix that times out indoors, a two-minute watch
+cap, and a late IP result overwriting an early device fix.
 
-Accuracy is then recovered rather than traded away: `UserPreferences.locationFromDevice` records
-which rung answered, and while it is false the background watch keeps running and upgrades the IP
-estimate to real coordinates when a fix lands. So the *order* is by latency and the *outcome* is
-still the top of the ladder.
+Now:
+
+- **`resolveOnboarding` asks the device first**, always. `requestFreshFix` listens to GPS *and*
+  network together, so online the network provider answers in seconds even indoors, and offline
+  GPS answers when it can. A fix must have a known accuracy within 5 km (`isUsable`); cached fixes
+  older than 24 h do not count.
+- **IP is the rung after the device fails** (no permission, Location off, or no fix in time). It is
+  stored with `locationFromDevice = false`, the chip shows "≈ … · approximate", and the watch keeps
+  listening.
+- **`settleOn` never downgrades**: with a device fix stored, an IP result is ignored.
+- **The watch is uncapped but foreground-only**: `onAppPaused` stops it, `onAppResumed` restarts it,
+  and the first usable fix stops it.
+- **"Use my location"** (was "Auto-Detect Location (Requires Internet)") asks for Location to be
+  switched on instead of silently falling back to IP.
+- An online user with Location off is still not stuck on a screen: `startDetection` shows the
+  "location off" phase and `fallBackWithoutDevice` settles on the marked IP estimate meanwhile.
 
 Consequences worth not undoing:
 

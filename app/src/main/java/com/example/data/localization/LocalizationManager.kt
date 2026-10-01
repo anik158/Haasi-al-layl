@@ -88,6 +88,15 @@ object LocalizationManager {
 
   /** A literal gloss of the name, distinct from [getAppSubtitle]. Shown in the About dialog. */
   /** Accessibility label for the icon-only location button in the header. */
+  /** After the city on the chip, when the location is only an IP estimate. */
+  fun getApproximateLocationLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "تقريبي"
+    AppLanguage.BENGALI -> "আনুমানিক"
+    AppLanguage.SPANISH -> "aproximado"
+    AppLanguage.PORTUGUESE -> "aproximado"
+    AppLanguage.ENGLISH -> "approximate"
+  }
+
   fun getChangeLocationLabel(language: AppLanguage): String = when (language) {
     AppLanguage.ARABIC -> "تغيير الموقع"
     AppLanguage.BENGALI -> "অবস্থান পরিবর্তন করুন"
@@ -2063,12 +2072,13 @@ object LocalizationManager {
     AppLanguage.ENGLISH -> "Got it"
   }
 
+  /** The location comes from the phone; internet is only needed to put a name to it. */
   fun getAutoDetectLocationLabel(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "تحديد الموقع تلقائيًا (يتطلب إنترنت)"
-    AppLanguage.BENGALI -> "স্বয়ংক্রিয়ভাবে অবস্থান নির্ণয় করুন (ইন্টারনেট প্রয়োজন)"
-    AppLanguage.SPANISH -> "Detección Automática (Requiere Internet)"
-    AppLanguage.PORTUGUESE -> "Detecção Automática (Requer Internet)"
-    AppLanguage.ENGLISH -> "Auto-Detect Location (Requires Internet)"
+    AppLanguage.ARABIC -> "استخدم موقعي"
+    AppLanguage.BENGALI -> "আমার অবস্থান ব্যবহার করুন"
+    AppLanguage.SPANISH -> "Usar mi ubicación"
+    AppLanguage.PORTUGUESE -> "Usar a minha localização"
+    AppLanguage.ENGLISH -> "Use my location"
   }
 
   fun getChooseLanguageLabel(language: AppLanguage): String = when (language) {

@@ -11,9 +11,8 @@ import androidx.core.content.ContextCompat
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withTimeoutOrNull
-import kotlin.coroutines.resume
 
 /**
  * Coordinates from the device's own satellite receiver.
@@ -37,6 +36,12 @@ object DeviceLocationProvider {
 
   /** Older than this and a cached fix is only a fallback, not an answer. */
   const val FRESH_FIX_MAX_AGE_MS = 30L * 60L * 1000L
+
+  /**
+   * The oldest cached fix that still counts for re-checking where the user is. Past a day it may
+   * well be from somewhere else, and adopting it as a device fix would stop the watch for good.
+   */
+  const val CACHED_FIX_MAX_AGE_MS = 24L * 60L * 60L * 1000L
 
   /** A fix this imprecise cannot distinguish neighbouring towns, so prayer times would drift. */
   private const val MAX_ACCEPTABLE_ACCURACY_METRES = 5_000f
@@ -104,7 +109,7 @@ object DeviceLocationProvider {
    * a phone that has been outdoors at all today has a usable fix sitting here.
    */
   @Suppress("MissingPermission")
-  fun lastKnownFix(context: Context): Location? {
+  fun lastKnownFix(context: Context, maxAgeMs: Long = CACHED_FIX_MAX_AGE_MS): Location? {
     if (!hasPermission(context)) return null
     val manager = context.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
       ?: return null
@@ -114,13 +119,22 @@ object DeviceLocationProvider {
         .mapNotNull { provider ->
           runCatching { manager.getLastKnownLocation(provider) }.getOrNull()
         }
-        .filter { it.accuracy <= MAX_ACCEPTABLE_ACCURACY_METRES || it.accuracy == 0f }
+        .filter { isUsable(it) && System.currentTimeMillis() - it.time <= maxAgeMs }
         .maxByOrNull { it.time }
     } catch (e: SecurityException) {
       Log.w(TAG, "location permission revoked mid-flight", e)
       null
     }
   }
+
+  /**
+   * A fix good enough to stand for where the user is: a known accuracy within
+   * [MAX_ACCEPTABLE_ACCURACY_METRES]. Zero means the provider did not say, so it is not trusted -
+   * accepting it was one way a far-off fix could pass for the user's own.
+   */
+  fun isUsable(location: Location): Boolean =
+    location.hasAccuracy() && location.accuracy > 0f &&
+      location.accuracy <= MAX_ACCEPTABLE_ACCURACY_METRES
 
   /** True when [location] is recent enough to be treated as where the user is now. */
   fun isFresh(location: Location, nowMillis: Long = System.currentTimeMillis()): Boolean =
@@ -153,7 +167,7 @@ object DeviceLocationProvider {
 
     val listener = object : android.location.LocationListener {
       override fun onLocationChanged(location: Location) {
-        trySend(location)
+        if (isUsable(location)) trySend(location)
       }
 
       // Required on API 24-28, where the interface has no default implementations.
@@ -192,57 +206,19 @@ object DeviceLocationProvider {
   /**
    * Asks for one live fix, giving up after [timeoutMs].
    *
-   * Single-shot rather than continuous updates: prayer times do not change as the user walks
-   * around, and a continuous listener is a battery cost with nothing to show for it.
-   *
-   * The GPS provider is preferred whenever it is on, even when the network provider would answer
-   * sooner, because the network provider needs connectivity - and being useful without it is the
-   * whole point.
+   * Listens to GPS **and** network together and takes whichever usable fix comes first. It used to
+   * pick GPS alone whenever GPS was on, so indoors - where the satellites cannot be seen - it
+   * waited out the whole timeout while the network provider could have answered in seconds, and
+   * the app fell back to an IP guess (a phone in Panchagarh was put in Natore). Offline the
+   * network provider simply never answers, and GPS still can.
    */
-  @Suppress("MissingPermission")
   suspend fun requestFreshFix(
     context: Context,
     timeoutMs: Long = LIVE_FIX_TIMEOUT_MS
   ): Location? {
     if (!hasPermission(context) || !isLocationEnabled(context)) return null
-    val manager = context.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
-      ?: return null
-
-    val provider = when {
-      manager.isProviderEnabled(LocationManager.GPS_PROVIDER) -> LocationManager.GPS_PROVIDER
-      manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) -> LocationManager.NETWORK_PROVIDER
-      else -> return null
-    }
-
     return withTimeoutOrNull(timeoutMs) {
-      suspendCancellableCoroutine { continuation ->
-        val listener = object : android.location.LocationListener {
-          override fun onLocationChanged(location: Location) {
-            manager.removeUpdates(this)
-            if (continuation.isActive) continuation.resume(location)
-          }
-
-          // Required on API 24-28, where the interface has no default implementations.
-          override fun onStatusChanged(p: String?, s: Int, e: android.os.Bundle?) = Unit
-          override fun onProviderEnabled(p: String) = Unit
-          override fun onProviderDisabled(p: String) {
-            manager.removeUpdates(this)
-            if (continuation.isActive) continuation.resume(null)
-          }
-        }
-
-        try {
-          manager.requestLocationUpdates(provider, 0L, 0f, listener, context.mainLooper)
-        } catch (e: SecurityException) {
-          Log.w(TAG, "could not request updates", e)
-          if (continuation.isActive) continuation.resume(null)
-          return@suspendCancellableCoroutine
-        }
-
-        continuation.invokeOnCancellation {
-          runCatching { manager.removeUpdates(listener) }
-        }
-      }
+      observeFixes(context).firstOrNull()
     }
   }
 }

@@ -98,9 +98,10 @@ private data class NavDestination(
 @Composable
 fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
   // Re-checks the location each time the app comes forward, not only on a cold start.
+  // Re-checks the location each time the app comes forward; stops the GPS watch when it leaves.
   LifecycleResumeEffect(Unit) {
     viewModel.onAppResumed()
-    onPauseOrDispose { }
+    onPauseOrDispose { viewModel.onAppPaused() }
   }
   val selectedTab by viewModel.selectedTab.collectAsStateWithLifecycle()
   val prayerSchedule by viewModel.prayerSchedule.collectAsStateWithLifecycle()
@@ -116,6 +117,7 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
   val placeResults by viewModel.placeResults.collectAsStateWithLifecycle()
   val isSearchingPlaces by viewModel.isSearchingPlaces.collectAsStateWithLifecycle()
   val isDetectingLocation by viewModel.isDetectingLocation.collectAsStateWithLifecycle()
+  val isLocationApproximate by viewModel.isLocationApproximate.collectAsStateWithLifecycle()
   val tasbihList by viewModel.tasbihList.collectAsStateWithLifecycle()
   val selectedTasbih by viewModel.selectedTasbih.collectAsStateWithLifecycle()
   val bookmarkedDuaIds by viewModel.bookmarkedDuaIds.collectAsStateWithLifecycle()
@@ -337,6 +339,7 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
           weatherState = weatherState,
           currentCity = currentCity,
           hasResolvedLocation = hasResolvedLocation,
+          isLocationApproximate = isLocationApproximate,
           formatTemperature = { viewModel.formatTemperature(it) },
           inspiration = dailyInspiration,
           language = currentLanguage,

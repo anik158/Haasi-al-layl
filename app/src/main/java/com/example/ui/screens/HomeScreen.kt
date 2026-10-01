@@ -86,6 +86,8 @@ fun HomeScreen(
    * in Helsinki.
    */
   hasResolvedLocation: Boolean = true,
+  /** The location is only an IP estimate; the chip marks it as approximate. */
+  isLocationApproximate: Boolean = false,
   formatTemperature: (Double) -> String,
   /**
    * Today's verse and narration. Passed in rather than read from a constant here, so the card
@@ -260,6 +262,7 @@ fun HomeScreen(
         PrayerNextHeroCard(
           schedule = schedule,
           hasResolvedLocation = hasResolvedLocation,
+          isLocationApproximate = isLocationApproximate,
           currentWeather = currentWeather,
           temperatureFormatted = tempFormatted,
           language = language,

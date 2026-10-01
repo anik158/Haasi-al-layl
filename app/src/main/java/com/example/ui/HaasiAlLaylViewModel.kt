@@ -51,7 +51,6 @@ import java.io.BufferedReader
 import org.json.JSONObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.withTimeoutOrNull
 import android.util.Log
 
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -167,6 +166,16 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
    */
   private val _hasResolvedLocation = MutableStateFlow(userPrefs.selectedCity != null)
   val hasResolvedLocation: StateFlow<Boolean> = _hasResolvedLocation.asStateFlow()
+
+  /**
+   * True while the location is only an IP estimate - not from the device and not chosen by hand.
+   * The location chip says so, because an estimate names the ISP's hub, not the user's town.
+   */
+  private val _isLocationApproximate = MutableStateFlow(isApproximateNow())
+  val isLocationApproximate: StateFlow<Boolean> = _isLocationApproximate.asStateFlow()
+
+  private fun isApproximateNow(): Boolean =
+    userPrefs.selectedCity != null && !userPrefs.locationFromDevice && !userPrefs.cityChosenManually
 
   /**
    * Where the phone physically is, as distinct from the city whose prayer times are on screen.
@@ -587,17 +596,11 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
   private fun resolveOnboarding() {
     if (userPrefs.selectedCity != null) return
     viewModelScope.launch {
-      // When there is a network, the IP rung answers in under a second and needs no permission
-      // at all - so take it and get out of the way. Putting the satellite wait first meant an
-      // online user was shown a "turn on location" screen to solve a problem the network had
-      // already solved; the background watch then upgrades this to real coordinates.
-      val fromIp = if (isNetworkAvailable()) fetchIpLocation() else null
-      if (fromIp != null) {
-        settleOn(fromIp)
-        return@launch
-      }
-      // No network, or the IP rung failed. Now the receiver is the only answer there is, and it
-      // is worth waiting for visibly.
+      // The device first, always. Coordinates come from the phone - GPS, or the network
+      // provider, which answers in seconds indoors when online - and the internet only *names*
+      // them. IP geolocation used to go first whenever there was a network, and it names the
+      // ISP's routing point: a phone in Panchagarh was put in Rangpur, then in Natore, 215 km
+      // off, with that town's prayer times. IP is now only the rung after the device has failed.
       if (!DeviceLocationProvider.hasPermission(getApplication<Application>())) {
         _onboardingState.value = OnboardingState.LOCATING
         _locatingPhase.value = LocatingPhase.REQUESTING_PERMISSION
@@ -654,8 +657,8 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
       fallBackWithoutDevice(showPhaseOnFailure = LocatingPhase.LOCATION_SERVICES_OFF)
       return
     }
-    if (!DeviceLocationProvider.isGpsProviderEnabled(app)) {
-      // Location is on and GPS is not. Waiting would burn ninety seconds on a receiver that is
+    if (!DeviceLocationProvider.isGpsProviderEnabled(app) && !isNetworkAvailable()) {
+      // Location is on and GPS is not, and there is no network for the network provider either. Waiting would burn ninety seconds on a receiver that is
       // switched off and then report "no signal", which is both true and useless - the user
       // would reasonably conclude the app is broken, having already turned location on.
       Log.i(TAG, "location is on but the GPS provider is off")
@@ -755,17 +758,16 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
     if (!DeviceLocationProvider.hasPermission(getApplication<Application>())) return
     locationWatchJob = viewModelScope.launch {
       Log.i(TAG, "watching for a GPS fix in the background")
-      // Bounded: indoors with no sky the GPS would otherwise stay on for the whole session. The
-      // next resume tries again. It already stops at the first fix, via settleOnDeviceFix.
-      val finished = withTimeoutOrNull(WATCH_TIMEOUT_MILLIS) {
-        LocationRepository.observeDeviceLocation(getApplication<Application>())
-          .collect { city ->
-            if (userPrefs.cityChosenManually) return@collect
-            Log.i(TAG, "background fix arrived; adopting it")
-            settleOnDeviceFix(city)
-          }
-      }
-      if (finished == null) Log.i(TAG, "no GPS fix within the watch window; will retry on resume")
+      // Unbounded while the app is on screen: a two-minute cap made an IP estimate permanent for
+      // anyone indoors, since a cold GPS rarely gets a fix that fast. The battery cost is bounded
+      // instead by onAppPaused, which stops it whenever the app leaves the screen, and by
+      // settleOnDeviceFix, which stops it at the first usable fix.
+      LocationRepository.observeDeviceLocation(getApplication<Application>())
+        .collect { city ->
+          if (userPrefs.cityChosenManually) return@collect
+          Log.i(TAG, "background fix arrived; adopting it")
+          settleOnDeviceFix(city)
+        }
     }
   }
 
@@ -850,6 +852,12 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
    */
   fun onAppResumed() {
     refreshLocationIfMoved()
+    if (!userPrefs.locationFromDevice) startBackgroundLocationWatch()
+  }
+
+  /** The app left the screen: stop listening for a fix, so the GPS is never on in the background. */
+  fun onAppPaused() {
+    stopBackgroundLocationWatch()
   }
 
   private fun refreshLocationIfMoved() {
@@ -915,6 +923,12 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
    * real coordinates, and [UserPreferences.locationFromDevice] stays false to say so.
    */
   private fun settleOn(city: CityLocation) {
+    // Never downgrade: a device fix that has already landed is better than any IP estimate, and
+    // a slow IP lookup finishing after it used to overwrite it.
+    if (userPrefs.locationFromDevice && userPrefs.selectedCity != null) {
+      Log.i(TAG, "ignoring an IP estimate; the location already comes from the device")
+      return
+    }
     userPrefs.locationFromDevice = false
     applyCity(city)
     userPrefs.isOnboardingComplete = true
@@ -1047,6 +1061,14 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
    */
   fun autoDetectLocation() {
     userPrefs.cityChosenManually = false
+    val app = getApplication<Application>()
+    if (!DeviceLocationProvider.isLocationEnabled(app)) {
+      // The button used to fall straight through to the IP guess here, silently - which is how
+      // a phone in Panchagarh was put in Natore. Ask for location to be switched on instead.
+      Log.i(TAG, "detect tapped with location off; asking for it")
+      requestPositioningFix()
+      return
+    }
     fixJob?.cancel()
     fixJob = viewModelScope.launch {
       _isDetectingLocation.value = true
@@ -1067,9 +1089,12 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
         when {
           fromDevice != null -> settleOnDeviceFix(fromDevice)
           else -> {
+            // Only now, after a real wait for the device: an estimate, marked as approximate in
+            // the UI, with the watch still listening for the real fix.
             val fromIp = fetchIpLocation()
             if (fromIp != null) {
               settleOn(fromIp)
+              startBackgroundLocationWatch()
             } else {
               // Nothing to show for it, but the watch will take the fix whenever it lands.
               startBackgroundLocationWatch()
@@ -1137,6 +1162,7 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
     // is up gets a real place name immediately instead of waiting for the next launch. No
     // recursion: a successful lookup yields a city with a country, which is not coordinates-only.
     nameCurrentCityIfNeeded()
+    _isLocationApproximate.value = isApproximateNow()
   }
 
   /**
@@ -1291,7 +1317,6 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
      * re-arm the schedule for someone crossing their own city.
      */
     const val MOVED_THRESHOLD_KM = 25.0
-    const val WATCH_TIMEOUT_MILLIS = 2L * 60L * 1000L
 
     /** After this long without confirmation, a stored fix is worth re-establishing. */
     const val STALE_LOCATION_MILLIS = 7L * 24 * 60 * 60 * 1000

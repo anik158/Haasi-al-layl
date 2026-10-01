@@ -72,11 +72,13 @@ of the night, each with its own opt-in notification channel.
 
 The app asks as little as possible, and asks it **once per installation**:
 
-- **Location** is resolved down a ladder. With a network, IP geolocation answers first because it
-  answers in under a second — and the app then keeps listening for the device's own GPS fix and
-  silently upgrades to those exact coordinates when one arrives. With no network, the receiver is
-  the only rung there is, and the app waits for it visibly. A city chosen by hand always wins and
-  stops the upgrading.
+- **Location comes from your phone, not your internet connection.** The app asks the device first —
+  GPS and the network provider together, so indoors with internet it answers in seconds, and with
+  no internet GPS answers when it can see the sky. The internet is only used to put a **name** to
+  those coordinates. Only if the device cannot answer (no permission, Location off, no fix) does the
+  app fall back to an estimate from your internet connection — and then the location chip says
+  "≈ … · approximate", and the app keeps listening for the real position while it is open. A city
+  chosen by hand always wins.
 - **Location permission is requested on the first launch**, not deferred to a "Detect" button —
   without it the cached-fix read returns null *before it consults the receiver*, so an app that
   waits for you to find that button has not tried the GPS rung at all. When you are online this is
@@ -135,10 +137,10 @@ does. It does **not** check while the app is closed: the alarms keep using the l
 you next open it. A city you picked by hand is left alone, since you may be checking it
 deliberately.
 
-If the first position came from your internet connection (the fallback when there is no GPS fix
-yet), it is only an estimate — it names your provider's nearest hub, which can be a different
-district. The app keeps listening for a real GPS position for up to two minutes each time it is
-open, and switches as soon as one arrives, however close it is.
+If the position is only an estimate from your internet connection (marked "approximate" on the
+location chip), it names your provider's nearest hub, which can be a different district. The app
+keeps listening for a real position whenever it is open, and switches as soon as one arrives,
+however close it is. **Use my location** in the city picker asks for one directly.
 
 **Testing a move** (you need a phone position that is not where you are):
 1. On a phone: in *Developer options*, set a *mock location app* (any "Fake GPS" app from the Play
