@@ -459,7 +459,10 @@ repo should assert its match count.
   `QiblaCalculatorTest`, and a DST test. Robolectric and Roborazzi are already configured at
   `sdk = [36]`. **CI runs only `assembleDebug`, so test code is not even compiled there.**
 - **Sehri & Iftar is hidden** until moon sighting is handled; see Architecture decisions.
-- **The 99 Names' meanings are unreviewed** (`data/dua/AsmaUlHusna.kt`). The Arabic and order were
+- **The 99 Names' meanings and pronunciations are unreviewed** (`data/dua/AsmaUlHusna.kt`).
+  `pronunciation(language)` gives Bengali script in Bengali, a Spanish-adapted spelling in Spanish
+  (Y for ج, J for خ, accented long vowels), the English-style spelling in English and Portuguese,
+  and nothing in Arabic. The Bengali and Spanish spellings were written for the app. The Arabic and order were
   checked against Tirmidhi 3507 on sunnah.com ("Allah" is #1, no al-Ahad); the glosses, especially
   Bengali, Spanish and Portuguese, still need a knowledgeable reader. Least certain: al-Mu'min,
   al-Fattah, al-Muqit, al-Wajid, al-Muhsi, ad-Darr, al-Mani', ar-Rashid.
@@ -558,6 +561,19 @@ it. Body text is unaffected in practice because it wraps freely; the cap exists 
 The same override also fits text to the screen: `responsiveFontFactor` is 1.0 at 393dp, shrinks in
 proportion below that to a 0.85 floor, and never enlarges. Final scale is
 `min(systemScale, 1.3) × widthFactor`. Only `sp` changes; `dp` spacing and touch targets do not.
+
+### Tappable things must look tappable
+
+Twice now a working tap target read as plain text: the header's app name (opens About) and the
+developer's website in the About dialog. The name now carries an ⓘ; the website is a bordered chip
+with a globe, the underlined address and an open-in-new icon. A link without a visual cue does not
+exist for most users.
+
+### Mixed-direction labels need a direction mark
+
+"ﷲ99" rendered as "99ﷲ": Western digits take the direction of the Arabic ligature beside them. The
+tab label is `"\uFDF2\u200E" + localizeDigits("99", language)` - the left-to-right mark pins the
+order in every language.
 
 ### Localization is not done until there are no English literals in `ui/`
 

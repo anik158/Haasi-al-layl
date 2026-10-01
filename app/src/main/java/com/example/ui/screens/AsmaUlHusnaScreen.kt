@@ -59,7 +59,7 @@ fun AsmaUlHusnaScreen(language: AppLanguage = AppLanguage.ENGLISH) {
   val index = remember(language) {
     AsmaUlHusna.NAMES.associate { name ->
       name.number to normalizeForSearch(
-        "${name.arabic} ${name.transliteration} ${name.transliterationBn} " +
+        "${name.arabic} ${name.transliteration} ${name.transliterationBn} ${name.transliterationEs} " +
           "${name.meaning(language)} ${name.meaning(AppLanguage.ENGLISH)}"
       )
     }

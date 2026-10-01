@@ -272,8 +272,12 @@ any published translation — they have not yet been reviewed by a scholar. They
 
 ### 5b. ﷲ The 99 Names of Allah
 
-Its own tab, **ﷲ99**: every name in Arabic, with its transliteration and meaning in the app's
-language, and a search that ignores vowel marks. The screen opens with Sahih al-Bukhari 2736 /
+Its own tab, **ﷲ99** (the number in the app's own digits: ﷲ৯৯ in Bengali, ﷲ٩٩ in Arabic): every
+name in Arabic, with its meaning in the app's language and its pronunciation **in the reader's own
+script** — Bengali script in Bengali (আর-রাহমান), a Spanish spelling in Spanish (Al-Yabbár,
+Al-Jáliq: Y for ج and J for خ, as Spanish-speaking Muslims write them), the common Latin spelling
+in English and Portuguese, and none in Arabic, where the name already is the pronunciation. Search
+ignores vowel marks and covers every spelling. The screen opens with Sahih al-Bukhari 2736 /
 Muslim 2677 (*"Allah has ninety-nine names… whoever learns them will enter Paradise"*). The list
 itself is the one narrated in Jami' at-Tirmidhi 3507, followed exactly — "Allah" is the first of
 the ninety-nine, and al-Ahad, which some popular lists substitute, is not in it — and the screen
@@ -297,7 +301,8 @@ says plainly that its chain is graded weak.
 **About & feedback.** Settings ends with an *About the developer* card — Ahsanul Houqe, with a link
 to [ahsanulhouqe.com](https://www.ahsanulhouqe.com/) — and **Send feedback**, which opens your mail
 app addressed to ahsanan@outlook.com with the app and Android versions in the subject. The About
-dialog (tap the app name) has both too.
+dialog — opened by tapping the app name, which carries an ⓘ to say so — has both too, the website
+as a bordered link chip.
 
 ### 7. 🎨 Color Depth & Visual Aesthetic
 - **Warm Parchment Canvas (`#F4EFE6`)**: Natural unbleached manuscript backdrop that reduces eye strain and honors Islamic scholarly manuscripts.

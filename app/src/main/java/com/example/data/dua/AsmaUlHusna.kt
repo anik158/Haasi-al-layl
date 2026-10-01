@@ -18,16 +18,23 @@ data class AllahName(
   val transliteration: String,
   val meanings: Map<AppLanguage, String>,
   /** The pronunciation in Bengali script, for reading in Bengali rather than in Latin letters. */
-  val transliterationBn: String = ""
+  val transliterationBn: String = "",
+  /**
+   * Spanish-adapted spelling: Y for ج and J for خ, since a Spanish reader says "j" as the throaty
+   * خ, plus accents on long vowels - the convention of Spanish-speaking Muslims (Al-Yabbár,
+   * Al-Jáliq). Portuguese keeps the common English-style spelling, which reads well enough there.
+   */
+  val transliterationEs: String = ""
 ) {
   /**
-   * The pronunciation for [language]: Bengali script in Bengali, none in Arabic (the Arabic is
-   * already the name), Latin otherwise.
+   * The pronunciation for [language]: Bengali script in Bengali, Spanish spelling in Spanish, none
+   * in Arabic (the Arabic is already the name), and the common Latin spelling otherwise.
    */
   fun pronunciation(language: AppLanguage): String? = when (language) {
     AppLanguage.ARABIC -> null
     AppLanguage.BENGALI -> transliterationBn.ifBlank { transliteration }
-    AppLanguage.ENGLISH, AppLanguage.SPANISH, AppLanguage.PORTUGUESE -> transliteration
+    AppLanguage.SPANISH -> transliterationEs.ifBlank { transliteration }
+    AppLanguage.ENGLISH, AppLanguage.PORTUGUESE -> transliteration
   }
 
   fun meaning(language: AppLanguage): String =
@@ -37,7 +44,12 @@ data class AllahName(
 
 object AsmaUlHusna {
   val NAMES: List<AllahName> by lazy {
-    RAW.mapIndexed { index, name -> name.copy(transliterationBn = BENGALI_PRONUNCIATION[index]) }
+    RAW.mapIndexed { index, name ->
+      name.copy(
+        transliterationBn = BENGALI_PRONUNCIATION[index],
+        transliterationEs = SPANISH_PRONUNCIATION[index]
+      )
+    }
   }
 
   private val RAW: List<AllahName> = listOf(
@@ -342,6 +354,109 @@ object AsmaUlHusna {
     "আল-ওয়ারিস",
     "আর-রাশীদ",
     "আস-সাবূর"
+  )
+
+  /** Spanish-adapted spelling, in [NAMES] order. See [AllahName.transliterationEs]. */
+  private val SPANISH_PRONUNCIATION = listOf(
+    "Allah",
+    "Ar-Rahmán",
+    "Ar-Rahím",
+    "Al-Málik",
+    "Al-Quddús",
+    "As-Salám",
+    "Al-Mu'min",
+    "Al-Muhaimin",
+    "Al-Azíz",
+    "Al-Yabbár",
+    "Al-Mutakabbir",
+    "Al-Jáliq",
+    "Al-Bári'",
+    "Al-Musawwir",
+    "Al-Gaffár",
+    "Al-Qahhár",
+    "Al-Wahháb",
+    "Ar-Razzáq",
+    "Al-Fattáh",
+    "Al-Alím",
+    "Al-Qábid",
+    "Al-Básit",
+    "Al-Jáfid",
+    "Ar-Ráfi'",
+    "Al-Mu'izz",
+    "Al-Mudil",
+    "As-Samí'",
+    "Al-Basír",
+    "Al-Hakam",
+    "Al-Adl",
+    "Al-Latíf",
+    "Al-Jabír",
+    "Al-Halím",
+    "Al-Azím",
+    "Al-Gafúr",
+    "Ash-Shakúr",
+    "Al-Alí",
+    "Al-Kabír",
+    "Al-Hafíz",
+    "Al-Muqít",
+    "Al-Hasíb",
+    "Al-Yalíl",
+    "Al-Karím",
+    "Ar-Raqíb",
+    "Al-Muyíb",
+    "Al-Wási'",
+    "Al-Hakím",
+    "Al-Wadúd",
+    "Al-Mayíd",
+    "Al-Bá'iz",
+    "Ash-Shahíd",
+    "Al-Haqq",
+    "Al-Wakíl",
+    "Al-Qawí",
+    "Al-Matín",
+    "Al-Walí",
+    "Al-Hamíd",
+    "Al-Muhsí",
+    "Al-Mubdi'",
+    "Al-Mu'íd",
+    "Al-Muhyí",
+    "Al-Mumít",
+    "Al-Hayy",
+    "Al-Qayyúm",
+    "Al-Wáyid",
+    "Al-Máyid",
+    "Al-Wáhid",
+    "As-Samad",
+    "Al-Qádir",
+    "Al-Muqtadir",
+    "Al-Muqaddim",
+    "Al-Mu'ajjir",
+    "Al-Awwal",
+    "Al-Ájir",
+    "Az-Záhir",
+    "Al-Bátin",
+    "Al-Wáli",
+    "Al-Muta'ál",
+    "Al-Barr",
+    "At-Tawwáb",
+    "Al-Muntaqim",
+    "Al-Afúw",
+    "Ar-Ra'úf",
+    "Málik al-Mulk",
+    "Du-l-Yalál wa-l-Ikrám",
+    "Al-Muqsit",
+    "Al-Yámi'",
+    "Al-Ganí",
+    "Al-Mugní",
+    "Al-Máni'",
+    "Ad-Dárr",
+    "An-Náfi'",
+    "An-Núr",
+    "Al-Hádi",
+    "Al-Badí'",
+    "Al-Báqi",
+    "Al-Wáriz",
+    "Ar-Rashíd",
+    "As-Sabúr"
   )
 
   private fun name(number: Int, arabic: String, transliteration: String, en: String, ar: String, bn: String, es: String, pt: String) =

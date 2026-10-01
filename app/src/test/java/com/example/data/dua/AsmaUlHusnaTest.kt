@@ -34,6 +34,15 @@ class AsmaUlHusnaTest {
   }
 
   @Test
+  fun spanishReadersGetSpanishSpelling() {
+    assertEquals("Al-Yabbár", names.first { it.number == 10 }.pronunciation(AppLanguage.SPANISH))
+    assertEquals("Al-Jáliq", names.first { it.number == 12 }.pronunciation(AppLanguage.SPANISH))
+    names.forEach { assertTrue("${it.number}", it.transliterationEs.isNotBlank()) }
+    // Portuguese keeps the common spelling.
+    assertEquals("Al-Jabbar", names.first { it.number == 10 }.pronunciation(AppLanguage.PORTUGUESE))
+  }
+
+  @Test
   fun everyNameHasEveryLanguage() {
     names.forEach { name ->
       AppLanguage.entries.forEach { language ->
