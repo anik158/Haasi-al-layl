@@ -6,10 +6,9 @@ step with the code: if a network call or permission is added, this page and
 
 ## Before the first upload
 
-- [ ] **Application ID.** `com.aistudio.haasiallayl.hall` is AI Studio's prefix and can never
-      change once published. Pick your own (e.g. `com.ahsanulhouqe.haasiallayl`) in
-      `app/build.gradle.kts` first.
-- [ ] **Remove the unused Firebase dependencies** in `app/build.gradle.kts`: `firebase-bom`,
+- [x] **Application ID** — now `com.ahsanulhouqe.haasiallayl` (was `com.aistudio.haasiallayl.hall`, AI Studio's prefix).
+      It can never change once published.
+- [x] **Removed the unused Firebase dependencies** in `app/build.gradle.kts`: `firebase-bom`,
       `firebase-ai`, `firebase-appcheck-recaptcha`, `firebase-appcheck-debug`. No code uses them,
       and the App Check *debug* provider must not ship in a release build.
 - [ ] **Publish the site folder.** Upload `docs/site/haasi-al-layl/` to the root of
