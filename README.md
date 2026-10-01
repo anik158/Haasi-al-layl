@@ -270,6 +270,15 @@ any published translation — they have not yet been reviewed by a scholar. They
 
 ---
 
+### 5b. ﷲ The 99 Names of Allah
+
+Its own tab, **ﷲ99**: every name in Arabic, with its transliteration and meaning in the app's
+language, and a search that ignores vowel marks. The screen opens with Sahih al-Bukhari 2736 /
+Muslim 2677 (*"Allah has ninety-nine names… whoever learns them will enter Paradise"*). The list
+itself is the one narrated in Jami' at-Tirmidhi 3507, followed exactly — "Allah" is the first of
+the ninety-nine, and al-Ahad, which some popular lists substitute, is not in it — and the screen
+says plainly that its chain is graded weak.
+
 ### 6. ⚙️ Centralized Settings & Customization
 - **Unified Settings Bottom Sheet**: Prayer start alerts, the 5-minute reminder, Tahajjud alerts, forbidden-time warnings, app language, calculation method, and madhab, all from one menu in the top bar.
 - **Notification reliability panel**: shows at a glance whether notifications, exact alarms and unrestricted battery are actually granted, each with a deep link to the right system screen, plus a *Test alert in 1 minute* button that arms a real alarm through the production path.

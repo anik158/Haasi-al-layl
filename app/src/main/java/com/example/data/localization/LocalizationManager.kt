@@ -131,6 +131,40 @@ object LocalizationManager {
   }
 
   // Prayer hero texts
+  fun getAsmaUlHusnaTitle(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "أسماء الله الحسنى"
+    AppLanguage.BENGALI -> "আল্লাহর ৯৯টি নাম"
+    AppLanguage.SPANISH -> "Los 99 Nombres de Allah"
+    AppLanguage.PORTUGUESE -> "Os 99 Nomes de Allah"
+    AppLanguage.ENGLISH -> "The 99 Names of Allah"
+  }
+
+  /** Sahih al-Bukhari 2736 / Muslim 2677, paraphrased with its reference. */
+  fun getAsmaUlHusnaSubtitle(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "«إن لله تسعة وتسعين اسماً… من أحصاها دخل الجنة» (البخاري ٢٧٣٦، مسلم ٢٦٧٧)"
+    AppLanguage.BENGALI -> "\"আল্লাহর ৯৯টি নাম আছে… যে এগুলো আয়ত্ত করবে সে জান্নাতে যাবে।\" (বুখারি ২৭৩৬, মুসলিম ২৬৭৭)"
+    AppLanguage.SPANISH -> "\"Allah tiene noventa y nueve nombres… quien los aprenda entrará en el Paraíso.\" (Bujari 2736, Muslim 2677)"
+    AppLanguage.PORTUGUESE -> "\"Allah tem noventa e nove nomes… quem os aprender entrará no Paraíso.\" (Bukhari 2736, Muslim 2677)"
+    AppLanguage.ENGLISH -> "\"Allah has ninety-nine names… whoever learns them will enter Paradise.\" (Bukhari 2736, Muslim 2677)"
+  }
+
+  fun getAsmaUlHusnaSearchPlaceholder(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "ابحث عن اسم أو معنى"
+    AppLanguage.BENGALI -> "নাম বা অর্থ খুঁজুন"
+    AppLanguage.SPANISH -> "Buscar un nombre o significado"
+    AppLanguage.PORTUGUESE -> "Procurar um nome ou significado"
+    AppLanguage.ENGLISH -> "Search a name or meaning"
+  }
+
+  /** Where the list comes from, said honestly: Tirmidhi 3507, graded da'if. */
+  fun getAsmaUlHusnaFootnote(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "العدد تسعة وتسعون ثابت في الصحيحين. أما سرد الأسماء فهو رواية الترمذي (٣٥٠٧)، وإسنادها ضعيف عند كثير من العلماء، وهي القائمة المتداولة. المعاني تقريبية."
+    AppLanguage.BENGALI -> "৯৯ সংখ্যাটি সহিহ বুখারি ও মুসলিমে প্রমাণিত। নামগুলোর এই তালিকা তিরমিজি (৩৫০৭) বর্ণনা থেকে, যার সনদ অনেক আলেমের মতে দুর্বল; এটিই প্রচলিত তালিকা। অর্থগুলো সংক্ষিপ্ত ব্যাখ্যা।"
+    AppLanguage.SPANISH -> "El número noventa y nueve está en Bujari y Muslim. La lista de nombres es la narración de Tirmidhi 3507, cuya cadena muchos sabios consideran débil; es la lista de uso común. Los significados son breves."
+    AppLanguage.PORTUGUESE -> "O número noventa e nove está em Bukhari e Muslim. A lista de nomes é a narração de Tirmidhi 3507, cuja cadeia muitos sábios consideram fraca; é a lista de uso comum. Os significados são breves."
+    AppLanguage.ENGLISH -> "The number ninety-nine is in Bukhari and Muslim. The list of names is the narration in Tirmidhi 3507, whose chain many scholars grade weak; it is the list in common use. Meanings are short glosses."
+  }
+
   fun getSehriIftarTitle(language: AppLanguage): String = when (language) {
     AppLanguage.ARABIC -> "السحور والإفطار"
     AppLanguage.BENGALI -> "সাহরি ও ইফতার"

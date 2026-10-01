@@ -27,11 +27,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoStories
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.TouchApp
 import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material.icons.outlined.AutoStories
+import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.Explore
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.TouchApp
@@ -291,7 +293,10 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
     NavDestination(LocalizationManager.getNavWeather(currentLanguage), Icons.Filled.WbSunny, Icons.Outlined.WbSunny, "nav_weather"),
     NavDestination(LocalizationManager.getNavQibla(currentLanguage), Icons.Filled.Explore, Icons.Outlined.Explore, "nav_qibla"),
     NavDestination(LocalizationManager.getNavTasbih(currentLanguage), Icons.Filled.TouchApp, Icons.Outlined.TouchApp, "nav_tasbih"),
-    NavDestination(LocalizationManager.getNavDuas(currentLanguage), Icons.Filled.AutoStories, Icons.Outlined.AutoStories, "nav_duas")
+    NavDestination(LocalizationManager.getNavDuas(currentLanguage), Icons.Filled.AutoStories, Icons.Outlined.AutoStories, "nav_duas"),
+    // Last, so the hardcoded indices above (Weather 1, Qibla 2) do not shift. The label is the
+    // same in every language: the name of Allah and the number.
+    NavDestination("\uFDF299", Icons.Filled.AutoAwesome, Icons.Outlined.AutoAwesome, "nav_asma")
   )
 
   Scaffold(
@@ -395,6 +400,7 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
           language = currentLanguage,
           hisnChapters = hisnChapters
         )
+        5 -> com.example.ui.screens.AsmaUlHusnaScreen(language = currentLanguage)
       }
     }
 

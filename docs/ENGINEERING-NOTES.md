@@ -459,6 +459,10 @@ repo should assert its match count.
   `QiblaCalculatorTest`, and a DST test. Robolectric and Roborazzi are already configured at
   `sdk = [36]`. **CI runs only `assembleDebug`, so test code is not even compiled there.**
 - **Sehri & Iftar is hidden** until moon sighting is handled; see Architecture decisions.
+- **The 99 Names' meanings are unreviewed** (`data/dua/AsmaUlHusna.kt`). The Arabic and order were
+  checked against Tirmidhi 3507 on sunnah.com ("Allah" is #1, no al-Ahad); the glosses, especially
+  Bengali, Spanish and Portuguese, still need a knowledgeable reader. Least certain: al-Mu'min,
+  al-Fattah, al-Muqit, al-Wajid, al-Muhsi, ad-Darr, al-Mani', ar-Rashid.
 - **The Hisn al-Muslim translations are unreviewed** (see above) - a scholar's pass is still owed.
 - **Prayer log has no city dimension** — `PrayerLogEntity` is keyed on date alone, so completions
   carry across cities. Deliberate: "did I pray Fajr" is a fact about the worshipper. Adding it needs
