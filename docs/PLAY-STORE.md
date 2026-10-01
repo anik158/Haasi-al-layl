@@ -11,14 +11,46 @@ step with the code: if a network call or permission is added, this page and
 - [x] **Removed the unused Firebase dependencies** in `app/build.gradle.kts`: `firebase-bom`,
       `firebase-ai`, `firebase-appcheck-recaptcha`, `firebase-appcheck-debug`. No code uses them,
       and the App Check *debug* provider must not ship in a release build.
-- [ ] **Publish the site folder.** Upload `docs/site/haasi-al-layl/` to the root of
-      ahsanulhouqe.com, so the policy is at `https://www.ahsanulhouqe.com/haasi-al-layl/privacy/`
-      and the guide at `…/haasi-al-layl/guide/`. The app links to both
+- [x] **Site published** (checked 2 October 2026, all HTTPS 200): the privacy policy at
+      `https://www.ahsanulhouqe.com/haasi-al-layl/privacy/` and the guide at `…/guide/`, with
+      localized versions such as `…/guide/es/`. The app links to both
       (`DeveloperContact.PRIVACY_POLICY`, `USER_GUIDE`); the privacy URL also goes into Play
       Console → App content → Privacy policy. See `docs/site/README.md`.
+- [ ] **A signed release bundle (`.aab`).** Play accepts only Android App Bundles, signed with
+      your upload key; CI currently builds a *debug APK* (`assembleDebug`). Steps:
+      1. Create an upload key once, and back it up somewhere safe — losing it means asking Google
+         to reset it:
+         `keytool -genkeypair -v -keystore my-upload-key.jks -alias upload -keyalg RSA -keysize 2048 -validity 10000`
+      2. Add it to GitHub → Settings → Secrets: the keystore as base64, and its passwords and alias
+         (the names `app/build.gradle.kts` reads: `KEYSTORE_PATH`, `STORE_PASSWORD`, and the key
+         alias/password variables beside them).
+      3. A CI job that decodes the keystore and runs `gradle bundleRelease`, uploading
+         `app/build/outputs/bundle/release/app-release.aab`. Never commit the `.jks` file.
+      4. Enrol in **Play App Signing** at the first upload (Google keeps the app-signing key; yours
+         is only the upload key).
+- [ ] **Run the unit tests once.** CI only builds; `gradle :app:testDebugUnitTest` has never run
+      on this code (CurrentPrayerWindowTest, PrayerAlertPlannerTest, FastingTimesTest,
+      AsmaUlHusnaTest, HisnParserTest…). Add it to CI or run it locally before the first upload.
+- [ ] **A clean-install test** on a real phone with the new application ID: location disclosure →
+      permission → correct town (the Panchagarh/Natore case), exact-alarm card → Allow, a prayer
+      alarm, the 5-minute reminder.
 - [ ] **Closed test first.** New personal developer accounts must run a closed test with at least
-      12 testers for 14 days before production access.
-- [ ] Release signing key and a `versionCode` bump per upload.
+      12 testers for 14 days before production access. Recruit them early.
+- [ ] `versionCode` bumped for every upload (it is 1 now; `versionName` is 1.0.0).
+
+## Play Console: what else it asks for
+
+- **Store listing:** app name (≤ 30 chars), short description (≤ 80), full description (≤ 4000);
+  a 512×512 icon; a 1024×500 feature graphic; at least 2 phone screenshots (the guide's are
+  usable). One listing per language you support.
+- **App content:** privacy policy URL; ads — *no*; app access — *no login needed*; content rating
+  questionnaire (no violence, no user-generated content, no data sharing beyond the table below);
+  target audience — general, not designed for children; Data safety (below); permission
+  declarations (below); government / news / health apps — *no*.
+- **Category:** Lifestyle (where most prayer apps sit).
+- **Accuracy disclosure, recommended:** the Hisn al-Muslim translations and the 99 Names' glosses
+  are the app's own and unreviewed (see ENGINEERING-NOTES). Saying so in the description is better
+  than a reviewer or user finding it.
 
 ## Data safety form
 

@@ -1,5 +1,10 @@
 # Website files for ahsanulhouqe.com
 
+**Published** (2 October 2026). The live site also has **localized** versions of the guide and the
+policy (for example `…/guide/es/`), maintained on the site itself; the files here are the English
+originals. When the app's behaviour changes, update the English here and the translations on the
+site together.
+
 Upload the `haasi-al-layl/` folder to the root of the site, as it is:
 
 | Page | Address | Source |
@@ -25,7 +30,7 @@ there, the guide shows a dashed slot saying what belongs in it.
 | `05-qibla.png` | The Qibla tab | added |
 | `02b-prayers.png` | Today's Prayers list | added |
 | `06-duas.png` | A Hisn al-Muslim dua; the waking-up chapter's third entry ("Lā ilāha illallāhu waḥdahu…") has a "Virtue" box | added (chapter index) |
-| `07-names.png` | The ﷲ99 tab | **needed** (the old one predates Bengali pronunciation) |
+| `07-names.png` | The ﷲ99 tab | added on the site |
 
 Before capturing, clear personal notifications from the status bar and use a city you are happy
 to show.
