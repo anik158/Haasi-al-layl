@@ -60,6 +60,7 @@ works unchanged:
 | `LANGUAGE_ARABIC_TRANSLATED_TEXT` | the transliteration | taken from `en.json` |
 | `TRANSLATED_TEXT` | the translation for that file's language | matched across languages **by `ID`** |
 | `REPEAT` | shown as `3x` | defaults to 1 |
+| `NOTE` | the virtue or narrator's commentary, shown in its own box | optional; never part of the text to recite. From the source's `Note` and each translation's `note` |
 | `REFERENCE` | the hadith source | optional; falls back to "Hisn al-Muslim" |
 
 The loader logs what it found — `Hisn al-Muslim: N chapters, M supplications from ar, en, …` — or

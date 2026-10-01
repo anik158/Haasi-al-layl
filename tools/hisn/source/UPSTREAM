@@ -1,1 +1,7 @@
 872764c https://github.com/asellam/HisnElMuslim
+
+Local corrections to hisn.json (keep them if upstream is ever re-imported):
+- ID 1 (waking up): النُّشُّورُ -> النُّشُورُ (extra shadda removed)
+- ID 3 (waking up): العَلِّي -> الْعَلِيِّ; the hadith's own words about the reward
+  ("أَوْ دَعَا اسْتُجِيبَ لَهُ ...", and صَلَاتَهُ -> صَلَاتُهُ) moved out of Text into a new
+  "Note" field, so they are not presented as part of the dhikr.

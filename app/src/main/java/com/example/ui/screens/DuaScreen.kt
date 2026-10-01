@@ -430,6 +430,37 @@ private fun DuaCardItem(
         )
       }
 
+      // The virtue or the narrator's words, boxed and labelled so it is never read as part of
+      // what to recite.
+      val note = dua.getLocalizedNote(language)
+      if (note.isNotBlank()) {
+        Spacer(modifier = Modifier.height(10.dp))
+        Column(
+          modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .background(WarmGoldAccent.copy(alpha = 0.12f))
+            .padding(horizontal = 12.dp, vertical = 10.dp)
+            .testTag("dua_note_${dua.id}")
+        ) {
+          Text(
+            text = LocalizationManager.getDuaVirtueLabel(language),
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary
+          )
+          Spacer(modifier = Modifier.height(2.dp))
+          Text(
+            text = note,
+            style = MaterialTheme.typography.bodySmall,
+            lineHeight = 19.sp,
+            textAlign = if (language == AppLanguage.ARABIC) TextAlign.End else TextAlign.Start,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.fillMaxWidth()
+          )
+        }
+      }
+
       Spacer(modifier = Modifier.height(10.dp))
       HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f))
       Spacer(modifier = Modifier.height(6.dp))

@@ -93,4 +93,20 @@ class HisnParserTest {
       assertTrue(dua.id, listOf(dua.title, dua.titleAr, dua.titleBn, dua.titleEs, dua.titlePt).all { it.isNotBlank() })
     }
   }
+
+  /** The narrator's words are a note, never part of the text to recite (waking-up dhikr, ID 3). */
+  @Test
+  fun virtueIsKeptOutOfTheRecitation() {
+    val files = mapOf(
+      AppLanguage.ARABIC to "ar", AppLanguage.ENGLISH to "en", AppLanguage.BENGALI to "bn",
+      AppLanguage.SPANISH to "es", AppLanguage.PORTUGUESE to "pt"
+    ).mapValues { (_, code) -> java.io.File("src/main/assets/hisn/$code.json").readText() }
+    val dua = HisnParser.parse(files).duas.first { it.id == "hisn_3" }
+
+    assertTrue(!dua.arabic.contains("اسْتُجِيبَ"))
+    assertTrue(dua.arabic.endsWith("رَبِّ اغْفِرْ لِي"))
+    AppLanguage.entries.forEach { language ->
+      assertTrue(language.name, dua.getLocalizedNote(language).isNotBlank())
+    }
+  }
 }

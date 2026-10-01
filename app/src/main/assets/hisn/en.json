@@ -5,7 +5,7 @@
    "TEXT": [
     {
      "ID": 1,
-     "ARABIC_TEXT": "الحَمْدُ لِلَّهِ الذِي أَحْيَانَا بَعْدَمَا أَمَاتَنَا، وَإِلَيْهِ النُّشُّورُ",
+     "ARABIC_TEXT": "الحَمْدُ لِلَّهِ الذِي أَحْيَانَا بَعْدَمَا أَمَاتَنَا، وَإِلَيْهِ النُّشُورُ",
      "TRANSLATED_TEXT": "Praise be to Allah who gave us life after having caused us to die, and to Him is the resurrection.",
      "REPEAT": 1,
      "REFERENCE": "البخاري مع الفتح 11/ 113 ومسلم 4/ 2083",
@@ -21,11 +21,12 @@
     },
     {
      "ID": 3,
-     "ARABIC_TEXT": "(لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ المُلْكُ وَلَهُ الحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، سُبْحَانَ اللَّهِ، وَالحَمْدُ لِلَّهِ، وَلَا إِلَهَ إِلَّا اللَّه، وَاللَّه أَكْبَرُ، وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ العَلِّي العَظِيمِ، رَبِّ اغْفِرْ لِي). أَوْ دَعَا اسْتُجِيبَ لَهُ فَإِنْ تَوَضَّأَ وَصَلَّى قُبِلَتْ صَلَاتَهُ",
-     "TRANSLATED_TEXT": "(There is no god but Allah alone, with no partner; His is the dominion and His is the praise, and He is capable of all things. Glory be to Allah, praise be to Allah, there is no god but Allah, Allah is the greatest, and there is no power and no strength except with Allah, the Most High, the Almighty. My Lord, forgive me.) Or if he supplicates, it will be answered; and if he then performs ablution and prays, his prayer will be accepted.",
+     "ARABIC_TEXT": "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ المُلْكُ وَلَهُ الحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، سُبْحَانَ اللَّهِ، وَالحَمْدُ لِلَّهِ، وَلَا إِلَهَ إِلَّا اللَّهُ، وَاللَّهُ أَكْبَرُ، وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ الْعَلِيِّ العَظِيمِ، رَبِّ اغْفِرْ لِي",
+     "TRANSLATED_TEXT": "There is no god but Allah alone, with no partner; His is the dominion and His is the praise, and He is capable of all things. Glory be to Allah, praise be to Allah, there is no god but Allah, Allah is the greatest, and there is no power and no strength except with Allah, the Most High, the Almighty. My Lord, forgive me.",
      "REPEAT": 1,
      "REFERENCE": "البخاري مع الفتح 3/ 144 وغيرها واللفظ لابن ماجه انظر صحيح ابن ماجه 2/ 335",
-     "LANGUAGE_ARABIC_TRANSLATED_TEXT": "(La ilaha illallahu wahdahu la sharika lah, lahul-mulku wa lahul-hamd, wa huwa 'ala kulli shay'in qadir, subhanallah, walhamdu lillah, wa la ilaha illallah, wallahu akbar, wa la hawla wa la quwwata illa billahil-'aliyyil-'azim, Rabbighfir li.) Aw da'a, ustujiba lah, fa'in tawadda'a wa salla, qubilat salatuh"
+     "LANGUAGE_ARABIC_TRANSLATED_TEXT": "La ilaha illallahu wahdahu la sharika lah, lahul-mulku wa lahul-hamd, wa huwa 'ala kulli shay'in qadir, subhanallah, walhamdu lillah, wa la ilaha illallah, wallahu akbar, wa la hawla wa la quwwata illa billahil-'aliyyil-'azim, Rabbighfir li.",
+     "NOTE": "Whoever wakes in the night and says this, then says “My Lord, forgive me” or makes any supplication, it is answered; and if he then performs ablution and prays, his prayer is accepted."
     },
     {
      "ID": 4,
@@ -353,7 +354,7 @@
     {
      "ID": 35,
      "ARABIC_TEXT": "اللَّهُ أَكْبَرُ كَبِيرًا، اللَّهُ أَكْبَرُ كَبِيرًا، اللَّهُ أَكْبَرُ كَبِيرًا، وَالحَمْدُ لِلَّهِ كَثِيرًا، وَالحَمْدُ لِلَّهِ كَثِيرًا، وَالحَمْدُ لِلَّهِ كَثِيرًا، وَسُبْحَانَ اللَّهِ بُكْرَةً وَأَصِيلًا (ثَلَاثًا). أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ: مِنْ نَفْخِهِ، وَنَفْثِهِ، وَ هَمْزِهِ",
-     "TRANSLATED_TEXT": "Allah is greatest, most great (three times), and praise be to Allah abundantly (three times), and glory be to Allah morning and evening (three times). I seek refuge in Allah from the accursed Satan: from his arrogance, his poetry, and his madness.",
+     "TRANSLATED_TEXT": "Allah is greatest, most great (three times), and praise be to Allah abundantly (three times), and glory be to Allah morning and evening (three times). I seek refuge in Allah from the accursed Satan: from his pride, his poetry, and his madness.",
      "REPEAT": 1,
      "REFERENCE": "أخرجه أبو داود 1/ 203 وابن ماجه 1/ 265 وأحمد 4/ 85 وأخرجه مسلم عن ابن عمر رضي الله عنهما بنحوه وفيه قصة 1/ 420",
      "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Allahu akbaru kabira (thalathan), wal-hamdu lillahi kathira (thalathan), wa subhanallahi bukratan wa asila (thalathan). A'udhu billahi minash-shaytanir-rajim: min nafkhihi, wa nafthihi, wa hamzih"
@@ -2120,7 +2121,7 @@
     {
      "ID": 219,
      "ARABIC_TEXT": "(إِذَا دُعِيَ أَحَدُكُمْ فَلْيُجِبْ، فَإِنْ كَانَ صَائِمًا فَلْيُصَلِّ وَإِنْ كَانَ مُفْطِرًا فَلْيَطْعَمْ).\r\nوَمَعْنَى فَلْيُصَلِّ أَيْ: فَلْيَدْعُ",
-     "TRANSLATED_TEXT": "(If one of you is invited, let him accept; if he is fasting let him supplicate, and if he is not fasting let him eat.)\nThe meaning of \"let him supplicate\" is: let him pray for good.",
+     "TRANSLATED_TEXT": "(If one of you is invited, let him accept; if he is fasting, let him supplicate for the host, and if he is not fasting, let him eat.)\nHere “yusalli” means: let him make du'a.",
      "REPEAT": 1,
      "REFERENCE": "مسلم 2/ 1054",
      "LANGUAGE_ARABIC_TRANSLATED_TEXT": "(Idha du'iya ahadukum falyujib, fa in kana sa'iman falyusalli, wa in kana muftiran falyat'am). Wa ma'na falyusalli ay: falyad'u."
@@ -2388,7 +2389,7 @@
     {
      "ID": 240,
      "ARABIC_TEXT": "اللَّهُمَّ لَا طَيْرَ إِلَّا طَيْرُكَ، وَلَا خَيْرَ إِلَّا خَيْرُكَ، وَلَا إِلَهَ غَيْرُكَ",
-     "TRANSLATED_TEXT": "O Allah, there is no omen except Your omen, no good except Your good, and no god besides You.",
+     "TRANSLATED_TEXT": "O Allah, there are no omens except what You decree, no good except Your good, and no god besides You.",
      "REPEAT": 1,
      "REFERENCE": "أحمد 2/ 220، وابن السني برقم 292، وصححه الألباني في الأحاديث الصحيحة 3/ 54، رقم 1065، أما الفأل فكان يعجب النّبيّ صلّى اللّه عليه وسلّم ولهذا سمع من رجل كلمة طيّبة فأعجبته فقال: (أخذنا فألك من فيك) أبو داود وأحمد، وصححه الألباني في الصحيحة 2/ 363 عند أبي الشيخ في أخلاق النّبيّ صلّى اللّه عليه وسلّم ص 270",
      "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Allahumma la tayra illa tayruk, wa la khayra illa khayruk, wa la ilaha ghayruk."
@@ -2513,7 +2514,7 @@
     {
      "ID": 250,
      "ARABIC_TEXT": "سَمَّـِعَ سَامِعٌ بِحَمْدِ اللَّهِ، وَحُسْنِ بَلَائِهِ عَلَيْنَا. رَبَّنَا صَاحِبْنَا، وَأَفْضِلْ عَلَيْنَا عَائِذًا بِاللَّهِ مِنَ النَّارِ",
-     "TRANSLATED_TEXT": "Let a hearer hear, by the praise of Allah and His good trial upon us. Our Lord, accompany us and bestow favor upon us, seeking refuge in Allah from the Fire.",
+     "TRANSLATED_TEXT": "May a witness bear witness to our praising Allah and to His good favour upon us. Our Lord, be our companion and bestow Your favour upon us, seeking refuge in Allah from the Fire.",
      "REPEAT": 1,
      "REFERENCE": "مسلم 4/ 2086 ومعنى سمِع سامع: أي شهد شاهد على حمدنا للّه تعالى على نعمه وحسن بلائه. ومعنى سمَّع سامع: بلّغ سامع قولي هذا لغيره وقال مثله تنبيها على الذِّكر في السّحر والدعاء. وقوله: ربّنا صاحبنا وأفضل علينا: أي احفظنا وحطنا واكلأنا وأفضل علينا بجزيل نعمك واصرف عنّا كلّ مكروه، شرح النّووي 17/ 39",
      "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Sami'a sami'un bihamdillahi wa husni bala'ihi 'alayna. Rabbana sahibna, wa afdil 'alayna 'a'idhan billahi minan-nar."
@@ -2618,7 +2619,7 @@
     {
      "ID": 260,
      "ARABIC_TEXT": "ثَلَاثٌ مَنْ جَمَعَهُنَّ فَقَدْ جَمَعَ الإِيمَانَ: (الإِنْصَافُ مِنْ نَفْسِكَ، وَبَذْلُ السَّلَامِ لِلْعَالَمِ، وَالإِنْفَاقُ مِنَ الإِقْتَارِ)",
-     "TRANSLATED_TEXT": "Three things, whoever combines them has combined [complete] faith: (being fair against oneself, giving the greeting of peace to all people, and spending in charity even in times of scarcity).",
+     "TRANSLATED_TEXT": "Three things, whoever gathers them has gathered faith: (being fair and just, even against yourself; offering the greeting of peace to all people; and spending even when in want).",
      "REPEAT": 1,
      "REFERENCE": "البخاري مع الفتح 1/ 82 عن عمّار رضي اللّه عنه موقوفا معلّقا",
      "LANGUAGE_ARABIC_TRANSLATED_TEXT": "Thalathun man jama'ahunna faqad jama'al-iman: (Al-insafu min nafsik, wa badhlus-salami lil-'alam, wal-infaqu minal-iqtar)."

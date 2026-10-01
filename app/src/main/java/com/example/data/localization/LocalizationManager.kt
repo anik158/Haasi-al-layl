@@ -181,6 +181,15 @@ object LocalizationManager {
     AppLanguage.ENGLISH -> "No email app found. Write to $email"
   }
 
+  /** Label over a supplication's virtue or narrator's commentary - not part of what to recite. */
+  fun getDuaVirtueLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "الفضل (ليس من الذكر)"
+    AppLanguage.BENGALI -> "ফজিলত (দোয়ার অংশ নয়)"
+    AppLanguage.SPANISH -> "Virtud (no forma parte de la súplica)"
+    AppLanguage.PORTUGUESE -> "Virtude (não faz parte da súplica)"
+    AppLanguage.ENGLISH -> "Virtue (not part of the supplication)"
+  }
+
   fun getAsmaUlHusnaTitle(language: AppLanguage): String = when (language) {
     AppLanguage.ARABIC -> "أسماء الله الحسنى"
     AppLanguage.BENGALI -> "আল্লাহর ৯৯টি নাম"

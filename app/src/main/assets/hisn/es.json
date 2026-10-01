@@ -5,7 +5,7 @@
    "TEXT": [
     {
      "ID": 1,
-     "ARABIC_TEXT": "الحَمْدُ لِلَّهِ الذِي أَحْيَانَا بَعْدَمَا أَمَاتَنَا، وَإِلَيْهِ النُّشُّورُ",
+     "ARABIC_TEXT": "الحَمْدُ لِلَّهِ الذِي أَحْيَانَا بَعْدَمَا أَمَاتَنَا، وَإِلَيْهِ النُّشُورُ",
      "TRANSLATED_TEXT": "Alabado sea Allah, que nos dio la vida después de habernos dado la muerte, y hacia Él es la resurrección.",
      "REPEAT": 1,
      "REFERENCE": "البخاري مع الفتح 11/ 113 ومسلم 4/ 2083"
@@ -19,10 +19,11 @@
     },
     {
      "ID": 3,
-     "ARABIC_TEXT": "(لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ المُلْكُ وَلَهُ الحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، سُبْحَانَ اللَّهِ، وَالحَمْدُ لِلَّهِ، وَلَا إِلَهَ إِلَّا اللَّه، وَاللَّه أَكْبَرُ، وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ العَلِّي العَظِيمِ، رَبِّ اغْفِرْ لِي). أَوْ دَعَا اسْتُجِيبَ لَهُ فَإِنْ تَوَضَّأَ وَصَلَّى قُبِلَتْ صَلَاتَهُ",
-     "TRANSLATED_TEXT": "(No hay divinidad verdadera excepto Allah, único, sin asociado. Suyo es el dominio y Suya es la alabanza, y Él es capaz de todas las cosas. Gloria a Allah, alabado sea Allah, no hay divinidad verdadera excepto Allah, Allah es el más grande, y no hay poder ni fuerza sino en Allah, el Altísimo, el Grandioso. ¡Señor mío, perdóname!). O si invoca, le será respondido; y si hace la ablución y ora, su oración será aceptada.",
+     "ARABIC_TEXT": "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ المُلْكُ وَلَهُ الحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، سُبْحَانَ اللَّهِ، وَالحَمْدُ لِلَّهِ، وَلَا إِلَهَ إِلَّا اللَّهُ، وَاللَّهُ أَكْبَرُ، وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ الْعَلِيِّ العَظِيمِ، رَبِّ اغْفِرْ لِي",
+     "TRANSLATED_TEXT": "No hay divinidad verdadera excepto Allah, único, sin asociado. Suyo es el dominio y Suya es la alabanza, y Él es capaz de todas las cosas. Gloria a Allah, alabado sea Allah, no hay divinidad verdadera excepto Allah, Allah es el más grande, y no hay poder ni fuerza sino en Allah, el Altísimo, el Grandioso. ¡Señor mío, perdóname!",
      "REPEAT": 1,
-     "REFERENCE": "البخاري مع الفتح 3/ 144 وغيرها واللفظ لابن ماجه انظر صحيح ابن ماجه 2/ 335"
+     "REFERENCE": "البخاري مع الفتح 3/ 144 وغيرها واللفظ لابن ماجه انظر صحيح ابن ماجه 2/ 335",
+     "NOTE": "Quien despierta de noche y dice esto, y luego dice «Señor mío, perdóname» o hace cualquier súplica, le es respondida; y si hace la ablución y reza, su oración es aceptada."
     },
     {
      "ID": 4,
@@ -319,7 +320,7 @@
     {
      "ID": 35,
      "ARABIC_TEXT": "اللَّهُ أَكْبَرُ كَبِيرًا، اللَّهُ أَكْبَرُ كَبِيرًا، اللَّهُ أَكْبَرُ كَبِيرًا، وَالحَمْدُ لِلَّهِ كَثِيرًا، وَالحَمْدُ لِلَّهِ كَثِيرًا، وَالحَمْدُ لِلَّهِ كَثِيرًا، وَسُبْحَانَ اللَّهِ بُكْرَةً وَأَصِيلًا (ثَلَاثًا). أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ: مِنْ نَفْخِهِ، وَنَفْثِهِ، وَ هَمْزِهِ",
-     "TRANSLATED_TEXT": "Allah es el más grande, sumamente grande; Allah es el más grande, sumamente grande; Allah es el más grande, sumamente grande. Alabado sea Allah abundantemente; alabado sea Allah abundantemente; alabado sea Allah abundantemente. Y gloria a Allah de mañana y de tarde (tres veces). Me refugio en Allah del demonio maldito: de su soplo, de su susurro y de su instigación.",
+     "TRANSLATED_TEXT": "Allah es el más grande, sumamente grande; Allah es el más grande, sumamente grande; Allah es el más grande, sumamente grande. Alabado sea Allah abundantemente; alabado sea Allah abundantemente; alabado sea Allah abundantemente. Y gloria a Allah de mañana y de tarde (tres veces). Me refugio en Allah del demonio maldito: de su soberbia, de su poesía y de su locura.",
      "REPEAT": 1,
      "REFERENCE": "أخرجه أبو داود 1/ 203 وابن ماجه 1/ 265 وأحمد 4/ 85 وأخرجه مسلم عن ابن عمر رضي الله عنهما بنحوه وفيه قصة 1/ 420"
     },
@@ -1902,7 +1903,7 @@
     {
      "ID": 219,
      "ARABIC_TEXT": "(إِذَا دُعِيَ أَحَدُكُمْ فَلْيُجِبْ، فَإِنْ كَانَ صَائِمًا فَلْيُصَلِّ وَإِنْ كَانَ مُفْطِرًا فَلْيَطْعَمْ).\r\nوَمَعْنَى فَلْيُصَلِّ أَيْ: فَلْيَدْعُ",
-     "TRANSLATED_TEXT": "(Cuando alguno de vosotros sea invitado, que responda; si está ayunando, que ore [suplique], y si no está ayunando, que coma).\nEl significado de «que ore» es: que suplique.",
+     "TRANSLATED_TEXT": "(Cuando alguno de vosotros sea invitado, que responda; si está ayunando, que suplique por su anfitrión, y si no está ayunando, que coma).\nAquí «yusalli» significa: que haga du'a (súplica).",
      "REPEAT": 1,
      "REFERENCE": "مسلم 2/ 1054"
     }
@@ -2149,7 +2150,7 @@
     {
      "ID": 240,
      "ARABIC_TEXT": "اللَّهُمَّ لَا طَيْرَ إِلَّا طَيْرُكَ، وَلَا خَيْرَ إِلَّا خَيْرُكَ، وَلَا إِلَهَ غَيْرُكَ",
-     "TRANSLATED_TEXT": "¡Oh Allah! No hay presagio sino el Tuyo, no hay bien sino el Tuyo, y no hay más dios que Tú.",
+     "TRANSLATED_TEXT": "¡Oh Allah! No hay presagios sino lo que Tú decretas, no hay bien sino Tu bien, y no hay más dios que Tú.",
      "REPEAT": 1,
      "REFERENCE": "أحمد 2/ 220، وابن السني برقم 292، وصححه الألباني في الأحاديث الصحيحة 3/ 54، رقم 1065، أما الفأل فكان يعجب النّبيّ صلّى اللّه عليه وسلّم ولهذا سمع من رجل كلمة طيّبة فأعجبته فقال: (أخذنا فألك من فيك) أبو داود وأحمد، وصححه الألباني في الصحيحة 2/ 363 عند أبي الشيخ في أخلاق النّبيّ صلّى اللّه عليه وسلّم ص 270"
     }
@@ -2264,7 +2265,7 @@
     {
      "ID": 250,
      "ARABIC_TEXT": "سَمَّـِعَ سَامِعٌ بِحَمْدِ اللَّهِ، وَحُسْنِ بَلَائِهِ عَلَيْنَا. رَبَّنَا صَاحِبْنَا، وَأَفْضِلْ عَلَيْنَا عَائِذًا بِاللَّهِ مِنَ النَّارِ",
-     "TRANSLATED_TEXT": "Que oiga quien oiga, con la alabanza de Allah y Su buena prueba sobre nosotros. Señor nuestro, acompáñanos y favorécenos, buscando refugio en Allah del Fuego.",
+     "TRANSLATED_TEXT": "Que un testigo dé testimonio de nuestra alabanza a Allah y de Su buen favor sobre nosotros. Señor nuestro, acompáñanos y concédenos Tu favor, buscando refugio en Allah del Fuego.",
      "REPEAT": 1,
      "REFERENCE": "مسلم 4/ 2086 ومعنى سمِع سامع: أي شهد شاهد على حمدنا للّه تعالى على نعمه وحسن بلائه. ومعنى سمَّع سامع: بلّغ سامع قولي هذا لغيره وقال مثله تنبيها على الذِّكر في السّحر والدعاء. وقوله: ربّنا صاحبنا وأفضل علينا: أي احفظنا وحطنا واكلأنا وأفضل علينا بجزيل نعمك واصرف عنّا كلّ مكروه، شرح النّووي 17/ 39"
     }
@@ -2359,7 +2360,7 @@
     {
      "ID": 260,
      "ARABIC_TEXT": "ثَلَاثٌ مَنْ جَمَعَهُنَّ فَقَدْ جَمَعَ الإِيمَانَ: (الإِنْصَافُ مِنْ نَفْسِكَ، وَبَذْلُ السَّلَامِ لِلْعَالَمِ، وَالإِنْفَاقُ مِنَ الإِقْتَارِ)",
-     "TRANSLATED_TEXT": "Tres cosas que quien las reúna, habrá reunido la fe: (Ser justo contigo mismo, dar el saludo a todo el mundo, y dar caridad aun en la escasez).",
+     "TRANSLATED_TEXT": "Tres cosas, quien las reúna habrá reunido la fe: (ser justo y equitativo, incluso contra uno mismo; dar el saludo de paz a todo el mundo; y dar aun en la escasez).",
      "REPEAT": 1,
      "REFERENCE": "البخاري مع الفتح 1/ 82 عن عمّار رضي اللّه عنه موقوفا معلّقا"
     },
@@ -2474,7 +2475,7 @@
     {
      "ID": 270,
      "ARABIC_TEXT": "{رَبَّنَا ءَاتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ}",
-     "TRANSLATED_TEXT": "{Señor nuestro, danos bien en esta vida y bien en la otra, y presérvanos del castigo del Fuego} (201)",
+     "TRANSLATED_TEXT": "{Señor nuestro, danos bien en esta vida y bien en la otra, y presérvanos del castigo del Fuego}.",
      "REPEAT": 1,
      "REFERENCE": "أبو داود 2/ 179، وأحمد 3/ 411 والبغوي في شرح السّنّة 7/ 128، وحسّنه الألباني في صحيح أبي داود 1/ 354، والآية من سورة البقرة: 201"
     }

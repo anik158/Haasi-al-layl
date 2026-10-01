@@ -4,7 +4,9 @@
   source/hisn.json         Arabic text, counts and references, from github.com/asellam/HisnElMuslim
                            (MIT, see source/LICENSE.md). Keyed by chapter title, no IDs.
   translations/<lang>.json Our own translations of that Arabic:
-                           {"chapters": ["title", ...], "entries": {"<ID>": {"text": "...", "translit": "..."}}}
+                           {"chapters": ["title", ...], "entries": {"<ID>": {"text": "...", "translit": "...", "note": "..."}}}
+                           "note" is the virtue or narrator's commentary, shown apart from the
+                           text to recite; it is required wherever the Arabic has a "Note".
                            "chapters" is by position; "translit" is only read from en.json.
 
 IDs are assigned 1..N in the upstream file's order. They are bookmark keys, so never reorder the
@@ -29,7 +31,9 @@ def load_source():
         entries = []
         for item in chapter["Adhkar"]:
             entries.append({"id": next_id, "arabic": item["Text"].strip(),
-                            "repeat": int(item.get("Count") or 1), "reference": item.get("Reference", "").strip()})
+                            "repeat": int(item.get("Count") or 1), "reference": item.get("Reference", "").strip(),
+                            # The virtue or the narrator's words, kept out of the text to recite.
+                            "note": item.get("Note", "").strip()})
             next_id += 1
         chapters.append({"title": title.strip(), "entries": entries})
     return chapters
@@ -54,7 +58,8 @@ def build(chapters):
     ASSETS.mkdir(parents=True, exist_ok=True)
     write(ASSETS / "ar.json", "Arabic", [
         {"TITLE": c["title"], "TEXT": [
-            {"ID": e["id"], "ARABIC_TEXT": e["arabic"], "REPEAT": e["repeat"], "REFERENCE": e["reference"]}
+            {"ID": e["id"], "ARABIC_TEXT": e["arabic"], "REPEAT": e["repeat"], "REFERENCE": e["reference"],
+             **({"NOTE": e["note"]} if e["note"] else {})}
             for e in c["entries"]]}
         for c in chapters])
     total = sum(len(c["entries"]) for c in chapters)
@@ -77,6 +82,12 @@ def build(chapters):
                         "REPEAT": e["repeat"], "REFERENCE": e["reference"]}
                 if code == "en" and t.get("translit"):
                     item["LANGUAGE_ARABIC_TRANSLATED_TEXT"] = t["translit"].strip()
+                if t.get("note"):
+                    item["NOTE"] = t["note"].strip()
+                elif e["note"]:
+                    # Arabic has a note this language has not translated: fail loudly, or the
+                    # virtue silently goes missing from the screen.
+                    missing.append(e["id"])
                 text.append(item)
             out.append({"TITLE": titles.get(str(index), ""), "TEXT": text})
         write(ASSETS / f"{code}.json", name, out)

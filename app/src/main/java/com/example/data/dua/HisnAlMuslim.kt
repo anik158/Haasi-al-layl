@@ -104,7 +104,10 @@ object HisnParser {
             .firstOrNull { it.isNotBlank() }
             ?: "Hisn al-Muslim",
           repetition = "${entry.repeat}x",
-          hisnChapter = chapter.number
+          hisnChapter = chapter.number,
+          notes = byLanguageAndId.mapNotNull { (language, entries) ->
+            entries[entry.id]?.note?.takeIf { it.isNotBlank() }?.let { language to it }
+          }.toMap()
         )
       }
     }
@@ -120,7 +123,8 @@ object HisnParser {
     val transliteration: String,
     val translation: String,
     val reference: String,
-    val repeat: Int
+    val repeat: Int,
+    val note: String
   )
 
   private fun parseFile(json: String): List<RawChapter> {
@@ -151,7 +155,8 @@ object HisnParser {
         transliteration = entry.text("LANGUAGE_ARABIC_TRANSLATED_TEXT"),
         translation = entry.text("TRANSLATED_TEXT"),
         reference = entry.text("REFERENCE"),
-        repeat = entry.optInt("REPEAT", 1).coerceAtLeast(1)
+        repeat = entry.optInt("REPEAT", 1).coerceAtLeast(1),
+        note = entry.text("NOTE")
       )
     }
   }

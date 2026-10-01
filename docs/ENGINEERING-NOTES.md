@@ -481,8 +481,24 @@ repo should assert its match count.
 ### Hisn al-Muslim: the entries to review first
 
 The translating passes flagged these as idiomatic or ambiguous, where a meaning had to be chosen.
-A reviewer should start here. Edit `tools/hisn/translations/` (or `tools/hisn/source/` for the
-Arabic) and rerun `python3 tools/hisn/build.py`.
+Edit `tools/hisn/translations/` (or `tools/hisn/source/` for the Arabic, from
+[asellam/HisnElMuslim](https://github.com/asellam/HisnElMuslim), MIT) and rerun
+`python3 tools/hisn/build.py`.
+
+**All eight were resolved on 2 October 2026**, in every language:
+- the extra shadda in النُّشُورُ removed;
+- the waking-up hadith's reward clause moved out of the recitation into a new `Note`/`NOTE`
+  field, shown in a box labelled "Virtue (not part of the supplication)" - and, in the same entry,
+  الْعَلِيِّ and صَلَاتُهُ corrected;
+- نفخه ونفثه وهمزه as "his pride, his poetry, and his madness";
+- فليصلّ as "let him supplicate for the host", never salah;
+- لا طير إلا طيرك as "no omens except what You decree", with no "bird";
+- سمّع سامع as "may a witness bear witness to our praising Allah";
+- الإنصاف من نفسك as "being fair and just, even against yourself";
+- the Spanish "(201)" removed.
+
+The local Arabic corrections are listed in `tools/hisn/source/UPSTREAM`, so they survive a
+re-import. The table below is kept as the record of what was flagged.
 
 | Dua | The part in question | Why it's flagged |
 | --- | --- | --- |

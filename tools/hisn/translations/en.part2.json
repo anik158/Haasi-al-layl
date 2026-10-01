@@ -422,10 +422,7 @@
    "text": "May the fasting break their fast with you, may the righteous eat your food, and may the angels send blessings upon you.",
    "translit": "Aftara 'indakumus-sa'imun, wa akala ta'amakumul-abrar, wa sallat 'alaykumul-mala'ikah."
   },
-  "219": {
-   "text": "(If one of you is invited, let him accept; if he is fasting let him supplicate, and if he is not fasting let him eat.)\nThe meaning of \"let him supplicate\" is: let him pray for good.",
-   "translit": "(Idha du'iya ahadukum falyujib, fa in kana sa'iman falyusalli, wa in kana muftiran falyat'am). Wa ma'na falyusalli ay: falyad'u."
-  },
+  "219": {"text": "(If one of you is invited, let him accept; if he is fasting, let him supplicate for the host, and if he is not fasting, let him eat.)\nHere “yusalli” means: let him make du'a.", "translit": "(Idha du'iya ahadukum falyujib, fa in kana sa'iman falyusalli, wa in kana muftiran falyat'am). Wa ma'na falyusalli ay: falyad'u."},
   "220": {
    "text": "I am fasting, I am fasting.",
    "translit": "Inni sa'im, inni sa'im."
@@ -506,10 +503,7 @@
    "text": "And may Allah bless you too.",
    "translit": "Wa fika barakallah."
   },
-  "240": {
-   "text": "O Allah, there is no omen except Your omen, no good except Your good, and no god besides You.",
-   "translit": "Allahumma la tayra illa tayruk, wa la khayra illa khayruk, wa la ilaha ghayruk."
-  },
+  "240": {"text": "O Allah, there are no omens except what You decree, no good except Your good, and no god besides You.", "translit": "Allahumma la tayra illa tayruk, wa la khayra illa khayruk, wa la ilaha ghayruk."},
   "241": {
    "text": "In the name of Allah, and praise be to Allah. {Glory be to Him Who has subjected this to us, and we could not have done it ourselves. And indeed, to our Lord we are returning.} Praise be to Allah, praise be to Allah, praise be to Allah. Allah is the Greatest, Allah is the Greatest, Allah is the Greatest. Glory be to You, O Allah, indeed I have wronged myself, so forgive me, for none forgives sins except You.",
    "translit": "Bismillah, walhamdu lillah, {Subhanal-ladhi sakhkhara lana hadha wa ma kunna lahu muqrinin, wa inna ila Rabbina lamunqalibun}, alhamdu lillah, alhamdu lillah, alhamdu lillah, Allahu Akbar, Allahu Akbar, Allahu Akbar, Subhanakallahumma inni zalamtu nafsi faghfir li, fa innahu la yaghfirudh-dhunuba illa ant."
@@ -546,10 +540,7 @@
    "text": "Jabir, may Allah be pleased with him, said: (When we ascended we would say Allahu Akbar, and when we descended we would say Subhan Allah).",
    "translit": "Qala Jabirun radiyallahu 'anh: (Kunna idha sa'idna kabbarna, wa idha nazalna sabbahna)."
   },
-  "250": {
-   "text": "Let a hearer hear, by the praise of Allah and His good trial upon us. Our Lord, accompany us and bestow favor upon us, seeking refuge in Allah from the Fire.",
-   "translit": "Sami'a sami'un bihamdillahi wa husni bala'ihi 'alayna. Rabbana sahibna, wa afdil 'alayna 'a'idhan billahi minan-nar."
-  },
+  "250": {"text": "May a witness bear witness to our praising Allah and to His good favour upon us. Our Lord, be our companion and bestow Your favour upon us, seeking refuge in Allah from the Fire.", "translit": "Sami'a sami'un bihamdillahi wa husni bala'ihi 'alayna. Rabbana sahibna, wa afdil 'alayna 'a'idhan billahi minan-nar."},
   "251": {
    "text": "I seek refuge in the perfect words of Allah from the evil of what He has created.",
    "translit": "A'udhu bikalimatillahit-tammati min sharri ma khalaq."
@@ -586,10 +577,7 @@
    "text": "The Messenger of Allah, peace and blessings be upon him, said: (You will not enter Paradise until you believe, and you will not believe until you love one another. Shall I not guide you to something which, if you do it, you will love one another? Spread the greeting of peace among yourselves).",
    "translit": "Qala Rasulullahi sallallahu 'alayhi wa sallam: (La tadkhulul-jannata hatta tu'minu, wa la tu'minu hatta tahabbu, awala adullukum 'ala shay'in idha fa'altumuhu tahababtum? Afshus-salama baynakum)."
   },
-  "260": {
-   "text": "Three things, whoever combines them has combined [complete] faith: (being fair against oneself, giving the greeting of peace to all people, and spending in charity even in times of scarcity).",
-   "translit": "Thalathun man jama'ahunna faqad jama'al-iman: (Al-insafu min nafsik, wa badhlus-salami lil-'alam, wal-infaqu minal-iqtar)."
-  },
+  "260": {"text": "Three things, whoever gathers them has gathered faith: (being fair and just, even against yourself; offering the greeting of peace to all people; and spending even when in want).", "translit": "Thalathun man jama'ahunna faqad jama'al-iman: (Al-insafu min nafsik, wa badhlus-salami lil-'alam, wal-infaqu minal-iqtar)."},
   "261": {
    "text": "On the authority of 'Abdullah ibn 'Umar, may Allah be pleased with them both: A man asked the Prophet, peace and blessings be upon him: Which aspect of Islam is best? He said: (That you feed others food, and that you greet with peace whoever you know and whoever you do not know).",
    "translit": "Wa 'an 'Abdillahi bni 'Umara radiyallahu 'anhuma: anna rajulan sa'alan-nabiyya sallallahu 'alayhi wa sallam: Ayyul-Islami khayr? Qal: (Tut'imut-ta'am, wa taqra'us-salama 'ala man 'arafta wa man lam ta'rif)."

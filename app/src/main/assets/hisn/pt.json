@@ -5,7 +5,7 @@
    "TEXT": [
     {
      "ID": 1,
-     "ARABIC_TEXT": "الحَمْدُ لِلَّهِ الذِي أَحْيَانَا بَعْدَمَا أَمَاتَنَا، وَإِلَيْهِ النُّشُّورُ",
+     "ARABIC_TEXT": "الحَمْدُ لِلَّهِ الذِي أَحْيَانَا بَعْدَمَا أَمَاتَنَا، وَإِلَيْهِ النُّشُورُ",
      "TRANSLATED_TEXT": "Louvado seja Allah, que nos deu vida depois de nos fazer morrer, e a Ele é a ressurreição.",
      "REPEAT": 1,
      "REFERENCE": "البخاري مع الفتح 11/ 113 ومسلم 4/ 2083"
@@ -19,10 +19,11 @@
     },
     {
      "ID": 3,
-     "ARABIC_TEXT": "(لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ المُلْكُ وَلَهُ الحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، سُبْحَانَ اللَّهِ، وَالحَمْدُ لِلَّهِ، وَلَا إِلَهَ إِلَّا اللَّه، وَاللَّه أَكْبَرُ، وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ العَلِّي العَظِيمِ، رَبِّ اغْفِرْ لِي). أَوْ دَعَا اسْتُجِيبَ لَهُ فَإِنْ تَوَضَّأَ وَصَلَّى قُبِلَتْ صَلَاتَهُ",
-     "TRANSLATED_TEXT": "(Não há divindade digna de adoração exceto Allah, único, sem parceiro; Dele é o domínio e Dele é o louvor, e Ele é capaz de todas as coisas. Glorificado seja Allah, louvado seja Allah, não há divindade digna de adoração exceto Allah, Allah é o Maior, e não há poder nem força senão em Allah, o Altíssimo, o Imenso. Senhor meu, perdoa-me). Ou, se fizer uma súplica, ela será atendida; e se fizer a ablução e rezar, sua oração será aceita.",
+     "ARABIC_TEXT": "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ المُلْكُ وَلَهُ الحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، سُبْحَانَ اللَّهِ، وَالحَمْدُ لِلَّهِ، وَلَا إِلَهَ إِلَّا اللَّهُ، وَاللَّهُ أَكْبَرُ، وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ الْعَلِيِّ العَظِيمِ، رَبِّ اغْفِرْ لِي",
+     "TRANSLATED_TEXT": "Não há divindade digna de adoração exceto Allah, único, sem parceiro; Dele é o domínio e Dele é o louvor, e Ele é capaz de todas as coisas. Glorificado seja Allah, louvado seja Allah, não há divindade digna de adoração exceto Allah, Allah é o Maior, e não há poder nem força senão em Allah, o Altíssimo, o Imenso. Senhor meu, perdoa-me.",
      "REPEAT": 1,
-     "REFERENCE": "البخاري مع الفتح 3/ 144 وغيرها واللفظ لابن ماجه انظر صحيح ابن ماجه 2/ 335"
+     "REFERENCE": "البخاري مع الفتح 3/ 144 وغيرها واللفظ لابن ماجه انظر صحيح ابن ماجه 2/ 335",
+     "NOTE": "Quem desperta à noite e diz isto, e depois diz «Senhor meu, perdoa-me» ou faz qualquer súplica, é atendido; e se fizer a ablução e rezar, a sua oração é aceita."
     },
     {
      "ID": 4,
@@ -319,7 +320,7 @@
     {
      "ID": 35,
      "ARABIC_TEXT": "اللَّهُ أَكْبَرُ كَبِيرًا، اللَّهُ أَكْبَرُ كَبِيرًا، اللَّهُ أَكْبَرُ كَبِيرًا، وَالحَمْدُ لِلَّهِ كَثِيرًا، وَالحَمْدُ لِلَّهِ كَثِيرًا، وَالحَمْدُ لِلَّهِ كَثِيرًا، وَسُبْحَانَ اللَّهِ بُكْرَةً وَأَصِيلًا (ثَلَاثًا). أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ: مِنْ نَفْخِهِ، وَنَفْثِهِ، وَ هَمْزِهِ",
-     "TRANSLATED_TEXT": "Allah é o Maior, grandemente; Allah é o Maior, grandemente; Allah é o Maior, grandemente; e louvado seja Allah, abundantemente; e louvado seja Allah, abundantemente; e louvado seja Allah, abundantemente; e glorificado seja Allah de manhã e à tarde (três vezes). Busco refúgio em Allah contra Satanás, o amaldiçoado: de seu sopro, de seu assopro e de sua provocação.",
+     "TRANSLATED_TEXT": "Allah é o Maior, grandemente; Allah é o Maior, grandemente; Allah é o Maior, grandemente; e louvado seja Allah, abundantemente; e louvado seja Allah, abundantemente; e louvado seja Allah, abundantemente; e glorificado seja Allah de manhã e à tarde (três vezes). Busco refúgio em Allah contra Satanás, o amaldiçoado: do seu orgulho, da sua poesia e da sua loucura.",
      "REPEAT": 1,
      "REFERENCE": "أخرجه أبو داود 1/ 203 وابن ماجه 1/ 265 وأحمد 4/ 85 وأخرجه مسلم عن ابن عمر رضي الله عنهما بنحوه وفيه قصة 1/ 420"
     },
@@ -1902,7 +1903,7 @@
     {
      "ID": 219,
      "ARABIC_TEXT": "(إِذَا دُعِيَ أَحَدُكُمْ فَلْيُجِبْ، فَإِنْ كَانَ صَائِمًا فَلْيُصَلِّ وَإِنْ كَانَ مُفْطِرًا فَلْيَطْعَمْ).\r\nوَمَعْنَى فَلْيُصَلِّ أَيْ: فَلْيَدْعُ",
-     "TRANSLATED_TEXT": "(Quando um de vós for convidado, que atenda; e se estiver jejuando, que reze [suplique], e se não estiver jejuando, que coma).\nE o significado de 'que reze' é: que suplique.",
+     "TRANSLATED_TEXT": "(Quando um de vós for convidado, que atenda; se estiver jejuando, que suplique pelo anfitrião, e se não estiver jejuando, que coma).\nAqui «yusalli» significa: que faça du'a (súplica).",
      "REPEAT": 1,
      "REFERENCE": "مسلم 2/ 1054"
     }
@@ -2149,7 +2150,7 @@
     {
      "ID": 240,
      "ARABIC_TEXT": "اللَّهُمَّ لَا طَيْرَ إِلَّا طَيْرُكَ، وَلَا خَيْرَ إِلَّا خَيْرُكَ، وَلَا إِلَهَ غَيْرُكَ",
-     "TRANSLATED_TEXT": "Ó Allah, não há agouro senão o Teu, e não há bem senão o Teu, e não há divindade além de Ti.",
+     "TRANSLATED_TEXT": "Ó Allah, não há presságios senão o que Tu decretas, não há bem senão o Teu bem, e não há divindade além de Ti.",
      "REPEAT": 1,
      "REFERENCE": "أحمد 2/ 220، وابن السني برقم 292، وصححه الألباني في الأحاديث الصحيحة 3/ 54، رقم 1065، أما الفأل فكان يعجب النّبيّ صلّى اللّه عليه وسلّم ولهذا سمع من رجل كلمة طيّبة فأعجبته فقال: (أخذنا فألك من فيك) أبو داود وأحمد، وصححه الألباني في الصحيحة 2/ 363 عند أبي الشيخ في أخلاق النّبيّ صلّى اللّه عليه وسلّم ص 270"
     }
@@ -2264,7 +2265,7 @@
     {
      "ID": 250,
      "ARABIC_TEXT": "سَمَّـِعَ سَامِعٌ بِحَمْدِ اللَّهِ، وَحُسْنِ بَلَائِهِ عَلَيْنَا. رَبَّنَا صَاحِبْنَا، وَأَفْضِلْ عَلَيْنَا عَائِذًا بِاللَّهِ مِنَ النَّارِ",
-     "TRANSLATED_TEXT": "Que quem ouve testemunhe o louvor de Allah e Sua bela provação sobre nós. Senhor nosso, acompanha-nos, e favorece-nos, buscando refúgio em Allah do Fogo.",
+     "TRANSLATED_TEXT": "Que uma testemunha testemunhe o nosso louvor a Allah e o Seu bom favor sobre nós. Senhor nosso, acompanha-nos e concede-nos o Teu favor, buscando refúgio em Allah do Fogo.",
      "REPEAT": 1,
      "REFERENCE": "مسلم 4/ 2086 ومعنى سمِع سامع: أي شهد شاهد على حمدنا للّه تعالى على نعمه وحسن بلائه. ومعنى سمَّع سامع: بلّغ سامع قولي هذا لغيره وقال مثله تنبيها على الذِّكر في السّحر والدعاء. وقوله: ربّنا صاحبنا وأفضل علينا: أي احفظنا وحطنا واكلأنا وأفضل علينا بجزيل نعمك واصرف عنّا كلّ مكروه، شرح النّووي 17/ 39"
     }
@@ -2359,7 +2360,7 @@
     {
      "ID": 260,
      "ARABIC_TEXT": "ثَلَاثٌ مَنْ جَمَعَهُنَّ فَقَدْ جَمَعَ الإِيمَانَ: (الإِنْصَافُ مِنْ نَفْسِكَ، وَبَذْلُ السَّلَامِ لِلْعَالَمِ، وَالإِنْفَاقُ مِنَ الإِقْتَارِ)",
-     "TRANSLATED_TEXT": "Três coisas: quem as reúne, reúne a fé: (a justiça para consigo mesmo, dar a saudação ao mundo, e gastar mesmo em escassez).",
+     "TRANSLATED_TEXT": "Três coisas, quem as reúne reúne a fé: (ser justo e equânime, mesmo contra si mesmo; dar a saudação de paz a todos; e gastar mesmo na escassez).",
      "REPEAT": 1,
      "REFERENCE": "البخاري مع الفتح 1/ 82 عن عمّار رضي اللّه عنه موقوفا معلّقا"
     },

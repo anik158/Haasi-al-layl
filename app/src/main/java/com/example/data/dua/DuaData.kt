@@ -70,8 +70,17 @@ data class DuaItem(
   val reference: String,
   val repetition: String = "1x",
   /** The Hisn al-Muslim chapter this belongs to; null for the built-in supplications. */
-  val hisnChapter: Int? = null
+  val hisnChapter: Int? = null,
+  /**
+   * The virtue, or the narrator's words about the supplication - shown apart from the text, so
+   * nobody is led to recite the commentary as part of the du'a. Per language, Arabic included.
+   */
+  val notes: Map<AppLanguage, String> = emptyMap()
 ) {
+  /** The note in [language], falling back to English; blank when there is none. */
+  fun getLocalizedNote(language: AppLanguage): String =
+    notes[language]?.takeIf { it.isNotBlank() } ?: notes[AppLanguage.ENGLISH].orEmpty()
+
   fun getLocalizedTitle(language: AppLanguage): String = when (language) {
     AppLanguage.BENGALI -> if (titleBn.isNotBlank()) titleBn else title
     AppLanguage.ARABIC -> if (titleAr.isNotBlank()) titleAr else title
