@@ -176,6 +176,19 @@ fun DuaScreen(
           expanded = expanded,
           onDismissRequest = { expanded = false }
         ) {
+          // Hisn al-Muslim first: it is the main collection, so it heads the list, above All.
+          if (hisnChapters.isNotEmpty()) {
+            DropdownMenuItem(
+              text = { Text(DuaCategory.HISN.getLocalizedName(language), fontWeight = if (selectedCategory == DuaCategory.HISN) FontWeight.Bold else FontWeight.Normal) },
+              onClick = {
+                selectedCategory = DuaCategory.HISN
+                selectedHisnChapter = null
+                showBookmarksOnly = false
+                expanded = false
+              },
+              modifier = Modifier.testTag("dua_category_hisn")
+            )
+          }
           DropdownMenuItem(
             text = { Text(DuaCategory.ALL.getLocalizedName(language), fontWeight = if (selectedCategory == null && !showBookmarksOnly) FontWeight.Bold else FontWeight.Normal) },
             onClick = {
@@ -186,8 +199,7 @@ fun DuaScreen(
             }
           )
           DuaCategory.entries
-            .filter { it != DuaCategory.ALL }
-            .filter { it != DuaCategory.HISN || hisnChapters.isNotEmpty() }
+            .filter { it != DuaCategory.ALL && it != DuaCategory.HISN }
             .forEach { category ->
               DropdownMenuItem(
                 text = { Text(category.getLocalizedName(language), fontWeight = if (selectedCategory == category) FontWeight.Bold else FontWeight.Normal) },
