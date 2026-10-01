@@ -21,7 +21,7 @@ there, the guide shows a dashed slot saying what belongs in it.
 | `01-location-disclosure.png` | First launch: the "Why the app needs your location" dialog | added |
 | `02-today.png` | Today, top of the screen, during a prayer's time (current + next prayer) | added |
 | `03-alarm.png` | The alarm screen — Settings → "Test alert in 1 minute", then lock the phone | added |
-| `04-reliability.png` | Settings → Notification reliability, ideally all rows ✓ | **needed** |
+| `04-reliability.png` | Settings → Notification reliability, ideally all rows ✓ | added |
 | `05-qibla.png` | The Qibla tab | **needed** |
 | `02b-prayers.png` | Today's Prayers list | added |
 | `06-duas.png` | A Hisn al-Muslim dua; the waking-up chapter's third entry ("Lā ilāha illallāhu waḥdahu…") has a "Virtue" box | added (chapter index) |
