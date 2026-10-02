@@ -70,7 +70,9 @@ object HisnParser {
     // Supplications keyed by their own ID, across every language, so overlays line up even if a
     // translation's chapters are split or ordered slightly differently.
     val byLanguageAndId = parsed.mapValues { (_, languageChapters) ->
-      languageChapters.flatMap { it.entries }.associateBy { it.id }
+      // First occurrence wins, matching the base list, which skips later duplicates. associateBy
+      // alone kept the *last*, so a repeated ID's text replaced the real translation.
+      languageChapters.flatMap { it.entries }.distinctBy { it.id }.associateBy { it.id }
     }
 
     val seen = HashSet<String>()
