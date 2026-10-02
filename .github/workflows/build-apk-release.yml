@@ -96,6 +96,39 @@ jobs:
           path: app/build/outputs/apk/debug/haasi-al-layl-debug.apk
           retention-days: 30
 
+      # The Play upload: a release bundle signed with the upload key. Built only when the key is
+      # in the repository secrets - never with a throwaway key, because the first bundle Play
+      # receives fixes the upload key, and one generated per run would be lost at once.
+      #   UPLOAD_KEYSTORE_BASE64  base64 of my-upload-key.jks (`base64 -w0 my-upload-key.jks`)
+      #   UPLOAD_STORE_PASSWORD   its store password
+      #   UPLOAD_KEY_PASSWORD     the "upload" key's password
+      - name: Build signed release bundle (.aab)
+        id: aab
+        env:
+          UPLOAD_KEYSTORE_BASE64: ${{ secrets.UPLOAD_KEYSTORE_BASE64 }}
+          STORE_PASSWORD: ${{ secrets.UPLOAD_STORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
+        run: |
+          if [ -z "$UPLOAD_KEYSTORE_BASE64" ]; then
+            echo "::notice::No upload key in the repository secrets - skipping the signed .aab. See docs/PLAY-STORE.md."
+            echo "built=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          set -o pipefail
+          echo "$UPLOAD_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/upload.jks"
+          export KEYSTORE_PATH="$RUNNER_TEMP/upload.jks"
+          gradle bundleRelease --stacktrace --console=plain --no-daemon 2>&1 | tee bundle.log
+          rm -f "$RUNNER_TEMP/upload.jks"
+          echo "built=true" >> "$GITHUB_OUTPUT"
+
+      - name: Upload AAB to Artifacts
+        if: steps.aab.outputs.built == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-aab
+          path: app/build/outputs/bundle/release/*.aab
+          retention-days: 30
+
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
@@ -107,4 +140,23 @@ jobs:
             Download the APK from the assets below.
           draft: false
           prerelease: false
-          files: app/build/outputs/apk/debug/haasi-al-layl-debug.apk
+          files: |
+            app/build/outputs/apk/debug/haasi-al-layl-debug.apk
+            app/build/outputs/bundle/release/*.aab
+          fail_on_unmatched_files: false
+
+      # After the APK is out, so a failing test never withholds a build to try - but it still
+      # turns the run red, which is the point: these tests had never run before this step.
+      - name: Unit tests
+        run: |
+          set -o pipefail
+          gradle :app:testDebugUnitTest --console=plain --no-daemon 2>&1 | tee test.log
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-report
+          path: app/build/reports/tests/testDebugUnitTest/
+          retention-days: 14
+          if-no-files-found: ignore
