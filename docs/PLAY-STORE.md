@@ -21,16 +21,20 @@ step with the code: if a network call or permission is added, this page and
       1. Create an upload key once, and back it up somewhere safe — losing it means asking Google
          to reset it:
          `keytool -genkeypair -v -keystore my-upload-key.jks -alias upload -keyalg RSA -keysize 2048 -validity 10000`
-      2. Add it to GitHub → Settings → Secrets: the keystore as base64, and its passwords and alias
-         (the names `app/build.gradle.kts` reads: `KEYSTORE_PATH`, `STORE_PASSWORD`, and the key
-         alias/password variables beside them).
-      3. A CI job that decodes the keystore and runs `gradle bundleRelease`, uploading
-         `app/build/outputs/bundle/release/app-release.aab`. Never commit the `.jks` file.
+      2. Add three repository secrets (GitHub → Settings → Secrets and variables → Actions):
+         `UPLOAD_KEYSTORE_BASE64` (the output of `base64 -w0 my-upload-key.jks`),
+         `UPLOAD_STORE_PASSWORD` and `UPLOAD_KEY_PASSWORD`. The key alias must be `upload`.
+      3. Push to `build-apk-release`: CI then builds the signed `.aab` (`gradle bundleRelease`) and
+         attaches it to the GitHub release beside the APK. Without the secrets it skips this step
+         with a notice. Never commit the `.jks` file.
+      **Pick one route for uploads.** If AI Studio's "Publish" is used for the first upload, its key
+      becomes the upload key, and CI's bundles would be rejected (and vice versa) until the upload
+      key is reset through Play support.
       4. Enrol in **Play App Signing** at the first upload (Google keeps the app-signing key; yours
          is only the upload key).
-- [ ] **Run the unit tests once.** CI only builds; `gradle :app:testDebugUnitTest` has never run
-      on this code (CurrentPrayerWindowTest, PrayerAlertPlannerTest, FastingTimesTest,
-      AsmaUlHusnaTest, HisnParserTest…). Add it to CI or run it locally before the first upload.
+- [x] **Unit tests run in CI** on every push, after the APK (JDK 21, which Robolectric needs for
+      SDK 36). First green run: build 55, all 40 tests. Their first run found a real parser bug
+      (a repeated Hisn ID overwrote a translation) and a stale app-name assertion, both fixed.
 - [ ] **A clean-install test** on a real phone with the new application ID: location disclosure →
       permission → correct town (the Panchagarh/Natore case), exact-alarm card → Allow, a prayer
       alarm, the 5-minute reminder.
