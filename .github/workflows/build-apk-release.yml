@@ -17,10 +17,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up JDK 17
+      # 21, not 17: Robolectric refuses to start Android SDK 35+ on anything older
+      # (UnsupportedOperationException in DefaultSdkProvider), so every Robolectric test class
+      # failed at setup on 17. The app itself still targets Java 11 bytecode.
+      - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
 
       # Deliberately NOT android-actions/setup-android. The ubuntu runner already ships a complete
