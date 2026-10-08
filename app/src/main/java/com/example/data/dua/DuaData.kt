@@ -3,7 +3,8 @@ package com.example.data.dua
 import com.example.data.localization.AppLanguage
 
 enum class DuaCategory(val displayName: String) {
-  ALL("All"),
+  /** The built-in everyday duas - not Hisn al-Muslim, which has its own entry and chapters. */
+  ALL("Everyday Duas"),
   WEATHER("Weather & Nature"),
   MORNING("Morning Adhkar"),
   EVENING("Evening Adhkar"),
@@ -14,7 +15,7 @@ enum class DuaCategory(val displayName: String) {
 
   fun getLocalizedName(language: AppLanguage): String = when (language) {
     AppLanguage.BENGALI -> when (this) {
-      ALL -> "সব"
+      ALL -> "নিত্যদিনের দোয়া"
       WEATHER -> "আবহাওয়া ও প্রকৃতি"
       MORNING -> "সকালের জিকির"
       EVENING -> "সন্ধ্যার জিকির"
@@ -23,7 +24,7 @@ enum class DuaCategory(val displayName: String) {
       HISN -> "হিসনুল মুসলিম"
     }
     AppLanguage.ARABIC -> when (this) {
-      ALL -> "الكل"
+      ALL -> "أدعية يومية"
       WEATHER -> "الطقس والطبيعة"
       MORNING -> "أذكار الصباح"
       EVENING -> "أذكار المساء"
@@ -32,7 +33,7 @@ enum class DuaCategory(val displayName: String) {
       HISN -> "حصن المسلم"
     }
     AppLanguage.SPANISH -> when (this) {
-      ALL -> "Todas"
+      ALL -> "Duas cotidianas"
       WEATHER -> "Clima y Naturaleza"
       MORNING -> "Adhkar Mañana"
       EVENING -> "Adhkar Tarde"
@@ -41,7 +42,7 @@ enum class DuaCategory(val displayName: String) {
       HISN -> "Hisn al-Muslim"
     }
     AppLanguage.PORTUGUESE -> when (this) {
-      ALL -> "Todas"
+      ALL -> "Duas do dia a dia"
       WEATHER -> "Clima e Natureza"
       MORNING -> "Adhkar Manhã"
       EVENING -> "Adhkar Tarde"

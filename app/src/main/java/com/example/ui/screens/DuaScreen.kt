@@ -92,7 +92,14 @@ fun DuaScreen(
     val query = normalizeForSearch(debouncedQuery)
     allDuas.filter { dua ->
       val matchesSearch = query.isBlank() || searchIndex[dua.id].orEmpty().contains(query)
-      val matchesCategory = selectedCategory == null || dua.category == selectedCategory
+      // No category = Everyday Duas: the built-in ones only. Hisn al-Muslim has its own entry,
+      // and dumping its 302 duas here as one flat list made "All" read as wrong. Search and
+      // Bookmarks still reach everything.
+      val matchesCategory = when {
+        selectedCategory != null -> dua.category == selectedCategory
+        query.isNotBlank() || showBookmarksOnly -> true
+        else -> dua.category != DuaCategory.HISN
+      }
       val matchesChapter = selectedHisnChapter == null || dua.hisnChapter == selectedHisnChapter
       val matchesBookmarks = !showBookmarksOnly || bookmarkedDuaIds.contains(dua.id)
       matchesSearch && matchesCategory && matchesChapter && matchesBookmarks
