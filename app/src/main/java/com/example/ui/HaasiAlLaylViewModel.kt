@@ -670,8 +670,8 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
     }
     _onboardingState.value = OnboardingState.LOCATING
     _locatingPhase.value = LocatingPhase.SEARCHING
-    startFixTicker()
     fixJob?.cancel()
+    val ticker = startFixTicker()
     fixJob = viewModelScope.launch {
       try {
         val cached = LocationRepository.detectFromDevice(app, allowSlowFix = false)
@@ -691,7 +691,7 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
           fallBackWithoutDevice(showPhaseOnFailure = LocatingPhase.NO_FIX)
         }
       } finally {
-        stopFixTicker()
+        stopFixTicker(ticker)
       }
     }
   }
@@ -839,19 +839,33 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
    */
   fun onLocationProvidersChanged() {
     val app = getApplication<Application>()
-    if (!DeviceLocationProvider.hasPermission(app) || !DeviceLocationProvider.isLocationEnabled(app)) return
+    val enabled = DeviceLocationProvider.isLocationEnabled(app)
+    // Only the off -> on edge. Some phones broadcast PROVIDERS_CHANGED merely because the GPS
+    // engine started for our own request; reacting to every one restarted detection in a loop,
+    // and the offline search sat at "0s / 90s" for good.
+    val switchedOn = enabled && !lastLocationEnabled
+    lastLocationEnabled = enabled
+    if (!switchedOn || !DeviceLocationProvider.hasPermission(app)) return
     if (userPrefs.locationFromDevice && userPrefs.selectedCity != null) return
     retryDeviceLocation()
   }
 
-  /** With Location now on: detect if nothing is stored, else listen afresh for the real fix. */
+  /** The Location switch as last seen, for [onLocationProvidersChanged]'s off -> on edge. */
+  private var lastLocationEnabled =
+    DeviceLocationProvider.isLocationEnabled(getApplication<Application>())
+
+  /**
+   * With Location now on: detect if nothing is stored, else make sure the watch is listening.
+   * Never restarts a search or a watch already under way - observeFixes keeps listening across
+   * the switch, so a running one picks the fix up by itself.
+   */
   private fun retryDeviceLocation() {
     if (userPrefs.cityChosenManually) return
     if (userPrefs.selectedCity == null) {
+      if (fixJob?.isActive == true) return
       startDetection()
     } else {
       Log.i(TAG, "location is on; listening for a device fix to replace the estimate")
-      stopBackgroundLocationWatch()
       startBackgroundLocationWatch()
     }
   }
@@ -1047,15 +1061,27 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
     stopBackgroundLocationWatch()
   }
 
-  private fun startFixTicker() {
+  /**
+   * Starts the visible seconds counter and returns its job, so the search that started it stops
+   * only its own. A shared stop let a cancelled search's `finally` kill the counter of the search
+   * that replaced it, and the screen sat at "0s / 90s".
+   */
+  private fun startFixTicker(): Job {
     fixTickerJob?.cancel()
     _fixElapsedSeconds.value = 0
-    fixTickerJob = viewModelScope.launch {
+    val ticker = viewModelScope.launch {
       while (isActive) {
         delay(1000)
         _fixElapsedSeconds.value += 1
       }
     }
+    fixTickerJob = ticker
+    return ticker
+  }
+
+  private fun stopFixTicker(ticker: Job) {
+    ticker.cancel()
+    if (fixTickerJob === ticker) fixTickerJob = null
   }
 
   private fun stopFixTicker() {
@@ -1141,7 +1167,7 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
     fixJob?.cancel()
     fixJob = viewModelScope.launch {
       _isDetectingLocation.value = true
-      startFixTicker()
+      val ticker = startFixTicker()
       try {
         // Device coordinates are exact and work offline; the IP only ever names the ISP's hub,
         // which can be a hundred kilometres out, so it is the fallback rather than the source.
@@ -1171,7 +1197,7 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
           }
         }
       } finally {
-        stopFixTicker()
+        stopFixTicker(ticker)
         _isDetectingLocation.value = false
       }
     }

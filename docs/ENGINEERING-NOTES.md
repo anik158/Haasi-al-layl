@@ -241,6 +241,13 @@ Now:
   state, the settings return re-reads for ~3 s (GPS no longer required), and a
   `PROVIDERS_CHANGED` receiver (registered while the app is open) calls
   `onLocationProvidersChanged` → `retryDeviceLocation`.
+- **React to the off → on edge only, and never restart a running search.** v57's listener reacted
+  to every `PROVIDERS_CHANGED`, and some phones broadcast it merely because the GPS started for our
+  own request: detection restarted in a loop, offline installs sat on "Finding where you are" at
+  "0s / 90s". Worse, a cancelled search's `finally` stopped the *replacement's* counter. Now
+  `onLocationProvidersChanged` tracks `lastLocationEnabled`, `retryDeviceLocation` skips while
+  `fixJob` is active, and each search stops only the ticker it started (`startFixTicker()` returns
+  it).
 - **Coordinates are named when the network returns**, via a default-network callback and on every
   resume — an offline install no longer keeps "26.34°N, 88.55°E" until a restart.
 - **`versionCode` is the CI run number**, so the build on a phone can be identified; a missing

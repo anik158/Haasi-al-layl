@@ -16,7 +16,7 @@ step with the code: if a network call or permission is added, this page and
       localized versions such as `…/guide/es/`. The app links to both
       (`DeveloperContact.PRIVACY_POLICY`, `USER_GUIDE`); the privacy URL also goes into Play
       Console → App content → Privacy policy. See `docs/site/README.md`.
-- [ ] **A signed release bundle (`.aab`).** Play accepts only Android App Bundles, signed with
+- [ ] **A signed release bundle (`.aab`).** Step-by-step for first-timers: [`docs/RELEASE-AAB.md`](RELEASE-AAB.md). Play accepts only Android App Bundles, signed with
       your upload key; CI currently builds a *debug APK* (`assembleDebug`). Steps:
       1. Create an upload key once, and back it up somewhere safe — losing it means asking Google
          to reset it:
