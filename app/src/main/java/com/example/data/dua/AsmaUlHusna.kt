@@ -24,8 +24,16 @@ data class AllahName(
    * خ, plus accents on long vowels - the convention of Spanish-speaking Muslims (Al-Yabbár,
    * Al-Jáliq). Portuguese keeps the common English-style spelling, which reads well enough there.
    */
-  val transliterationEs: String = ""
+  val transliterationEs: String = "",
+  /** A short explanation per language, from [ASMA_EXPLANATIONS]. Owed a scholar's review. */
+  val explanations: Map<AppLanguage, String> = emptyMap(),
+  /** One verse ("59:23") where the name, or the verb it comes from, occurs; null where none does. */
+  val quranRef: String? = null
 ) {
+  fun explanation(language: AppLanguage): String =
+    explanations[language]?.takeIf { it.isNotBlank() }
+      ?: explanations[AppLanguage.ENGLISH].orEmpty()
+
   /**
    * The pronunciation for [language]: Bengali script in Bengali, Spanish spelling in Spanish, none
    * in Arabic (the Arabic is already the name), and the common Latin spelling otherwise.
@@ -47,7 +55,9 @@ object AsmaUlHusna {
     RAW.mapIndexed { index, name ->
       name.copy(
         transliterationBn = BENGALI_PRONUNCIATION[index],
-        transliterationEs = SPANISH_PRONUNCIATION[index]
+        transliterationEs = SPANISH_PRONUNCIATION[index],
+        explanations = ASMA_EXPLANATIONS[index].texts,
+        quranRef = ASMA_EXPLANATIONS[index].quran
       )
     }
   }

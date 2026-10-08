@@ -307,6 +307,27 @@ object LocalizationManager {
     AppLanguage.ENGLISH -> "Virtue (not part of the supplication)"
   }
 
+  /** "Qur'an 59:23", with the language's digits. */
+  fun getQuranRefLabel(ref: String, language: AppLanguage): String = localizeDigits(
+    when (language) {
+      AppLanguage.ARABIC -> "القرآن $ref"
+      AppLanguage.BENGALI -> "কুরআন $ref"
+      AppLanguage.SPANISH -> "Corán $ref"
+      AppLanguage.PORTUGUESE -> "Alcorão $ref"
+      AppLanguage.ENGLISH -> "Qur'an $ref"
+    },
+    language
+  )
+
+  /** Under the explanation where the name does not occur in the Qur'an as such. */
+  fun getNameFromListNote(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "لم يرد هذا الاسم في القرآن بلفظه؛ وهو من القائمة المروية."
+    AppLanguage.BENGALI -> "এই নামটি কুরআনে হুবহু আসেনি; এটি বর্ণিত তালিকা থেকে।"
+    AppLanguage.SPANISH -> "Este nombre no aparece tal cual en el Corán; viene de la lista transmitida."
+    AppLanguage.PORTUGUESE -> "Este nome não aparece assim no Alcorão; vem da lista transmitida."
+    AppLanguage.ENGLISH -> "This name does not occur in the Qur'an as such; it comes from the transmitted list."
+  }
+
   fun getAsmaUlHusnaTitle(language: AppLanguage): String = when (language) {
     AppLanguage.ARABIC -> "أسماء الله الحسنى"
     AppLanguage.BENGALI -> "আল্লাহর ৯৯টি নাম"

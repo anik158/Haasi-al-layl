@@ -475,6 +475,11 @@ repo should assert its match count.
   dependencies, publish `docs/site/haasi-al-layl/privacy/index.html` at the URL in `DeveloperContact.PRIVACY_POLICY`.
   The location prompt is always preceded by `LocationDisclosureDialog` (Play's prominent
   disclosure); exact alarms are `SCHEDULE_EXACT_ALARM`, never `USE_EXACT_ALARM`.
+- **The 99 Names' explanations are unreviewed** (`data/dua/AsmaUlHusnaExplanations.kt`): 2–3
+  sentences per name in five languages, written for the app. Their Qur'an references were checked
+  against the Qur'an text (quran-simple-clean): each of the 89 cited verses contains the name or a
+  verb from it. The 10 names without one (al-Khafid, al-'Adl, al-Wajid, al-Majid (ماجد),
+  al-Muqaddim, al-Mani', ad-Darr, an-Nafi', ar-Rashid, as-Sabur) say they come from the list.
 - **The 99 Names' meanings and pronunciations are unreviewed** (`data/dua/AsmaUlHusna.kt`).
   `pronunciation(language)` gives Bengali script in Bengali, a Spanish-adapted spelling in Spanish
   (Y for ج, J for خ, accented long vowels), the English-style spelling in English and Portuguese,

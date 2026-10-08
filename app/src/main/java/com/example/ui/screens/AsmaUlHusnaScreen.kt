@@ -1,6 +1,8 @@
 package com.example.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -56,10 +58,14 @@ import com.example.ui.theme.WarmGoldAccent
 @Composable
 fun AsmaUlHusnaScreen(language: AppLanguage = AppLanguage.ENGLISH) {
   var query by remember { mutableStateOf("") }
+  // The name whose explanation is open; null when the sheet is closed.
+  var selected by remember { mutableStateOf<AllahName?>(null) }
+  selected?.let { name -> NameDetailSheet(name, language, onDismiss = { selected = null }) }
   val index = remember(language) {
     AsmaUlHusna.NAMES.associate { name ->
       name.number to normalizeForSearch(
         "${name.arabic} ${name.transliteration} ${name.transliterationBn} ${name.transliterationEs} " +
+          "${name.explanation(language)} " +
           "${name.meaning(language)} ${name.meaning(AppLanguage.ENGLISH)}"
       )
     }
@@ -113,7 +119,7 @@ fun AsmaUlHusnaScreen(language: AppLanguage = AppLanguage.ENGLISH) {
       contentPadding = PaddingValues(bottom = 24.dp)
     ) {
       items(shown, key = { it.number }) { name ->
-        NameCard(name, language)
+        NameCard(name, language, onClick = { selected = name })
       }
       item(key = "footnote") {
         Text(
@@ -129,12 +135,13 @@ fun AsmaUlHusnaScreen(language: AppLanguage = AppLanguage.ENGLISH) {
 }
 
 @Composable
-private fun NameCard(name: AllahName, language: AppLanguage) {
+private fun NameCard(name: AllahName, language: AppLanguage, onClick: () -> Unit) {
   val shape = RoundedCornerShape(18.dp)
   Row(
     modifier = Modifier
       .fillMaxWidth()
       .clip(shape)
+      .clickable(onClick = onClick)
       .background(Color.White)
       .border(1.dp, LinenBorderLight, shape)
       .padding(horizontal = 14.dp, vertical = 12.dp)
@@ -184,3 +191,79 @@ private fun NameCard(name: AllahName, language: AppLanguage) {
     )
   }
 }
+
+/** One name in full: Arabic, pronunciation, meaning, a short explanation, and its verse. */
+@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+@Composable
+private fun NameDetailSheet(name: AllahName, language: AppLanguage, onDismiss: () -> Unit) {
+  androidx.compose.material3.ModalBottomSheet(
+    onDismissRequest = onDismiss,
+    sheetState = androidx.compose.material3.rememberModalBottomSheetState(skipPartiallyExpanded = true),
+    modifier = Modifier.testTag("asma_detail_sheet")
+  ) {
+    Column(
+      modifier = Modifier
+        .fillMaxWidth()
+        .verticalScroll(androidx.compose.foundation.rememberScrollState())
+        .padding(start = 20.dp, end = 20.dp, bottom = 32.dp),
+      horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+      Box(
+        modifier = Modifier
+          .size(36.dp)
+          .clip(CircleShape)
+          .background(DarkForestInk),
+        contentAlignment = Alignment.Center
+      ) {
+        Text(
+          text = LocalizationManager.localizeDigits(name.number.toString(), language),
+          color = Color.White,
+          fontWeight = FontWeight.Bold
+        )
+      }
+      Spacer(modifier = Modifier.height(10.dp))
+      Text(
+        text = name.arabic,
+        style = MaterialTheme.typography.displaySmall,
+        fontWeight = FontWeight.Bold,
+        color = WarmGoldAccent,
+        textAlign = TextAlign.Center
+      )
+      name.pronunciation(language)?.let { pronunciation ->
+        Text(
+          text = pronunciation,
+          style = MaterialTheme.typography.titleMedium,
+          fontWeight = FontWeight.Bold,
+          color = DarkForestInk,
+          textAlign = TextAlign.Center
+        )
+      }
+      Text(
+        text = name.meaning(language),
+        style = MaterialTheme.typography.bodyLarge,
+        color = DarkForestInk.copy(alpha = 0.8f),
+        textAlign = TextAlign.Center
+      )
+      Spacer(modifier = Modifier.height(16.dp))
+      Text(
+        text = name.explanation(language),
+        style = MaterialTheme.typography.bodyLarge,
+        lineHeight = 24.sp,
+        color = MaterialTheme.colorScheme.onSurface,
+        textAlign = if (language == AppLanguage.ARABIC) TextAlign.End else TextAlign.Start,
+        modifier = Modifier.fillMaxWidth()
+      )
+      Spacer(modifier = Modifier.height(12.dp))
+      Text(
+        text = name.quranRef?.let { LocalizationManager.getQuranRefLabel(it, language) }
+          ?: LocalizationManager.getNameFromListNote(language),
+        style = MaterialTheme.typography.labelLarge,
+        fontWeight = if (name.quranRef != null) FontWeight.Bold else FontWeight.Normal,
+        color = MaterialTheme.colorScheme.primary,
+        modifier = Modifier.fillMaxWidth(),
+        textAlign = if (language == AppLanguage.ARABIC) TextAlign.End else TextAlign.Start
+      )
+    }
+  }
+}
+

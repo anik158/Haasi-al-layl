@@ -50,4 +50,23 @@ class AsmaUlHusnaTest {
       }
     }
   }
+
+  @Test
+  fun everyNameHasAnExplanationAndAWellFormedVerse() {
+    assertEquals(99, ASMA_EXPLANATIONS.size)
+    names.forEach { name ->
+      AppLanguage.entries.forEach { language ->
+        assertTrue("${name.number} ${language.name}", name.explanation(language).isNotBlank())
+      }
+      name.quranRef?.let { ref ->
+        val match = Regex("""^(\d{1,3}):(\d{1,3})$""").matchEntire(ref)
+        assertTrue("${name.number} $ref", match != null)
+        assertTrue("${name.number} $ref", match!!.groupValues[1].toInt() in 1..114)
+      }
+    }
+    // Spot checks against the Qur'an text, verified when the references were added.
+    assertEquals("1:3", names[1].quranRef) // Ar-Rahman
+    assertEquals("59:23", names.first { it.transliteration == "Al-Quddus" }.quranRef)
+  }
 }
+
