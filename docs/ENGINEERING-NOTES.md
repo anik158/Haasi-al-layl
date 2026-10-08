@@ -233,6 +233,18 @@ Now:
   and the first usable fix stops it.
 - **"Use my location"** (was "Auto-Detect Location (Requires Internet)") asks for Location to be
   switched on instead of silently falling back to IP.
+- **Switching Location on must be heard, not polled once.** A Faridpur install went: permission →
+  "Location is switched off" → Turn on → Google's accuracy dialog → stuck on the IP guess
+  (Madaripur). Three holes: `observeFixes` closed itself when Location was off, so the watch died
+  at once; `onReturnedFromLocationSettings` read the switch once, before Android had flipped it;
+  and nothing listened for the change. Now `observeFixes` registers both providers whatever their
+  state, the settings return re-reads for ~3 s (GPS no longer required), and a
+  `PROVIDERS_CHANGED` receiver (registered while the app is open) calls
+  `onLocationProvidersChanged` → `retryDeviceLocation`.
+- **Coordinates are named when the network returns**, via a default-network callback and on every
+  resume — an offline install no longer keeps "26.34°N, 88.55°E" until a restart.
+- **`versionCode` is the CI run number**, so the build on a phone can be identified; a missing
+  disclosure was traced to an APK older than the disclosure itself.
 - An online user with Location off is still not stuck on a screen: `startDetection` shows the
   "location off" phase and `fallBackWithoutDevice` settles on the marked IP estimate meanwhile.
 

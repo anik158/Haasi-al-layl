@@ -109,6 +109,25 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
     viewModel.onAppResumed()
     onPauseOrDispose { viewModel.onAppPaused() }
   }
+
+  // Location switched on while the app is open - by Google's accuracy dialog, the quick settings
+  // tile, anything. Reading the switch once after the dialog raced it and lost, which left the
+  // IP guess in place; this hears the change itself. Not exported: system broadcasts still arrive.
+  val providerContext = androidx.compose.ui.platform.LocalContext.current
+  androidx.compose.runtime.DisposableEffect(Unit) {
+    val receiver = object : android.content.BroadcastReceiver() {
+      override fun onReceive(context: android.content.Context?, intent: Intent?) {
+        viewModel.onLocationProvidersChanged()
+      }
+    }
+    androidx.core.content.ContextCompat.registerReceiver(
+      providerContext,
+      receiver,
+      android.content.IntentFilter(android.location.LocationManager.PROVIDERS_CHANGED_ACTION),
+      androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED
+    )
+    onDispose { runCatching { providerContext.unregisterReceiver(receiver) } }
+  }
   val selectedTab by viewModel.selectedTab.collectAsStateWithLifecycle()
   val prayerSchedule by viewModel.prayerSchedule.collectAsStateWithLifecycle()
   val weatherState by viewModel.weatherState.collectAsStateWithLifecycle()

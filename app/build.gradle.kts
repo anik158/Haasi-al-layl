@@ -17,7 +17,9 @@ android {
     applicationId = "com.ahsanulhouqe.haasiallayl"
     minSdk = 24
     targetSdk = 36
-    versionCode = 1
+    // The CI run number, so every build can be told apart on a phone (Settings → Apps) and Play
+    // uploads always increase. Local and AI Studio builds stay at 1.
+    versionCode = System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull() ?: 1
     versionName = "1.0.0"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

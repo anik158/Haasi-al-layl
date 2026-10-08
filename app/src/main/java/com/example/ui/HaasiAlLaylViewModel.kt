@@ -500,6 +500,7 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
     if (!userPrefs.locationFromDevice) startBackgroundLocationWatch()
     // refreshLocationIfMoved runs from onAppResumed, which also fires on the first resume.
     nameCurrentCityIfNeeded()
+    watchConnectivity()
     startSecondTicker()
     seedTasbih()
     observeCityForWeather()
@@ -815,11 +816,43 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
   fun onReturnedFromLocationSettings() {
     if (userPrefs.selectedCity != null && userPrefs.locationFromDevice) return
     val app = getApplication<Application>()
-    if (DeviceLocationProvider.hasPermission(app) &&
-      DeviceLocationProvider.isLocationEnabled(app) &&
-      DeviceLocationProvider.isGpsProviderEnabled(app)
-    ) {
+    if (!DeviceLocationProvider.hasPermission(app)) return
+    // The switch flips a moment after Google's dialog returns, so one read raced it and lost:
+    // the app saw "still off" and kept the IP guess. Re-read for a few seconds. GPS is not
+    // required any more - online, the network provider answers indoors within seconds.
+    viewModelScope.launch {
+      repeat(LOCATION_SWITCH_RETRIES) {
+        if (DeviceLocationProvider.isLocationEnabled(app)) {
+          retryDeviceLocation()
+          return@launch
+        }
+        delay(LOCATION_SWITCH_RETRY_MILLIS)
+      }
+      Log.i(TAG, "location still off after the settings dialog")
+    }
+  }
+
+  /**
+   * Location was switched on while the app is on screen (PROVIDERS_CHANGED, registered by the
+   * UI). The other path to the device fix after an IP estimate - and the one that does not
+   * depend on the settings dialog's result arriving.
+   */
+  fun onLocationProvidersChanged() {
+    val app = getApplication<Application>()
+    if (!DeviceLocationProvider.hasPermission(app) || !DeviceLocationProvider.isLocationEnabled(app)) return
+    if (userPrefs.locationFromDevice && userPrefs.selectedCity != null) return
+    retryDeviceLocation()
+  }
+
+  /** With Location now on: detect if nothing is stored, else listen afresh for the real fix. */
+  private fun retryDeviceLocation() {
+    if (userPrefs.cityChosenManually) return
+    if (userPrefs.selectedCity == null) {
       startDetection()
+    } else {
+      Log.i(TAG, "location is on; listening for a device fix to replace the estimate")
+      stopBackgroundLocationWatch()
+      startBackgroundLocationWatch()
     }
   }
 
@@ -853,6 +886,42 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
   fun onAppResumed() {
     refreshLocationIfMoved()
     if (!userPrefs.locationFromDevice) startBackgroundLocationWatch()
+    // A fix taken offline is named after its coordinates; name it if the network is back.
+    nameCurrentCityIfNeeded()
+  }
+
+  /**
+   * When a usable network appears: name a location fixed offline (it shows coordinates until
+   * then), and - if all we hold is an estimate - listen afresh, since the network provider can
+   * answer now. Without this an offline install kept its coordinates as a name until a restart.
+   */
+  private var networkCallback: ConnectivityManager.NetworkCallback? = null
+
+  private fun watchConnectivity() {
+    val manager = getApplication<Application>().getSystemService(Context.CONNECTIVITY_SERVICE)
+      as? ConnectivityManager ?: return
+    val callback = object : ConnectivityManager.NetworkCallback() {
+      override fun onCapabilitiesChanged(network: android.net.Network, caps: NetworkCapabilities) {
+        if (!caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)) return
+        viewModelScope.launch {
+          nameCurrentCityIfNeeded()
+          if (!userPrefs.locationFromDevice) onLocationProvidersChanged()
+        }
+      }
+    }
+    runCatching { manager.registerDefaultNetworkCallback(callback) }
+      .onSuccess { networkCallback = callback }
+      .onFailure { Log.w(TAG, "could not watch connectivity", it) }
+  }
+
+  override fun onCleared() {
+    networkCallback?.let { callback ->
+      val manager = getApplication<Application>().getSystemService(Context.CONNECTIVITY_SERVICE)
+        as? ConnectivityManager
+      runCatching { manager?.unregisterNetworkCallback(callback) }
+    }
+    networkCallback = null
+    super.onCleared()
   }
 
   /** The app left the screen: stop listening for a fix, so the GPS is never on in the background. */
@@ -1317,6 +1386,8 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
      * re-arm the schedule for someone crossing their own city.
      */
     const val MOVED_THRESHOLD_KM = 25.0
+    const val LOCATION_SWITCH_RETRIES = 6
+    const val LOCATION_SWITCH_RETRY_MILLIS = 500L
 
     /** After this long without confirmation, a stored fix is worth re-establishing. */
     const val STALE_LOCATION_MILLIS = 7L * 24 * 60 * 60 * 1000

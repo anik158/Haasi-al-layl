@@ -155,7 +155,11 @@ object DeviceLocationProvider {
    */
   @Suppress("MissingPermission")
   fun observeFixes(context: Context): Flow<Location> = callbackFlow {
-    if (!hasPermission(context) || !isLocationEnabled(context)) {
+    // Deliberately not closed when Location is off. It used to be, so a watch started while the
+    // user was still being asked to switch Location on ended at once, and nothing ever restarted
+    // it: a phone in Faridpur stayed on the IP guess (Madaripur). Listeners on a disabled provider
+    // are allowed, cost nothing, and start delivering the moment it is switched on.
+    if (!hasPermission(context)) {
       close()
       return@callbackFlow
     }
@@ -176,11 +180,11 @@ object DeviceLocationProvider {
       override fun onProviderDisabled(p: String) = Unit
     }
 
-    // Both providers at once, unlike requestFreshFix's either-or. Whichever answers first wins,
-    // and offline only the GPS one can answer anyway.
+    // Both providers at once, whichever answers first wins, and offline only GPS can. Registered
+    // whether or not each is on right now - see above.
     var registered = false
     listOf(LocationManager.GPS_PROVIDER, LocationManager.NETWORK_PROVIDER).forEach { provider ->
-      if (manager.isProviderEnabled(provider)) {
+      if (provider in manager.allProviders) {
         try {
           manager.requestLocationUpdates(
             provider,
