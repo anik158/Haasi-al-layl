@@ -248,6 +248,14 @@ Now:
   `onLocationProvidersChanged` tracks `lastLocationEnabled`, `retryDeviceLocation` skips while
   `fixJob` is active, and each search stops only the ticker it started (`startFixTicker()` returns
   it).
+- **`LocationOnboardingTest` guards all of the above.** It drives the real ViewModel against
+  Robolectric's LocationManager, offline: the search counter keeps counting through repeated
+  `PROVIDERS_CHANGED`; Location switched on starts the search; an IP estimate (Madaripur) is
+  replaced by the device fix (Faridpur); the settings dialog's late switch is caught; a device fix
+  survives later broadcasts. Checked the useful way round: against the v57 ViewModel the first
+  test fails on the frozen counter. Run locally with
+  `gradle :app:testDebugUnitTest --tests com.example.ui.LocationOnboardingTest` (needs
+  `local.properties` with `sdk.dir`, and JDK 21+).
 - **Coordinates are named when the network returns**, via a default-network callback and on every
   resume — an offline install no longer keeps "26.34°N, 88.55°E" until a restart.
 - **`versionCode` is the CI run number**, so the build on a phone can be identified; a missing
