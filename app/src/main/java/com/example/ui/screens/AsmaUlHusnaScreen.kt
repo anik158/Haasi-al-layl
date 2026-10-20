@@ -199,6 +199,8 @@ private fun NameDetailSheet(name: AllahName, language: AppLanguage, onDismiss: (
   androidx.compose.material3.ModalBottomSheet(
     onDismissRequest = onDismiss,
     sheetState = androidx.compose.material3.rememberModalBottomSheetState(skipPartiallyExpanded = true),
+    // The app's parchment, not Material's default sheet tint, which read as another app's colour.
+    containerColor = com.example.ui.theme.WarmBeigeBackground,
     modifier = Modifier.testTag("asma_detail_sheet")
   ) {
     Column(

@@ -1377,6 +1377,11 @@ object LocalizationManager {
       AppLanguage.PORTUGUESE -> "Súplica de Yunus (que a paz esteja com ele)"
       AppLanguage.ENGLISH -> "Dua of Yunus (peace be upon him)"
     }
+    "subhanallah_wabihamdihi" -> when (language) {
+      AppLanguage.ARABIC -> "سبحان الله وبحمده، سبحان الله العظيم"
+      AppLanguage.BENGALI -> "সুবহানাল্লাহি ওয়া বিহামদিহি"
+      AppLanguage.SPANISH, AppLanguage.PORTUGUESE, AppLanguage.ENGLISH -> "SubhanAllahi wa bihamdihi"
+    }
     else -> fallback
   }
 
@@ -1391,6 +1396,12 @@ object LocalizationManager {
       AppLanguage.SPANISH, AppLanguage.PORTUGUESE, AppLanguage.ENGLISH ->
         "Lā ilāha illā Anta, Subḥānaka, innī kuntu minaẓ-ẓālimīn"
     }
+    "subhanallah_wabihamdihi" -> when (language) {
+      AppLanguage.ARABIC -> null
+      AppLanguage.BENGALI -> "সুবহানাল্লাহি ওয়া বিহামদিহি, সুবহানাল্লাহিল আযীম"
+      AppLanguage.SPANISH, AppLanguage.PORTUGUESE, AppLanguage.ENGLISH ->
+        "Subḥāna-llāhi wa biḥamdihī, Subḥāna-llāhil-ʿAẓīm"
+    }
     else -> null
   }
 
@@ -1402,6 +1413,12 @@ object LocalizationManager {
       AppLanguage.SPANISH -> "Corán 21:87 · Tirmidhi 3505"
       AppLanguage.PORTUGUESE -> "Alcorão 21:87 · Tirmidhi 3505"
       AppLanguage.ENGLISH -> "Qur'an 21:87 · Tirmidhi 3505"
+    }
+    "subhanallah_wabihamdihi" -> when (language) {
+      AppLanguage.ARABIC -> "البخاري ٦٤٠٦ · مسلم ٢٦٩٤"
+      AppLanguage.BENGALI -> "বুখারি ৬৪০৬ · মুসলিম ২৬৯৪"
+      AppLanguage.SPANISH -> "Bujari 6406 · Muslim 2694"
+      AppLanguage.PORTUGUESE, AppLanguage.ENGLISH -> "Bukhari 6406 · Muslim 2694"
     }
     else -> null
   }
@@ -1456,6 +1473,13 @@ object LocalizationManager {
       AppLanguage.SPANISH -> "No hay dios sino Tú; glorificado seas; ciertamente he sido de los injustos."
       AppLanguage.PORTUGUESE -> "Não há divindade além de Ti; glorificado sejas; certamente fui dos injustos."
       AppLanguage.ENGLISH -> "There is no god but You; glory be to You; indeed, I have been of the wrongdoers."
+    }
+    "subhanallah_wabihamdihi" -> when (language) {
+      AppLanguage.ARABIC -> "كلمتان خفيفتان على اللسان، ثقيلتان في الميزان، حبيبتان إلى الرحمن"
+      AppLanguage.BENGALI -> "আল্লাহ পবিত্র এবং সকল প্রশংসা তাঁর; মহান আল্লাহ পবিত্র।"
+      AppLanguage.SPANISH -> "Glorificado sea Allah y alabado; glorificado sea Allah, el Grandioso."
+      AppLanguage.PORTUGUESE -> "Glorificado seja Allah e louvado; glorificado seja Allah, o Magnífico."
+      AppLanguage.ENGLISH -> "Glory be to Allah and praise be to Him; glory be to Allah, the Most Great."
     }
     else -> fallback
   }

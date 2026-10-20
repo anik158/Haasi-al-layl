@@ -138,6 +138,17 @@ private val DEFAULT_TASBIH = listOf(
       transliteration = "There is no god but You; glory be to You; indeed, I have been of the wrongdoers.",
       currentCount = 0,
       targetCount = 100
+    ),
+    // Bukhari 6406 / Muslim 2694: "two words light on the tongue, heavy in the Balance, beloved to
+    // the Most Merciful". That hadith gives no number; 100 is the counting round asked for (the
+    // 100 of Bukhari 6405 is for its first half alone). Appended last, like Yunus above.
+    TasbihEntity(
+      id = "subhanallah_wabihamdihi",
+      name = "SubhanAllahi wa bihamdihi",
+      arabic = "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ، سُبْحَانَ اللَّهِ الْعَظِيمِ",
+      transliteration = "Glory be to Allah and praise be to Him; glory be to Allah, the Most Great.",
+      currentCount = 0,
+      targetCount = 100
     )
 )
 
