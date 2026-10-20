@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   build:
@@ -92,13 +92,6 @@ jobs:
           path: build.log
           retention-days: 7
 
-      - name: Upload APK to Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: release-apk
-          path: app/build/outputs/apk/debug/haasi-al-layl-debug.apk
-          retention-days: 30
-
       # The Play upload: a release bundle signed with the upload key. Built only when the key is
       # in the repository secrets - never with a throwaway key, because the first bundle Play
       # receives fixes the upload key, and one generated per run would be lost at once.
@@ -130,36 +123,21 @@ jobs:
         with:
           name: release-aab
           path: app/build/outputs/bundle/release/*.aab
-          retention-days: 30
+          retention-days: 7
 
-      - name: Create Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: v${{ github.run_number }}
-          name: Release APK Build ${{ github.run_number }}
-          body: |
-            Automated release build for Haasi al-layl
-
-            Download the APK from the assets below.
-          draft: false
-          prerelease: false
-          files: |
-            app/build/outputs/apk/debug/haasi-al-layl-debug.apk
-            app/build/outputs/bundle/release/*.aab
-          fail_on_unmatched_files: false
-
-      # After the APK is out, so a failing test never withholds a build to try - but it still
-      # turns the run red, which is the point: these tests had never run before this step.
+      # No GitHub release and no APK artifact: builds to install are made locally now, and
+      # artifacts count against the repository's Actions storage. CI compiles, runs the tests,
+      # and keeps only the signed .aab (when the upload key is set) for a week.
       - name: Unit tests
         run: |
           set -o pipefail
           gradle :app:testDebugUnitTest --console=plain --no-daemon 2>&1 | tee test.log
 
       - name: Upload test report
-        if: always()
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: unit-test-report
           path: app/build/reports/tests/testDebugUnitTest/
-          retention-days: 14
+          retention-days: 3
           if-no-files-found: ignore

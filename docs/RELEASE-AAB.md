@@ -56,9 +56,9 @@ It prints one very long line of letters. That line is the key, as text. Copy all
 Push anything to `build-apk-release` (or run the workflow from the **Actions** tab → *Build
 Release APK* → *Run workflow*). When the run is green:
 
-- Open the repository's **Releases** (right side of the repository page) → the newest release →
-  download the file ending in **`.aab`**. The APK is next to it, as before.
-- Or: **Actions** → the run → **Artifacts** → `release-aab`.
+- **Actions** tab → the run → **Artifacts** → download `release-aab` (a zip holding the `.aab`).
+  It is kept for **7 days**; CI no longer makes GitHub releases or keeps APKs, to save the
+  repository's Actions storage — build APKs to install locally (`gradle assembleDebug`).
 
 If the run log says *"No upload key in the repository secrets"*, step 3 is incomplete — check the
 three names are spelled exactly as above.
