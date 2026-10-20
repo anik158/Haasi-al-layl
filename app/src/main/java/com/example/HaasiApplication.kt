@@ -27,6 +27,8 @@ class HaasiApplication : Application() {
     super.onCreate()
     // Before anything computes a Hijri date, including an alarm receiver's Ramadan Isha rule:
     // builds the month table from the cached announcements and the user's corrections.
+    // A restart is always real time: drop anything a debug test date saved, first.
+    com.example.data.hijri.HijriStore(this).dropTestRecords(System.currentTimeMillis())
     com.example.data.preferences.UserPreferences(this).applyHijriAdjustment()
     PrayerNotificationManager.ensureChannels(this)
     appScope.launch {

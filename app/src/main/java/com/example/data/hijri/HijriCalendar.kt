@@ -30,6 +30,13 @@ object HijriCalendar {
   @Volatile
   var http: AladhanClient.Http = AladhanClient.okHttp
 
+  /** Back from a debug build's test date: forget what was saved under it, and rebuild. */
+  fun leaveTestDate(context: Context) {
+    com.example.data.AppClock.backToRealTime()
+    HijriStore(context).dropTestRecords(System.currentTimeMillis())
+    rebuild(context)
+  }
+
   /** Rebuilds from storage and installs it. Call after any input changes. */
   fun rebuild(context: Context): HijriMonthTable? = try {
     val prefs = UserPreferences(context)
@@ -37,7 +44,8 @@ object HijriCalendar {
     val table = city?.let {
       build(
         city = it,
-        today = LocalDate.now(zoneOf(it)),
+        // The app's clock, so a debug test date gets a table around it.
+        today = com.example.data.AppClock.today(zoneOf(it)),
         store = HijriStore(context)
       )
     }
@@ -104,7 +112,7 @@ object HijriCalendar {
     val city = UserPreferences(context).selectedCity ?: return false
     val policy = HijriCountryRules.policyFor(city.country)
     val store = HijriStore(context)
-    val today = LocalDate.now(zoneOf(city))
+    val today = com.example.data.AppClock.today(zoneOf(city))
     val age = nowMillis - store.fetchedAtMillis(policy.authority)
     if (!force && !isDue(age, HijriDateHelper.dayInfo(today)?.day)) return false
 
@@ -173,7 +181,7 @@ object HijriCalendar {
   /** The correction Today should offer to undo at [nowMillis], if any. */
   fun undoable(context: Context, nowMillis: Long): UserMonthStart? =
     HijriStore(context).userStarts().values
-      .filter { nowMillis < it.undoUntilMillis }
+      .filter { nowMillis >= it.recordedAtMillis && nowMillis < it.undoUntilMillis }
       .maxByOrNull { it.recordedAtMillis }
 
   private fun zoneOf(city: CityLocation): ZoneId = try {

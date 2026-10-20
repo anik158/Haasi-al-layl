@@ -382,6 +382,12 @@ fun SettingsSheet(
 
       // The month start: worked out from Saudi Arabia's announcement and the moon, and correctable
       // here, one month at a time, when the country's announcement differs.
+      if (com.example.BuildConfig.DEBUG && com.example.FeatureFlags.SHOW_FASTING_TIMES) {
+        item {
+          TestDateCard(onChanged = onSettingsChanged)
+        }
+      }
+
       if (com.example.FeatureFlags.SHOW_FASTING_TIMES) {
         item {
           MoonSightingCard(

@@ -214,10 +214,10 @@ fun SehriIftarCard(
     // A voluntary fast: the user marks it, and the Sehri reminder rings for it. Only while the
     // reminder is on, before that day's Sehri ends, and never on a forbidden day.
     val context = androidx.compose.ui.platform.LocalContext.current
-    if (!ramadan && !status.isProhibited && !status.isFasting &&
+    if (!ramadan && !status.isProhibited && !status.isFasting && !com.example.data.AppClock.isTesting &&
       com.example.data.notification.PrayerNotificationManager.isSehriReminderEnabled(context)
     ) {
-      val today = java.time.LocalDate.now()
+      val today = com.example.data.AppClock.today(java.time.ZoneId.systemDefault())
       var marked by androidx.compose.runtime.remember(status.day.date) {
         androidx.compose.runtime.mutableStateOf(
           status.day.date in com.example.data.notification.PrayerNotificationManager.voluntaryFastDays(context)
@@ -334,7 +334,9 @@ private fun MonthStartNote(
       month = com.example.data.prayer.HijriDateHelper.monthName(start.id.month, language),
       saudiDate = start.authorityStart?.let { com.example.data.prayer.HijriDateHelper.shortGregorian(it, language) },
       localDate = com.example.data.prayer.HijriDateHelper.shortGregorian(start.startsOn, language),
-      saudiStarted = start.authorityStart?.let { !it.isAfter(java.time.LocalDate.now()) } ?: false,
+      saudiStarted = start.authorityStart?.let {
+        !it.isAfter(com.example.data.AppClock.today(java.time.ZoneId.systemDefault()))
+      } ?: false,
       l = language
     )
   }

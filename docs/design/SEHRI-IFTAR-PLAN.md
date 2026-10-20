@@ -179,6 +179,10 @@ later** (`FOLLOW_UP_DELAY_MINUTES`, `isFollowUpNotificationsEnabled` default `tr
 
 ## Phone checklist (before release)
 
+Out of season, use **Settings → Test a date** (debug builds only): it runs Today, the Hijri date
+and the correction as if it were 29 Sha'ban, 1 Ramadan, Eid... Alarms keep the real time; "Back
+to real time" (or a restart) drops any month start saved under a test date.
+
 1. Dhaka, online: Today's Hijri date reads "estimated from Saudi Arabia and the moon" in Settings.
 2. Airplane mode, restart: the same date (cache).
 3. On the 28th-3rd: Settings → Moon sighting announced → each answer → Review → Confirm → Today

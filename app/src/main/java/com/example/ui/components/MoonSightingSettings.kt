@@ -24,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -85,7 +86,7 @@ class SightingFlowModel(
   val city: CityLocation,
   private val method: CalculationMethod,
   private val madhab: IslamicMadhab,
-  private val nowMillis: () -> Long = System::currentTimeMillis
+  private val nowMillis: () -> Long = com.example.data.AppClock::nowMillis
 ) {
   private val store = HijriStore(context)
   val zone: ZoneId = runCatching { ZoneId.of(city.timeZoneId) }.getOrDefault(ZoneId.systemDefault())
@@ -180,9 +181,11 @@ fun MoonSightingCard(
   var version by remember { mutableIntStateOf(0) }
   val model = remember(city, method, madhab) { SightingFlowModel(context, city, method, madhab) }
   var showFlow by remember { mutableStateOf(false) }
+  // A debug build's test date moves "today".
+  val clock by com.example.data.AppClock.offsetMillis.collectAsState()
 
   // Re-read after every save, so the date and history under the button are current.
-  val (todayLabel, months, history) = remember(version, model) {
+  val (todayLabel, months, history) = remember(version, model, clock) {
     val day = model.currentTable().resolve(model.today)
     val label = day?.let {
       HijriDateHelper.getTodayHijriFormatted(model.today, language) + " · " +

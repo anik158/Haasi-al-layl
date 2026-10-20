@@ -88,6 +88,16 @@ class HijriStore(context: Context) {
     )
   }
 
+  /**
+   * Drops corrections and history stamped after [realNowMillis] - which only a debug build's test
+   * date can produce - so trying the flow on a future Ramadan never moves the real one.
+   */
+  fun dropTestRecords(realNowMillis: Long) {
+    val starts = userStarts().values.filter { it.recordedAtMillis <= realNowMillis }
+    val history = history().filter { it.atMillis <= realNowMillis }
+    if (starts.size != userStarts().size || history.size != history().size) write(starts, history)
+  }
+
   private fun write(starts: Collection<UserMonthStart>, history: List<HistoryEntry>) {
     prefs.edit()
       .putString(KEY_USER, starts.sortedBy { it.id }.joinToString(";", transform = ::encodeUser))

@@ -334,7 +334,8 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
     } catch (e: Exception) {
       ZoneId.systemDefault()
     }
-    return ZonedDateTime.now(zone)
+    // The app's clock: real, or a debug build's test date (Settings → "Test a date").
+    return com.example.data.AppClock.now(zone)
   }
 
   /**
