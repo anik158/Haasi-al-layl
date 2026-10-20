@@ -14,8 +14,7 @@ Status: **waiting for approval.** Nothing below is built yet.
    one fixed shift for every month (−1 for BD/IN/PK/NP/LK/MA, or the user's choice in Settings).
    It can be a day off from the moon sighting in the user's country, and the app cannot correct
    itself.
-2. **The app cannot find "the 29th" reliably either.** It counts days from that same calculation,
-   so its 29th can really be the local 28th or 30th.
+2. **No online source.** The app never asks Saudi Arabia's announced date.
 3. **No Sehri alarm.** Nothing wakes the user for Sehri.
 
 ## How the date is actually decided (the facts the plan is built on)
@@ -34,64 +33,60 @@ Status: **waiting for approval.** Nothing below is built yet.
 
 ## The plan — three steps, each tested before it reaches your phone
 
-### Step 1 — Know when the month starts: online first, then the user, checked by the moon
+### Step 1 — Know when the month starts: Saudi Arabia online + the moon, no user question
 
-**1a. Online first.** When there is internet, fetch the announced dates from Aladhan, cache them
-for offline use, refresh once a day and on the evenings a month can start.
+No "was the moon sighted?" card. The date is worked out automatically, and every day where it
+matters carries a warning.
 
-- Saudi Arabia (and countries that follow it): `HJCoSA` **is** the answer. No question is asked.
-- Turkey: `DIYANET` is the answer.
-- Bangladesh and other sighting countries: the Saudi start narrows the local start to two days,
-  the same day or the next. It is shown as context ("Saudi Arabia: Ramadan began on …"), never as
-  Bangladesh's date.
+**1a. Saudi Arabia is the anchor (online, cached).** Fetch Aladhan `calendarMethod=HJCoSA` (free,
+no key): the High Judiciary Council's announced starts of Muharram, Ramadan, Shawwal and
+Dhul-Hijjah; the other months follow Umm al-Qura. Cache it, so it keeps working offline; refresh
+once a day and every evening a month can start. Checked: HJCoSA gives 1 Ramadan 1447 = Wed 18 Feb
+2026 (Bangladesh began Thu 19 Feb — one day later).
 
-**1b. Find the right evening from the sky, not the calendar.** `MoonCalculator` already computes
-where the moon is. Add the moment of new moon (when the moon passes the sun) and, for the user's
-location on each evening, the moon's age at sunset, how long it stays up after sunset, and its
-height. The sighting question appears on the **evening after the new moon** (falling back to the
-next evening if not answered), within the calculated 29th/30th. A calendar that is a day off no
-longer moves the question to the wrong evening.
+**1b. Other countries: Saudi date + the moon at the user's location.** Countries fall in two
+groups:
 
-**1c. Ask the user, with double confirmation.** After Maghrib on that evening, Today shows:
-
-> **Has the new moon of Ramadan been announced in your country tonight?**
-> [ Yes — sighted ]  [ No — not sighted ]  [ Not announced yet ]
-
-- "Not announced yet" is needed: Bangladesh's committee often announces an hour or more after
-  Maghrib. The card stays and asks again later that evening.
-- **Second confirmation** after Yes or No, with the result spelled out:
-  > Ramadan starts tomorrow, Thursday 19 February. First Sehri ends at 4:58. Confirm?
-
-  with Saudi Arabia's date and the moon check (1d) as context.
-- **Undo** until the next Maghrib, in case of a wrong tap or a changed announcement.
-- The answer is saved **for that month only**, as that month's start date. The next month's
-  29th is then counted from it exactly, so after one confirmed month every later question lands on
-  the right evening.
-- No answer: the best other source stays (Saudi + one day for BD, else the calculation).
-
-**1d. The moon check — a warning, never a block.** From the numbers in 1b, a standard crescent
-visibility test (Yallop / Odeh) sorts the evening:
-
-| Tonight's moon | Meaning | What the app does |
+| Group | Countries (examples) | Month starts on |
 | --- | --- | --- |
-| Not possible — the moon sets before the sun, or the new moon has not happened yet | A sighting is physically impossible | A "Yes" gets a clear warning on the confirm screen |
-| Hard to see — could go either way | Either answer is believable | No warning |
-| Easy to see | A "No" is unusual, but cloud and haze happen | A "No" gets a gentle note |
+| Follow Saudi Arabia | SA, AE, QA, KW, BH, YE … | Saudi's date, as announced |
+| Local sighting | BD, IN, PK, NP, LK, MA … | Saudi's date **or one day later**, decided by the moon (below) |
 
-The committee has the final word, so the app always accepts the user's confirmed answer.
+For a local-sighting country, on the evening before Saudi's 1st, `MoonCalculator` checks the new
+crescent at the user's location after sunset — the moon's age, how long it stays up after the sun,
+its height and its distance from the sun — with a standard visibility test (Odeh / Yallop):
 
-**1e. The Ramadan warning stays.** Whatever the source, during the evenings a month can start and
-the first days of Ramadan, the Sehri & Iftar card keeps a note:
-*"Ramadan's start follows the moon sighting announced in your country. Check your local
-announcement."* It is reworded to the source: calculated / Saudi announcement / confirmed by you.
+- crescent **clearly visible** to the naked eye there → the month starts the same day as Saudi
+  Arabia;
+- otherwise → one day later (and never past day 30 of the old month).
+
+`MoonCalculator` is accurate enough for this (moonrise for Dhaka came out one minute off a
+published table). What no calculation can know is cloud, haze and the committee's decision, so the
+result is a best estimate, not an announcement.
+
+**1c. Offline with nothing cached:** Umm al-Qura plus the same moon test.
+
+**1d. Settings keeps the manual adjustment** (−2…+2) as an escape hatch, but **per month**, not one
+shift for the whole year.
+
+**1e. Warnings — always, on the days that matter.** The Sehri & Iftar card and the fasting-day rules
+show a note on:
+
+- the days a month can start (29th, 30th) and the first two days of Ramadan;
+- the last days of Ramadan and **Eid al-Fitr**;
+- **Arafah, Eid al-Adha and the Tashreeq days** (11–13 Dhul-Hijjah);
+- every **forbidden** day, and the day of doubt (30 Sha'ban).
+
+Worded by source: *"Saudi Arabia announced … Bangladesh is expected to follow on …, based on the
+moon. Confirm with your country's announcement."* — or *"calculated, may differ by a day"* when
+offline with nothing cached.
 
 **Tests first:**
-- Moon: new-moon times against published tables; the visibility test against past Bangladesh
-  announcements from news archives (both "sighted" and "not sighted" evenings).
-- The question lands on the evening after the new moon even when the calendar is set a day off.
-- ViewModel: Yes→confirm, Yes→cancel, No, Not announced yet, undo, no answer; Eid, Arafah and the
-  forbidden days move with the answer; the warning on an impossible "Yes".
-- Online: a fake server for HJCoSA / DIYANET; offline uses the cache, or nothing.
+- New-moon times and the visibility test against published tables.
+- Past Bangladesh starts (from news archives) against "Saudi date + moon test", for Ramadan,
+  Shawwal and Dhul-Hijjah of several years. The accuracy is written down here before shipping.
+- A fake server for HJCoSA; offline uses the cache, or the calculation.
+- Eid, Arafah and the forbidden days move with the resolved start; the warning appears on each.
 
 ### Step 2 — Sehri alarm
 
@@ -105,10 +100,11 @@ announcement."* It is reworded to the source: calculated / Saudi announcement / 
 
 ### Not in this plan
 
-- **A Bangladesh feed** (`bd.json` updated on sighting nights, or reading the Islamic Foundation's
-  notices). Deferred: it needs someone to update it every month, and scraping Bengali press
-  releases is fragile. Without it, Bangladesh relies on the user's answer, narrowed by Saudi
-  Arabia and checked by the moon.
+- **A Bangladesh feed** — a small server job that reads the National Moon Sighting Committee's
+  press release (reported by BSS / UNB) on sighting nights and publishes `bd.json`, which would
+  override the estimate in 1b. Later, if wanted; best of all would be the Islamic Foundation
+  publishing it themselves.
+- **A "was the moon sighted?" question.** Dropped: the date comes from Saudi Arabia + the moon.
 
 ## What I need from you
 
