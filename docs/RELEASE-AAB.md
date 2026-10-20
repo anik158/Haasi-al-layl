@@ -53,12 +53,16 @@ It prints one very long line of letters. That line is the key, as text. Copy all
 
 ## Step 4 — get the `.aab`
 
-Push anything to `build-apk-release` (or run the workflow from the **Actions** tab → *Build
-Release APK* → *Run workflow*). When the run is green:
+CI keeps **no artifacts** (to save the repository's Actions storage): a push to
+`build-apk-release` only checks that the signed bundle builds and the tests pass. Build the `.aab`
+to upload on your own machine, from the project folder, with the keystore from step 1 next to it:
 
-- **Actions** tab → the run → **Artifacts** → download `release-aab` (a zip holding the `.aab`).
-  It is kept for **7 days**; CI no longer makes GitHub releases or keeps APKs, to save the
-  repository's Actions storage — build APKs to install locally (`gradle assembleDebug`).
+```bash
+KEYSTORE_PATH=my-upload-key.jks STORE_PASSWORD='…' KEY_PASSWORD='…' gradle bundleRelease
+```
+
+It lands in `app/build/outputs/bundle/release/`. APKs to install are built the same way
+(`gradle assembleDebug` → `app/build/outputs/apk/debug/`).
 
 If the run log says *"No upload key in the repository secrets"*, step 3 is incomplete — check the
 three names are spelled exactly as above.

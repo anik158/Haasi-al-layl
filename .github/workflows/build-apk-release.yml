@@ -84,14 +84,6 @@ jobs:
             | head -60 || echo "(no error lines matched - see the full log above)"
           echo "::endgroup::"
 
-      - name: Upload build log
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-log
-          path: build.log
-          retention-days: 7
-
       # The Play upload: a release bundle signed with the upload key. Built only when the key is
       # in the repository secrets - never with a throwaway key, because the first bundle Play
       # receives fixes the upload key, and one generated per run would be lost at once.
@@ -117,27 +109,18 @@ jobs:
           rm -f "$RUNNER_TEMP/upload.jks"
           echo "built=true" >> "$GITHUB_OUTPUT"
 
-      - name: Upload AAB to Artifacts
-        if: steps.aab.outputs.built == 'true'
-        uses: actions/upload-artifact@v4
-        with:
-          name: release-aab
-          path: app/build/outputs/bundle/release/*.aab
-          retention-days: 7
-
-      # No GitHub release and no APK artifact: builds to install are made locally now, and
-      # artifacts count against the repository's Actions storage. CI compiles, runs the tests,
-      # and keeps only the signed .aab (when the upload key is set) for a week.
+      # No artifacts at all - no APK, no .aab, no logs or reports: they count against the
+      # repository's Actions storage, and builds to install are made locally. CI compiles, checks
+      # that the signed bundle builds (when the upload key is set) and runs the tests; failures are
+      # summarised in the log itself.
       - name: Unit tests
         run: |
           set -o pipefail
           gradle :app:testDebugUnitTest --console=plain --no-daemon 2>&1 | tee test.log
 
-      - name: Upload test report
+      - name: Failed tests
         if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: unit-test-report
-          path: app/build/reports/tests/testDebugUnitTest/
-          retention-days: 3
-          if-no-files-found: ignore
+        run: |
+          echo "::group::Failed tests"
+          grep -E "FAILED|AssertionError|Exception" test.log | head -80 || echo "(no failures matched - see the log above)"
+          echo "::endgroup::"

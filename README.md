@@ -377,7 +377,8 @@ simply stay inactive.
 
 ### Continuous Integration
 
-Pushing to the `build-apk-release` branch (or running the workflow manually) builds an APK via
-[`.github/workflows/build-apk-release.yml`](.github/workflows/build-apk-release.yml). The workflow
-provisions Gradle 9.3.1, generates the debug keystore, and publishes `haasi-al-layl-debug.apk` both
-as a run artifact and as a GitHub Release.
+Pushing to the `build-apk-release` branch (or running the workflow manually) runs
+[`.github/workflows/build-apk-release.yml`](.github/workflows/build-apk-release.yml): it provisions
+Gradle 9.3.1, generates the debug keystore, builds the debug APK (and the signed `.aab` when the
+upload key is in the secrets) and runs the unit tests. It keeps **no artifacts** - no APK, bundle,
+log or report - to save Actions storage; build to install locally (`app/build/outputs/apk/`).
