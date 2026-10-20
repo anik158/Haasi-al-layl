@@ -30,8 +30,6 @@ import com.example.data.qibla.CompassReading
 import com.example.data.qibla.QiblaCalculator
 import com.example.data.qibla.QiblaSensorManager
 import com.example.data.repository.HaasiAlLaylRepository
-import com.example.data.weather.FullWeatherData
-import com.example.data.weather.WeatherRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -61,12 +59,6 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import kotlin.math.abs
-
-sealed interface WeatherUiState {
-  object Loading : WeatherUiState
-  data class Success(val data: FullWeatherData) : WeatherUiState
-  data class Error(val message: String) : WeatherUiState
-}
 
 /**
  * What the app is showing while it works out where the user is.
@@ -144,7 +136,6 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
 
   private val database = HaasiAlLaylDatabase.getDatabase(application)
   private val repository = HaasiAlLaylRepository(database)
-  private val weatherRepository = WeatherRepository()
   private val sensorManager = QiblaSensorManager(application)
 
   private val userPrefs = UserPreferences(application)
@@ -262,10 +253,6 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
   private val _juristicMethod = MutableStateFlow(userPrefs.madhab)
   val selectedMadhab: StateFlow<com.example.data.prayer.IslamicMadhab> = _juristicMethod.asStateFlow()
 
-  // Temperature unit ('C' or 'F')
-  private val _isFahrenheit = MutableStateFlow(false)
-  val isFahrenheit: StateFlow<Boolean> = _isFahrenheit.asStateFlow()
-
   // Selected Bottom Nav Tab
   private val _selectedTab = MutableStateFlow(0)
   val selectedTab: StateFlow<Int> = _selectedTab.asStateFlow()
@@ -282,9 +269,6 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
     .map { com.example.data.dua.IslamicContentProvider.DUAS + it.duas }
     .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), com.example.data.dua.IslamicContentProvider.DUAS)
 
-  // Weather state
-  private val _weatherState = MutableStateFlow<WeatherUiState>(WeatherUiState.Loading)
-  val weatherState: StateFlow<WeatherUiState> = _weatherState.asStateFlow()
 
   // Compass Heading
   private val compassReading: StateFlow<CompassReading> = sensorManager.getCompassReadingFlow()
@@ -503,28 +487,7 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
     watchConnectivity()
     startSecondTicker()
     seedTasbih()
-    observeCityForWeather()
     loadHisnAlMuslimData()
-  }
-
-  /**
-   * Keeps the weather pointed at the selected city.
-   *
-   * This replaces a single `refreshWeather()` in `init`, which fired once against whatever city
-   * was restored from disk - Makkah on a fresh install - and was never re-run when detection
-   * landed a moment later. The forecast then stayed Makkah's, under the right city's name, until
-   * the user pulled to refresh.
-   *
-   * Keyed on coordinates rather than the whole city so that naming a coordinates-only fix, which
-   * rewrites `name` and `country` and nothing else, does not spend a second request on an
-   * identical forecast.
-   */
-  private fun observeCityForWeather() {
-    viewModelScope.launch {
-      _selectedCity
-        .distinctUntilChangedBy { city -> city.latitude to city.longitude }
-        .collectLatest { city -> loadWeatherFor(city) }
-    }
   }
 
   /**
@@ -1246,6 +1209,9 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
   private fun applyCity(city: CityLocation) {
     _selectedCity.value = city
     userPrefs.selectedCity = city
+    // A method the user never chose follows the country (Bangladesh -> Karachi), so a new
+    // location can move it - before rescheduleAlarms below reads it.
+    if (!userPrefs.hasChosenCalculationMethod) _calculationMethod.value = userPrefs.calculationMethod
     // Writing the city is what turns the Makkah placeholder into a real answer, so this is the
     // one place that may set the flag - and the one place that can honestly say the location was
     // confirmed just now, which is what the staleness check reads.
@@ -1266,8 +1232,6 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
    */
   fun selectCity(city: CityLocation) {
     userPrefs.cityChosenManually = true
-    // No refreshWeather() here: applyCity moves _selectedCity, and observeCityForWeather is
-    // watching it. Calling both raced two requests for the same forecast.
     applyCity(city)
     stopBackgroundLocationWatch()
     userPrefs.isOnboardingComplete = true
@@ -1310,25 +1274,6 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
     }
   }
 
-  fun toggleTemperatureUnit() {
-    _isFahrenheit.value = !_isFahrenheit.value
-  }
-
-  /** Pull-to-refresh and the refresh button. The city collector handles every other case. */
-  fun refreshWeather() {
-    viewModelScope.launch { loadWeatherFor(_selectedCity.value) }
-  }
-
-  private suspend fun loadWeatherFor(city: CityLocation) {
-    _weatherState.value = WeatherUiState.Loading
-    val result = weatherRepository.fetchWeather(city)
-    result.fold(
-      onSuccess = { _weatherState.value = WeatherUiState.Success(it) },
-      onFailure = {
-        _weatherState.value = WeatherUiState.Error(it.message ?: "Failed to load weather")
-      }
-    )
-  }
 
   // Prayer Completion Tracking in Room
   fun togglePrayerCheck(prayerKey: String) {
@@ -1392,14 +1337,6 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
     }
   }
 
-  fun formatTemperature(tempC: Double): String {
-    return if (_isFahrenheit.value) {
-      val tempF = (tempC * 9.0 / 5.0) + 32.0
-      "%.0f°F".format(tempF)
-    } else {
-      "%.0f°C".format(tempC)
-    }
-  }
   private companion object {
     const val TAG = "HaasiAlLaylViewModel"
 

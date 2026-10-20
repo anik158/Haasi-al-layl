@@ -1,6 +1,6 @@
 # Ḥaasi al-Layl (حَاسِي اللَّيْل)
 
-> *"The one who sips the night" — A serene, mindful Islamic daily companion featuring astronomical horizon celestial tracking, multi-madhab prayer schedules, offline prophetic supplications, and tranquil weather guidance.*
+> *"The one who sips the night" — A serene, mindful Islamic daily companion featuring astronomical horizon celestial tracking, multi-madhab prayer schedules, offline prophetic supplications, Sehri & Iftar, and the 99 Names of Allah.*
 
 ---
 
@@ -175,7 +175,7 @@ simply needs another minute. Walk towards a window with it open and watch the co
 > does not have.
 
 **Finding a city by hand.** The picker is not limited to the built-in presets: typing searches
-Open-Meteo's geocoding service — the same family as the weather API — so Faridpur, or any town in
+Open-Meteo's geocoding service, so Faridpur, or any town in
 Mexico, resolves to a full location with coordinates and an IANA timezone. Results show their
 administrative region, to separate the several places that share a name.
 
@@ -286,7 +286,6 @@ says plainly that its chain is graded weak.
 ### 6. ⚙️ Centralized Settings & Customization
 - **Unified Settings Bottom Sheet**: Prayer start alerts, the 5-minute reminder, Tahajjud alerts, forbidden-time warnings, app language, calculation method, and madhab, all from one menu in the top bar.
 - **Notification reliability panel**: shows at a glance whether notifications, exact alarms and unrestricted battery are actually granted, each with a deep link to the right system screen, plus a *Test alert in 1 minute* button that arms a real alarm through the production path.
-- **Offline Weather Graceful Degradation**: Weather and temperature widgets handle network loss with an offline banner instead of endless loading.
 - **Dynamic Top Bar**: Brand mark, app title, an icon-only location button, and the settings hub.
 - **Today's schedule at a tap**: tap the next-prayer card for every entry of the day with what its
   name means — Fajr *dawn*, Asr *afternoon* — its obligatory rak'ahs and its time window, in all
@@ -342,7 +341,7 @@ as a bordered link chip.
 - **Background Work:** `AlarmManager` (`setAlarmClock` for prayer alerts, exempt from Doze) with a boot receiver; no WorkManager, whose best-effort scheduling is unsuitable for prayer times
 - **Startup:** `androidx.core:core-splashscreen`
 - **Location:** platform `LocationManager` (GPS provider first, offline-capable); place search and reverse geocoding over HTTP, with the coordinates never depending on either
-- **Network Layer:** Retrofit + OkHttp + Moshi. Weather and geocoding from the Open-Meteo public APIs (no key required); IP fallback via `ipinfo.io`
+- **Network Layer:** Retrofit + OkHttp + Moshi. City search from the Open-Meteo geocoding API (no key required); IP fallback via `ipinfo.io`
 - **Screenshot Tests:** Roborazzi over Robolectric
 
 ---
@@ -351,7 +350,7 @@ as a bordered link chip.
 
 The app has no accounts, ads or analytics, and no server of its own. Before the location prompt it
 shows a disclosure of what is used and who receives it: coordinates go to BigDataCloud (place name)
-and Open-Meteo (weather, city search), and — only when the device gives no location — the IP address
+and Open-Meteo (city search), and — only when the device gives no location — the IP address
 to ipinfo.io. The policy is [`docs/site/haasi-al-layl/privacy/index.html`](docs/site/haasi-al-layl/privacy/index.html), linked from
 Settings and from the disclosure; [`docs/PLAY-STORE.md`](docs/PLAY-STORE.md) has the pre-upload
 checklist, the Data safety answers and the permission declarations.

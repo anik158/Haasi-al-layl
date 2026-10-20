@@ -87,6 +87,30 @@ data class DailyPrayerSchedule(
     get() = items.find { it.prayer == PrayerName.FAJR }?.time
   val isha: LocalTime?
     get() = items.find { it.prayer == PrayerName.ISHA }?.time
+
+  /**
+   * When each obligatory prayer's time ends, for the schedule list: Fajr at sunrise, Dhuhr at
+   * Asr, Asr at Maghrib, Maghrib at Isha, Isha at midnight - the midpoint of sunset and the next
+   * Fajr (Sahih Muslim 612). Null for Imsak and Sunrise, which are markers, not prayers.
+   */
+  fun endOf(prayer: PrayerName): LocalTime? {
+    fun at(p: PrayerName) = items.find { it.prayer == p }?.time
+    return when (prayer) {
+      PrayerName.FAJR -> at(PrayerName.SUNRISE)
+      PrayerName.DHUHR -> at(PrayerName.ASR)
+      PrayerName.ASR -> at(PrayerName.MAGHRIB)
+      PrayerName.MAGHRIB -> at(PrayerName.ISHA)
+      PrayerName.ISHA -> {
+        val sunset = trueSunset ?: return null
+        val fajr = at(PrayerName.FAJR) ?: return null
+        val nightMinutes = java.time.Duration.between(sunset, fajr).toMinutes().let {
+          if (it <= 0) it + 24 * 60 else it
+        }
+        sunset.plusMinutes(nightMinutes / 2)
+      }
+      else -> null
+    }
+  }
 }
 
 data class CityLocation(

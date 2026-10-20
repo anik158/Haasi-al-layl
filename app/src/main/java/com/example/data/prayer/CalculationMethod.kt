@@ -131,4 +131,40 @@ enum class CalculationMethod(
     AppLanguage.PORTUGUESE -> shortTitlePt
     AppLanguage.ENGLISH -> shortTitle
   }
+
+  companion object {
+    // ISO codes (from IP lookup) and English names (from geocoders and the city picker).
+    private val KARACHI_COUNTRIES = setOf(
+      "BD", "BANGLADESH", "PK", "PAKISTAN", "IN", "INDIA", "AF", "AFGHANISTAN"
+    )
+    private val UMM_AL_QURA_COUNTRIES = setOf(
+      "SA", "SAUDI ARABIA", "YE", "YEMEN", "BH", "BAHRAIN", "KW", "KUWAIT",
+      "QA", "QATAR", "OM", "OMAN"
+    )
+    private val DUBAI_COUNTRIES = setOf("AE", "UNITED ARAB EMIRATES", "UAE")
+    private val EGYPTIAN_COUNTRIES = setOf(
+      "EG", "EGYPT", "SD", "SUDAN", "LY", "LIBYA", "SY", "SYRIA", "IQ", "IRAQ",
+      "LB", "LEBANON", "JO", "JORDAN", "PS", "PALESTINE"
+    )
+    private val ISNA_COUNTRIES = setOf("US", "USA", "UNITED STATES", "CA", "CANADA")
+
+    /**
+     * The method a country's own authorities use, for when the user has not chosen one - so
+     * Dhaka's Fajr matches the Islamic Foundation's (Karachi, 18°) rather than Makkah's 18.5°,
+     * which put it two minutes early. Null (no location yet: the Makkah placeholder) keeps
+     * Umm al-Qura; anywhere unlisted gets the Muslim World League, the common international one.
+     */
+    fun defaultFor(country: String?): CalculationMethod {
+      val key = country?.trim()?.uppercase() ?: return UMM_AL_QURA
+      return when {
+        key in KARACHI_COUNTRIES -> KARACHI
+        key in UMM_AL_QURA_COUNTRIES -> UMM_AL_QURA
+        key in DUBAI_COUNTRIES -> DUBAI
+        key in EGYPTIAN_COUNTRIES -> EGYPTIAN
+        // BigDataCloud names it "United States of America (the)".
+        key in ISNA_COUNTRIES || key.startsWith("UNITED STATES") -> ISNA
+        else -> MUSLIM_WORLD_LEAGUE
+      }
+    }
+  }
 }

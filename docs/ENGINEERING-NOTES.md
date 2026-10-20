@@ -107,6 +107,22 @@ official guideline. Options discussed before turning it back on:
 - References were checked against sunnah.com: Bukhari 586, 1918-1919, 1921, 1923, 1954, 1957;
   Muslim 831, 832.
 
+### Weather was removed (October 2026)
+
+The phone's own weather app and this one disagreed by a couple of degrees (Open-Meteo's grid model
+against the phone provider's stations), and weather is not what a prayer app is for. The Weather
+tab, the Today card and the temperature pill are gone, with `data/weather/`; tabs are now Today,
+Qibla (`QIBLA_TAB = 1`), Tasbih, Duas, ﷲ99. Open-Meteo remains only for city search.
+
+### The calculation method follows the country until the user picks one
+
+`UserPreferences.calculationMethod` returns the stored choice, else
+`CalculationMethod.defaultFor(country)`: Karachi for BD/PK/IN/AF (Dhaka's Fajr then matches the
+Islamic Foundation, 4:42 rather than Umm al-Qura's 4:40), Umm al-Qura for Saudi Arabia and most of
+the Gulf, Dubai, Egyptian, ISNA for the US/Canada, the Muslim World League elsewhere. `applyCity`
+refreshes it while `hasChosenCalculationMethod` is false. The madhab default stays Maliki by choice,
+so Asr in Bangladesh is earlier than in mosques using the Hanafi Asr until the user switches.
+
 ### Default madhab is Maliki
 
 Derived from `IslamicMadhab.DEFAULT`, which reads the `isDefault` flag, so the flag and the real
@@ -397,7 +413,7 @@ need background location permission, which is not worth the Play review burden h
   first, network only as a fallback.
 - IP geolocation (`ipinfo.io`) is the *rough* fallback — it reports the ISP's registered hub. It
   placed a Helsinki user in Turku, 150 km away, shifting prayer times by 8–11 minutes.
-- Place search uses **Open-Meteo's geocoding API** — same family as the weather API, free, no key,
+- Place search uses **Open-Meteo's geocoding API** — free, no key,
   and it returns an IANA timezone, so a result maps straight onto `CityLocation`.
 
 ### The app name is deliberately spelled two ways

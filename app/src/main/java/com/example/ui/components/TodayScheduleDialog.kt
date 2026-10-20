@@ -72,7 +72,7 @@ fun TodayScheduleDialog(
       ) {
         schedule.items
           .filter { com.example.FeatureFlags.showsInSchedule(it.prayer) }
-          .forEach { item -> ScheduleEntry(item, language) }
+          .forEach { item -> ScheduleEntry(item, schedule.endOf(item.prayer), language) }
       }
     },
     confirmButton = {
@@ -88,7 +88,7 @@ fun TodayScheduleDialog(
 }
 
 @Composable
-private fun ScheduleEntry(item: PrayerTimeItem, language: AppLanguage) {
+private fun ScheduleEntry(item: PrayerTimeItem, endsAt: java.time.LocalTime?, language: AppLanguage) {
   val highlighted = item.isCurrent || item.isNext
   Surface(
     shape = RoundedCornerShape(14.dp),
@@ -134,7 +134,11 @@ private fun ScheduleEntry(item: PrayerTimeItem, language: AppLanguage) {
           // and each part is isolated so neither reorders the other.
           text = (if (language == AppLanguage.ARABIC) "\u200F" else "\u200E") +
             "\u2068${item.prayer.arabicName}\u2069  ·  " +
-            "\u2068${LocalizationManager.formatTime(item.time, language)}\u2069",
+            // Start - end for the five prayers ("Asr · 03:00 PM – 05:22 PM"); markers show one time.
+            "\u2068${
+              endsAt?.let { LocalizationManager.formatTimeRange(item.time, it, language) }
+                ?: LocalizationManager.formatTime(item.time, language)
+            }\u2069",
           style = MaterialTheme.typography.bodySmall,
           fontWeight = FontWeight.Medium,
           color = DarkForestInk.copy(alpha = 0.75f)

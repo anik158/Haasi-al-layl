@@ -31,13 +31,11 @@ import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.TouchApp
-import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material.icons.outlined.AutoStories
 import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.Explore
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.TouchApp
-import androidx.compose.material.icons.outlined.WbSunny
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -69,7 +67,6 @@ import com.example.ui.screens.DuaScreen
 import com.example.ui.screens.HomeScreen
 import com.example.ui.screens.QiblaScreen
 import com.example.ui.screens.TasbihScreen
-import com.example.ui.screens.WeatherScreen
 import com.example.ui.theme.HaasiTheme
 
 class MainActivity : ComponentActivity() {
@@ -91,6 +88,8 @@ class MainActivity : ComponentActivity() {
   }
 }
 
+/** Index of the Qibla tab, which refreshes the device fix when opened. */
+private const val QIBLA_TAB = 1
 private const val DISCLOSURE_FIRST_RUN = "first_run"
 private const val DISCLOSURE_DETECT = "detect"
 
@@ -130,9 +129,7 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
   }
   val selectedTab by viewModel.selectedTab.collectAsStateWithLifecycle()
   val prayerSchedule by viewModel.prayerSchedule.collectAsStateWithLifecycle()
-  val weatherState by viewModel.weatherState.collectAsStateWithLifecycle()
   val currentCity by viewModel.selectedCity.collectAsStateWithLifecycle()
-  val isFahrenheit by viewModel.isFahrenheit.collectAsStateWithLifecycle()
   val compassHeading by viewModel.compassHeading.collectAsStateWithLifecycle()
   val qiblaBearing by viewModel.qiblaBearing.collectAsStateWithLifecycle()
   val distanceToKaaba by viewModel.distanceToKaabaKm.collectAsStateWithLifecycle()
@@ -333,16 +330,15 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
   // A bearing is a property of where the needle is, so the compass wants a fix taken now - not
   // one from an hour and a bus ride ago.
   LaunchedEffect(selectedTab) {
-    if (selectedTab == 2) viewModel.refreshDeviceLocationForQibla()
+    if (selectedTab == QIBLA_TAB) viewModel.refreshDeviceLocationForQibla()
   }
 
   val destinations = listOf(
     NavDestination(LocalizationManager.getNavToday(currentLanguage), Icons.Filled.Home, Icons.Outlined.Home, "nav_today"),
-    NavDestination(LocalizationManager.getNavWeather(currentLanguage), Icons.Filled.WbSunny, Icons.Outlined.WbSunny, "nav_weather"),
     NavDestination(LocalizationManager.getNavQibla(currentLanguage), Icons.Filled.Explore, Icons.Outlined.Explore, "nav_qibla"),
     NavDestination(LocalizationManager.getNavTasbih(currentLanguage), Icons.Filled.TouchApp, Icons.Outlined.TouchApp, "nav_tasbih"),
     NavDestination(LocalizationManager.getNavDuas(currentLanguage), Icons.Filled.AutoStories, Icons.Outlined.AutoStories, "nav_duas"),
-    // Last, so the hardcoded indices above (Weather 1, Qibla 2) do not shift. The label is the
+    // Last, so the other tabs keep their indices (Qibla is QIBLA_TAB). The label is the
     // same in every language: the name of Allah and the number.
     NavDestination(
       // ﷲ then the number in the app's digits. The left-to-right mark keeps the order: next to
@@ -396,17 +392,14 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
       when (selectedTab) {
         0 -> HomeScreen(
           schedule = prayerSchedule,
-          weatherState = weatherState,
           currentCity = currentCity,
           hasResolvedLocation = hasResolvedLocation,
           isLocationApproximate = isLocationApproximate,
-          formatTemperature = { viewModel.formatTemperature(it) },
           inspiration = dailyInspiration,
           language = currentLanguage,
           madhab = selectedMadhab,
           method = selectedMethod,
           onLocationClick = { showCitySheet = true },
-          onNavigateToWeather = { viewModel.setTab(1) },
           onLanguageSelect = { lang -> viewModel.setLanguage(lang) },
           onResetLanguageToLocation = { viewModel.resetLanguageToLocation() },
           onMadhabSelect = { madhab -> viewModel.setMadhab(madhab) },
@@ -415,18 +408,7 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
           onTogglePrayer = { prayerKey -> viewModel.togglePrayerCheck(prayerKey) }
         )
 
-        1 -> WeatherScreen(
-          weatherState = weatherState,
-          currentCity = currentCity,
-          isFahrenheit = isFahrenheit,
-          formatTemperature = { viewModel.formatTemperature(it) },
-          onRefresh = { viewModel.refreshWeather() },
-          onLocationClick = { showCitySheet = true },
-          onToggleUnit = { viewModel.toggleTemperatureUnit() },
-          language = currentLanguage
-        )
-
-        2 -> QiblaScreen(
+        1 -> QiblaScreen(
           currentCity = qiblaOrigin,
           usesDeviceLocation = qiblaUsesDeviceLocation,
           compassHeading = compassHeading,
@@ -439,7 +421,7 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
           language = currentLanguage
         )
 
-        3 -> TasbihScreen(
+        2 -> TasbihScreen(
           tasbihList = tasbihList,
           selectedTasbih = selectedTasbih,
           onSelectTasbih = { id -> viewModel.selectTasbih(id) },
@@ -448,14 +430,14 @@ fun MainAppContent(viewModel: HaasiAlLaylViewModel = viewModel()) {
           language = currentLanguage
         )
 
-        4 -> DuaScreen(
+        3 -> DuaScreen(
           allDuas = allDuas,
           bookmarkedDuaIds = bookmarkedDuaIds,
           onToggleBookmark = { id -> viewModel.toggleDuaBookmark(id) },
           language = currentLanguage,
           hisnChapters = hisnChapters
         )
-        5 -> com.example.ui.screens.AsmaUlHusnaScreen(language = currentLanguage)
+        4 -> com.example.ui.screens.AsmaUlHusnaScreen(language = currentLanguage)
       }
     }
 

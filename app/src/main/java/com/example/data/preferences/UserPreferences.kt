@@ -106,8 +106,12 @@ class UserPreferences(context: Context) {
   var calculationMethod: CalculationMethod
     get() = prefs.getString(KEY_CALCULATION_METHOD, null)
       ?.let { name -> CalculationMethod.entries.find { it.name == name } }
-      ?: CalculationMethod.UMM_AL_QURA
+      ?: CalculationMethod.defaultFor(selectedCity?.country)
     set(value) = writeString(KEY_CALCULATION_METHOD, value.name)
+
+  /** False until the user picks a method in Settings; until then it follows the country. */
+  val hasChosenCalculationMethod: Boolean
+    get() = prefs.contains(KEY_CALCULATION_METHOD)
 
   /** Which school of jurisprudence sets the Asr shadow factor. */
   var madhab: IslamicMadhab

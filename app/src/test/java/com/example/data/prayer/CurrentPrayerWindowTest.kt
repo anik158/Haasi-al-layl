@@ -64,4 +64,19 @@ class CurrentPrayerWindowTest {
     assertTrue(s.currentEndsAtNext)
     assertEquals(s.timeUntilNextFormatted, s.timeLeftInCurrentFormatted)
   }
+
+  /** The schedule list's end times match the current-prayer windows. */
+  @Test
+  fun endTimesMatchTheWindows() {
+    assertEquals(at(PrayerName.SUNRISE), times.endOf(PrayerName.FAJR))
+    assertEquals(at(PrayerName.ASR), times.endOf(PrayerName.DHUHR))
+    assertEquals(at(PrayerName.MAGHRIB), times.endOf(PrayerName.ASR))
+    assertEquals(at(PrayerName.ISHA), times.endOf(PrayerName.MAGHRIB))
+    val evening = scheduleAt(at(PrayerName.ISHA).plusMinutes(10))
+    val midnight = evening.islamicMidnight!!
+    // Same midpoint, to the minute (endOf rounds to whole minutes).
+    assertTrue(kotlin.math.abs(java.time.Duration.between(midnight, times.endOf(PrayerName.ISHA)).toMinutes()) <= 1)
+    assertEquals(null, times.endOf(PrayerName.SUNRISE))
+  }
 }
+

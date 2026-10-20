@@ -38,6 +38,8 @@ step with the code: if a network call or permission is added, this page and
 - [ ] **A clean-install test** on a real phone with the new application ID: location disclosure →
       permission → correct town (the Panchagarh/Natore case), exact-alarm card → Allow, a prayer
       alarm, the 5-minute reminder.
+- [ ] **Shrink the release build** (`isMinifyEnabled = true` in `app/build.gradle.kts`, with the
+      keep rules tested). Debug APKs carry the whole Material icon library unshrunk (~20 MB).
 - [ ] **Closed test first.** New personal developer accounts must run a closed test with at least
       12 testers for 14 days before production access. Recruit them early.
 - [ ] `versionCode` bumped for every upload (it is 1 now; `versionName` is 1.0.0).
@@ -68,7 +70,7 @@ Data types:
 
 | Data type | Collected / shared | Purpose | Optional? | Processed ephemerally? |
 | --- | --- | --- | --- | --- |
-| Location → **Precise location** | Shared (BigDataCloud, Open-Meteo) | App functionality | Yes (the app works with a city picked by hand) | Yes |
+| Location → **Precise location** | Shared (BigDataCloud) | App functionality | Yes (the app works with a city picked by hand) | Yes |
 | Location → **Approximate location** | Shared (ipinfo.io, from the IP address, only when the device gives no location) | App functionality | Yes | Yes |
 | App activity → **Other user-generated content** (city names typed in search) | Shared (Open-Meteo geocoding) | App functionality | Yes | Yes |
 

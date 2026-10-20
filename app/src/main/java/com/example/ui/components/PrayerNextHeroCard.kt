@@ -20,9 +20,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.WbSunny
-import androidx.compose.material.icons.outlined.Cloud
-import androidx.compose.material.icons.outlined.Grain
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -47,7 +44,6 @@ import com.example.data.localization.AppLanguage
 import com.example.data.localization.LocalizationManager
 import com.example.data.model.DailyPrayerSchedule
 import com.example.data.prayer.HijriDateHelper
-import com.example.data.weather.CurrentWeather
 import com.example.ui.theme.CoolMintGradientBase
 import com.example.ui.theme.DarkForestInk
 import com.example.ui.theme.LinenBorderLight
@@ -66,12 +62,9 @@ fun PrayerNextHeroCard(
   hasResolvedLocation: Boolean = true,
   /** Only an IP estimate: shown with "≈" and the word "approximate", tap to fix. */
   isLocationApproximate: Boolean = false,
-  currentWeather: CurrentWeather?,
-  temperatureFormatted: String,
   language: AppLanguage = AppLanguage.ENGLISH,
   onLocationClick: () -> Unit,
-  onWeatherClick: () -> Unit,
-  /** Opens today's full schedule. The location and weather chips inside keep their own taps. */
+  /** Opens today's full schedule. The location chip inside keeps its own tap. */
   onCardClick: () -> Unit = {}
 ) {
   val next = schedule.nextPrayer
@@ -108,7 +101,7 @@ fun PrayerNextHeroCard(
     ) {
       Column(modifier = Modifier.fillMaxWidth()) {
 
-        // Top Row: Location chip & Weather pill with crisp white/dark outlines
+        // Top Row: the location chip
         Row(
           modifier = Modifier.fillMaxWidth(),
           horizontalArrangement = Arrangement.SpaceBetween,
@@ -152,43 +145,6 @@ fun PrayerNextHeroCard(
                 fontWeight = FontWeight.SemiBold,
                 color = DarkForestInk
               )
-            }
-          }
-
-          // Weather quick pill
-          if (currentWeather != null) {
-            Surface(
-              modifier = Modifier
-                .clip(RoundedCornerShape(20.dp))
-                .clickable { onWeatherClick() }
-                .testTag("weather_pill"),
-              shape = RoundedCornerShape(20.dp),
-              color = Color.White,
-              border = androidx.compose.foundation.BorderStroke(1.dp, OutlineDarkBorder)
-            ) {
-              Row(
-                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                verticalAlignment = Alignment.CenterVertically
-              ) {
-                val weatherIcon = when {
-                  currentWeather.weatherCode in listOf(51, 53, 55, 61, 63, 65, 80, 81, 82) -> Icons.Outlined.Grain
-                  currentWeather.weatherCode in listOf(1, 2, 3) -> Icons.Outlined.Cloud
-                  else -> Icons.Default.WbSunny
-                }
-                Icon(
-                  weatherIcon,
-                  contentDescription = null,
-                  modifier = Modifier.size(15.dp),
-                  tint = WarmGoldAccent
-                )
-                Spacer(modifier = Modifier.width(6.dp))
-                Text(
-                  text = temperatureFormatted,
-                  style = MaterialTheme.typography.labelMedium,
-                  fontWeight = FontWeight.Bold,
-                  color = DarkForestInk
-                )
-              }
             }
           }
         }

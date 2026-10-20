@@ -145,36 +145,37 @@ object LocalizationManager {
    */
   fun getLocationDisclosurePoints(language: AppLanguage): List<String> = when (language) {
     AppLanguage.ARABIC -> listOf(
-      "يستخدم التطبيق موقعك الدقيق لحساب أوقات الصلاة واتجاه القبلة والطقس لمكانك، ويعمل ذلك دون إنترنت.",
-      "عند الاتصال بالإنترنت تُرسل الإحداثيات إلى BigDataCloud لمعرفة اسم المكان، وإلى Open-Meteo لجلب الطقس.",
+      "يستخدم التطبيق موقعك الدقيق لحساب أوقات الصلاة واتجاه القبلة لمكانك، ويعمل ذلك دون إنترنت.",
+      "عند الاتصال بالإنترنت تُرسل الإحداثيات إلى BigDataCloud لمعرفة اسم المكان. وأسماء المدن التي تبحث عنها تُرسل إلى Open-Meteo.",
       "إن لم يتوفر موقع الجهاز، يُرسل عنوان IP إلى ipinfo.io لتقدير مدينتك تقريبياً.",
       "يُستخدم الموقع فقط أثناء فتح التطبيق، ويُحفظ على جهازك وحده، ولا نجمعه نحن ولا نبيعه."
     )
     AppLanguage.BENGALI -> listOf(
-      "আপনার এলাকার নামাজের সময়, কিবলার দিক ও আবহাওয়া হিসাব করতে অ্যাপটি আপনার সঠিক অবস্থান ব্যবহার করে — এটি ইন্টারনেট ছাড়াই কাজ করে।",
-      "ইন্টারনেট থাকলে জায়গার নাম জানতে স্থানাঙ্ক BigDataCloud-এ এবং আবহাওয়ার জন্য Open-Meteo-তে পাঠানো হয়।",
+      "আপনার এলাকার নামাজের সময় ও কিবলার দিক হিসাব করতে অ্যাপটি আপনার সঠিক অবস্থান ব্যবহার করে — এটি ইন্টারনেট ছাড়াই কাজ করে।",
+      "ইন্টারনেট থাকলে জায়গার নাম জানতে স্থানাঙ্ক BigDataCloud-এ পাঠানো হয়। আপনি যে শহর খোঁজেন তার নাম Open-Meteo-তে পাঠানো হয়।",
       "ডিভাইসের অবস্থান না পেলে আনুমানিক শহর জানতে আপনার IP ঠিকানা ipinfo.io-তে পাঠানো হয়।",
       "অবস্থান শুধু অ্যাপ খোলা থাকলে ব্যবহৃত হয় এবং কেবল আপনার ফোনে সংরক্ষিত থাকে; আমরা এটি সংগ্রহ বা বিক্রি করি না।"
     )
     AppLanguage.SPANISH -> listOf(
-      "La app usa su ubicación precisa para calcular los horarios de oración, la dirección de la Qibla y el tiempo de su lugar; esto funciona sin internet.",
-      "Con conexión, las coordenadas se envían a BigDataCloud para obtener el nombre del lugar y a Open-Meteo para el tiempo.",
+      "La app usa su ubicación precisa para calcular los horarios de oración y la dirección de la Qibla de su lugar; esto funciona sin internet.",
+      "Con conexión, las coordenadas se envían a BigDataCloud para obtener el nombre del lugar. Las ciudades que busque se envían a Open-Meteo.",
       "Si no hay ubicación del dispositivo, su dirección IP se envía a ipinfo.io para estimar su ciudad.",
       "La ubicación solo se usa con la app abierta y se guarda solo en su teléfono; nosotros no la recogemos ni la vendemos."
     )
     AppLanguage.PORTUGUESE -> listOf(
-      "A app usa a sua localização precisa para calcular os horários de oração, a direção da Qibla e o tempo do seu local; isto funciona sem internet.",
-      "Com ligação, as coordenadas são enviadas à BigDataCloud para obter o nome do local e à Open-Meteo para o tempo.",
+      "A app usa a sua localização precisa para calcular os horários de oração e a direção da Qibla do seu local; isto funciona sem internet.",
+      "Com ligação, as coordenadas são enviadas à BigDataCloud para obter o nome do local. As cidades que procurar são enviadas à Open-Meteo.",
       "Sem localização do dispositivo, o seu endereço IP é enviado à ipinfo.io para estimar a sua cidade.",
       "A localização só é usada com a app aberta e fica guardada apenas no seu telemóvel; nós não a recolhemos nem vendemos."
     )
     AppLanguage.ENGLISH -> listOf(
-      "The app uses your precise location to work out prayer times, the Qibla direction and the weather for where you are. This works offline.",
-      "When you are online, the coordinates are sent to BigDataCloud to name the place and to Open-Meteo for the weather.",
+      "The app uses your precise location to work out prayer times and the Qibla direction for where you are. This works offline.",
+      "When you are online, the coordinates are sent to BigDataCloud to name the place. City names you search for are sent to Open-Meteo.",
       "If the device cannot give a location, your IP address is sent to ipinfo.io to estimate your city.",
       "Location is used only while the app is open and is stored only on your phone. We do not collect or sell it."
     )
   }
+
 
   fun getUserGuideLabel(language: AppLanguage): String = when (language) {
     AppLanguage.ARABIC -> "دليل الاستخدام"
@@ -898,23 +899,6 @@ object LocalizationManager {
     AppLanguage.ENGLISH -> "sets $time"
   }
 
-  // Weather Card strings
-  fun getWeatherCardTitle(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "الطقس والإرشاد اليومي"
-    AppLanguage.BENGALI -> "আবহাওয়া ও দৈনন্দিন পরামর্শ"
-    AppLanguage.SPANISH -> "Clima y Guía Diaria"
-    AppLanguage.PORTUGUESE -> "Clima e Orientação Diária"
-    AppLanguage.ENGLISH -> "Weather & Daily Guidance"
-  }
-
-  fun getViewForecastButton(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "عرض توقعات ٢٤ ساعة و ٧ أيام"
-    AppLanguage.BENGALI -> "২৪ ঘণ্টা ও ৭ দিনের পূর্বাভাস"
-    AppLanguage.SPANISH -> "Ver pronóstico de 24h y 7 días"
-    AppLanguage.PORTUGUESE -> "Ver previsão de 24h e 7 dias"
-    AppLanguage.ENGLISH -> "View 24h & 7-Day Forecast"
-  }
-
   fun getDailyAdviceHeader(language: AppLanguage): String = when (language) {
     AppLanguage.ARABIC -> "نصيحة الممارسة اليومية"
     AppLanguage.BENGALI -> "দৈনন্দিন আমল পরামর্শ"
@@ -977,14 +961,6 @@ object LocalizationManager {
     AppLanguage.ENGLISH -> "Today"
   }
 
-  fun getNavWeather(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "الطقس"
-    AppLanguage.BENGALI -> "আবহাওয়া"
-    AppLanguage.SPANISH -> "Clima"
-    AppLanguage.PORTUGUESE -> "Clima"
-    AppLanguage.ENGLISH -> "Weather"
-  }
-
   fun getNavQibla(language: AppLanguage): String = when (language) {
     AppLanguage.ARABIC -> "القبلة"
     AppLanguage.BENGALI -> "কিবলা"
@@ -1007,41 +983,6 @@ object LocalizationManager {
     AppLanguage.SPANISH -> "Súplicas"
     AppLanguage.PORTUGUESE -> "Súplicas"
     AppLanguage.ENGLISH -> "Duas"
-  }
-
-  // =========================================================================
-  // Weather Screen Strings
-  // =========================================================================
-  fun getWeatherForecastTitle(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "توقعات الطقس"
-    AppLanguage.BENGALI -> "আবহাওয়া পূর্বাভাস"
-    AppLanguage.SPANISH -> "Pronóstico del Clima"
-    AppLanguage.PORTUGUESE -> "Previsão do Tempo"
-    AppLanguage.ENGLISH -> "Weather Forecast"
-  }
-
-  fun getHourlyForecastTitle(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "التوقعات بالساعات (٢٤ ساعة)"
-    AppLanguage.BENGALI -> "ঘণ্টায় ঘণ্টায় পূর্বাভাস (২৪ ঘণ্টা)"
-    AppLanguage.SPANISH -> "Pronóstico por Horas (24h)"
-    AppLanguage.PORTUGUESE -> "Previsão por Horas (24h)"
-    AppLanguage.ENGLISH -> "Hourly Forecast (24 Hours)"
-  }
-
-  fun getDailyForecastTitle(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "توقعات ٧ أيام"
-    AppLanguage.BENGALI -> "৭ দিনের আবহাওয়া পূর্বাভাস"
-    AppLanguage.SPANISH -> "Pronóstico de 7 Días"
-    AppLanguage.PORTUGUESE -> "Previsão de 7 Dias"
-    AppLanguage.ENGLISH -> "7-Day Forecast"
-  }
-
-  fun getFeelsLikeLabel(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "الشعور الحقيقي"
-    AppLanguage.BENGALI -> "অনুভূত তাপমাত্রা"
-    AppLanguage.SPANISH -> "Sensación térmica"
-    AppLanguage.PORTUGUESE -> "Sensação térmica"
-    AppLanguage.ENGLISH -> "Feels Like"
   }
 
 
@@ -1217,14 +1158,6 @@ object LocalizationManager {
     AppLanguage.SPANISH -> "Quitar de favoritos"
     AppLanguage.PORTUGUESE -> "Remover dos favoritos"
     AppLanguage.ENGLISH -> "Remove bookmark"
-  }
-
-  fun getRefreshWeatherLabel(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "تحديث الطقس"
-    AppLanguage.BENGALI -> "আবহাওয়া হালনাগাদ করুন"
-    AppLanguage.SPANISH -> "Actualizar el tiempo"
-    AppLanguage.PORTUGUESE -> "Atualizar o tempo"
-    AppLanguage.ENGLISH -> "Refresh weather"
   }
 
   /** Accessibility label for the brand logo. */
@@ -2315,22 +2248,6 @@ object LocalizationManager {
     AppLanguage.ENGLISH -> "OFFLINE"
   }
 
-  fun getWeatherErrorDesc(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "بيانات الطقس غير متوفرة حالياً. يرجى التحقق من اتصالك بالإنترنت."
-    AppLanguage.BENGALI -> "আবহাওয়ার তথ্য বর্তমানে অনুপলব্ধ। অনুগ্রহ করে আপনার ইন্টারনেট সংযোগ পরীক্ষা করুন।"
-    AppLanguage.SPANISH -> "Los datos del clima no están disponibles. Por favor, comprueba tu conexión a internet."
-    AppLanguage.PORTUGUESE -> "Os dados meteorológicos estão indisponíveis. Verifique sua conexão com a internet."
-    AppLanguage.ENGLISH -> "Weather data is currently unavailable. Please check your internet connection."
-  }
-
-  fun getWeatherLoadingDesc(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "جاري تحميل معلومات الطقس..."
-    AppLanguage.BENGALI -> "আবহাওয়ার তথ্য লোড হচ্ছে..."
-    AppLanguage.SPANISH -> "Cargando información del clima..."
-    AppLanguage.PORTUGUESE -> "Carregando informações meteorológicas..."
-    AppLanguage.ENGLISH -> "Loading weather information..."
-  }
-
   fun getHighShort(language: AppLanguage): String = when (language) {
     AppLanguage.ARABIC -> "العظمى"
     AppLanguage.BENGALI -> "সর্বোচ্চ"
@@ -2363,14 +2280,6 @@ object LocalizationManager {
     AppLanguage.ENGLISH -> "Conditions & Details"
   }
 
-  fun getIslamicWeatherGuidance(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "الإرشاد الإسلامي للطقس"
-    AppLanguage.BENGALI -> "ইসলামিক আবহাওয়া নির্দেশনা"
-    AppLanguage.SPANISH -> "Guía Islámica del Clima"
-    AppLanguage.PORTUGUESE -> "Guia Islâmico do Clima"
-    AppLanguage.ENGLISH -> "Islamic Weather Guidance"
-  }
-
   fun getRecommendedDuaLabel(language: AppLanguage): String = when (language) {
     AppLanguage.ARABIC -> "الدعاء الموصى به:"
     AppLanguage.BENGALI -> "প্রস্তাবিত দোয়া:"
@@ -2389,22 +2298,6 @@ object LocalizationManager {
 
 
 
-  fun getHumidityLabel(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "الرطوبة"
-    AppLanguage.BENGALI -> "আর্দ্রতা"
-    AppLanguage.SPANISH -> "Humedad"
-    AppLanguage.PORTUGUESE -> "Umidade"
-    AppLanguage.ENGLISH -> "Humidity"
-  }
-
-
-  fun getUvIndexLabel(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "الأشعة فوق البنفسجية"
-    AppLanguage.BENGALI -> "ইউভি সূচক"
-    AppLanguage.SPANISH -> "Índice UV"
-    AppLanguage.PORTUGUESE -> "Índice UV"
-    AppLanguage.ENGLISH -> "UV Index"
-  }
 
   fun getPrecipitationLabel(language: AppLanguage): String = when (language) {
     AppLanguage.ARABIC -> "هطول الأمطار"
@@ -2414,14 +2307,6 @@ object LocalizationManager {
     AppLanguage.ENGLISH -> "Precipitation"
   }
 
-
-  fun getWindSpeedLabel(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "سرعة الرياح"
-    AppLanguage.BENGALI -> "বাতাসের গতি"
-    AppLanguage.SPANISH -> "Velocidad del Viento"
-    AppLanguage.PORTUGUESE -> "Velocidade do Vento"
-    AppLanguage.ENGLISH -> "Wind Speed"
-  }
 
   fun getNightSkyActiveLabel(language: AppLanguage): String = when (language) {
     AppLanguage.ARABIC -> "تتبع السماء ليلاً نشط"
@@ -2510,96 +2395,6 @@ object LocalizationManager {
     AppLanguage.SPANISH -> "Seleccione su ubicación e idioma para comenzar"
     AppLanguage.PORTUGUESE -> "Selecione sua localização e idioma para começar"
     AppLanguage.ENGLISH -> "Please select your location and language to begin"
-  }
-
-  fun getWeatherConditionTitle(code: Int, language: AppLanguage): String = when (code) {
-    0 -> when(language) {
-      AppLanguage.ARABIC -> "سماء صافية"
-      AppLanguage.BENGALI -> "পরিষ্কার আকাশ"
-      AppLanguage.SPANISH -> "Cielo Despejado"
-      AppLanguage.PORTUGUESE -> "Céu Limpo"
-      AppLanguage.ENGLISH -> "Clear Sky"
-    }
-    1, 2, 3 -> when(language) {
-      AppLanguage.ARABIC -> "غائم"
-      AppLanguage.BENGALI -> "মেঘলা"
-      AppLanguage.SPANISH -> "Nublado"
-      AppLanguage.PORTUGUESE -> "Nublado"
-      AppLanguage.ENGLISH -> "Cloudy"
-    }
-    45, 48 -> when(language) {
-      AppLanguage.ARABIC -> "ضبابي"
-      AppLanguage.BENGALI -> "কুয়াশাচ্ছন্ন"
-      AppLanguage.SPANISH -> "Niebla"
-      AppLanguage.PORTUGUESE -> "Névoa"
-      AppLanguage.ENGLISH -> "Foggy"
-    }
-    51, 53, 55, 61, 63, 65, 80, 81, 82 -> when(language) {
-      AppLanguage.ARABIC -> "ممطر"
-      AppLanguage.BENGALI -> "বৃষ্টি"
-      AppLanguage.SPANISH -> "Lluvia"
-      AppLanguage.PORTUGUESE -> "Chuva"
-      AppLanguage.ENGLISH -> "Rain"
-    }
-    71, 73, 75, 77, 85, 86 -> when(language) {
-      AppLanguage.ARABIC -> "مثلج"
-      AppLanguage.BENGALI -> "তুষারপাত"
-      AppLanguage.SPANISH -> "Nieve"
-      AppLanguage.PORTUGUESE -> "Neve"
-      AppLanguage.ENGLISH -> "Snow"
-    }
-    95, 96, 99 -> when(language) {
-      AppLanguage.ARABIC -> "عاصفة رعدية"
-      AppLanguage.BENGALI -> "বজ্রঝড়"
-      AppLanguage.SPANISH -> "Tormenta Eléctrica"
-      AppLanguage.PORTUGUESE -> "Trovoada"
-      AppLanguage.ENGLISH -> "Thunderstorm"
-    }
-    else -> when(language) {
-      AppLanguage.ARABIC -> "معتدل"
-      AppLanguage.BENGALI -> "স্বাভাবিক"
-      AppLanguage.SPANISH -> "Justo"
-      AppLanguage.PORTUGUESE -> "Justo"
-      AppLanguage.ENGLISH -> "Fair"
-    }
-  }
-
-  fun getIslamicWeatherAdvice(code: Int, tempC: Double, language: AppLanguage): String = when {
-    code in listOf(95, 96, 99) -> when (language) {
-      AppLanguage.ARABIC -> "عاصفة رعدية في المنطقة. احتمي بالداخل واقرأ دعاء الرعد."
-      AppLanguage.BENGALI -> "এলাকায় বজ্রঝড়। নিরাপদ স্থানে থাকুন এবং বজ্রপাতের দোয়া পড়ুন।"
-      AppLanguage.SPANISH -> "Tormenta en la zona. Refúgiate y recita la Du'a para truenos."
-      AppLanguage.PORTUGUESE -> "Tempestade na área. Abrigue-se e recite a Du'a para trovões."
-      AppLanguage.ENGLISH -> "Thunderstorm in the area. Take shelter indoors and recite the Du'a for lightning and thunder."
-    }
-    code in listOf(51, 53, 55, 61, 63, 65, 80, 81, 82) -> when (language) {
-      AppLanguage.ARABIC -> "المطر يتساقط — أشار النبي (ﷺ) إلى أن هذا وقت مبارك لإجابة الدعاء!"
-      AppLanguage.BENGALI -> "বৃষ্টি পড়ছে — নবী ﷺ বলেছেন এটি দোয়া কবুলের বরকতময় সময়!"
-      AppLanguage.SPANISH -> "Cae lluvia — ¡El Profeta (ﷺ) notó que es un tiempo bendito para orar!"
-      AppLanguage.PORTUGUESE -> "A chuva cai — O Profeta (ﷺ) notou ser um tempo abençoado para orar!"
-      AppLanguage.ENGLISH -> "Rain is descending — the Prophet (ﷺ) noted this is a blessed time for prayers to be answered!"
-    }
-    tempC > 36 -> when (language) {
-      AppLanguage.ARABIC -> "درجات حرارة عالية اليوم. حافظ على رطوبة جسمك واسلك طرقًا مظللة إلى المسجد."
-      AppLanguage.BENGALI -> "আজ তাপমাত্রা বেশি। পর্যাপ্ত পানি পান করুন এবং মসজিদে যাওয়ার সময় ছায়াযুক্ত পথ ব্যবহার করুন।"
-      AppLanguage.SPANISH -> "Altas temperaturas. Mantente hidratado y busca sombra al ir a la mezquita."
-      AppLanguage.PORTUGUESE -> "Altas temperaturas. Mantenha-se hidratado e busque sombra ao ir à mesquita."
-      AppLanguage.ENGLISH -> "High temperatures today. Keep well-hydrated and seek shaded routes to the mosque."
-    }
-    tempC < 5 -> when (language) {
-      AppLanguage.ARABIC -> "ظروف باردة اليوم. توضأ جيدًا بالماء الدافئ وارتدِ ملابس دافئة لصلاة الفجر والعشاء."
-      AppLanguage.BENGALI -> "আজ ঠান্ডা আবহাওয়া। গরম পানি দিয়ে ভালোভাবে ওযু করুন এবং ফজর/এশার জন্য গরম কাপড় পরুন।"
-      AppLanguage.SPANISH -> "Condiciones frías. Haz el wudhu completo y abrígate para Fajr/Isha."
-      AppLanguage.PORTUGUESE -> "Condições frias. Faça o wudhu completo e agasalhe-se para Fajr/Isha."
-      AppLanguage.ENGLISH -> "Cold conditions today. Perform wudhu thoroughly with warmth and dress warmly for Fajr/Isha."
-    }
-    else -> when (language) {
-      AppLanguage.ARABIC -> "طقس مريح وهادئ — فرصة ممتازة للمشي إلى المسجد لأداء صلاة الجماعة."
-      AppLanguage.BENGALI -> "আরামদায়ক এবং শান্ত আবহাওয়া — জামাতে নামাজ পড়ার জন্য মসজিদে হেঁটে যাওয়ার চমৎকার সুযোগ।"
-      AppLanguage.SPANISH -> "Clima cómodo y sereno — excelente oportunidad para caminar a la Mezquita."
-      AppLanguage.PORTUGUESE -> "Clima confortável e sereno — excelente oportunidade para caminhar até a Mesquita."
-      AppLanguage.ENGLISH -> "Comfortable and serene weather — an excellent opportunity to walk to the Masjid for congregational prayer."
-    }
   }
 
   /** Native digits for Bengali and Arabic; everything else keeps Latin digits. */

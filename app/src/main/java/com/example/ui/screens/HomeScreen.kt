@@ -53,8 +53,6 @@ import com.example.data.model.CityLocation
 import com.example.data.model.DailyPrayerSchedule
 import com.example.data.prayer.CalculationMethod
 import com.example.data.prayer.IslamicMadhab
-import com.example.data.weather.CurrentWeather
-import com.example.ui.WeatherUiState
 import com.example.ui.components.AboutHaasiDialog
 import com.example.ui.components.CelestialHorizonCard
 import com.example.ui.components.DailyInspirationCard
@@ -69,7 +67,6 @@ import com.example.ui.components.SettingsSheet
 import com.example.ui.components.PrayerNextHeroCard
 import com.example.ui.components.SehriIftarCard
 import com.example.ui.components.PrayerScheduleListCard
-import com.example.ui.components.WeatherHomeScreenCard
 import com.example.ui.theme.CoolMintGradientBase
 import com.example.ui.theme.DarkForestInk
 import com.example.ui.theme.LinenBorderLight
@@ -79,7 +76,6 @@ import com.example.ui.theme.WarmBeigeBackground
 @Composable
 fun HomeScreen(
   schedule: DailyPrayerSchedule,
-  weatherState: WeatherUiState,
   currentCity: CityLocation,
   /**
    * False while [currentCity] is only the Makkah placeholder. The location chip must say so
@@ -89,7 +85,6 @@ fun HomeScreen(
   hasResolvedLocation: Boolean = true,
   /** The location is only an IP estimate; the chip marks it as approximate. */
   isLocationApproximate: Boolean = false,
-  formatTemperature: (Double) -> String,
   /**
    * Today's verse and narration. Passed in rather than read from a constant here, so the card
    * actually changes from one day to the next.
@@ -99,7 +94,6 @@ fun HomeScreen(
   madhab: IslamicMadhab = IslamicMadhab.DEFAULT,
   method: CalculationMethod = CalculationMethod.UMM_AL_QURA,
   onLocationClick: () -> Unit,
-  onNavigateToWeather: () -> Unit,
   onLanguageSelect: (AppLanguage) -> Unit = {},
   onResetLanguageToLocation: () -> Unit = {},
   onMadhabSelect: (IslamicMadhab) -> Unit = {},
@@ -113,14 +107,6 @@ fun HomeScreen(
   var showAboutDialog by remember { mutableStateOf(false) }
   var showScheduleDialog by remember { mutableStateOf(false) }
 
-  val currentWeather: CurrentWeather? = when (weatherState) {
-    is WeatherUiState.Success -> weatherState.data.current
-    else -> null
-  }
-
-  val tempFormatted = currentWeather?.let { formatTemperature(it.temperatureC) } ?: "--°"
-  val highFormatted = currentWeather?.let { formatTemperature(it.highC) } ?: "--°"
-  val lowFormatted = currentWeather?.let { formatTemperature(it.lowC) } ?: "--°"
 
   Column(
     modifier = Modifier
@@ -285,11 +271,8 @@ fun HomeScreen(
           schedule = schedule,
           hasResolvedLocation = hasResolvedLocation,
           isLocationApproximate = isLocationApproximate,
-          currentWeather = currentWeather,
-          temperatureFormatted = tempFormatted,
           language = language,
           onLocationClick = onLocationClick,
-          onWeatherClick = onNavigateToWeather,
           onCardClick = { showScheduleDialog = true }
         )
 
@@ -367,21 +350,6 @@ fun HomeScreen(
         )
       }
 
-      // 4. Weather & Daily Guidance Card
-      item {
-        WeatherHomeScreenCard(
-          weather = currentWeather,
-          temperatureFormatted = tempFormatted,
-          highFormatted = highFormatted,
-          lowFormatted = lowFormatted,
-          language = language,
-          isLoading = weatherState is WeatherUiState.Loading,
-          isError = weatherState is WeatherUiState.Error,
-          onViewForecastClick = onNavigateToWeather
-        )
-      }
-
-
       // Outside Ramadan: for voluntary fasts, just before today's verse.
       if (fastingStatus != null && !fastingStatus.day.isRamadan) {
         item {
@@ -389,7 +357,7 @@ fun HomeScreen(
         }
       }
 
-      // 5. Daily Inspiration (Ayah & Hadith)
+      // 4. Daily Inspiration (Ayah & Hadith)
       item {
         DailyInspirationCard(
           inspiration = inspiration,
