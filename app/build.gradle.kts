@@ -15,7 +15,10 @@ android {
 
   defaultConfig {
     applicationId = "com.ahsanulhouqe.haasiallayl"
-    minSdk = 24
+    // 26, not 24: the app uses java.time throughout (LocalDate, HijrahDate), which Android only
+    // ships from 8.0. Without core-library desugaring, Android 7.x would crash on start - and the
+    // Hijri fallback could not catch it, since a missing class is an Error, not an Exception.
+    minSdk = 26
     targetSdk = 36
     // The CI run number, so every build can be told apart on a phone (Settings → Apps) and Play
     // uploads always increase. Local and AI Studio builds stay at 1.
