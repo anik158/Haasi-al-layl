@@ -66,8 +66,39 @@ result is a best estimate, not an announcement.
 
 **1c. Offline with nothing cached:** Umm al-Qura plus the same moon test.
 
-**1d. Settings keeps the manual adjustment** (−2…+2) as an escape hatch, but **per month**, not one
-shift for the whole year.
+**1d. Settings → "Moon sighting announced" — the user's own correction, hard to tap by mistake.**
+Nothing on Today asks; the user goes to Settings only when their country's announcement differs
+from what the app shows. It replaces today's single −2…+2 shift for the whole year.
+
+The flow, one screen at a time:
+
+1. **Which month?** Only the months that can start now are offered (e.g. "Ramadan 1448", or
+   "Shawwal 1448 — Eid al-Fitr"). Anything else is greyed out.
+2. **What was announced?** Concrete choices, each with its Gregorian date and weekday, never a bare
+   number:
+   - "Moon sighted — Ramadan starts **Thursday, 19 Feb**"
+   - "Moon not sighted — Sha'ban completes 30 days, Ramadan starts **Friday, 20 Feb**"
+   - "Use the app's estimate again" (undo)
+3. **Where did you hear it?** National committee / local mosque / TV or news / other. Kept with
+   the answer, shown back later ("confirmed by you, from the national committee").
+4. **Review — first confirmation.** Everything that changes, side by side, old → new:
+   first day of fasting, first Sehri time, Eid date, the forbidden days, and the Sehri alarm if on.
+   The moon check is shown here: if the crescent could **not** have been seen at the user's
+   location that evening, a clear warning — "The moon had already set before sunset here. Are you
+   sure this was the announcement?" (never a block; the committee has the final word).
+5. **Second confirmation.** A separate dialog: "Change Ramadan to start on Thursday, 19 Feb?"
+   with the button worded as the action ("Change to Thursday"), not "OK". For an impossible
+   sighting the button stays disabled for 3 seconds, so the warning is read.
+6. **Done.** A note on Today: "Ramadan start set by you — Thursday, 19 Feb. Change in Settings",
+   with **Undo** until the next Maghrib.
+
+Rules:
+- The answer is saved **for that month only**, with its source and time. It overrides 1a–1c for
+  that month, and the next month is counted from it.
+- Only a start within **±1 day of the app's estimate** (or ±2 from Saudi Arabia) can be chosen.
+  A month that would have 28 or 31 days is impossible and is not offered.
+- Alarms are re-armed after the change; the Sehri alarm moves with it.
+- Every change and undo is kept in a short history in Settings, so a wrong tap can be traced.
 
 **1e. Warnings — always, on the days that matter.** The Sehri & Iftar card and the fasting-day rules
 show a note on:
@@ -87,6 +118,19 @@ offline with nothing cached.
   Shawwal and Dhul-Hijjah of several years. The accuracy is written down here before shipping.
 - A fake server for HJCoSA; offline uses the cache, or the calculation.
 - Eid, Arafah and the forbidden days move with the resolved start; the warning appears on each.
+- **The sighting option, tested many times — it is the most sensitive part:**
+  - unit tests for every choice × every month that can start (Ramadan, Shawwal, Dhul-Hijjah,
+    ordinary months), across Gregorian year ends and leap years;
+  - the month-length guard: 28- and 31-day months are never offered or saved;
+  - cancel at **every** step changes nothing; back/rotate/app-killed mid-flow changes nothing;
+  - undo restores exactly the previous state, including alarms;
+  - the impossible-sighting warning and the 3-second disabled button;
+  - Eid, Arafah, the forbidden days, the Ramadan Isha rule and the Sehri alarm all follow the
+    answer; the next month is counted from it;
+  - Compose UI tests for the whole flow, in all five languages (dates, weekdays, digits);
+  - a property test: thousands of random dates, sources and answers — the resolved month always
+    has 29 or 30 days and no day belongs to two months;
+  - then a written phone checklist, on two phones, before release.
 
 ### Step 2 — Sehri alarm
 
@@ -98,17 +142,30 @@ offline with nothing cached.
 - Test first: the alarm planner arms it at the right minute, only on fasting days, and never on a
   forbidden day.
 
+### Step 3 — The 5-minute follow-up alert: off by default
+
+Today, besides the alert when a prayer time starts, a second "follow-up" alert rings **5 minutes
+later** (`FOLLOW_UP_DELAY_MINUTES`, `isFollowUpNotificationsEnabled` default `true`).
+
+- Change its default to **off**. The prayer-start alert stays on.
+- Users who already switched it on or off keep their choice. Users who never touched it get the
+  new default (off), since nothing is saved for them.
+- The switch stays in Settings, so anyone can turn it back on.
+- Test first: a fresh install arms no follow-up; a saved "on" still arms it; the start alert is
+  unaffected.
+
 ### Not in this plan
 
 - **A Bangladesh feed** — a small server job that reads the National Moon Sighting Committee's
   press release (reported by BSS / UNB) on sighting nights and publishes `bd.json`, which would
   override the estimate in 1b. Later, if wanted; best of all would be the Islamic Foundation
   publishing it themselves.
-- **A "was the moon sighted?" question.** Dropped: the date comes from Saudi Arabia + the moon.
+- **A "was the moon sighted?" card on Today.** Dropped: the date comes from Saudi Arabia + the moon;
+  a correction lives only in Settings (1d).
 
 ## What I need from you
 
-- **Approve** steps 1 and 2.
+- **Approve** steps 1, 2 and 3.
 - **Sehri reminder default:** off, with 60 minutes as the suggested lead time — OK?
 - **"I'm fasting tomorrow" for voluntary fasts:** include it in step 2, or Ramadan-only alarm?
 
