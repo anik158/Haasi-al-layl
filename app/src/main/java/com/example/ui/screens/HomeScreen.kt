@@ -287,18 +287,19 @@ fun HomeScreen(
       }
 
       // In Ramadan, Sehri and Iftar are the day's headline, so they sit right under the prayers.
-      // A debug build's test date, said out loud so it is never taken for today.
-      if (com.example.BuildConfig.DEBUG) {
-        item {
-          com.example.ui.components.TestDateBanner(
-            zone = runCatching { java.time.ZoneId.of(currentCity.timeZoneId) }.getOrDefault(java.time.ZoneId.systemDefault()),
-            onBackToRealTime = {
-              com.example.data.hijri.HijriCalendar.leaveTestDate(homeContext)
-              onSettingsChanged()
-            }
-          )
-        }
-      }
+      // A debug build's test date, said out loud so it is never taken for today. Commented out
+      // with the Settings card (TestDateCard); uncomment both together.
+      // if (com.example.BuildConfig.DEBUG) {
+      //   item {
+      //     com.example.ui.components.TestDateBanner(
+      //       zone = runCatching { java.time.ZoneId.of(currentCity.timeZoneId) }.getOrDefault(java.time.ZoneId.systemDefault()),
+      //       onBackToRealTime = {
+      //         com.example.data.hijri.HijriCalendar.leaveTestDate(homeContext)
+      //         onSettingsChanged()
+      //       }
+      //     )
+      //   }
+      // }
 
       // Undo for a month start the user set in Settings, until the next Maghrib.
       val undoable = if (com.example.FeatureFlags.SHOW_FASTING_TIMES) {

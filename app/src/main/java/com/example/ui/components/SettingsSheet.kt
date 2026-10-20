@@ -382,11 +382,13 @@ fun SettingsSheet(
 
       // The month start: worked out from Saudi Arabia's announcement and the moon, and correctable
       // here, one month at a time, when the country's announcement differs.
-      if (com.example.BuildConfig.DEBUG && com.example.FeatureFlags.SHOW_FASTING_TIMES) {
-        item {
-          TestDateCard(onChanged = onSettingsChanged)
-        }
-      }
+      // "Test a date" (debug tool, TestDateCard.kt) - commented out so it does not ship in the
+      // everyday build. Uncomment, with the banner in HomeScreen, to try Ramadan out of season.
+      // if (com.example.BuildConfig.DEBUG && com.example.FeatureFlags.SHOW_FASTING_TIMES) {
+      //   item {
+      //     TestDateCard(onChanged = onSettingsChanged)
+      //   }
+      // }
 
       if (com.example.FeatureFlags.SHOW_FASTING_TIMES) {
         item {
