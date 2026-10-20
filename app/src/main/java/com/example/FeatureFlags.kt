@@ -7,11 +7,12 @@ package com.example
 object FeatureFlags {
 
   /**
-   * The Sehri & Iftar card on Today and the Hijri adjustment card in Settings. Held back until the
-   * start of the month can follow the local moon sighting rather than only a calculation.
-   * FastingTimes and the automatic Hijri adjustment still run underneath.
+   * The Sehri & Iftar card on Today (at the top in Ramadan, above Today's verse otherwise), the
+   * Hijri adjustment card in Settings, and the Imsak row. On since the card says how sure its Hijri
+   * date is and which days are forbidden, discouraged or recommended (FastingRules). The month
+   * start still follows the calculation; see docs/design/MONTH-START.md.
    */
-  const val SHOW_FASTING_TIMES = false
+  const val SHOW_FASTING_TIMES = true
 
   /**
    * Whether [prayer] belongs in the schedule lists. Imsak (Fajr - 10) is the conventional Sehri

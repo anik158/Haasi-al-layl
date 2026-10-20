@@ -362,6 +362,142 @@ object LocalizationManager {
     AppLanguage.ENGLISH -> "The number ninety-nine is in Bukhari and Muslim. The list of names is the narration in Tirmidhi 3507, whose chain many scholars grade weak; it is the list in common use. Meanings are short glosses."
   }
 
+  /** The name of a fasting rule from [com.example.data.prayer.FastingRules], by key. */
+  fun getFastRuleName(key: String, language: AppLanguage): String = when (key) {
+    "ramadan" -> when (language) {
+      AppLanguage.ARABIC -> "رمضان"
+      AppLanguage.BENGALI -> "রমজান"
+      AppLanguage.SPANISH -> "Ramadán"
+      AppLanguage.PORTUGUESE -> "Ramadão"
+      AppLanguage.ENGLISH -> "Ramadan"
+    }
+    "eid_fitr" -> when (language) {
+      AppLanguage.ARABIC -> "عيد الفطر"
+      AppLanguage.BENGALI -> "ঈদুল ফিতর"
+      AppLanguage.SPANISH -> "Eid al-Fitr"
+      AppLanguage.PORTUGUESE -> "Eid al-Fitr"
+      AppLanguage.ENGLISH -> "Eid al-Fitr"
+    }
+    "eid_adha" -> when (language) {
+      AppLanguage.ARABIC -> "عيد الأضحى"
+      AppLanguage.BENGALI -> "ঈদুল আযহা"
+      AppLanguage.SPANISH -> "Eid al-Adha"
+      AppLanguage.PORTUGUESE -> "Eid al-Adha"
+      AppLanguage.ENGLISH -> "Eid al-Adha"
+    }
+    "tashreeq" -> when (language) {
+      AppLanguage.ARABIC -> "أيام التشريق (١١–١٣ ذي الحجة)"
+      AppLanguage.BENGALI -> "আইয়ামে তাশরীক (১১–১৩ জিলহজ)"
+      AppLanguage.SPANISH -> "Días de Tashriq (11–13 Dhul-Hiyya)"
+      AppLanguage.PORTUGUESE -> "Dias de Tashriq (11–13 Dhul-Hijja)"
+      AppLanguage.ENGLISH -> "Days of Tashreeq (11–13 Dhul-Hijjah)"
+    }
+    "before_ramadan" -> when (language) {
+      AppLanguage.ARABIC -> "قبل رمضان بيوم أو يومين"
+      AppLanguage.BENGALI -> "রমজানের এক-দুই দিন আগে"
+      AppLanguage.SPANISH -> "Uno o dos días antes del Ramadán"
+      AppLanguage.PORTUGUESE -> "Um ou dois dias antes do Ramadão"
+      AppLanguage.ENGLISH -> "A day or two before Ramadan"
+    }
+    "friday_alone" -> when (language) {
+      AppLanguage.ARABIC -> "الجمعة وحدها — صم يوماً قبله أو بعده"
+      AppLanguage.BENGALI -> "শুধু শুক্রবার — আগের বা পরের দিনও রোজা রাখুন"
+      AppLanguage.SPANISH -> "El viernes solo — ayune también el día anterior o el siguiente"
+      AppLanguage.PORTUGUESE -> "A sexta-feira sozinha — jejue também o dia anterior ou o seguinte"
+      AppLanguage.ENGLISH -> "Friday on its own — fast a day before or after too"
+    }
+    "arafah" -> when (language) {
+      AppLanguage.ARABIC -> "يوم عرفة"
+      AppLanguage.BENGALI -> "আরাফার দিন"
+      AppLanguage.SPANISH -> "Día de Arafah"
+      AppLanguage.PORTUGUESE -> "Dia de Arafah"
+      AppLanguage.ENGLISH -> "Day of Arafah"
+    }
+    "ashura" -> when (language) {
+      AppLanguage.ARABIC -> "عاشوراء (١٠ محرم)"
+      AppLanguage.BENGALI -> "আশুরা (১০ মুহাররম)"
+      AppLanguage.SPANISH -> "Ashura (10 de Muharram)"
+      AppLanguage.PORTUGUESE -> "Ashura (10 de Muharram)"
+      AppLanguage.ENGLISH -> "Ashura (10 Muharram)"
+    }
+    "tasua" -> when (language) {
+      AppLanguage.ARABIC -> "تاسوعاء (٩ محرم)"
+      AppLanguage.BENGALI -> "তাসুআ (৯ মুহাররম)"
+      AppLanguage.SPANISH -> "Tasu'a (9 de Muharram)"
+      AppLanguage.PORTUGUESE -> "Tasu'a (9 de Muharram)"
+      AppLanguage.ENGLISH -> "Tasu'a (9 Muharram)"
+    }
+    "six_shawwal" -> when (language) {
+      AppLanguage.ARABIC -> "ستة أيام من شوال"
+      AppLanguage.BENGALI -> "শাওয়ালের ছয় রোজা"
+      AppLanguage.SPANISH -> "Seis días de Shawwal"
+      AppLanguage.PORTUGUESE -> "Seis dias de Shawwal"
+      AppLanguage.ENGLISH -> "Six days of Shawwal"
+    }
+    "white_days" -> when (language) {
+      AppLanguage.ARABIC -> "الأيام البيض (١٣–١٥)"
+      AppLanguage.BENGALI -> "আইয়ামে বীয (১৩–১৫ তারিখ)"
+      AppLanguage.SPANISH -> "Los días blancos (13–15)"
+      AppLanguage.PORTUGUESE -> "Os dias brancos (13–15)"
+      AppLanguage.ENGLISH -> "The white days (13th–15th)"
+    }
+    "monday" -> when (language) {
+      AppLanguage.ARABIC -> "الاثنين"
+      AppLanguage.BENGALI -> "সোমবার"
+      AppLanguage.SPANISH -> "Lunes"
+      AppLanguage.PORTUGUESE -> "Segunda-feira"
+      AppLanguage.ENGLISH -> "Monday"
+    }
+    "thursday" -> when (language) {
+      AppLanguage.ARABIC -> "الخميس"
+      AppLanguage.BENGALI -> "বৃহস্পতিবার"
+      AppLanguage.SPANISH -> "Jueves"
+      AppLanguage.PORTUGUESE -> "Quinta-feira"
+      AppLanguage.ENGLISH -> "Thursday"
+    }
+    else -> key
+  }
+
+  fun getFastKindTitle(kind: com.example.data.prayer.FastDayKind, language: AppLanguage): String = when (kind) {
+    com.example.data.prayer.FastDayKind.OBLIGATORY -> when (language) {
+      AppLanguage.ARABIC -> "صيام واجب"
+      AppLanguage.BENGALI -> "ফরজ রোজা"
+      AppLanguage.SPANISH -> "Ayuno obligatorio"
+      AppLanguage.PORTUGUESE -> "Jejum obrigatório"
+      AppLanguage.ENGLISH -> "Obligatory fast"
+    }
+    com.example.data.prayer.FastDayKind.PROHIBITED -> when (language) {
+      AppLanguage.ARABIC -> "يحرم الصيام"
+      AppLanguage.BENGALI -> "রোজা রাখা নিষিদ্ধ"
+      AppLanguage.SPANISH -> "Ayunar está prohibido"
+      AppLanguage.PORTUGUESE -> "Jejuar é proibido"
+      AppLanguage.ENGLISH -> "Fasting is forbidden"
+    }
+    com.example.data.prayer.FastDayKind.DISCOURAGED -> when (language) {
+      AppLanguage.ARABIC -> "يُكره الصيام"
+      AppLanguage.BENGALI -> "রোজা না রাখাই উত্তম"
+      AppLanguage.SPANISH -> "Mejor no ayunar"
+      AppLanguage.PORTUGUESE -> "Melhor não jejuar"
+      AppLanguage.ENGLISH -> "Better not to fast"
+    }
+    com.example.data.prayer.FastDayKind.RECOMMENDED -> when (language) {
+      AppLanguage.ARABIC -> "يُستحب الصيام"
+      AppLanguage.BENGALI -> "রোজা রাখা মুস্তাহাব"
+      AppLanguage.SPANISH -> "Ayuno recomendado"
+      AppLanguage.PORTUGUESE -> "Jejum recomendado"
+      AppLanguage.ENGLISH -> "Recommended to fast"
+    }
+  }
+
+  /** Under a Hijri-dated rule: the date is calculated, and local sighting can move it a day. */
+  fun getHijriCalculatedNote(language: AppLanguage): String = when (language) {
+    AppLanguage.ARABIC -> "مبني على التاريخ الهجري المحسوب، وقد يختلف يوماً عن رؤية الهلال في بلدك."
+    AppLanguage.BENGALI -> "হিসাব করা হিজরি তারিখ অনুযায়ী — আপনার এলাকার চাঁদ দেখার সাথে এক দিন পার্থক্য হতে পারে।"
+    AppLanguage.SPANISH -> "Según la fecha hégira calculada; puede diferir un día del avistamiento local de la luna."
+    AppLanguage.PORTUGUESE -> "Pela data hégira calculada; pode diferir um dia do avistamento local da lua."
+    AppLanguage.ENGLISH -> "Based on the calculated Hijri date — it can differ by a day from your local moon sighting."
+  }
+
   fun getSehriIftarTitle(language: AppLanguage): String = when (language) {
     AppLanguage.ARABIC -> "السحور والإفطار"
     AppLanguage.BENGALI -> "সাহরি ও ইফতার"

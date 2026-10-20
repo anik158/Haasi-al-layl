@@ -37,8 +37,12 @@ data class FastingStatus(
   /** HH:MM:SS until Sehri ends (before dawn) or until Iftar (during the fast). */
   val countdownFormatted: String,
   /** True after today's Iftar, when [day] is tomorrow's fast. */
-  val isTomorrow: Boolean
-)
+  val isTomorrow: Boolean,
+  /** Whether [day] is forbidden, discouraged or recommended for fasting; empty if ordinary. */
+  val rules: List<FastDayRule> = emptyList()
+) {
+  val isProhibited: Boolean get() = rules.any { it.kind == FastDayKind.PROHIBITED }
+}
 
 object FastingTimes {
 
@@ -69,7 +73,8 @@ object FastingTimes {
       day = day,
       isFasting = isFasting,
       countdownFormatted = hms(Duration.between(now, target)),
-      isTomorrow = day.date.isAfter(now.toLocalDate())
+      isTomorrow = day.date.isAfter(now.toLocalDate()),
+      rules = FastingRules.rulesFor(day.date)
     )
   }
 

@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.data.localization.AppLanguage
 import com.example.data.localization.LocalizationManager
+import com.example.data.prayer.FastDayKind
 import com.example.data.prayer.FastingStatus
 import com.example.ui.theme.DarkForestInk
 import com.example.ui.theme.LinenBorderLight
@@ -107,6 +108,49 @@ fun SehriIftarCard(
       }
     }
 
+    // What the sunnah says about fasting this day: forbidden, discouraged or recommended, each with
+    // its reference. Ramadan's own rule is the badge above, so it is not repeated here.
+    val dayRules = status.rules.filter { it.kind != FastDayKind.OBLIGATORY }
+    if (dayRules.isNotEmpty()) {
+      Spacer(modifier = Modifier.height(12.dp))
+      dayRules.forEach { rule ->
+        val (tint, background) = when (rule.kind) {
+          FastDayKind.PROHIBITED -> Color(0xFFB3261E) to Color(0xFFFDECEA)
+          FastDayKind.DISCOURAGED -> Color(0xFF8A5A00) to Color(0xFFFFF4E0)
+          else -> Color(0xFF1B5E20) to Color(0xFFE8F5E9)
+        }
+        Column(
+          modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 6.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(background)
+            .padding(horizontal = 12.dp, vertical = 8.dp)
+            .testTag("fast_rule_${rule.key}")
+        ) {
+          Text(
+            text = LocalizationManager.getFastKindTitle(rule.kind, language),
+            style = MaterialTheme.typography.labelLarge,
+            fontWeight = FontWeight.Bold,
+            color = tint
+          )
+          Text(
+            text = "${LocalizationManager.getFastRuleName(rule.key, language)} · ${rule.reference}",
+            style = MaterialTheme.typography.bodySmall,
+            color = tint
+          )
+        }
+      }
+      if (dayRules.any { it.dependsOnHijriDate }) {
+        Text(
+          text = LocalizationManager.getHijriCalculatedNote(language),
+          style = MaterialTheme.typography.bodySmall,
+          fontSize = 11.sp,
+          color = muted
+        )
+      }
+    }
+
     Spacer(modifier = Modifier.height(14.dp))
 
     Row(
@@ -135,7 +179,8 @@ fun SehriIftarCard(
     Spacer(modifier = Modifier.height(12.dp))
 
     // The countdown to whichever comes next, with "tomorrow" said out loud after today's Iftar.
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    // Not on a forbidden day: a countdown would read as an invitation to fast.
+    if (!status.isProhibited) Row(verticalAlignment = Alignment.CenterVertically) {
       Text(
         text = LocalizationManager.localizeDigits(status.countdownFormatted, language),
         style = MaterialTheme.typography.titleLarge,

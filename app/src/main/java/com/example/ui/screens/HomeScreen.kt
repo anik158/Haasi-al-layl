@@ -356,7 +356,18 @@ fun HomeScreen(
         }
       }
 
-      // 3. Weather & Daily Guidance Card
+      // 3. Today's 5 Prayers Schedule with Checkboxes
+      item {
+        PrayerScheduleListCard(
+          items = schedule.items.filter { com.example.FeatureFlags.showsInSchedule(it.prayer) },
+          language = language,
+          madhab = madhab,
+          onMadhabClick = { showNotificationSheet = true },
+          onTogglePrayer = onTogglePrayer
+        )
+      }
+
+      // 4. Weather & Daily Guidance Card
       item {
         WeatherHomeScreenCard(
           weather = currentWeather,
@@ -370,16 +381,6 @@ fun HomeScreen(
         )
       }
 
-      // 4. Today's 5 Prayers Schedule with Checkboxes
-      item {
-        PrayerScheduleListCard(
-          items = schedule.items.filter { com.example.FeatureFlags.showsInSchedule(it.prayer) },
-          language = language,
-          madhab = madhab,
-          onMadhabClick = { showNotificationSheet = true },
-          onTogglePrayer = onTogglePrayer
-        )
-      }
 
       // Outside Ramadan: for voluntary fasts, just before today's verse.
       if (fastingStatus != null && !fastingStatus.day.isRamadan) {
