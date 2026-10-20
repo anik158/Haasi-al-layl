@@ -287,9 +287,28 @@ fun HomeScreen(
       }
 
       // In Ramadan, Sehri and Iftar are the day's headline, so they sit right under the prayers.
+      // Undo for a month start the user set in Settings, until the next Maghrib.
+      val undoable = if (com.example.FeatureFlags.SHOW_FASTING_TIMES) {
+        com.example.data.hijri.HijriCalendar.undoable(homeContext, System.currentTimeMillis())
+      } else {
+        null
+      }
+      if (undoable != null) {
+        item {
+          HijriUndoBanner(
+            correction = undoable,
+            language = language,
+            onUndo = {
+              com.example.data.hijri.HijriCalendar.undoCorrection(homeContext, undoable.id, System.currentTimeMillis())
+              onSettingsChanged()
+            }
+          )
+        }
+      }
+
       if (fastingStatus?.day?.isRamadan == true) {
         item {
-          SehriIftarCard(status = fastingStatus, language = language)
+          SehriIftarCard(status = fastingStatus, language = language, onFastingChanged = onSettingsChanged)
         }
       }
 
@@ -353,7 +372,7 @@ fun HomeScreen(
       // Outside Ramadan: for voluntary fasts, just before today's verse.
       if (fastingStatus != null && !fastingStatus.day.isRamadan) {
         item {
-          SehriIftarCard(status = fastingStatus, language = language)
+          SehriIftarCard(status = fastingStatus, language = language, onFastingChanged = onSettingsChanged)
         }
       }
 
@@ -449,3 +468,35 @@ private fun ExactAlarmPermissionCard(language: AppLanguage) {
   }
 }
 
+
+/** "Ramadan start set by you - Thursday, 19 February. [Undo]" */
+@Composable
+private fun HijriUndoBanner(
+  correction: com.example.data.hijri.UserMonthStart,
+  language: com.example.data.localization.AppLanguage,
+  onUndo: () -> Unit
+) {
+  val strings = com.example.data.localization.HijriStrings
+  Card(
+    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).testTag("hijri_undo_banner"),
+    colors = CardDefaults.cardColors(containerColor = androidx.compose.ui.graphics.Color(0xFFFFF4E0))
+  ) {
+    androidx.compose.foundation.layout.Row(
+      modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 10.dp),
+      verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+    ) {
+      Text(
+        text = strings.undoBanner(
+          com.example.data.prayer.HijriDateHelper.monthName(correction.id.month, language),
+          com.example.data.prayer.HijriDateHelper.shortGregorian(correction.startsOn, language),
+          language
+        ),
+        style = MaterialTheme.typography.bodyMedium,
+        modifier = Modifier.weight(1f)
+      )
+      androidx.compose.material3.TextButton(onClick = onUndo, modifier = Modifier.testTag("hijri_undo")) {
+        Text(strings.undo(language), fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+      }
+    }
+  }
+}

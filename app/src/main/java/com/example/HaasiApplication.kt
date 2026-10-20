@@ -25,12 +25,18 @@ class HaasiApplication : Application() {
 
   override fun onCreate() {
     super.onCreate()
-    // Before anything computes a Hijri date, including an alarm receiver's Ramadan Isha rule.
+    // Before anything computes a Hijri date, including an alarm receiver's Ramadan Isha rule:
+    // builds the month table from the cached announcements and the user's corrections.
     com.example.data.preferences.UserPreferences(this).applyHijriAdjustment()
     PrayerNotificationManager.ensureChannels(this)
     appScope.launch {
       // A no-op unless the day or the settings signature changed.
       PrayerAlarmScheduler.ensureScheduled(this@HaasiApplication)
+      // Saudi Arabia's (or Turkey's) announced month starts, when due and online. A changed
+      // table can move Ramadan, so the alarms follow.
+      if (com.example.data.hijri.HijriCalendar.refreshAnnouncements(this@HaasiApplication)) {
+        PrayerAlarmScheduler.rescheduleAll(this@HaasiApplication)
+      }
     }
   }
 }

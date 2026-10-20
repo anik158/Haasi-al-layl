@@ -1,5 +1,7 @@
 package com.example.data.prayer
 
+import com.example.data.hijri.HijriDay
+import com.example.data.hijri.HijriMonthTable
 import com.example.data.localization.AppLanguage
 import com.example.data.localization.LocalizationManager
 import java.time.LocalDate
@@ -10,19 +12,29 @@ import java.util.Locale
 object HijriDateHelper {
 
   /**
-   * The user's Hijri adjustment in days, applied to every conversion here - the displayed date,
-   * Ramadan detection, and the Ramadan Isha rule alike. Loaded from preferences at process start.
+   * The month table (com.example.data.hijri.HijriCalendar): announced starts, the moon and the
+   * user's corrections. Every conversion here reads it first - the displayed date, Ramadan, the
+   * fasting rules and the Ramadan Isha rule alike. Installed at process start.
+   */
+  @Volatile
+  var table: HijriMonthTable? = null
+
+  /**
+   * The fallback for a date outside [table], or before it is built (and in pure unit tests): days
+   * added to Umm al-Qura, the country's usual offset (see [automaticAdjustmentFor]).
    */
   @Volatile
   var adjustmentDays: Int = 0
+
+  /** [date] in the month table - with where its month start came from - or null outside it. */
+  fun dayInfo(date: LocalDate = LocalDate.now()): HijriDay? = table?.resolve(date)
 
   /**
    * Where months start on local moon sighting, typically a day after Umm al-Qura: Bangladesh,
    * India, Pakistan, Nepal, Sri Lanka, Morocco. ISO codes and English names both, since the stored
    * country comes from IP lookup (codes) as well as geocoders and the picker (names).
    *
-   * A typical pattern, not a guarantee - a sighting can land on the same day as Makkah's - so the
-   * user can always override it in Settings.
+   * Only the fallback now: inside the month table the moon decides, month by month.
    */
   private val SIGHTING_A_DAY_LATER = setOf(
     "BD", "BANGLADESH",
@@ -76,6 +88,7 @@ object HijriDateHelper {
 
   /** Day, month (1-12) and year of [date] in the Hijri calendar. */
   private fun hijriParts(gregorian: LocalDate): Triple<Int, Int, Int> {
+    table?.resolve(gregorian)?.let { return Triple(it.day, it.month, it.year) }
     val date = gregorian.plusDays(adjustmentDays.toLong())
     return rawHijriParts(date)
   }
@@ -106,6 +119,40 @@ object HijriDateHelper {
     Triple(d.toInt(), m, y)
   }
 
+  /** The name of Hijri month [month] (1-12) in [language]. */
+  fun monthName(month: Int, language: AppLanguage): String {
+    val names = HIJRI_MONTH_NAMES[language] ?: HIJRI_MONTH_NAMES.getValue(AppLanguage.ENGLISH)
+    return names.getOrElse(month - 1) { names[0] }
+  }
+
+  /** "Ramadan 1448 AH", digits localized. */
+  fun monthYearLabel(month: Int, year: Int, language: AppLanguage): String =
+    LocalizationManager.localizeDigits("${monthName(month, language)} $year ${eraLabel(language)}", language)
+
+  /** "Thursday, 19 February" in the app's language, digits localized. */
+  fun shortGregorian(date: LocalDate, language: AppLanguage): String {
+    val (locale, pattern) = when (language) {
+      AppLanguage.ENGLISH -> Locale.ENGLISH to "EEEE, d MMMM"
+      AppLanguage.ARABIC -> Locale("ar") to "EEEE، d MMMM"
+      AppLanguage.BENGALI -> Locale("bn") to "EEEE, d MMMM"
+      AppLanguage.SPANISH -> Locale("es") to "EEEE, d 'de' MMMM"
+      AppLanguage.PORTUGUESE -> Locale("pt") to "EEEE, d 'de' MMMM"
+    }
+    return LocalizationManager.localizeDigits(date.format(DateTimeFormatter.ofPattern(pattern, locale)), language)
+  }
+
+  /** Just the weekday - "Thursday" - for a button that must say what it does. */
+  fun weekday(date: LocalDate, language: AppLanguage): String {
+    val locale = when (language) {
+      AppLanguage.ENGLISH -> Locale.ENGLISH
+      AppLanguage.ARABIC -> Locale("ar")
+      AppLanguage.BENGALI -> Locale("bn")
+      AppLanguage.SPANISH -> Locale("es")
+      AppLanguage.PORTUGUESE -> Locale("pt")
+    }
+    return date.format(DateTimeFormatter.ofPattern("EEEE", locale))
+  }
+
   /** "12 Rabi' al-Thani 1448 AH", in [language] - month names, era and digits. */
   fun getTodayHijriFormatted(
     date: LocalDate = LocalDate.now(),
@@ -123,7 +170,7 @@ object HijriDateHelper {
    */
   fun isRamadan(date: LocalDate = LocalDate.now()): Boolean = hijriParts(date).second == 9
 
-  /** The Hijri month, 1-12, after the user's adjustment. */
+  /** The Hijri month, 1-12. */
   fun getHijriMonth(date: LocalDate = LocalDate.now()): Int = hijriParts(date).second
 
   fun getHijriDayOfMonth(date: LocalDate = LocalDate.now()): Int =

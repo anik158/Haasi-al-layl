@@ -380,99 +380,16 @@ fun SettingsSheet(
         }
       }
 
-      // Hijri date adjustment: moon sighting starts the month a day later in much of the world,
-      // and Ramadan - with Sehri and Iftar at the top of Today - has to start on the right day.
+      // The month start: worked out from Saudi Arabia's announcement and the moon, and correctable
+      // here, one month at a time, when the country's announcement differs.
       if (com.example.FeatureFlags.SHOW_FASTING_TIMES) {
         item {
-          val hijriPrefs = remember { com.example.data.preferences.UserPreferences(context) }
-          // null = automatic, from the country.
-          var hijriOverride by remember { mutableStateOf(hijriPrefs.hijriAdjustmentOverride) }
-          val automaticDays = com.example.data.prayer.HijriDateHelper
-            .automaticAdjustmentFor(hijriPrefs.selectedCity?.country)
-          fun signed(days: Int) = LocalizationManager.localizeDigits(
-            if (days > 0) "+$days" else days.toString(),
-            language
+          MoonSightingCard(
+            language = language,
+            method = method,
+            madhab = madhab,
+            onSettingsChanged = onSettingsChanged
           )
-          fun chooseHijri(value: Int?) {
-            hijriOverride = value
-            hijriPrefs.hijriAdjustmentOverride = value
-            // Ramadan moves Umm al-Qura's Isha interval, so the alarms re-arm.
-            onSettingsChanged()
-          }
-          Card(
-            shape = RoundedCornerShape(18.dp),
-            colors = CardDefaults.cardColors(containerColor = WarmBeigeBackground),
-            border = androidx.compose.foundation.BorderStroke(1.dp, LinenBorderLight),
-            modifier = Modifier.fillMaxWidth()
-          ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-              Text(
-                text = LocalizationManager.getHijriAdjustmentLabel(language),
-                fontWeight = FontWeight.Bold,
-                fontSize = 15.sp,
-                color = DarkForestInk
-              )
-              Text(
-                text = LocalizationManager.getHijriAdjustmentDesc(language),
-                fontSize = 12.sp,
-                color = DarkForestInk.copy(alpha = 0.75f)
-              )
-              Spacer(modifier = Modifier.height(10.dp))
-              FlowRow(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-              ) {
-                // Automatic first, and the default: most people should never need the rest.
-                Surface(
-                  onClick = { chooseHijri(null) },
-                  shape = RoundedCornerShape(20.dp),
-                  color = if (hijriOverride == null) Color(0xFF0F3E2F) else Color.White,
-                  border = androidx.compose.foundation.BorderStroke(1.dp, if (hijriOverride == null) Color(0xFF0F3E2F) else OutlineDarkBorder),
-                  modifier = Modifier.testTag("hijri_adjust_auto")
-                ) {
-                  Text(
-                    text = "${LocalizationManager.getAutomaticLabel(language)} (${signed(automaticDays)})",
-                    fontWeight = if (hijriOverride == null) FontWeight.Bold else FontWeight.Normal,
-                    fontSize = 13.sp,
-                    color = if (hijriOverride == null) Color.White else DarkForestInk,
-                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp)
-                  )
-                }
-                (-2..2).forEach { days ->
-                  val isSelected = hijriOverride == days
-                  Surface(
-                    onClick = { chooseHijri(days) },
-                    shape = RoundedCornerShape(20.dp),
-                    color = if (isSelected) Color(0xFF0F3E2F) else Color.White,
-                    border = androidx.compose.foundation.BorderStroke(1.dp, if (isSelected) Color(0xFF0F3E2F) else OutlineDarkBorder),
-                    modifier = Modifier.testTag("hijri_adjust_$days")
-                  ) {
-                    Text(
-                      text = signed(days),
-                      fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                      fontSize = 13.sp,
-                      color = if (isSelected) Color.White else DarkForestInk,
-                      modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp)
-                    )
-                  }
-                }
-              }
-              Spacer(modifier = Modifier.height(8.dp))
-              // Read after the chips, so it reflects the value just chosen.
-              key(hijriOverride) {
-                Text(
-                  text = com.example.data.prayer.HijriDateHelper.getTodayHijriFormatted(
-                    java.time.LocalDate.now(),
-                    language
-                  ),
-                  fontSize = 12.sp,
-                  fontWeight = FontWeight.SemiBold,
-                  color = DarkForestInk.copy(alpha = 0.8f)
-                )
-              }
-            }
-          }
         }
       }
 
@@ -813,6 +730,12 @@ fun SettingsSheet(
         }
       }
 
+      if (com.example.FeatureFlags.SHOW_FASTING_TIMES) {
+        item {
+          SehriReminderCard(language = language, onSettingsChanged = onSettingsChanged)
+        }
+      }
+
       // Section 2: Forbidden Prayer Times Notifications Toggle & Schedule
       item {
         Card(
@@ -1097,6 +1020,87 @@ private fun ReliabilityRow(
     if (!ok) {
       TextButton(onClick = onFix) {
         Text(text = fixLabel, fontSize = 12.sp, color = Color(0xFF0F3E2F))
+      }
+    }
+  }
+}
+
+/** The Sehri wake-up: off by default, with how long before Sehri ends it rings. */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun SehriReminderCard(language: AppLanguage, onSettingsChanged: () -> Unit) {
+  val context = LocalContext.current
+  var enabled by remember { mutableStateOf(PrayerNotificationManager.isSehriReminderEnabled(context)) }
+  var lead by remember { mutableStateOf(PrayerNotificationManager.sehriLeadMinutes(context)) }
+  Card(
+    shape = RoundedCornerShape(18.dp),
+    colors = CardDefaults.cardColors(containerColor = WarmBeigeBackground),
+    border = androidx.compose.foundation.BorderStroke(1.dp, LinenBorderLight),
+    modifier = Modifier.fillMaxWidth()
+  ) {
+    Column(modifier = Modifier.padding(16.dp)) {
+      Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+      ) {
+        Column(modifier = Modifier.weight(1f)) {
+          Text(
+            text = com.example.data.localization.HijriStrings.sehriReminderTitle(language),
+            fontWeight = FontWeight.Bold,
+            fontSize = 15.sp,
+            color = DarkForestInk
+          )
+          Text(
+            text = com.example.data.localization.HijriStrings.sehriReminderDesc(language),
+            fontSize = 12.sp,
+            color = DarkForestInk.copy(alpha = 0.75f)
+          )
+        }
+        Switch(
+          checked = enabled,
+          onCheckedChange = { checked ->
+            enabled = checked
+            PrayerNotificationManager.setSehriReminderEnabled(context, checked)
+            onSettingsChanged()
+          },
+          colors = SwitchDefaults.colors(checkedThumbColor = Color.White, checkedTrackColor = Color(0xFF0F3E2F)),
+          modifier = Modifier.testTag("switch_sehri_reminder")
+        )
+      }
+      if (enabled) {
+        Spacer(modifier = Modifier.height(10.dp))
+        Text(
+          text = com.example.data.localization.HijriStrings.sehriLeadLabel(language),
+          fontSize = 12.sp,
+          fontWeight = FontWeight.SemiBold,
+          color = DarkForestInk
+        )
+        Spacer(modifier = Modifier.height(6.dp))
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+          PrayerNotificationManager.SEHRI_LEAD_CHOICES.forEach { minutes ->
+            val selected = minutes == lead
+            Surface(
+              onClick = {
+                lead = minutes
+                PrayerNotificationManager.setSehriLeadMinutes(context, minutes)
+                onSettingsChanged()
+              },
+              shape = RoundedCornerShape(20.dp),
+              color = if (selected) Color(0xFF0F3E2F) else Color.White,
+              border = androidx.compose.foundation.BorderStroke(1.dp, if (selected) Color(0xFF0F3E2F) else OutlineDarkBorder),
+              modifier = Modifier.testTag("sehri_lead_$minutes")
+            ) {
+              Text(
+                text = com.example.data.localization.HijriStrings.minutes(minutes, language),
+                fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
+                fontSize = 13.sp,
+                color = if (selected) Color.White else DarkForestInk,
+                modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp)
+              )
+            }
+          }
+        }
       }
     }
   }

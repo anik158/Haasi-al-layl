@@ -61,7 +61,18 @@ android {
     compose = true
     buildConfig = true
   }
-  testOptions { unitTests { isIncludeAndroidResources = true } }
+  testOptions {
+    unitTests {
+      isIncludeAndroidResources = true
+      // Robolectric keeps every trace section it sees, and a test that leaves a screen animating
+      // (an activity launch) keeps feeding it while later Compose tests run the main looper - the
+      // suite ran out of heap. A fresh JVM per class contains it.
+      all {
+        it.maxHeapSize = "2g"
+        it.forkEvery = 1
+      }
+    }
+  }
   dependenciesInfo {
     includeInApk = false
     includeInBundle = true

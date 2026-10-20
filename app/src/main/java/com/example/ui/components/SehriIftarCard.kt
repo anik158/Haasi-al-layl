@@ -20,6 +20,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,6 +29,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -49,7 +52,9 @@ import com.example.ui.theme.WarmGoldAccent
 fun SehriIftarCard(
   status: FastingStatus,
   language: AppLanguage,
-  modifier: Modifier = Modifier
+  modifier: Modifier = Modifier,
+  /** A voluntary fast was marked or unmarked: the Sehri reminder re-arms. */
+  onFastingChanged: () -> Unit = {}
 ) {
   val ramadan = status.day.isRamadan
   val ink = if (ramadan) Color.White else DarkForestInk
@@ -141,14 +146,13 @@ fun SehriIftarCard(
           )
         }
       }
-      if (dayRules.any { it.dependsOnHijriDate }) {
-        Text(
-          text = LocalizationManager.getHijriCalculatedNote(language),
-          style = MaterialTheme.typography.bodySmall,
-          fontSize = 11.sp,
-          color = muted
-        )
-      }
+    }
+
+    // How sure the date is, on every day where a day's error changes whether to fast.
+    val hijriDay = com.example.data.prayer.HijriDateHelper.dayInfo(status.day.date)
+    if (com.example.data.hijri.MonthStartWarning.applies(hijriDay, status.rules)) {
+      Spacer(modifier = Modifier.height(8.dp))
+      MonthStartNote(hijriDay, ramadan, language, ink)
     }
 
     Spacer(modifier = Modifier.height(14.dp))
@@ -207,6 +211,43 @@ fun SehriIftarCard(
       }
     }
 
+    // A voluntary fast: the user marks it, and the Sehri reminder rings for it. Only while the
+    // reminder is on, before that day's Sehri ends, and never on a forbidden day.
+    val context = androidx.compose.ui.platform.LocalContext.current
+    if (!ramadan && !status.isProhibited && !status.isFasting &&
+      com.example.data.notification.PrayerNotificationManager.isSehriReminderEnabled(context)
+    ) {
+      val today = java.time.LocalDate.now()
+      var marked by androidx.compose.runtime.remember(status.day.date) {
+        androidx.compose.runtime.mutableStateOf(
+          status.day.date in com.example.data.notification.PrayerNotificationManager.voluntaryFastDays(context)
+        )
+      }
+      Spacer(modifier = Modifier.height(10.dp))
+      Surface(
+        onClick = {
+          marked = !marked
+          com.example.data.notification.PrayerNotificationManager.setVoluntaryFast(context, status.day.date, marked, today)
+          onFastingChanged()
+        },
+        shape = RoundedCornerShape(12.dp),
+        color = if (marked) DarkForestInk else WarmGoldAccent.copy(alpha = 0.14f),
+        modifier = Modifier.fillMaxWidth().testTag("fasting_mark")
+      ) {
+        Text(
+          text = if (marked) {
+            com.example.data.localization.HijriStrings.fastingMarked(language)
+          } else {
+            com.example.data.localization.HijriStrings.fastingTomorrowButton(status.isTomorrow, language)
+          },
+          style = MaterialTheme.typography.labelLarge,
+          fontWeight = FontWeight.SemiBold,
+          color = if (marked) Color.White else DarkForestInk,
+          modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp)
+        )
+      }
+    }
+
     Spacer(modifier = Modifier.height(8.dp))
 
     Text(
@@ -256,6 +297,68 @@ private fun TimeTile(
       style = MaterialTheme.typography.titleLarge,
       fontWeight = FontWeight.ExtraBold,
       color = ink
+    )
+  }
+}
+
+/**
+ * "Ramadan's start follows the moon sighting announced in your country", then where this
+ * month's start came from: the user, an announcement, Saudi Arabia plus the moon, or the
+ * calculation.
+ */
+@Composable
+private fun MonthStartNote(
+  day: com.example.data.hijri.HijriDay?,
+  ramadan: Boolean,
+  language: AppLanguage,
+  ink: Color
+) {
+  val context = androidx.compose.ui.platform.LocalContext.current
+  val strings = com.example.data.localization.HijriStrings
+  val header = if (ramadan || day?.month == com.example.data.hijri.HijriMonthId.SHABAN ||
+    day?.month == com.example.data.hijri.HijriMonthId.SHAWWAL
+  ) {
+    strings.ramadanFollowsSighting(language)
+  } else {
+    strings.dateDependsOnSighting(language)
+  }
+  val start = day?.monthStart
+  val source = when (start?.source) {
+    null, com.example.data.hijri.MonthStartSource.CALCULATED -> LocalizationManager.getHijriCalculatedNote(language)
+    com.example.data.hijri.MonthStartSource.USER -> strings.sourceUser(
+      com.example.data.hijri.HijriStore(context).userStarts()[start.id]?.heardFrom,
+      language
+    )
+    com.example.data.hijri.MonthStartSource.ANNOUNCED -> strings.sourceAnnounced(start.authority, language)
+    com.example.data.hijri.MonthStartSource.MOON_ESTIMATE -> strings.sourceMoonEstimate(
+      month = com.example.data.prayer.HijriDateHelper.monthName(start.id.month, language),
+      saudiDate = start.authorityStart?.let { com.example.data.prayer.HijriDateHelper.shortGregorian(it, language) },
+      localDate = com.example.data.prayer.HijriDateHelper.shortGregorian(start.startsOn, language),
+      saudiStarted = start.authorityStart?.let { !it.isAfter(java.time.LocalDate.now()) } ?: false,
+      l = language
+    )
+  }
+  Column(
+    modifier = Modifier
+      .fillMaxWidth()
+      .clip(RoundedCornerShape(12.dp))
+      .background(if (ramadan) Color.White.copy(alpha = 0.1f) else Color(0xFFFFF4E0))
+      .padding(horizontal = 12.dp, vertical = 8.dp)
+      // Read as one note by TalkBack, header and source together.
+      .semantics(mergeDescendants = true) {}
+      .testTag("month_start_note")
+  ) {
+    Text(
+      text = header,
+      style = MaterialTheme.typography.labelMedium,
+      fontWeight = FontWeight.Bold,
+      color = if (ramadan) ink else Color(0xFF8A5A00)
+    )
+    Text(
+      text = source,
+      style = MaterialTheme.typography.bodySmall,
+      fontSize = 11.sp,
+      color = if (ramadan) ink.copy(alpha = 0.8f) else Color(0xFF8A5A00)
     )
   }
 }

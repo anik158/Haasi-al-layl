@@ -8,9 +8,9 @@ object FeatureFlags {
 
   /**
    * The Sehri & Iftar card on Today (at the top in Ramadan, above Today's verse otherwise), the
-   * Hijri adjustment card in Settings, and the Imsak row. On since the card says how sure its Hijri
-   * date is and which days are forbidden, discouraged or recommended (FastingRules). The month
-   * start still follows the calculation; see docs/design/MONTH-START.md.
+   * "Moon sighting announced" and Sehri reminder cards in Settings, and the Imsak row. Month starts
+   * come from Saudi Arabia's announcement and the moon (com.example.data.hijri); see
+   * docs/design/SEHRI-IFTAR-PLAN.md.
    */
   const val SHOW_FASTING_TIMES = true
 

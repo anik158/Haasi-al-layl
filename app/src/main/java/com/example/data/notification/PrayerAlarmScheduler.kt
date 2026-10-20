@@ -68,6 +68,9 @@ object PrayerAlarmScheduler {
     val followUpEnabled = PrayerNotificationManager.isFollowUpNotificationsEnabled(context)
     val forbiddenEnabled = PrayerNotificationManager.isForbiddenNotificationsEnabled(context)
     val tahajjudEnabled = PrayerNotificationManager.isTahajjudNotificationsEnabled(context)
+    val sehriEnabled = PrayerNotificationManager.isSehriReminderEnabled(context)
+    val sehriLead = PrayerNotificationManager.sehriLeadMinutes(context)
+    val voluntaryFasts = PrayerNotificationManager.voluntaryFastDays(context)
 
     val now = System.currentTimeMillis()
     val horizonEnd = now + HORIZON_HOURS * 60 * 60 * 1000L
@@ -93,6 +96,18 @@ object PrayerAlarmScheduler {
         followUpEnabled = followUpEnabled,
         forbiddenAlertsEnabled = forbiddenEnabled,
         tahajjudAlertsEnabled = tahajjudEnabled
+      ) + listOfNotNull(
+        PrayerAlertPlanner.planSehri(
+          date = date,
+          sehriEnd = schedule.items.first { it.prayer == com.example.data.model.PrayerName.FAJR }.time,
+          zone = zone,
+          nowMillis = now,
+          enabled = sehriEnabled,
+          leadMinutes = sehriLead,
+          isFastingDay = com.example.data.prayer.HijriDateHelper.isRamadan(date) || date in voluntaryFasts,
+          isForbiddenDay = com.example.data.prayer.FastingRules.rulesFor(date)
+            .any { it.kind == com.example.data.prayer.FastDayKind.PROHIBITED }
+        )
       )
     }.filter { it.triggerAtMillis <= horizonEnd }
       .let(PrayerAlertPlanner::nextPerSlot)
@@ -207,7 +222,8 @@ object PrayerAlarmScheduler {
       return
     }
 
-    val usesAlarmClock = alert is ScheduledAlert.Prayer
+    // The Sehri wake-up too: it exists to wake someone, so it gets the Doze-proof path.
+    val usesAlarmClock = alert is ScheduledAlert.Prayer || alert is ScheduledAlert.Sehri
     if (usesAlarmClock) {
       val show = PendingIntent.getActivity(
         context,
@@ -244,6 +260,7 @@ object PrayerAlarmScheduler {
 
   private fun actionFor(requestCode: Int): String = when {
     requestCode >= AlertIds.BASE_MAINTENANCE -> PrayerAlarmReceiver.ACTION_DAILY_REFRESH
+    requestCode >= AlertIds.BASE_SEHRI -> PrayerAlarmReceiver.ACTION_SEHRI_ALERT
     requestCode >= AlertIds.BASE_TAHAJJUD -> PrayerAlarmReceiver.ACTION_TAHAJJUD_ALERT
     requestCode >= AlertIds.BASE_FORBIDDEN -> PrayerAlarmReceiver.ACTION_FORBIDDEN_ALERT
     else -> PrayerAlarmReceiver.ACTION_PRAYER_ALERT
@@ -261,6 +278,8 @@ object PrayerAlarmScheduler {
         intent.putExtra(PrayerAlarmReceiver.EXTRA_WINDOW, alert.type.name)
         intent.putExtra(PrayerAlarmReceiver.EXTRA_IS_START, alert.isStart)
       }
+
+      is ScheduledAlert.Sehri -> intent.putExtra(PrayerAlarmReceiver.EXTRA_FAST_DAY, alert.fastDate.toEpochDay())
 
       is ScheduledAlert.Tahajjud, is ScheduledAlert.DailyRefresh -> Unit
     }
@@ -290,8 +309,12 @@ object PrayerAlarmScheduler {
       PrayerNotificationManager.isFollowUpNotificationsEnabled(context),
       PrayerNotificationManager.isForbiddenNotificationsEnabled(context),
       PrayerNotificationManager.isTahajjudNotificationsEnabled(context),
-      // Moves Ramadan, and with it Umm al-Qura's Isha interval.
-      com.example.data.prayer.HijriDateHelper.adjustmentDays
+      PrayerNotificationManager.isSehriReminderEnabled(context),
+      PrayerNotificationManager.sehriLeadMinutes(context),
+      PrayerNotificationManager.voluntaryFastDays(context).sorted().joinToString(";"),
+      // Moves Ramadan, and with it Umm al-Qura's Isha interval and the Sehri reminder.
+      com.example.data.prayer.HijriDateHelper.adjustmentDays,
+      com.example.data.prayer.HijriDateHelper.table?.signature.orEmpty()
     ).joinToString("|")
   }
 

@@ -4,7 +4,7 @@ Working context for this codebase: decisions that are non-obvious from the code,
 subtle enough to be worth remembering, and the traps that are still set. The README describes what
 the app *does*; this describes what you need to know before changing it.
 
-Last updated: 25 September 2026.
+Last updated: 21 October 2026.
 
 ---
 
@@ -78,18 +78,46 @@ the next prayer comes"* - and presented that most lenient reading as simply the 
 
 ### Sehri and Iftar follow the sahih texts, not timetable conventions
 
-**Hidden** (`FeatureFlags.SHOW_FASTING_TIMES = false`): the Today card, the Settings Hijri
-adjustment card, and the Imsak row in the schedule lists (`FeatureFlags.showsInSchedule`) are all
-switched off. `FastingTimes` and the automatic Hijri adjustment still run,
-and `FastingTimesTest` still covers them. Why it is held back: Ramadan's start has to follow the
-local sighting (*"fast when you see it"*, Bukhari 1909 / Muslim 1081), and a calculation cannot know
-that. The automatic offset (−1 for BD/IN/PK/NP/LK/MA, 0 elsewhere) is a rule of thumb, not an
-official guideline. Options discussed before turning it back on:
-- **Online:** Aladhan's `HJCoSA` calendar (Umm al-Qura corrected by Saudi Arabia's announced
-  sightings) for Saudi-following countries, `DIYANET` for Turkey. There is no public feed for
-  Bangladesh, Pakistan, India or Morocco.
-- **A one-tap sighting prompt** on the evening of the 29th: "Was the moon sighted in your area?"
-- **Optionally**, an announcements file in the repo, updated on the night of each sighting.
+**On** (`FeatureFlags.SHOW_FASTING_TIMES = true`). Ramadan's start has to follow the sighting
+(*"fast when you see it"*, Bukhari 1909 / Muslim 1081), so month starts come from `data/hijri/`
+(October 2026), not from a fixed offset:
+
+- **`HijriCalendar`** builds a 16-month table (`HijriMonthTable`, 3 back, 12 ahead) at process start,
+  on a city change, after each fetch and each correction, and installs it in
+  `HijriDateHelper.table`. Every Hijri read goes through `HijriDateHelper`, so the date on Today,
+  Ramadan, the fasting rules, the Ramadan Isha rule and the alarm planner all follow it. Outside
+  the table the old fallback (Umm al-Qura + `automaticAdjustmentFor`) still answers.
+- **Sources, best first** (`MonthStartResolver`): the user's correction → the announced date for a
+  country that follows Saudi Arabia (`HJCoSA`) or Turkey (`DIYANET`), from Aladhan → for a sighting
+  country (BD/IN/PK/NP/LK/MA), Saudi Arabia's date moved by the moon at the user's location → Umm
+  al-Qura. Every month is then held to 29 or 30 days.
+- **The moon rule** (`localEstimate`): same day as Saudi Arabia only if the crescent is plainly
+  visible (Odeh V ≥ 8) the evening before; +1 if it is visible to the eye (V ≥ 5.65) the evening
+  of Saudi Arabia's 1st; else +2. Checked against 35 Bangladesh announcements, 1440-1448
+  (`BangladeshHistoryTest`, sources in `BangladeshHistory`): all reproduced. Honest caveat: the 8.0
+  threshold was set knowing the data (Sha'ban 1446 was V = 6.4 and not sighted); Bangladesh never
+  started on Saudi Arabia's day in that period.
+- **`CrescentCalculator`** (Odeh 2004) on `MoonCalculator`, now Meeus ch. 47 for the moon and ch. 25
+  for the sun. The old eleven-term moon series and a sun longitude derived from its anomaly put the
+  new moon 40-60 min out; now within 5 min of the published eclipse times (`CrescentCalculatorTest`).
+- **Aladhan** is fetched daily for the whole table, hourly from the 28th to the 2nd for the months
+  around now, cached in `HijriStore` (SharedPreferences `haasi_hijri`), so it works offline. A
+  response about another month is dropped. Future months' HJCoSA dates are Umm al-Qura's
+  prediction, not an announcement, and the copy says "Saudi Arabia's calendar" for them.
+- **The correction** (Settings → "Moon sighting announced", `SightingFlow` + `SightingCorrection`):
+  offered from the 28th to the 3rd of the next month; only 29- or 30-day outcomes; two
+  confirmations; a warning (never a block) when a "sighted" answer was impossible, with Confirm
+  locked for 3 s; nothing written before the second confirmation; Undo on Today until the next
+  Maghrib; a 30-entry history. It replaced the single −2…+2 shift for every month, whose key
+  `UserPreferences.applyHijriAdjustment` deletes.
+- **Warnings** (`MonthStartWarning`): the 29th/30th, Ramadan's first two and last three days, Eid
+  al-Fitr, 9-13 Dhul-Hijjah and every forbidden day carry a note saying where the date came from.
+- **Sehri reminder**: off by default, 30/45/60/90 min (60 default) before Sehri ends, on Ramadan days
+  and days marked "I'm fasting" on the card, never on a forbidden day; `AlertIds.SEHRI` (35 000),
+  `setAlarmClock`. The prayer follow-up (+5 min) is now **off by default**; a saved choice is kept,
+  and installs that never touched it lose it.
+- **Tests run with a fresh JVM per class** (`forkEvery = 1`, 2 GB): Robolectric keeps every trace
+  section, and a launched activity left animating fed it until later Compose tests ran out of heap.
 
 - **Sehri ends at Fajr** (Qur'an 2:187; Bukhari 1918-1919). The calculator's `IMSAK` (Fajr − 10)
   stays in the schedule list but is never the end of Sehri: it is a precaution with no basis in the
@@ -98,12 +126,9 @@ official guideline. Options discussed before turning it back on:
   (refraction, elevation), not fiqh; the forbidden window uses the true sunset (`trueSunset`).
 - **The fast switches at Iftar, not midnight** (`FastingTimes.statusAt`), so the first Sehri is on
   screen the evening before 1 Ramadan.
-- **`HijriDateHelper.adjustmentDays`** is loaded in `HaasiApplication.onCreate`, before any receiver
-  can compute a Ramadan Isha interval, and is part of the alarm schedule signature.
-- **The adjustment is automatic unless overridden.** `hijriAdjustmentOverride == null` means "use
-  `automaticAdjustmentFor(country)`" (−1 for BD/IN/PK/NP/LK/MA, else 0). The `selectedCity` setter
-  re-applies it, so a new country moves Ramadan before `applyCity` re-arms the alarms. A manual
-  setting was the first version; users should not have to know what an Umm al-Qura offset is.
+- **The month table is built in `HaasiApplication.onCreate`**, before any receiver can compute a
+  Ramadan Isha interval, and its `signature` is part of the alarm schedule signature. The
+  `selectedCity` setter rebuilds it, so a new country moves Ramadan before `applyCity` re-arms.
 - References were checked against sunnah.com: Bukhari 586, 1918-1919, 1921, 1923, 1954, 1957;
   Muslim 831, 832.
 
@@ -501,7 +526,6 @@ repo should assert its match count.
   `PrayerLogToggleTest`, `AlertIdsTest` with pinned literals,
   `QiblaCalculatorTest`, and a DST test. Robolectric and Roborazzi are already configured at
   `sdk = [36]`. **CI runs only `assembleDebug`, so test code is not even compiled there.**
-- **Sehri & Iftar is hidden** until moon sighting is handled; see Architecture decisions.
 - **Before Play:** see `docs/PLAY-STORE.md` — new application ID, remove the unused Firebase
   dependencies, publish `docs/site/haasi-al-layl/privacy/index.html` at the URL in `DeveloperContact.PRIVACY_POLICY`.
   The location prompt is always preceded by `LocationDisclosureDialog` (Play's prominent

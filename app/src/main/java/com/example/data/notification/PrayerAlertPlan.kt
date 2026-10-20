@@ -33,6 +33,14 @@ sealed interface ScheduledAlert {
     override val requestCode: Int
   ) : ScheduledAlert
 
+  /** The Sehri wake-up for the fast on [fastDate]. */
+  data class Sehri(
+    val fastDate: LocalDate,
+    val sehriEnd: LocalTime,
+    override val triggerAtMillis: Long,
+    override val requestCode: Int
+  ) : ScheduledAlert
+
   data class DailyRefresh(
     override val triggerAtMillis: Long,
     override val requestCode: Int
@@ -130,6 +138,29 @@ object PrayerAlertPlanner {
     }
 
     return alerts.filter { it.triggerAtMillis > nowMillis }
+  }
+
+  /**
+   * The Sehri wake-up for the fast on [date], [leadMinutes] before Sehri ends, or null.
+   *
+   * Only on a day the user fasts - Ramadan, or one they marked - and never on a day fasting is
+   * forbidden (the Eids, Tashreeq), even if marked: a reminder would read as an invitation.
+   */
+  fun planSehri(
+    date: LocalDate,
+    sehriEnd: LocalTime,
+    zone: ZoneId,
+    nowMillis: Long,
+    enabled: Boolean,
+    leadMinutes: Int,
+    isFastingDay: Boolean,
+    isForbiddenDay: Boolean
+  ): ScheduledAlert.Sehri? {
+    if (!enabled || !isFastingDay || isForbiddenDay) return null
+    val trigger = ZonedDateTime.of(date, sehriEnd, zone).minusMinutes(leadMinutes.toLong())
+      .toInstant().toEpochMilli()
+    if (trigger <= nowMillis) return null
+    return ScheduledAlert.Sehri(date, sehriEnd, trigger, AlertIds.SEHRI)
   }
 
   /**

@@ -40,6 +40,10 @@ class PrayerAlarmReceiver : BroadcastReceiver() {
       try {
         if (action != ACTION_DAILY_REFRESH) {
           dispatch(appContext, action, intent)
+        } else {
+          // A new day: move the month table's window, and fetch the announced starts if due.
+          com.example.data.hijri.HijriCalendar.rebuild(appContext)
+          com.example.data.hijri.HijriCalendar.refreshAnnouncements(appContext)
         }
       } catch (e: Exception) {
         Log.e(TAG, "failed to post alert for $action", e)
@@ -130,6 +134,30 @@ class PrayerAlarmReceiver : BroadcastReceiver() {
       ACTION_TAHAJJUD_ALERT ->
         PrayerNotificationManager.showTahajjudNotification(context, language)
 
+      ACTION_SEHRI_ALERT -> {
+        // Recomputed for the fast's own day: the alert can fire before midnight for an early dawn.
+        val fastDay = LocalDate.ofEpochDay(intent.getLongExtra(EXTRA_FAST_DAY, today.toEpochDay()))
+        val sehriEnd = PrayerCalculator.calculateSchedule(
+          date = fastDay,
+          location = city,
+          now = LocalDateTime.now(zone),
+          completedPrayerIds = emptySet(),
+          method = prefs.calculationMethod,
+          madhab = prefs.madhab
+        ).items.firstOrNull { it.prayer == PrayerName.FAJR }?.time ?: return
+        val minutesLeft = java.time.Duration.between(
+          LocalDateTime.now(zone),
+          LocalDateTime.of(fastDay, sehriEnd)
+        ).toMinutes().toInt()
+        if (minutesLeft <= 0) return
+        PrayerNotificationManager.showSehriAlert(
+          context = context,
+          sehriEndFormatted = LocalizationManager.formatTime(sehriEnd, language),
+          minutesLeft = minutesLeft,
+          language = language
+        )
+      }
+
       else -> Log.w(TAG, "unrecognised action: $action")
     }
   }
@@ -165,11 +193,13 @@ class PrayerAlarmReceiver : BroadcastReceiver() {
     const val ACTION_FORBIDDEN_ALERT = "com.example.haasi.alarm.FORBIDDEN_ALERT"
     const val ACTION_TAHAJJUD_ALERT = "com.example.haasi.alarm.TAHAJJUD_ALERT"
     const val ACTION_DAILY_REFRESH = "com.example.haasi.alarm.DAILY_REFRESH"
+    const val ACTION_SEHRI_ALERT = "com.example.haasi.alarm.SEHRI_ALERT"
 
     const val EXTRA_PRAYER = "prayer"
     const val EXTRA_KIND = "kind"
     const val EXTRA_WINDOW = "window"
     const val EXTRA_IS_START = "is_start"
     const val EXTRA_EPOCH_DAY = "epoch_day"
+    const val EXTRA_FAST_DAY = "fast_day"
   }
 }

@@ -865,6 +865,16 @@ class HaasiAlLaylViewModel(application: Application) : AndroidViewModel(applicat
     if (!userPrefs.locationFromDevice) startBackgroundLocationWatch()
     // A fix taken offline is named after its coordinates; name it if the network is back.
     nameCurrentCityIfNeeded()
+    refreshHijriAnnouncements()
+  }
+
+  /** Saudi Arabia's (or Turkey's) announced month starts, when due; re-arms if Ramadan moved. */
+  private fun refreshHijriAnnouncements() {
+    viewModelScope.launch(Dispatchers.IO) {
+      if (com.example.data.hijri.HijriCalendar.refreshAnnouncements(getApplication<Application>())) {
+        com.example.data.notification.PrayerAlarmScheduler.rescheduleAll(getApplication<Application>())
+      }
+    }
   }
 
   /**

@@ -62,6 +62,9 @@ object PrayerNotificationManager {
   private const val KEY_FORBIDDEN_NOTIFS = "key_forbidden_notifs"
   private const val KEY_TAHAJJUD_NOTIFS = "key_tahajjud_notifs"
   private const val KEY_FOLLOW_UP_NOTIFS = "key_follow_up_notifs"
+  private const val KEY_SEHRI_REMINDER = "key_sehri_reminder"
+  private const val KEY_SEHRI_LEAD = "key_sehri_lead_minutes"
+  private const val KEY_VOLUNTARY_FASTS = "key_voluntary_fasts"
 
   private const val NOTIF_ID_PRAYER_BASE = 1000
   private const val NOTIF_ID_FORBIDDEN_START = 2000
@@ -164,9 +167,44 @@ object PrayerNotificationManager {
     getPrefs(context).edit().putBoolean(KEY_TAHAJJUD_NOTIFS, enabled).apply()
   }
 
-  /** The five-minute nudge after each prayer, independent of the start alert. */
+  /**
+   * The five-minute nudge after each prayer, independent of the start alert. Off unless the user
+   * turns it on: a second alert for every prayer read as noise. A saved choice either way is kept.
+   */
   fun isFollowUpNotificationsEnabled(context: Context): Boolean =
-    getPrefs(context).getBoolean(KEY_FOLLOW_UP_NOTIFS, true)
+    getPrefs(context).getBoolean(KEY_FOLLOW_UP_NOTIFS, false)
+
+  /** The Sehri wake-up, off by default. */
+  fun isSehriReminderEnabled(context: Context): Boolean =
+    getPrefs(context).getBoolean(KEY_SEHRI_REMINDER, false)
+
+  fun setSehriReminderEnabled(context: Context, enabled: Boolean) {
+    getPrefs(context).edit().putBoolean(KEY_SEHRI_REMINDER, enabled).commit()
+  }
+
+  val SEHRI_LEAD_CHOICES = listOf(30, 45, 60, 90)
+
+  /** How many minutes before Sehri ends it rings. */
+  fun sehriLeadMinutes(context: Context): Int =
+    getPrefs(context).getInt(KEY_SEHRI_LEAD, 60).takeIf { it in SEHRI_LEAD_CHOICES } ?: 60
+
+  fun setSehriLeadMinutes(context: Context, minutes: Int) {
+    getPrefs(context).edit().putInt(KEY_SEHRI_LEAD, minutes).commit()
+  }
+
+  /** Voluntary fast days the user marked on the Sehri & Iftar card. */
+  fun voluntaryFastDays(context: Context): Set<LocalDate> =
+    getPrefs(context).getString(KEY_VOLUNTARY_FASTS, null).orEmpty().split(',')
+      .mapNotNull { runCatching { LocalDate.parse(it) }.getOrNull() }.toSet()
+
+  /** Marks or unmarks [date]; days already past are dropped on the way. */
+  fun setVoluntaryFast(context: Context, date: LocalDate, fasting: Boolean, today: LocalDate) {
+    val days = voluntaryFastDays(context).filter { !it.isBefore(today) }.toMutableSet()
+    if (fasting) days += date else days -= date
+    getPrefs(context).edit()
+      .putString(KEY_VOLUNTARY_FASTS, days.sorted().joinToString(","))
+      .commit()
+  }
 
   fun setFollowUpNotificationsEnabled(context: Context, enabled: Boolean) {
     getPrefs(context).edit().putBoolean(KEY_FOLLOW_UP_NOTIFS, enabled).apply()
@@ -324,6 +362,21 @@ object PrayerNotificationManager {
       notificationId = AlertIds.TAHAJJUD,
       title = title,
       body = message,
+      prayer = null,
+      language = language
+    )
+  }
+
+  /** The Sehri wake-up: the alarm screen, like a prayer time, on the prayer channel. */
+  fun showSehriAlert(context: Context, sehriEndFormatted: String, minutesLeft: Int, language: AppLanguage) {
+    if (!isSehriReminderEnabled(context)) return
+    ensureChannels(context)
+    showFullScreenAlarm(
+      context = context,
+      channelId = CHANNEL_PRAYER_ID,
+      notificationId = AlertIds.SEHRI,
+      title = com.example.data.localization.HijriStrings.sehriAlertTitle(sehriEndFormatted, language),
+      body = com.example.data.localization.HijriStrings.sehriAlertBody(minutesLeft, language),
       prayer = null,
       language = language
     )

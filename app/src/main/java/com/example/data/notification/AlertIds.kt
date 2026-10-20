@@ -8,7 +8,7 @@ enum class PrayerAlertKind {
   /** Posted at the prayer time itself. */
   AT_TIME,
 
-  /** Posted five minutes later, and skipped if the prayer is already marked done. */
+  /** Posted five minutes later, and skipped if the prayer is already marked done. Off by default. */
   FOLLOW_UP
 }
 
@@ -27,6 +27,7 @@ object AlertIds {
   const val BASE_PRAYER = 10_000
   const val BASE_FORBIDDEN = 20_000
   const val BASE_TAHAJJUD = 30_000
+  const val BASE_SEHRI = 35_000
   const val BASE_MAINTENANCE = 40_000
 
   // Keyed on enum ordinal. Reordering PrayerName or ForbiddenWindowType silently rebinds every
@@ -38,6 +39,7 @@ object AlertIds {
     BASE_FORBIDDEN + type.ordinal * 10 + (if (isStart) 0 else 1)
 
   const val TAHAJJUD = BASE_TAHAJJUD
+  const val SEHRI = BASE_SEHRI
   const val DAILY_REFRESH = BASE_MAINTENANCE
 
   /** Every id this app can produce, so a reschedule can cancel the whole space and start clean. */
@@ -50,6 +52,7 @@ object AlertIds {
       add(forbidden(type, isStart = false))
     }
     add(TAHAJJUD)
+    add(SEHRI)
     add(DAILY_REFRESH)
   }
 }

@@ -1,6 +1,8 @@
 # Plan: finishing Sehri & Iftar
 
-Status: **waiting for approval.** Nothing below is built yet.
+Status: **built** (21 Oct 2026), steps 1-3, on `build-apk-release`. Tested on the JVM and
+Robolectric; the phone checklist at the end is still to do. See "As built" for what differs from
+the plan.
 
 ## What already works (shipped)
 
@@ -163,10 +165,23 @@ later** (`FOLLOW_UP_DELAY_MINUTES`, `isFollowUpNotificationsEnabled` default `tr
 - **A "was the moon sighted?" card on Today.** Dropped: the date comes from Saudi Arabia + the moon;
   a correction lives only in Settings (1d).
 
-## What I need from you
+## As built — what differs from the plan
 
-- **Approve** steps 1, 2 and 3.
-- **Sehri reminder default:** off, with 60 minutes as the suggested lead time — OK?
-- **"I'm fasting tomorrow" for voluntary fasts:** include it in step 2, or Ramadan-only alarm?
+- **Bangladesh is usually Saudi Arabia + 1, sometimes + 2, never the same day** in 35 checked
+  months (1440-1448). So 1b became: same day only when the crescent is plainly visible the evening
+  before (Odeh V ≥ 8), + 1 when it is visible to the eye the evening of Saudi Arabia's 1st, else
+  + 2 - always held to 29-30 day months. All 35 reproduce; the 8.0 was chosen knowing the data.
+- **The moon calculation was too coarse** for this (new moon 40-60 min out) and was replaced by
+  Meeus ch. 47 / 25; now within 5 minutes.
+- **The prayer follow-up default** is off for everyone who never touched the switch, as planned.
+- **Decided without asking:** the Sehri reminder defaults to off / 60 min, and "I'm fasting" is
+  included (it shows on the card only while the reminder is on).
 
-Nothing changes in the app until you say yes.
+## Phone checklist (before release)
+
+1. Dhaka, online: Today's Hijri date reads "estimated from Saudi Arabia and the moon" in Settings.
+2. Airplane mode, restart: the same date (cache).
+3. On the 28th-3rd: Settings → Moon sighting announced → each answer → Review → Confirm → Today
+   shows Undo; Undo restores the date. Cancel at each step changes nothing.
+4. Sehri reminder on, mark "I'm fasting tomorrow", wait for the alarm (or set the lead so it is near).
+5. A fresh install has no 5-minute follow-up; turning it on brings it back.

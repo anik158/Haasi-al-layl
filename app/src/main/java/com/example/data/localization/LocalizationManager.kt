@@ -578,30 +578,6 @@ object LocalizationManager {
     AppLanguage.ENGLISH -> "Sehri until true dawn (Qur'an 2:187; Bukhari 1919); Iftar at sunset (Bukhari 1954, 1957)."
   }
 
-  fun getHijriAdjustmentLabel(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "تعديل التاريخ الهجري"
-    AppLanguage.BENGALI -> "হিজরি তারিখ সমন্বয়"
-    AppLanguage.SPANISH -> "Ajuste de la fecha hégira"
-    AppLanguage.PORTUGUESE -> "Ajuste da data hégira"
-    AppLanguage.ENGLISH -> "Hijri date adjustment"
-  }
-
-  fun getHijriAdjustmentDesc(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "يُضبط تلقائياً حسب بلدك. غيّره فقط إذا بدأ الشهر عندكم برؤية الهلال في يوم آخر. يغيّر بداية رمضان أيضاً."
-    AppLanguage.BENGALI -> "আপনার দেশ অনুযায়ী স্বয়ংক্রিয়ভাবে ঠিক হয়। শুধু আপনার এলাকায় চাঁদ দেখে মাস অন্য দিনে শুরু হলে বদলান। রমজানের শুরুও এতে বদলায়।"
-    AppLanguage.SPANISH -> "Se ajusta solo según su país. Cámbielo solo si en su zona el mes empieza otro día por el avistamiento. También mueve el inicio del Ramadán."
-    AppLanguage.PORTUGUESE -> "Ajusta-se sozinho conforme o seu país. Altere só se na sua região o mês começar noutro dia pelo avistamento. Também muda o início do Ramadão."
-    AppLanguage.ENGLISH -> "Set automatically from your country. Change it only if your local moon sighting starts the month on another day. This also moves the start of Ramadan."
-  }
-
-  fun getAutomaticLabel(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "تلقائي"
-    AppLanguage.BENGALI -> "স্বয়ংক্রিয়"
-    AppLanguage.SPANISH -> "Automático"
-    AppLanguage.PORTUGUESE -> "Automático"
-    AppLanguage.ENGLISH -> "Automatic"
-  }
-
   fun getCurrentPrayerLabel(language: AppLanguage): String = when (language) {
     AppLanguage.ARABIC -> "الوقت الحالي"
     AppLanguage.BENGALI -> "চলমান ওয়াক্ত"
