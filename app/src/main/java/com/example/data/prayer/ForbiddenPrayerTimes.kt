@@ -103,6 +103,9 @@ object ForbiddenPrayerTimesHelper {
    * when it stands at midday until it passes the meridian, and when it inclines to setting until
    * it sets. Muslim 832 (ʿAmr ibn ʿAbasah) gives the height as a spear's length.
    *
+   * [dhuhr] is Dhuhr, solar noon plus its margin: the noon window runs the ten minutes before it,
+   * ending as the sun has passed the meridian and Dhuhr can be prayed.
+   *
    * [sunset] is the true sunset, not Maghrib: the hadith end the window when the sun has set, and
    * Maghrib here carries a 3-minute calculation margin. The old window was Maghrib − 20 to
    * Maghrib, which ran 17 minutes before sunset to 3 after, and the 20 had no source.

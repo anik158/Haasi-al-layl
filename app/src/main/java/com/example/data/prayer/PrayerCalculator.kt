@@ -26,6 +26,15 @@ object PrayerCalculator {
   /** Minutes Maghrib is set after the computed sunset. */
   const val MAGHRIB_MARGIN_MINUTES = 3L
 
+  /**
+   * Minutes Dhuhr is set after the computed solar noon. Dhuhr begins once the sun has *passed*
+   * the meridian (Muslim 612), and noon is the moment its centre crosses it: the disc takes about
+   * a minute more, and coordinates and rounding add their own error. The same precaution as
+   * Maghrib, for the same reason - a prayer before its time is not valid. It also ends the noon
+   * forbidden window (Muslim 831, "until it passes the meridian") when Dhuhr can be prayed.
+   */
+  const val DHUHR_MARGIN_MINUTES = 3L
+
   val PRESET_CITIES = listOf(
     CityLocation("Makkah", "Saudi Arabia", 21.4225, 39.8262, "Asia/Riyadh"),
     CityLocation("Madinah", "Saudi Arabia", 24.4672, 39.6111, "Asia/Riyadh"),
@@ -372,7 +381,8 @@ object PrayerCalculator {
       PrayerName.IMSAK to decimalHoursToLocalTime(imsak),
       PrayerName.FAJR to decimalHoursToLocalTime(fajr),
       PrayerName.SUNRISE to decimalHoursToLocalTime(sunrise),
-      PrayerName.DHUHR to decimalHoursToLocalTime(noon),
+      // Asr and the angle-based times above are measured from the true noon; only Dhuhr waits.
+      PrayerName.DHUHR to decimalHoursToLocalTime(noon + DHUHR_MARGIN_MINUTES / 60.0),
       PrayerName.ASR to decimalHoursToLocalTime(asr),
       PrayerName.MAGHRIB to decimalHoursToLocalTime(maghrib),
       PrayerName.ISHA to decimalHoursToLocalTime(isha)

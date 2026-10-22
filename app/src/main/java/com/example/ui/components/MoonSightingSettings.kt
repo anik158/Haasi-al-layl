@@ -522,6 +522,8 @@ private fun ConfirmDialog(
   val date = HijriDateHelper.shortGregorian(decision.startsOn, language)
   AlertDialog(
     onDismissRequest = onBack,
+    // The app's parchment, not Material's default dialog tint.
+    containerColor = com.example.ui.theme.WarmBeigeBackground,
     title = { Text(HijriStrings.stepTitle(SightingStep.CONFIRM, language)) },
     text = {
       Column {

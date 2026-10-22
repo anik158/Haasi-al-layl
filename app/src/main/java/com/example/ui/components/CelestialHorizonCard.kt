@@ -128,7 +128,9 @@ fun CelestialHorizonCard(
   // Solar calculations
   val sunrise = schedule?.sunrise ?: LocalTime.of(6, 0)
   val sunset = schedule?.maghrib ?: LocalTime.of(18, 15)
-  val noon = schedule?.dhuhr ?: LocalTime.of(12, 5)
+  // The sun's highest point: Dhuhr carries a margin after it.
+  val noon = schedule?.dhuhr?.minusMinutes(com.example.data.prayer.PrayerCalculator.DHUHR_MARGIN_MINUTES)
+    ?: LocalTime.of(12, 5)
 
   val isDaytime = currentTime.isAfter(sunrise) && currentTime.isBefore(sunset)
   val sunProgress = calculateSunProgress(currentTime, sunrise, sunset)
@@ -582,6 +584,8 @@ fun CelestialHorizonCard(
   if (showDetailsDialog) {
     AlertDialog(
       onDismissRequest = { showDetailsDialog = false },
+      // The app's parchment, not Material's default dialog tint.
+      containerColor = com.example.ui.theme.WarmBeigeBackground,
       title = {
         Row(
           modifier = Modifier.fillMaxWidth(),

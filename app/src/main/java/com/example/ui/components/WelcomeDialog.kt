@@ -19,6 +19,8 @@ fun WelcomeDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
+        // The app's parchment, not Material's default dialog tint.
+        containerColor = com.example.ui.theme.WarmBeigeBackground,
         title = { Text(LocalizationManager.getWelcomeSetupTitle(language)) },
         text = {
             Column {

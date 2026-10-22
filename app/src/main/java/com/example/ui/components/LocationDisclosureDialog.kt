@@ -44,6 +44,8 @@ fun LocationDisclosureDialog(
   val context = LocalContext.current
   AlertDialog(
     onDismissRequest = onNotNow,
+    // The app's parchment, not Material's default dialog tint.
+    containerColor = com.example.ui.theme.WarmBeigeBackground,
     modifier = Modifier.testTag("location_disclosure_dialog"),
     icon = { Icon(Icons.Filled.LocationOn, contentDescription = null, tint = DarkForestInk) },
     title = {

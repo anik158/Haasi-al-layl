@@ -122,6 +122,12 @@ the next prayer comes"* - and presented that most lenient reading as simply the 
 - **Sehri ends at Fajr** (Qur'an 2:187; Bukhari 1918-1919). The calculator's `IMSAK` (Fajr − 10)
   stays in the schedule list but is never the end of Sehri: it is a precaution with no basis in the
   sunnah, and the user asked for sahih guidance over convention.
+- **Dhuhr is solar noon + `DHUHR_MARGIN_MINUTES` (3)** (October 2026; it was the bare noon). Dhuhr
+  begins once the sun has *passed* the meridian (Muslim 612) and noon is its centre crossing, so
+  the bare noon could fall a minute before zawal - the same reason Maghrib has its margin. The noon
+  forbidden window stays "10 min before Dhuhr, until Dhuhr", so it now ends as Dhuhr can be prayed
+  (Dhaka, 22 Oct 2026: 11:35-11:45, Dhuhr 11:45; Muslim Day shows 11:39-11:45, Dhuhr 11:46). Asr
+  and the angle times are still measured from the true noon.
 - **Iftar is Maghrib**, i.e. sunset + `MAGHRIB_MARGIN_MINUTES` (3). The margin is computational
   (refraction, elevation), not fiqh; the forbidden window uses the true sunset (`trueSunset`).
 - **The fast switches at Iftar, not midnight** (`FastingTimes.statusAt`), so the first Sehri is on

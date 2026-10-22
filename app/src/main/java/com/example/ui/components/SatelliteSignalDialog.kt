@@ -72,6 +72,8 @@ fun SatelliteSignalDialog(
 
   AlertDialog(
     onDismissRequest = onDismiss,
+    // The app's parchment, not Material's default dialog tint.
+    containerColor = com.example.ui.theme.WarmBeigeBackground,
     title = {
       Text(
         text = LocalizationManager.getSatelliteSignalTitle(language),
