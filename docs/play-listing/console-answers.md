@@ -47,8 +47,11 @@ Work through this top to bottom. Everything the console asks for is here or in t
 
 ## Store listing
 
-Text: [`listing-en.md`](listing-en.md), plus [`listing-bn.md`](listing-bn.md) as a Bengali
-translation. Graphics: `icon-512.png`, `feature-graphic-1024x500.png`, and the phone screenshots in
+Text: [`listing-en.md`](listing-en.md) as the default, plus translations under **Manage
+translations → Add your own translations**: [`listing-bn.md`](listing-bn.md) (bn-BD),
+[`listing-ar.md`](listing-ar.md) (ar), [`listing-es.md`](listing-es.md) (es-419 and es-ES) and
+[`listing-pt.md`](listing-pt.md) (pt-BR and pt-PT). Play matches searches against the listing in
+the searcher's language, so an untranslated locale only sees the English text. Graphics: `icon-512.png`, `feature-graphic-1024x500.png`, and the phone screenshots in
 `screenshots/`.
 
 | Field | Answer |
