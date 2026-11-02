@@ -12,11 +12,10 @@ The app follows standard Android architectural principles with MVVM and unidirec
 │   ├── model/             # Domain entities (CityLocation, PrayerModels, CalendarDates)
 │   ├── prayer/            # Astronomical calculation algorithms & IslamicMadhab definitions
 │   ├── qibla/             # Spherical geometry Kaaba bearing & compass sensor fusion
-│   ├── repository/        # Data synchronization & Room abstraction layer
-│   └── weather/           # Open-Meteo public free weather API client & repository
+│   └── repository/        # Data synchronization & Room abstraction layer
 └── ui/
     ├── components/        # Reusable Jetpack Compose cards & dialogs (CelestialHorizon, MadhabDialog, etc.)
-    ├── screens/           # Primary destinations (HomeScreen, WeatherScreen, QiblaScreen, TasbihScreen, DuaScreen)
+    ├── screens/           # Primary destinations (HomeScreen, QiblaScreen, TasbihScreen, DuaScreen)
     └── theme/             # Material 3 Color palette, Typography, and Theme system
 ```
 

@@ -14,7 +14,7 @@ object DeveloperContact {
 
   const val DEVELOPER_NAME = "Ahsanul Houqe"
   const val WEBSITE = "https://www.ahsanulhouqe.com/"
-  const val FEEDBACK_EMAIL = "ahsanan@outlook.com"
+  const val FEEDBACK_EMAIL = "contact@ahsanulhouqe.com"
 
   /**
    * Where the privacy policy is published. The text is `docs/site/haasi-al-layl/privacy/index.html` in this repo;

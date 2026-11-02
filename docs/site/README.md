@@ -30,7 +30,10 @@ there, the guide shows a dashed slot saying what belongs in it.
 | `05-qibla.png` | The Qibla tab | added |
 | `02b-prayers.png` | Today's Prayers list | added |
 | `06-duas.png` | A Hisn al-Muslim dua; the waking-up chapter's third entry ("Lā ilāha illallāhu waḥdahu…") has a "Virtue" box | added (chapter index) |
-| `07-names.png` | The ﷲ99 tab | added on the site |
+| `07-names.png` | The ﷲ99 tab | added |
+
+All eight were retaken on 2 November 2026, after weather was removed (no Weather tab or
+temperature pill). Full-resolution originals are in `docs/play-listing/screenshots/raw/`.
 
 Before capturing, clear personal notifications from the status bar and use a city you are happy
 to show.

@@ -14,9 +14,8 @@ import java.util.concurrent.TimeUnit
 /**
  * Place search, so the city picker is not limited to the handful of presets.
  *
- * Open-Meteo's geocoding service is the same family as the weather API already in use: free, no
- * key, and it returns latitude, longitude *and* an IANA timezone - exactly what [CityLocation]
- * needs, with no second lookup.
+ * Open-Meteo's geocoding service is free, needs no key, and returns latitude, longitude *and* an
+ * IANA timezone - exactly what [CityLocation] needs, with no second lookup.
  */
 interface GeocodingApiService {
 

@@ -299,7 +299,7 @@ says plainly that its chain is graded weak.
 
 **About & feedback.** Settings ends with an *About the developer* card — Ahsanul Houqe, with a link
 to [ahsanulhouqe.com](https://www.ahsanulhouqe.com/) — and **Send feedback**, which opens your mail
-app addressed to ahsanan@outlook.com with the app and Android versions in the subject. The About
+app addressed to contact@ahsanulhouqe.com with the app and Android versions in the subject. The About
 dialog — opened by tapping the app name, which carries an ⓘ to say so — has both too, the website
 as a bordered link chip.
 

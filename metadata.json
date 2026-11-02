@@ -1,6 +1,6 @@
 {
   "name": "Haasi al-layl",
-  "description": "Spiritual daily companion with sun and moon horizon tracking, prayer times, Bangla & Hijri calendars, and serene weather.",
+  "description": "Spiritual daily companion with sun and moon horizon tracking, prayer times, Qibla, Tasbih, Hisn al-Muslim duas, and Bangla & Hijri calendars.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

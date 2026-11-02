@@ -1038,11 +1038,11 @@ object LocalizationManager {
   }
 
   fun getSelectLocationSubtitle(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "لحساب مواقيت الصلاة والطقس لمنطقتك"
-    AppLanguage.BENGALI -> "আপনার এলাকার নামাজের সময় ও আবহাওয়া নির্ণয়ের জন্য"
-    AppLanguage.SPANISH -> "Calcula los horarios de oración y el tiempo de tu zona"
-    AppLanguage.PORTUGUESE -> "Calcula os horários de oração e o tempo da sua zona"
-    AppLanguage.ENGLISH -> "Calculates prayer times and weather for your area"
+    AppLanguage.ARABIC -> "لحساب مواقيت الصلاة لمنطقتك"
+    AppLanguage.BENGALI -> "আপনার এলাকার নামাজের সময় নির্ণয়ের জন্য"
+    AppLanguage.SPANISH -> "Calcula los horarios de oración de tu zona"
+    AppLanguage.PORTUGUESE -> "Calcula os horários de oração da sua zona"
+    AppLanguage.ENGLISH -> "Calculates prayer times for your area"
   }
 
   fun getSearchCityPlaceholder(language: AppLanguage): String = when (language) {
@@ -2228,83 +2228,6 @@ object LocalizationManager {
     AppLanguage.SPANISH -> "Cerrar"
     AppLanguage.PORTUGUESE -> "Fechar"
     AppLanguage.ENGLISH -> "Close"
-  }
-
-
-  // Weather Screen Additions
-  fun getLiveStatus(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "مباشر"
-    AppLanguage.BENGALI -> "লাইভ"
-    AppLanguage.SPANISH -> "EN VIVO"
-    AppLanguage.PORTUGUESE -> "AO VIVO"
-    AppLanguage.ENGLISH -> "LIVE"
-  }
-
-  fun getOfflineStatus(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "غير متصل"
-    AppLanguage.BENGALI -> "অফলাইন"
-    AppLanguage.SPANISH -> "SIN CONEXIÓN"
-    AppLanguage.PORTUGUESE -> "OFFLINE"
-    AppLanguage.ENGLISH -> "OFFLINE"
-  }
-
-  fun getHighShort(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "العظمى"
-    AppLanguage.BENGALI -> "সর্বোচ্চ"
-    AppLanguage.SPANISH -> "Máx"
-    AppLanguage.PORTUGUESE -> "Máx"
-    AppLanguage.ENGLISH -> "H"
-  }
-
-  fun getLowShort(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "الصغرى"
-    AppLanguage.BENGALI -> "সর্বনিম্ন"
-    AppLanguage.SPANISH -> "Mín"
-    AppLanguage.PORTUGUESE -> "Mín"
-    AppLanguage.ENGLISH -> "L"
-  }
-
-  fun getRetryLabel(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "إعادة المحاولة"
-    AppLanguage.BENGALI -> "পুনরায় চেষ্টা করুন"
-    AppLanguage.SPANISH -> "Reintentar"
-    AppLanguage.PORTUGUESE -> "Tentar novamente"
-    AppLanguage.ENGLISH -> "Retry"
-  }
-
-  fun getConditionsDetailsLabel(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "الظروف والتفاصيل"
-    AppLanguage.BENGALI -> "আবহাওয়া বিবরণ ও পরিমাপ"
-    AppLanguage.SPANISH -> "Condiciones y Detalles"
-    AppLanguage.PORTUGUESE -> "Condições e Detalhes"
-    AppLanguage.ENGLISH -> "Conditions & Details"
-  }
-
-  fun getRecommendedDuaLabel(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "الدعاء الموصى به:"
-    AppLanguage.BENGALI -> "প্রস্তাবিত দোয়া:"
-    AppLanguage.SPANISH -> "Súplica Recomendada:"
-    AppLanguage.PORTUGUESE -> "Súplica Recomendada:"
-    AppLanguage.ENGLISH -> "Recommended Du'a:"
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-  fun getPrecipitationLabel(language: AppLanguage): String = when (language) {
-    AppLanguage.ARABIC -> "هطول الأمطار"
-    AppLanguage.BENGALI -> "বৃষ্টিপাত"
-    AppLanguage.SPANISH -> "Precipitación"
-    AppLanguage.PORTUGUESE -> "Precipitação"
-    AppLanguage.ENGLISH -> "Precipitation"
   }
 
 
